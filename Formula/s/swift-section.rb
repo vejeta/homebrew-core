@@ -1,8 +1,8 @@
 class SwiftSection < Formula
   desc "CLI tool for parsing mach-o files to obtain Swift information"
   homepage "https://github.com/MxIris-Reverse-Engineering/MachOSwiftSection"
-  url "https://github.com/MxIris-Reverse-Engineering/MachOSwiftSection/archive/refs/tags/0.11.0.tar.gz"
-  sha256 "807c62867a65334aa12c7d30fbede6fd93243bc78f5557622e61a14f81a0b22d"
+  url "https://github.com/MxIris-Reverse-Engineering/MachOSwiftSection/archive/refs/tags/0.19.0.tar.gz"
+  sha256 "b6eca7a79efc1474200a006eb591a5f96fbe69d46905e4a9e5cffd1194c9563a"
   license "MIT"
   head "https://github.com/MxIris-Reverse-Engineering/MachOSwiftSection.git", branch: "main"
 
@@ -12,19 +12,19 @@ class SwiftSection < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ec7f4823c257cd47c0deed9463c9a3afd415f032a7c0cb5eec03e7617409393a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fc1625b9907173ef1a997915b207efc843de373e8044062988b40075d197ad94"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0f962055f88f9eb056adcec4d08157aa2fe02dd2aa4fab77018a2e34012d2bba"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "63cc01397b042831f79df57949c8c227bcf3cbc3d22780b9be57c02c1d3566b6"
   end
 
-  # The Package.swift file requires Swift 5.10 or later.
-  # But it is actually only builable with Swift 6.1+ due to the usage of trailing commma in comma-separated lists.
-  depends_on xcode: ["16.3", :build]
-  depends_on :macos
+  # The Package.swift file requires Swift 6.2 or later.
+  # But it is failed to build on Sequoia with Xcode 26.3
+  depends_on xcode: ["26.4", :build]
+  depends_on macos: :tahoe # aligned to build Xcode as cannot cross-compile
 
   uses_from_macos "swift" => :build
 
   def install
-    system "swift", "build", "--disable-sandbox", "-c", "release"
+    system "swift", "build", "--product", "swift-section", *std_swift_args
     bin.install ".build/release/swift-section"
     generate_completions_from_executable(bin/"swift-section", "--generate-completion-script")
   end

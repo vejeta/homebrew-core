@@ -2,8 +2,8 @@ class DotnetAT8 < Formula
   desc ".NET Core"
   homepage "https://dotnet.microsoft.com/"
   # Source-build tag announced at https://github.com/dotnet/source-build/discussions
-  url "https://github.com/dotnet/dotnet/archive/refs/tags/v8.0.128.tar.gz"
-  sha256 "42b2a05ed2758fdc4e18498fac6ec4d888c3643d3c8aa7199ca6c4a3e0059c79"
+  url "https://github.com/dotnet/dotnet/archive/refs/tags/v8.0.131.tar.gz"
+  sha256 "b1adc9442ba3dd564c74630a402a7d25987619278c7f3d49cce8fb10b4a2c2f5"
   license "MIT"
   compatibility_version 1
 
@@ -13,12 +13,11 @@ class DotnetAT8 < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "06c7569ab4c2f652722648b38a8b5a60b89ff3f38960217cd51e8b2a808cf02a"
-    sha256 cellar: :any, arm64_sequoia: "cf986c1a7c68cccb52aaccace2d0f109a96b4a04bc16598aca329b99ee2ee07e"
-    sha256 cellar: :any, arm64_sonoma:  "94812ef4c6ef33c0e41f07adf12ec91e95843909606594c641df5c09c203131c"
-    sha256 cellar: :any, sonoma:        "f9d37aaa75984e4e2cfdd88c215c1afeb42ee6f90952bcb6bea11fd7deae6cad"
-    sha256 cellar: :any, arm64_linux:   "f3ca513e45845213c5995891cdfb9e7744e3748486ec7bfcfe5b7ac6e938363a"
-    sha256 cellar: :any, x86_64_linux:  "3e10552f89d91e52603d5af60eaab75ed374c90edf5301f965ae424438c01573"
+    sha256 cellar: :any, arm64_tahoe:   "3f07359848f9883e27d9242a063b21b1b159e90209f0b7ed8ca2bc26a7a6e448"
+    sha256 cellar: :any, arm64_sequoia: "2166e2f4856aa1e6066dff9e4079eb892b74b226cc96a2ba25b593e9a1587c46"
+    sha256 cellar: :any, arm64_sonoma:  "9a4c379ec1728f843bb74b725c9a8ae465d9ea865fce21d8faf65983e228c4c8"
+    sha256 cellar: :any, arm64_linux:   "dde17475ab661cec62698a886bcd336fa16cfa619377ce80dce5d3bc2922d118"
+    sha256 cellar: :any, x86_64_linux:  "e70864dc08b6369bf730383dc425c3e2436b179e400f8371b525b327f005a5ce"
   end
 
   keg_only :versioned_formula
@@ -55,8 +54,8 @@ class DotnetAT8 < Formula
   end
 
   resource "release.json" do
-    url "https://github.com/dotnet/dotnet/releases/download/v8.0.128/release.json"
-    sha256 "228deb86b56420fee64fe820ebbe607634e860bedbcca1c495ff713f00e22e6f"
+    url "https://github.com/dotnet/dotnet/releases/download/v8.0.131/release.json"
+    sha256 "68f2d6f9c8d1a6856450ada23c3a6f01cc92a58d0b69956b183ff1207d800e95"
 
     livecheck do
       formula :parent
@@ -69,8 +68,8 @@ class DotnetAT8 < Formula
 
     # .NET built with Apple Clang 2100 (based on LLVM 21) sporadically crashes
     if DevelopmentTools.clang_build_version >= 2100
-      ENV["CC"] = Formula["llvm@20"].opt_bin/"clang"
-      ENV["CXX"] = Formula["llvm@20"].opt_bin/"clang++"
+      ENV["CC"] = formula_opt_bin("llvm@20")/"clang"
+      ENV["CXX"] = formula_opt_bin("llvm@20")/"clang++"
       ENV.append_to_cflags "-I#{HOMEBREW_PREFIX}/include"
     end
 
@@ -80,7 +79,7 @@ class DotnetAT8 < Formula
 
     if OS.mac?
       # Need GNU grep (Perl regexp support) to use release manifest rather than git repo
-      ENV.prepend_path "PATH", Formula["grep"].libexec/"gnubin"
+      ENV.prepend_path "PATH", formula_opt_libexec("grep")/"gnubin"
 
       # Avoid mixing CLT and Xcode.app when building CoreCLR component which can
       # cause undefined symbols, e.g. __swift_FORCE_LOAD_$_swift_Builtin_float

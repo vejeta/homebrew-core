@@ -1,8 +1,8 @@
 class Sdl3Image < Formula
   desc "Library for loading images as SDL surfaces and textures"
   homepage "https://github.com/libsdl-org/SDL_image"
-  url "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz"
-  sha256 "29751304a13d25ac513f24305fa25b06a6edd9607718c90129b8350d35fc5573"
+  url "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz"
+  sha256 "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01"
   license "Zlib"
   head "https://github.com/libsdl-org/SDL_image.git", branch: "main"
 
@@ -12,12 +12,12 @@ class Sdl3Image < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "5c76110cfbc7506eb501369d6334b463a36936008b6863df7cb835c45517ca76"
-    sha256 cellar: :any,                 arm64_sequoia: "5d44ce88bca1f3f21de950fcba15fd3bb8bbc38f32ac44838e5c1f27561a14ec"
-    sha256 cellar: :any,                 arm64_sonoma:  "6a9d78b8b78e56f0ceb2606b3db67803ef2a66013a93e7c333780d49490fed1d"
-    sha256 cellar: :any,                 sonoma:        "74e04b9a96a5072a753b6c37b6d1531bffa0237c1865419d93c0650375133e65"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "23ca98bffc99d3088671ea84bc5ba2c53c8ef1f9baa907ac10dfeb33b4abc683"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "95e28fb18a16b1b66d515bf635919a8b7bf44dd1d483d938c031925ea95f511a"
+    sha256 cellar: :any, arm64_golden_gate: "23b752048fa22c904625e6c6108cafea7c2f1112ddfba515b440303592433747"
+    sha256 cellar: :any, arm64_tahoe:       "6efcc3fde7c11ea176554ffd48dd3f6a98faf5639a4e193cdc77aef6752f7422"
+    sha256 cellar: :any, arm64_sequoia:     "51b8ad27d2282716a7b7a3ecc20deb22f69aa2405d141caa8f17d3d5b21176d0"
+    sha256 cellar: :any, arm64_sonoma:      "aa80e4b7d4f8eff14475ce2546c82453580ae42569686e8597b2574c1e42d10a"
+    sha256 cellar: :any, arm64_linux:       "c701dcb61029cf0c5f01ddc07e4ef7387b22a81514da16c0305e20213e7befa1"
+    sha256 cellar: :any, x86_64_linux:      "039721d90e8dd34aa2540f505a96501ec5edfc2b910f3b891f93ca08f324ea57"
   end
 
   depends_on "cmake" => :build
@@ -57,7 +57,7 @@ class Sdl3Image < Formula
         return IMG_Version() == SDL_IMAGE_VERSION ? EXIT_SUCCESS : EXIT_FAILURE;
       }
     C
-    system ENV.cc, "test.c", "-I#{Formula["sdl3"].opt_include}", "-L#{lib}", "-lSDL3_image", "-o", "test"
+    system ENV.cc, "test.c", "-I#{formula_opt_include("sdl3")}", "-L#{lib}", "-lSDL3_image", "-o", "test"
     system "./test"
   end
 end

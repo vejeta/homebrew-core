@@ -1,24 +1,43 @@
 class BacklogMd < Formula
   desc "Markdown‑native Task Manager & Kanban visualizer for any Git repository"
   homepage "https://github.com/MrLesk/Backlog.md"
-  url "https://registry.npmjs.org/backlog.md/-/backlog.md-1.47.1.tgz"
-  sha256 "e38011df24ab897841b98ad893a930b9f9fd95dc834879beec40700f79b8514c"
+  url "https://github.com/MrLesk/Backlog.md/archive/refs/tags/v1.52.0.tar.gz"
+  sha256 "f6d6f4b97477e518bd89b549ab9bd403b9ea54a1f6328d6fdedfc47e9a25dab8"
   license "MIT"
 
   bottle do
-    sha256                               arm64_tahoe:   "047c8b7b0dc8de925aa67028affd190893c83338b4e18981fe6066fdf4120b45"
-    sha256                               arm64_sequoia: "047c8b7b0dc8de925aa67028affd190893c83338b4e18981fe6066fdf4120b45"
-    sha256                               arm64_sonoma:  "047c8b7b0dc8de925aa67028affd190893c83338b4e18981fe6066fdf4120b45"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d6ae6700fd36ecfaa534836951e70d0bcf786c9459517cf01afbcfd9605589b4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "fbe8157f97306a88d4bde452d646ab7b7246a5d2e744869fc810feb53789129f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7368c8e8e3ec4aa174c1c4055da58ef0a2d0ca96cae1d04b3e12bba4f98aab7f"
+    sha256 arm64_golden_gate: "9094f6ae3b0a1ddf40fd08af2b5806f6c0b83962eac14d6350686a3945e7c55a"
+    sha256 arm64_tahoe:       "0f745e07e8759c56d08e8cb1e65be3a78799d6344cd9c116d78ae1482afc07fa"
+    sha256 arm64_sequoia:     "15b1bd275487a581f4be607200333b0f0d218be9940f636769a2df09b4f150b4"
+    sha256 arm64_linux:       "b5085296026a508d651ffb25b9dda5414b4214d5f5325c11107639c4fa3cb8dc"
+    sha256 x86_64_linux:      "b323ce4ca871294490a40bdce55d0a0bb8c2be42422de28639372a411de5802b"
   end
 
-  depends_on "node"
+  depends_on "bun" => :build
+
+  on_linux do
+    # `bun build --compile` embeds the runtime, so the output inherits bun's ICU linkage.
+    depends_on "icu4c@78"
+  end
 
   def install
-    system "npm", "install", *std_npm_args
-    bin.install_symlink libexec.glob("bin/*")
+    if OS.linux?
+      bun_icu = Formula["bun"].deps.find { |dep| dep.name.match?(/^icu4c/) }.to_formula
+      icu = deps.find { |dep| dep.name.match?(/^icu4c/) }.to_formula
+
+      odie "Update icu4c dependency!" if bun_icu.name != icu.name
+    end
+
+    system "bun", "install", "--frozen-lockfile", "--ignore-scripts"
+
+    # Upstream injects the version at release time; the tagged `package.json` lags.
+    ENV["BACKLOG_BUILD_VERSION"] = version.to_s
+
+    # Not `bun run build`: that resolves `bun` from `node_modules/.bin`, and
+    # `bun build --compile` embeds whichever runtime ran the build.
+    system "bun", "scripts/build.ts"
+
+    bin.install "dist/backlog"
   end
 
   test do

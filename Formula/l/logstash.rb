@@ -1,8 +1,8 @@
 class Logstash < Formula
   desc "Tool for managing events and logs"
   homepage "https://www.elastic.co/products/logstash"
-  url "https://github.com/elastic/logstash/archive/refs/tags/v9.4.2.tar.gz"
-  sha256 "d68d3fa24c8d57044e294ef02c66587d08bb908e0c1892006542c3a69202ba1a"
+  url "https://github.com/elastic/logstash/archive/refs/tags/v9.5.3.tar.gz"
+  sha256 "86ef7810bb4bdb57677072b396efa1d0d7a835751cba297822ccc282b3bfa070"
   license "Apache-2.0"
   version_scheme 1
   head "https://github.com/elastic/logstash.git", branch: "main"
@@ -13,12 +13,11 @@ class Logstash < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "3328990233e77cae6e3aa023032fb61de019368f2c3b40683d67ee091163a74a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b80e806df546abb0826a8b023c5555f7b150003b6df4f29c791a0484b08b5c06"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0bcb63560d57ff8c29e959f8d0f0ca280ea45429e13867f893918df6f53750a0"
-    sha256 cellar: :any,                 sonoma:        "5584ab89207068115b61be600a11c41ed049f20d43dc106897291f2dda32e218"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7f3366ba283d7c331f2a23848f3449baec7b8fb174a1f28e90a2cf0dc25543ba"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "91e7736fd3efef2834c05b6e104532cc946d52aa3d31e35dfc2fc0e66c2ad664"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d6c3ae6df18b7d3f6f2b47d0839faeb454f93b8d1289403604786263697e82c6"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0ed8800736f38a8f7fa2f8d67b7457e4964c5a0d2535ffca6675fd00d66310bb"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "72b44cb1ff39472b96a4f829ab362c7ec8c81423873b0f9b35216e0364b4675e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "10a1e1bfda962fbff656f6d33f04a054a246c8177c35e7355fd49e5de01708ae"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "429306da240c9c4b591e7246b95dd1d6434620dd4cbde58fabc6b5eb59faaff1"
   end
 
   depends_on "gradle@8" => :build # gradle 9 support issue, https://github.com/elastic/logstash/issues/16641

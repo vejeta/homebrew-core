@@ -1,10 +1,10 @@
 class Qtgrpc < Formula
   desc "Provides support for communicating with gRPC services"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.11/6.11.1/submodules/qtgrpc-everywhere-src-6.11.1.tar.xz"
-  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.1/submodules/qtgrpc-everywhere-src-6.11.1.tar.xz"
-  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.1/submodules/qtgrpc-everywhere-src-6.11.1.tar.xz"
-  sha256 "437b04f0c550ccdb1739ca5f9119b73dfa0376564815e8bfc199890643e2a250"
+  url "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtgrpc-everywhere-src-6.11.2.tar.xz"
+  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.2/submodules/qtgrpc-everywhere-src-6.11.2.tar.xz"
+  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.2/submodules/qtgrpc-everywhere-src-6.11.2.tar.xz"
+  sha256 "44414617f0058ff34965fa852027bfcc7e4f71eefca8cd4406c96af22c64ad93"
   license all_of: [
     "GPL-3.0-only", # QtGrpc
     { any_of: ["LGPL-3.0-only", "GPL-2.0-only", "GPL-3.0-only"] }, # QtProtobuf
@@ -20,12 +20,12 @@ class Qtgrpc < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "c2064dcf3e2f303dfec4fb594a63dcd1658c6fb274bcd919e53dca7aaab2fbe5"
-    sha256 cellar: :any,                 arm64_sequoia: "0777d094e44b1fed151d3530a53da034924c9308f7101cd6c72fd6191e1e76c5"
-    sha256 cellar: :any,                 arm64_sonoma:  "0c605f7af918bf9ede0d785fba0d4750fb28e5c5c81b0274b456596b0f3e8a53"
-    sha256 cellar: :any,                 sonoma:        "8c5351666f3a0d3074812a0b9628557180600cd45c8a6e84e34d9f6015639120"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "0f85344bb4b974e14e1c1c9760d4525a331984bcfa948b9238fb28c860a57d15"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8fbc28c0d1aa0e98670883fe96456c59216c3be4ce281bf93990573c9aa0dc2b"
+    sha256 cellar: :any, arm64_golden_gate: "524e1c6943115f0abd73fc26672f9370ca0e36df95e90a98260ba4fce8563136"
+    sha256 cellar: :any, arm64_tahoe:       "79e9cfc012bf51f951071bfba1b549e6db7fe059476ec436d54b7c4a002b3e19"
+    sha256 cellar: :any, arm64_sequoia:     "9aa5494bc6651e00519b7115d87ab8a15c1a1ccd2e733079d55e26b5f8938f39"
+    sha256 cellar: :any, arm64_sonoma:      "093f2477f4bc367a71ffffbe7503252a5362df25b6396fcca9be17e0fdd7db0e"
+    sha256 cellar: :any, arm64_linux:       "93b0a82523c49d6255ae9a2f42a90bdde0ab35378e390694c73d1b4ca262fb5f"
+    sha256 cellar: :any, x86_64_linux:      "ebcf1da93822da27667f3c28fb950f7d6a33bff460271882686b022ef139bd06"
   end
 
   depends_on "cmake" => [:build, :test]

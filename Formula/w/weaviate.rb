@@ -1,8 +1,8 @@
 class Weaviate < Formula
   desc "Open-source vector database that stores both objects and vectors"
   homepage "https://weaviate.io/developers/weaviate/"
-  url "https://github.com/weaviate/weaviate/archive/refs/tags/v1.38.1.tar.gz"
-  sha256 "63508e20a69543fe9e63a04cd12312233dd97b83c1736ae786e686dca59ae6bd"
+  url "https://github.com/weaviate/weaviate/archive/refs/tags/v1.39.4.tar.gz"
+  sha256 "91738e4c7dc9ee0da86c658aba69bb589689d1b39d7d98c909d80a191541d926"
   license "BSD-3-Clause"
 
   livecheck do
@@ -11,19 +11,17 @@ class Weaviate < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4e45955d63b91e8a0f32c89287889abeb6e39568dd385269bbb89fca2cc64608"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4e45955d63b91e8a0f32c89287889abeb6e39568dd385269bbb89fca2cc64608"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4e45955d63b91e8a0f32c89287889abeb6e39568dd385269bbb89fca2cc64608"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5f17a21c15da4326eb8eab93808094e0971cf0e4229bf91302fb715b22786d9b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f4fe8b044d7d26a9f4301a1085ccfc7cd4d38c24e93bf93966b3d434184d3c64"
-    sha256 cellar: :any,                 x86_64_linux:  "55f1cb7f60af478f00c5a9a6b3719d315f038889caef687fd6b0f5e0f6943af4"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5fcb83d25c1301800a67b43e9b2bd06c25dc802537be41bd3ca04ff7e069ebd7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "5fcb83d25c1301800a67b43e9b2bd06c25dc802537be41bd3ca04ff7e069ebd7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5fcb83d25c1301800a67b43e9b2bd06c25dc802537be41bd3ca04ff7e069ebd7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "3fe960d96f4ab99226e2a79d6316b88500fc5655dcf59ad59a1b84b4ae1db8b0"
+    sha256 cellar: :any,                 x86_64_linux:      "18bdda1c92d7ba23c2904a085286b98e814bb6594a40e8a568986e06aae299ee"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/weaviate/weaviate/usecases/build.Version=#{version}
       -X github.com/weaviate/weaviate/usecases/build.BuildUser=#{tap.user}
       -X github.com/weaviate/weaviate/usecases/build.BuildDate=#{time.iso8601}

@@ -1,17 +1,17 @@
 class Vale < Formula
   desc "Syntax-aware linter for prose"
   homepage "https://vale.sh/"
-  url "https://github.com/errata-ai/vale/archive/refs/tags/v3.15.1.tar.gz"
-  sha256 "f2dc8fd38deb4789a780f5e2f1fbb8489c45333ccd6e923999e528d78efe297a"
+  url "https://github.com/vale-cli/vale/archive/refs/tags/v3.21.0.tar.gz"
+  sha256 "e069ec49e8870da8f099569b68a15e27f73f5dc5d53eb85e4c84365352c7e864"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2d2e7ddf78bfbbd4e29a2a7936655649184d59cc84c4397a5e83caef1d2750b8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9ce773215189913d907ff5b629570b001f13f6ba38ce5045f27046540cd970c3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "adb30754110f38eb902af0e94a6499afad4c793c003059ca1f07f991cbc90fe1"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c56e99b22b93c34a9a40d397db334c7386f01685cf2405188e01abae476baf54"
-    sha256 cellar: :any,                 arm64_linux:   "0ebcc6a5a73f4dd7160a62a91884c45722189349d66f6eae02759bcd486a5368"
-    sha256 cellar: :any,                 x86_64_linux:  "5ad30d5889efaa6ea4abdbe1f16aa4d65628e7a372c3806f91eb4a308c111d84"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "040774f34895e7b33b36b72785eef7b8db37d17a7ed7ada4babea7a994b5e959"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "22cec5351c9ba2c0905d8e51e7b88942f8e7811be52a16d1dd2fe76d8734ae27"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "0acde66835806cf348060d78bc68f9360ca71df139cef44ea3d37d94507fb524"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6934fb9abced1a386083160d7dbb03608d74c980adefa896d531e4a566e4e78b"
+    sha256 cellar: :any,                 arm64_linux:       "6e82085826b2172dcce34b27643212919f77ec5d112e5cf0429ec7ec0587725c"
+    sha256 cellar: :any,                 x86_64_linux:      "378e2d017e933b0fbb382d8a2c7904d3eaf948e8f54e13966f4acc7f5824c2db"
   end
 
   depends_on "go" => :build
@@ -19,8 +19,7 @@ class Vale < Formula
   def install
     ENV["CGO_ENABLED"] = "1" if OS.linux? && Hardware::CPU.arm?
 
-    ldflags = "-X main.version=#{version} -s -w"
-    system "go", "build", *std_go_args, "-ldflags=#{ldflags}", "./cmd/vale"
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}"), "./cmd/vale"
   end
 
   test do

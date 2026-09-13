@@ -1,8 +1,8 @@
 class CloudfoundryCli < Formula
   desc "Official command-line client for Cloud Foundry"
   homepage "https://docs.cloudfoundry.org/cf-cli"
-  url "https://github.com/cloudfoundry/cli/archive/refs/tags/v8.18.3.tar.gz"
-  sha256 "b1d752410595f21838eafe56887e57d31e1dd212db2d77137d606d5a85039bf0"
+  url "https://github.com/cloudfoundry/cli/archive/refs/tags/v8.19.0.tar.gz"
+  sha256 "bfbbb833c2727432e48d7b383ba749f6ca7e5c11c1377cc6cd22ddc802057d23"
   license "Apache-2.0"
   head "https://github.com/cloudfoundry/cli.git", branch: "main"
 
@@ -12,21 +12,21 @@ class CloudfoundryCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f705e68a2959bb6c488ec8004069d167b00303ad4846006ffd624f840ab3321e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f705e68a2959bb6c488ec8004069d167b00303ad4846006ffd624f840ab3321e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f705e68a2959bb6c488ec8004069d167b00303ad4846006ffd624f840ab3321e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "53a17a7b1f10444d15e97f8e0ee993094cdbac64508f2daacffa0a9e9ec88df1"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4fb78b418253c6cc5f330359e38429f6ca08669a17c437c164e125030fe2cf51"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "60c91c38748b0c3bd96c8e09c24f0e01b9bc7883a1e23994b1f5f83cd6d1d775"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "893d1dc7db0a05f1f62d40c36fdfdeab963d3c7dc08bcf0a7968ff6a08cbd02d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "6a89bbbc6fd61c7f5c1f791eab969b24325deefe1cfcce67d53251a3527593bd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6a89bbbc6fd61c7f5c1f791eab969b24325deefe1cfcce67d53251a3527593bd"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6a89bbbc6fd61c7f5c1f791eab969b24325deefe1cfcce67d53251a3527593bd"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7e4fd211e34340695a52e528d7444c5877b17785a84cd03ba0c766ca32f5b36e"
+    sha256 cellar: :any,                 x86_64_linux:      "5584469a2e82862f3b7dcec5f5b7f3ce282532c60a6ded55ff48e5617ca950ce"
   end
 
-  depends_on "go" => :build
+  # `SermoDigital/jose` registers `crypto.Hash(0)`, which Go 1.27 `RegisterHash` panics on
+  depends_on "go@1.26" => :build
 
   conflicts_with "cf", because: "both install `cf` binaries"
 
   def install
     ldflags = %W[
-      -s -w
       -X code.cloudfoundry.org/cli/v8/version.binaryVersion=#{version}
       -X code.cloudfoundry.org/cli/v8/version.binarySHA=#{tap.user}
       -X code.cloudfoundry.org/cli/v8/version.binaryBuildDate=#{time.iso8601}

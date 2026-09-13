@@ -1,10 +1,11 @@
 class Mupdf < Formula
   desc "Lightweight PDF and XPS viewer"
   homepage "https://mupdf.com/"
-  url "https://mupdf.com/downloads/archive/mupdf-1.27.2-source.tar.gz"
-  sha256 "553867b135303dc4c25ab67c5f234d8e900a0e36e66e8484d99adc05fe1e8737"
+  url "https://mupdf.com/downloads/archive/mupdf-1.28.3-source.tar.gz"
+  sha256 "37c3209dc0e06fa4f3781ed44839ad933a9e6143eb4731f99e069204715bcef2"
   license "AGPL-3.0-or-later"
-  compatibility_version 2
+  revision 1
+  compatibility_version 6
   head "git://git.ghostscript.com/mupdf.git", branch: "master"
 
   livecheck do
@@ -13,15 +14,15 @@ class Mupdf < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "adfc5220c9f64113fc61920f81073107d3baf4c1139c884f6f7d78f0de3a437b"
-    sha256 cellar: :any,                 arm64_sequoia: "c8e638337695132e732310023481986c1ec2d3d72d3d5640751e31f780306c36"
-    sha256 cellar: :any,                 arm64_sonoma:  "69f930f318dd7ad6c5b12d419ed65e90ed26c6a33ca47ef7e2cc040d0f6c045c"
-    sha256 cellar: :any,                 sonoma:        "0120967cfd6b2f95be99963d5453aac7fc3f6942c48633189369fb816b0e344f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d9c407b06730358c2ad4a6c3ead32af302b649ac6858fc73c013353b669672b7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "22d86c746fddcc6e410442ce198defcd205663c6a1b660c5308dda0ee2124cb3"
+    sha256 cellar: :any, arm64_golden_gate: "cb5b1babac2c03d169b3e6bf09d7c4761bbd8302e658087027e70013db421c88"
+    sha256 cellar: :any, arm64_tahoe:       "1cb0c9a42335ad0c0436402f19c51718b9b2aaa1a07b465fb043d55cfda433b0"
+    sha256 cellar: :any, arm64_sequoia:     "c817d009ae5cb0c30c8e7868dff8a9c8d1fdf1afb3b3c60d61cbf2c339fd004a"
+    sha256 cellar: :any, arm64_sonoma:      "92f6cb48a1acef61c2ac0c9311288bf704eaa7a2ffe1ca43093e809efa44fed0"
+    sha256 cellar: :any, arm64_linux:       "44e0cf74dac6dd4b0c2e520dc55326b9ab12597f306ef690b7374b2cd10702a4"
+    sha256 cellar: :any, x86_64_linux:      "40e99341f304271d60d51d1479be5c5601e08b86db831e382a2068093e5a548a"
   end
 
-  depends_on "llvm" => :build
+  depends_on "llvm@21" => :build
   depends_on "pkgconf" => :build
   depends_on "swig" => :build
   depends_on "brotli"
@@ -53,25 +54,39 @@ class Mupdf < Formula
   # Currently, some source of mujs is required for building mupdf, so can't use formula
   # Issue ref: https://bugs.ghostscript.com/show_bug.cgi?id=708968
   resource "mujs" do
-    url "https://mujs.com/downloads/mujs-1.3.8.tar.gz"
-    sha256 "506d34882f2620a2fdeb6db63dbb7a8ffd98f417689d8f3c84f2feac275e39a9"
+    url "https://mujs.com/downloads/mujs-1.3.9.tar.gz"
+    sha256 "956d5a20dd4efe5aa58673558787b9e2539255f9bf62585e90e1921fa040d89d"
 
+    # Resource `livecheck` blocks don't support package references (yet), so we
+    # can't use `formula "mujs"` here.
     livecheck do
-      "mujs"
+      url "https://mujs.com/downloads/"
+      regex(/href=.*?mujs[._-]v?(\d+(?:\.\d+)+)\.t/i)
     end
   end
 
+  # Build scripts import `pipcl`, which upstream unbundled in 1.28.1
+  # Ref: https://github.com/ArtifexSoftware/mupdf/commit/ecef7b70bc5
+  resource "pipcl" do
+    url "https://files.pythonhosted.org/packages/64/1a/9ab2b272def9db9c80bf18fe8282119c2c4c074cc542030a28e4136dd13b/pipcl-12.tar.gz"
+    sha256 "c7545480cfa808500d8b606da73db7f89a872258bcdb293716126e2ccff1a5c6"
+  end
+
   def install
-    # Remove bundled libraries excluding `extract` and "strongly preferred" `lcms2mt` (lcms2 fork)
-    keep = %w[extract lcms2]
+    # Remove bundled libraries excluding `extract`, "strongly preferred" `lcms2mt` (lcms2 fork)
+    # and `cmark-gfm` (mupdf builds against its private headers, so no system-lib option)
+    keep = %w[cmark-gfm extract lcms2]
     (buildpath/"thirdparty").each_child { |path| rm_r(path) if keep.exclude? path.basename.to_s }
 
     # Install mujs from resource
     (buildpath/"thirdparty/mujs").install resource("mujs")
 
     # For python bindings needed by `pymupdf`: https://pymupdf.readthedocs.io/en/latest/packaging.html
-    site_packages = Language::Python.site_packages("python3.14")
-    ENV.prepend_path "PYTHONPATH", Formula["llvm"].opt_prefix/site_packages
+    site_packages = Language::Python.site_packages(python3)
+    ENV.prepend_path "PYTHONPATH", formula_opt_prefix("llvm@21")/site_packages
+
+    (buildpath/"pipcl").install resource("pipcl")
+    ENV.prepend_path "PYTHONPATH", buildpath/"pipcl/src"
 
     args = %W[
       build=release

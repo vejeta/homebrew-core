@@ -1,17 +1,17 @@
 class Rabbitmqadmin < Formula
   desc "Command-line tool for RabbitMQ that uses the HTTP API"
   homepage "https://www.rabbitmq.com/docs/management-cli"
-  url "https://github.com/rabbitmq/rabbitmqadmin-ng/archive/refs/tags/v2.32.0.tar.gz"
-  sha256 "6236cf711256cc20b26a0ec2f3f48d33b4d0ee920e456d93fe801f3447db2f93"
+  url "https://github.com/rabbitmq/rabbitmqadmin-ng/archive/refs/tags/v2.35.0.tar.gz"
+  sha256 "b52d5964ef296cf6a356522626a622225a825ab1248844172ace0058e211f988"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c0d81e39830e95b4f0f43693d00563a1127e109a824d6060c7d0e1e3863fe3d6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fbd471eaf51453642f4639639b69ef98bb6a566cc2fcb893ecb7f5068277b2b1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "91671657a72c8e7210f8e4c8d7ad2d56938f65f6a45674104239ba7305b90f9a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2d105925e3b22cd5c5f607036e63df65114d979628ee8a80b72492ad6c2db261"
-    sha256 cellar: :any,                 arm64_linux:   "2ad403cd1d9e72bc3e6ab40e8a153d5bd54905ef6433adc2da95766b2948624f"
-    sha256 cellar: :any,                 x86_64_linux:  "f1445bae6751912c2a8b1945df94992425e7cc0e3c7025de59fc5d9d87cb1a6d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0db28ef58afe590f9ad48c68386563384ae663ba096f8357cb40b45fec28efda"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "42f321988b091870c9da9a0ed505f75a4c2b77a025b7253924152b706cb2f3dc"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3d621a09729b24ea5d90ac73ec765a627224379ba24dd2bf27e71707c2b98ac9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2df83e7a50f1440247bb510ed64eaf02615a68de97b8c66af991c5a8aaa090ee"
+    sha256 cellar: :any,                 arm64_linux:       "145202cd8d3ef4774bbe04c08553a4f9564b962a6c71a4ea0dd9c0c7f2c9fb48"
+    sha256 cellar: :any,                 x86_64_linux:      "b7e6baa7dd2759aabd65fb7e7c443a3cf69b791368f6c4377d2e2500930f9904"
   end
 
   depends_on "rust" => :build

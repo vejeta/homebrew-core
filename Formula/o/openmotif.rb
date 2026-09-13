@@ -8,12 +8,13 @@ class Openmotif < Formula
   compatibility_version 1
 
   bottle do
-    sha256 arm64_tahoe:   "c0bfac872caadffd55339660bae1d6f2b3c7e5453524561f7c74a8ee19c649c1"
-    sha256 arm64_sequoia: "891b9cebcba317b8a31d705ac752f285140823c8e49c2ef07723cb5c909f9c3e"
-    sha256 arm64_sonoma:  "21605264e90be187d695971f25b00ab6913b7cbe9b8a9550ae5cbe656208b5dd"
-    sha256 sonoma:        "ad3dd71f84bc42558d9d8d327fabf8a2c3e3f5bb04c9053f3422c816987b74eb"
-    sha256 arm64_linux:   "81c0e83009c1e586a0f24db70915d074fed577be6c8e90d03eb76acc2b0b6e8f"
-    sha256 x86_64_linux:  "0d5600cd872a9afd8a2af1d9dfd72ee38f227304f4b5849def52bbd697c4956d"
+    sha256 arm64_golden_gate: "3a410bd04945d9acc95dac7946cbe079e8b98ac587fe8bead56dd16441b26eea"
+    sha256 arm64_tahoe:       "c0bfac872caadffd55339660bae1d6f2b3c7e5453524561f7c74a8ee19c649c1"
+    sha256 arm64_sequoia:     "891b9cebcba317b8a31d705ac752f285140823c8e49c2ef07723cb5c909f9c3e"
+    sha256 arm64_sonoma:      "21605264e90be187d695971f25b00ab6913b7cbe9b8a9550ae5cbe656208b5dd"
+    sha256 sonoma:            "ad3dd71f84bc42558d9d8d327fabf8a2c3e3f5bb04c9053f3422c816987b74eb"
+    sha256 arm64_linux:       "81c0e83009c1e586a0f24db70915d074fed577be6c8e90d03eb76acc2b0b6e8f"
+    sha256 x86_64_linux:      "0d5600cd872a9afd8a2af1d9dfd72ee38f227304f4b5849def52bbd697c4956d"
   end
 
   depends_on "pkgconf" => :build
@@ -35,8 +36,8 @@ class Openmotif < Formula
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-big_sur.diff"
-    sha256 "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
+    file "Patches/libtool/configure-big_sur.diff"
+    type :unofficial
   end
 
   # Fix 2-level namespace using MacPorts patch
@@ -45,14 +46,15 @@ class Openmotif < Formula
       url "https://raw.githubusercontent.com/macports/macports-ports/8c436a9c53a7b786da8d42cda16eead0fb8733d4/x11/openmotif/files/patch-lib-xm-vendor.diff"
       sha256 "697ac026386dec59b82883fb4a9ba77164dd999fa3fb0569dbc8fbdca57fe200"
     end
+    type :unofficial
   end
 
   # Fix performance of text anti-aliasing:
-  # - https://github.com/justinmeiners/classic-colors/issues/12
   # - http://bugs.motifzone.com/show_bug.cgi?id=1715
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/b18bd78945e11e0b43be4445a52beaac3b37a274/Patches/openmotif/fix-anti-aliasing-performance.patch"
-    sha256 "12907f303766cf1601714181c6276d0ebf94d36624eb2bbd8592ec046342ed77"
+    file "Patches/openmotif/fix-anti-aliasing-performance.patch"
+    type :unofficial
+    resolves "https://github.com/justinmeiners/classic-colors/issues/12"
   end
 
   def install

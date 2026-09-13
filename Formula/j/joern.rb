@@ -1,8 +1,8 @@
 class Joern < Formula
   desc "Open-source code analysis platform based on code property graphs"
   homepage "https://joern.io/"
-  url "https://github.com/joernio/joern/archive/refs/tags/v4.0.550.tar.gz"
-  sha256 "4257908f3b2225398b407788385bf04a1aff1cf676bb84a983841ec637cba590"
+  url "https://github.com/joernio/joern/archive/refs/tags/v4.0.620.tar.gz"
+  sha256 "397f3825fb5dd286a1f1846e7a1ce350b395724f0d4b9b038a2b30d4bdc24d33"
   license "Apache-2.0"
 
   livecheck do
@@ -12,18 +12,18 @@ class Joern < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a1f56f4fc64d10ff62b64ca8d6af4b76151d0894fb572e7599220e33539b5b82"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "62314e6c6dd8a7f8f4af773a8c6a9a64db2ab062bade91875788938a5540f86d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f0d5c02f4ee5a9e54c231a388bc26aaa83395fc0274e9ab72568ee69913e8e70"
-    sha256 cellar: :any_skip_relocation, sonoma:        "51ef797be69f2a6556bb976ea9a1580f868e2679e04f6012ad287931bcc4779c"
-    sha256 cellar: :any,                 arm64_linux:   "d387e3c106300dd2b3cce002ca3a59e746bf47e82e5e61eb738791865a9dfe90"
-    sha256 cellar: :any,                 x86_64_linux:  "dafc203f8497b1f900deb8fcfc00b336829b2f94ed21745be8bef2434704b035"
+    sha256               arm64_golden_gate: "a1c9b25fdb2cc447bf70fb6197e75d444edd08e9ef6b40434b3e2852aebb38b5"
+    sha256               arm64_tahoe:       "9ceb6497f9d36fbaf59219f4fd2d096da408c551a258aa7a63fcf070a087050c"
+    sha256               arm64_sequoia:     "e50a857185169fa648d7ffb9f103721c9e26aa1b1658d97f6e24980e77e00e93"
+    sha256               arm64_sonoma:      "513717d4af99de1190bf863534818ea5a7794842d3c9e8df5c2faf49371447b4"
+    sha256 cellar: :any, arm64_linux:       "4d80806408d6c37ccb8d327a4bb1438efc93293ef42fc76e139619f823f20332"
+    sha256 cellar: :any, x86_64_linux:      "659cd3f345f723bcb6a00152a3593d047de9687a38d7f8c003ddcd77961d9b72"
   end
 
   depends_on "sbt" => :build
   depends_on "astgen"
   depends_on "coreutils"
-  depends_on "openjdk"
+  depends_on "openjdk@25"
   depends_on "php"
 
   on_linux do
@@ -47,7 +47,7 @@ class Joern < Formula
     end
 
     libexec.children.select { |f| f.file? && f.executable? }.each do |f|
-      (bin/f.basename).write_env_script f, Language::Java.overridable_java_home_env
+      (bin/f.basename).write_env_script f, Language::Java.overridable_java_home_env("25")
     end
   end
 

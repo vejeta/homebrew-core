@@ -1,8 +1,8 @@
 class OsrmBackend < Formula
   desc "High performance routing engine"
   homepage "https://project-osrm.org/"
-  url "https://github.com/Project-OSRM/osrm-backend/archive/refs/tags/v26.6.5.tar.gz"
-  sha256 "fc007a189704dda8527158ad6aab38ccfd2a9533042c3c80f41f7a0659e924fb"
+  url "https://github.com/Project-OSRM/osrm-backend/archive/refs/tags/v26.9.0.tar.gz"
+  sha256 "f58b0451452820d92197d393bdd01ee5a9644a0c0ad904f74faeec0d1d2d70fd"
   license "BSD-2-Clause"
   head "https://github.com/Project-OSRM/osrm-backend.git", branch: "master"
 
@@ -12,12 +12,12 @@ class OsrmBackend < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "c54bd191da7ff283d722d9137621d7df5960069a82b12be9d1f5ce869ff065b8"
-    sha256 cellar: :any, arm64_sequoia: "f67fecec3ba4f7bd4db0dc4413b8228aa41faf3a48230ea51c8f312c509eb73d"
-    sha256 cellar: :any, arm64_sonoma:  "de82c8f0c91e47ab5318b0871e8f17fd483fe88339d7a20d14e808e6d4a01c56"
-    sha256 cellar: :any, sonoma:        "2bbf0127bf286e0429b1064a405c60546e5d2bf30f85d334101bde0c22ab61e7"
-    sha256 cellar: :any, arm64_linux:   "eb9c3b0a822bf9830aef21afc94a015e9120f375a21e7323256a070743f9b2a2"
-    sha256 cellar: :any, x86_64_linux:  "ff56b2480852bbdaef80f6249e1d8af33322335ec3d3e2de100fb32e1ec7264c"
+    sha256 cellar: :any, arm64_golden_gate: "a267d5a9e2c6bb18951f726dd279a0d4baf4539af5559f9121c31bcd40b1d933"
+    sha256 cellar: :any, arm64_tahoe:       "6734dd80d5073f5bb604b5ba36d287221655346170d55c4ddc740a8318f67c4e"
+    sha256 cellar: :any, arm64_sequoia:     "d464163f75401534baa01cd84b8def82b900956b9c0c7af6c116b39a607f497b"
+    sha256 cellar: :any, arm64_sonoma:      "54676d6a11a221dcc0a4992c301b29ec6b64fbdb940076d33d166cb10214732c"
+    sha256 cellar: :any, arm64_linux:       "c0e635443c4ca93acb0ecb6579b94b303cbb3760b9ab9796ce48d1d44f246900"
+    sha256 cellar: :any, x86_64_linux:      "db9943ba4f7be2b9d04c5c518005ce5e084bae41399b48fdb38b3008c75b8618"
   end
 
   depends_on "cmake" => :build
@@ -57,6 +57,14 @@ class OsrmBackend < Formula
       /usr/include/c++/11/type_traits:987:52: error: static assertion failed: template argument must be a complete class or an unbounded array
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
     CAUSE
+  end
+
+  # Add a missing `<ostream>` include, which libc++ 23 no longer provides transitively.
+  patch do
+    url "https://github.com/Project-OSRM/osrm-backend/commit/fb0251f4f91e2eb7e1baea350633d5352ffdb453.patch?full_index=1"
+    sha256 "fa2b62a256a49648e0fc717f5642456c4745b9c06e2b7581294c24b139a23499"
+    type :unofficial
+    resolves "https://github.com/Project-OSRM/osrm-backend/pull/7714"
   end
 
   def install

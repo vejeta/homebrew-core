@@ -1,19 +1,18 @@
 class GitCinnabar < Formula
   desc "Git remote helper to interact with mercurial repositories"
   homepage "https://github.com/glandium/git-cinnabar"
-  url "https://static.crates.io/crates/git-cinnabar/git-cinnabar-0.7.3.crate"
-  sha256 "18adcda45eeb4a1e82f28f404f788ed9051125c6fd760e468fd2763f17dd6cfe"
+  url "https://static.crates.io/crates/git-cinnabar/git-cinnabar-0.7.5.crate"
+  sha256 "b7f51bf94f7795deb25b862c72a57f83c48f84d12e52c20e5f99f6c70397a516"
   license all_of: ["MPL-2.0", "GPL-2.0-only"]
   head "https://github.com/glandium/git-cinnabar.git", branch: "master"
 
   bottle do
-    rebuild 2
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "47b06591734734c4dbe34b9172cb62e65fb79b1349ec81b058eeba46e9d2e917"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "da1e839b2a39b20a5aa8136e2be5686275a0cd0f0e3c58d2f9688b27c3c0b5e9"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6cc05fcdd91d94b52b65055dd953e476c26749d0062e8ddae14f1fc3e5ca1d08"
-    sha256 cellar: :any_skip_relocation, sonoma:        "71939c24c0359e4776f84468c34677094e7cf15a973cb126b3bc5fe57fa5d65b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "bf3538e386b2274c833fb1f902ffb2ad1c58c3fb4319d7f7ae8a6870e4a7775d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c274e3418ef3507c849e77dcf5ffdaf74bdec0c79f28b385550b5896f04151a3"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "231d77635690a2da599202a1a6b14631919423adfec5f047b8ffedf8dd3f063c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ebb3d2ad35aa9568d16389b36efdb688105e5b1bc5c5070b8de0d3ef67b7a50b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "db5c9a7a4baef75c24d8592d0a052923a9d801be68a87cb71b98fa64c8ec7ba4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b9e72e57888da6c388728f3b65f6b2b34ba99c9578fdc9a68118b317dac3b3e5"
+    sha256 cellar: :any,                 arm64_linux:       "0392caacbcb5da3296da21bf92941f5ca3d8c48092dfe124d71db1adc488a52c"
+    sha256 cellar: :any,                 x86_64_linux:      "ba11bac0d78cfe8e36e7c641856085889d05b15dfc3b2ec5993271b2527d14ed"
   end
 
   depends_on "rust" => :build

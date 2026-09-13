@@ -1,8 +1,8 @@
 class PvMigrate < Formula
   desc "CLI tool to migrate or backup/restore Kubernetes persistent volumes"
   homepage "https://github.com/utkuozdemir/pv-migrate"
-  url "https://github.com/utkuozdemir/pv-migrate/archive/refs/tags/v3.5.0.tar.gz"
-  sha256 "a3ddbbbe97376a240ddb37e0bfd1978b291c9a9ba23cd5883433b00dace2ee9c"
+  url "https://github.com/utkuozdemir/pv-migrate/archive/refs/tags/v3.6.2.tar.gz"
+  sha256 "42c82639f48d5d58dd34ed5b7b07072b651a9b090b5955b99afd00153afa069f"
   license "Apache-2.0"
   head "https://github.com/utkuozdemir/pv-migrate.git", branch: "main"
 
@@ -12,19 +12,18 @@ class PvMigrate < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "589185d9e27ab2a2ace05d316155a3e7fa8fad2d1d478054b6c69f1fcf17d80d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "51f26866b7fb7c5896a279f975ed419a50ccd4757ecfaa8f66d87a79dc74eb68"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c43c9146d4aef96bd853573d2ac182b61f691b15da7d3c02cf2c3e4b42656e54"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1792243fef3afe8355b46648cdbd087c673451ef6d2e3d0609688386de300324"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "55b07db0b03f916584924ff8dd227685164bf20946cfacb2483159f4567587c2"
-    sha256 cellar: :any,                 x86_64_linux:  "3e9e0e3769a41c2ef511bd5315086137a984af78e1ebaca123dc21fb8f2d705a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "43b6b32f9c00c925c404dea8851dd656168d3a98845e14ed50ea7f0c026a18ab"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "14a59a43fce55ce7a213b3eb3c4401b6f24ee5b5112b527e37b19496947c3ab7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "2dfae13eb7166064a7392937f48be2a360cf6cc0be4afc82c67426151627b354"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "88bf2a8e6a2420488bf4c0062744865c1a943885d94717880603037fd9f73090"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b4bd3c6ef60a325361368d9ef54463ce3a1f46db33e66ece7f28004a904a339d"
+    sha256 cellar: :any,                 x86_64_linux:      "eff6014fd7b593c82cee9204535dfebf013ddf296f9a9a92051195fc085fbebf"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
-    system "go", "build", *std_go_args(ldflags:), "./cmd/pv-migrate"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/pv-migrate"
 
     generate_completions_from_executable(bin/"pv-migrate", shell_parameter_format: :cobra)
   end

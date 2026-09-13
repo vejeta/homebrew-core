@@ -1,18 +1,18 @@
 class ConsulTemplate < Formula
   desc "Generic template rendering and notifications with Consul"
   homepage "https://github.com/hashicorp/consul-template"
-  url "https://github.com/hashicorp/consul-template/archive/refs/tags/v0.42.0.tar.gz"
-  sha256 "a1b7aa52a979ef01e80de8e8e1ae19d5da77962c00f740b3e17ae7acb1cbcb90"
+  url "https://github.com/hashicorp/consul-template/archive/refs/tags/v0.43.0.tar.gz"
+  sha256 "95b2f441437ceafb8dadea03aa62589d78fd03d0dc31005cf51d4042c3d6fe74"
   license "MPL-2.0"
   head "https://github.com/hashicorp/consul-template.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b1a6e3c8700298bff7e1cc2e7177624d059cb7433a61f0a763493f455611603a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b1a6e3c8700298bff7e1cc2e7177624d059cb7433a61f0a763493f455611603a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b1a6e3c8700298bff7e1cc2e7177624d059cb7433a61f0a763493f455611603a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d7b822fc54b082d818645c91d411ae63404cb9dfb2a13423e60b272bfe020708"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6cf715334fa5c5c41db88569bbd69b17a9e407718d8a72064822feff4ef14cd1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "740331ca23d4ef0a12ee206a7ecb140841a0623a8381ffcccce9dadde40e4938"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "e564daf656a0e04d0d13d54e936b0875a6b897628e31fad80be8ba0bcc75c5dd"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e564daf656a0e04d0d13d54e936b0875a6b897628e31fad80be8ba0bcc75c5dd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e564daf656a0e04d0d13d54e936b0875a6b897628e31fad80be8ba0bcc75c5dd"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e564daf656a0e04d0d13d54e936b0875a6b897628e31fad80be8ba0bcc75c5dd"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "64fe32e5524311f94fa66b75abe95fb324b31891f561c1f898a1efd8b88504e5"
+    sha256 cellar: :any,                 x86_64_linux:      "23bb9614d7b94383117f4b699fe7e13a9df101c9383213c2f624aa520ce66d7e"
   end
 
   depends_on "go" => :build
@@ -20,7 +20,6 @@ class ConsulTemplate < Formula
   def install
     project = "github.com/hashicorp/consul-template"
     ldflags = %W[
-      -s -w
       -X #{project}/version.Name=consul-template
       -X #{project}/version.GitCommit=#{tap.user}
     ]

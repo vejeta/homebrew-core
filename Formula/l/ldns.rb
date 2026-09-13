@@ -14,12 +14,13 @@ class Ldns < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "18ef267d76b2a85fc04987398e0012eded3bdc47fd409711a6b012c7655b6e3c"
-    sha256 cellar: :any, arm64_sequoia: "ded4e6317d7f9f548fc24fcd44a93371768d610664effa4c1485dea5fa77633d"
-    sha256 cellar: :any, arm64_sonoma:  "2274979d269fdc864a4d34410d558fde8fd52910a228ffe5a021412536aeed94"
-    sha256 cellar: :any, sonoma:        "536900427dfdf4c4df1fa9606ebc6436e38747a2d55b69f215aa50239a61e8c7"
-    sha256 cellar: :any, arm64_linux:   "80b38e17dcc951e58f13c928ea207f55fbff3387f817f89bb84bdf12d6268162"
-    sha256 cellar: :any, x86_64_linux:  "f5e402ae93090399f76159c897d61d2b3ff258613d8a198b510b3bf0690b6959"
+    sha256 cellar: :any, arm64_golden_gate: "f742f6a0076671fece777278b2250c73e7341dc5f3abbe5f7e1919bbe1bca576"
+    sha256 cellar: :any, arm64_tahoe:       "18ef267d76b2a85fc04987398e0012eded3bdc47fd409711a6b012c7655b6e3c"
+    sha256 cellar: :any, arm64_sequoia:     "ded4e6317d7f9f548fc24fcd44a93371768d610664effa4c1485dea5fa77633d"
+    sha256 cellar: :any, arm64_sonoma:      "2274979d269fdc864a4d34410d558fde8fd52910a228ffe5a021412536aeed94"
+    sha256 cellar: :any, sonoma:            "536900427dfdf4c4df1fa9606ebc6436e38747a2d55b69f215aa50239a61e8c7"
+    sha256 cellar: :any, arm64_linux:       "80b38e17dcc951e58f13c928ea207f55fbff3387f817f89bb84bdf12d6268162"
+    sha256 cellar: :any, x86_64_linux:      "f5e402ae93090399f76159c897d61d2b3ff258613d8a198b510b3bf0690b6959"
   end
 
   depends_on "swig" => :build
@@ -28,15 +29,11 @@ class Ldns < Formula
 
   conflicts_with "drill", because: "both install a `drill` binary"
 
-  def python3
-    "python3.14"
-  end
-
   def install
     args = %W[
       --with-drill
       --with-examples
-      --with-ssl=#{Formula["openssl@3"].opt_prefix}
+      --with-ssl=#{formula_opt_prefix("openssl@3")}
       --with-pyldns
       PYTHON_PLATFORM_SITE_PKG=#{prefix/Language::Python.site_packages(python3)}
       top_builddir=#{buildpath}
@@ -47,7 +44,7 @@ class Ldns < Formula
     # Fixes: ./contrib/python/ldns_wrapper.c:2746:10: fatal error: 'ldns.h' file not found
     inreplace "contrib/python/ldns.i", "#include \"ldns.h\"", "#include <ldns/ldns.h>"
 
-    ENV["PYTHON"] = which(python3)
+    ENV["PYTHON"] = python3
 
     # Exclude unrecognized options
     args += std_configure_args.reject { |s| s["--disable-debug"] || s["--disable-dependency-tracking"] }

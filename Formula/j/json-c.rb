@@ -1,31 +1,29 @@
 class JsonC < Formula
   desc "JSON parser for C"
   homepage "https://github.com/json-c/json-c/wiki"
-  url "https://github.com/json-c/json-c/archive/refs/tags/json-c-0.18-20240915.tar.gz"
-  version "0.18"
-  sha256 "3112c1f25d39eca661fe3fc663431e130cc6e2f900c081738317fba49d29e298"
+  url "https://s3.amazonaws.com/json-c_releases/releases/json-c-0.19.tar.gz"
+  sha256 "37ad0249902e301bd9052bf712e511fcc6acff4ecaad4b5900aad9ce564e26de"
   license "MIT"
   head "https://github.com/json-c/json-c.git", branch: "master"
 
   livecheck do
-    url :stable
+    url :head
     regex(/^json-c[._-](\d+(?:\.\d+)+)(?:[._-]\d{6,8})?$/i)
   end
 
-  no_autobump! because: :incompatible_version_format
-
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "bb064fc1c259000bed8cc895e41a429a1afec18235e37fc32e9d0711d4d30b80"
-    sha256 cellar: :any,                 arm64_sequoia: "c5514d30b5249b6d2a92e4dff45f56e2b081aa8811d13a20c84a3b911f6604d7"
-    sha256 cellar: :any,                 arm64_sonoma:  "16b53cbbfaa2361f7e68f112f8ce706bc3d59738f377a26a1341c7122956e9b3"
-    sha256 cellar: :any,                 arm64_ventura: "e6da2f2e625b6d6cf141bb4c3fe05ff0d1d42617321da078b48f32c9b01ddb0b"
-    sha256 cellar: :any,                 sonoma:        "9630b473e74aa113e050b6ba4d3760d3f0d7c67c6460855217b312c597253eea"
-    sha256 cellar: :any,                 ventura:       "91286eebfd88f8989056b56dad509e5b42aadda51e29708ef550da8a6b3314ad"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "2e3fe7e9e1412e97926ce0716633d5f7ee5f8f22de5f9d59cbb31900b4cd6c46"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6afd63b22756b317e0dd21aa71644f47ec11996366bc60c8d5c9306f87044caa"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "6b45746f31780a84ae3ed11d056bd101d1b0a6d0f16bf91aad2d35a18f6107dc"
+    sha256 cellar: :any, arm64_tahoe:       "f2da9c816501d9c3c0e5f883b60b3d2758b35a3995e20d541d4b029d8b35ef13"
+    sha256 cellar: :any, arm64_sequoia:     "5624048dbb067f1a6d3784081029c3d738edeefd57188ce6724bb93d01aa53aa"
+    sha256 cellar: :any, arm64_sonoma:      "ce9c5f6c7095110cd5c9336b9277e1845cc55bb0fc98c7550576587fd28abbb1"
+    sha256 cellar: :any, arm64_linux:       "64475f64c83a75a0438e4d652bd75b0e7428f2e33e33377c88f087f4c652ed90"
+    sha256 cellar: :any, x86_64_linux:      "9745b482f9c14d66b5ec02f567a61f7ef29f9060cded74e5b37e322c139580af"
   end
 
   depends_on "cmake" => :build
+
+  deny_network_access!
 
   def install
     # We pass `BUILD_APPS=OFF` since any built apps are never installed. See:

@@ -1,8 +1,8 @@
 class DoviTool < Formula
   desc "CLI tool for Dolby Vision metadata on video streams"
   homepage "https://github.com/quietvoid/dovi_tool/"
-  url "https://github.com/quietvoid/dovi_tool/archive/refs/tags/2.3.2.tar.gz"
-  sha256 "8e1ca50219a68ba27a200ea1dd4210a6ef232b5f66d1b6ffc4a8303c87fe16bf"
+  url "https://github.com/quietvoid/dovi_tool/archive/refs/tags/2.3.4.tar.gz"
+  sha256 "15b5cb68b3598e51ca968316443c9fb9597b6230e9d692cb4e641d54505a97ec"
   license "MIT"
   head "https://github.com/quietvoid/dovi_tool.git", branch: "main"
 
@@ -12,12 +12,12 @@ class DoviTool < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "81c1c94dd315789c85def55bb8fcb7f297be401239e9132f2f4c22baf7009532"
-    sha256 cellar: :any,                 arm64_sequoia: "4fd138789438a2e488019d70154c52c9e41f31261baa99db926bd0b0ae65ab1a"
-    sha256 cellar: :any,                 arm64_sonoma:  "e08172d3ba5dbb923ba92b064377338c4d4be1ed9ad8503e5d9da1487281d432"
-    sha256 cellar: :any,                 sonoma:        "39f780763832297e81d97b3d729e4b8505876f10c2892974fc7e45ba2c26eff7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c986986476ecea0de572803691294ef2607bd8a963000f088f23ebf7a173fb05"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "97d80749c54d45aa4d0ec45a54ecdb421dd3005b106f86a4412ac23ec9c47bb4"
+    sha256 cellar: :any, arm64_golden_gate: "a2187370de11d987d11b0fbdea569f83235458327707c573c82d36d58274f0cc"
+    sha256 cellar: :any, arm64_tahoe:       "b267ed3e0c71c3238d2bc2f6ff21a8f386a1fcbddb0bbe1e57b64d2b51d8cadf"
+    sha256 cellar: :any, arm64_sequoia:     "85000a231b6b50d62f70305c66597a7a3631f3fe433848592a9a53536952ec2d"
+    sha256 cellar: :any, arm64_sonoma:      "2107ac0e245aeac9b63d5fd93109bed5754d45151a77e906b83d970e4e009a24"
+    sha256 cellar: :any, arm64_linux:       "f81cdea66cc1f8c368ae591769fbafeb4438cc36518a8b8020e426547827f0f1"
+    sha256 cellar: :any, x86_64_linux:      "3527a4301886aa03bf1ff55d0cb6fdf03869d63cd90357731c6e596b58732674"
   end
 
   depends_on "cargo-c" => :build

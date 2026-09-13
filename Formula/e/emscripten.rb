@@ -1,8 +1,8 @@
 class Emscripten < Formula
   desc "LLVM bytecode to JavaScript compiler"
   homepage "https://emscripten.org/"
-  url "https://github.com/emscripten-core/emscripten/archive/refs/tags/5.0.7.tar.gz"
-  sha256 "66a6537a8dede6b0e5945839f0d0641e73e64f728729d26900e9d918040f0210"
+  url "https://github.com/emscripten-core/emscripten/archive/refs/tags/6.0.9.tar.gz"
+  sha256 "f15e20d2b485f047fee35e5801cbf85be1edd696602c919d60f122f9d18d4529"
   license all_of: [
     "Apache-2.0", # binaryen
     "Apache-2.0" => { with: "LLVM-exception" }, # llvm
@@ -16,12 +16,12 @@ class Emscripten < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "a662a04a9435fbdfc0cec74b146931c3ab164946cb36c5bac999a7928854b6ae"
-    sha256 cellar: :any,                 arm64_sequoia: "f38d53096b5bc84283806da9525443ee63ebb60add06b351be1547244aac4193"
-    sha256 cellar: :any,                 arm64_sonoma:  "08abdb058d41799920588158481fb9832a5c6609efa1aaa0d093ca4ff86e7597"
-    sha256 cellar: :any,                 sonoma:        "100b36d4bf4929a318fa7f6be62866be9c0b0d22b03b7cfc91299534cc8b7aa8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "fe62c7675bb6b77019a339f932b9abfb88cbb3020afaebef2fc6ca4eef23950e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d7192e4ae99e365353d210356a775f86c7b149d22e99cb98e5bd3d60d6161fd8"
+    sha256 cellar: :any, arm64_golden_gate: "adf27419729838c3d09a11b584c595e718deb78310f405e43a95be9ec8cdd3d0"
+    sha256 cellar: :any, arm64_tahoe:       "c26be06556dd6aaffd1375dac5f93a63617a9657b2bf5ec46a81017f6f5508f1"
+    sha256 cellar: :any, arm64_sequoia:     "a84cc196d5b4dd04156e17769cdf5f8a92ea243595dc51289dfb2557a1766ccf"
+    sha256 cellar: :any, arm64_sonoma:      "074c529bd2e74b896a390db5404a550d60bd7bd50630d96dc5e21e1923fdcaa6"
+    sha256 cellar: :any, arm64_linux:       "29dba8937994ead18a7d2642e92249234e547dbf42e24a2809379af2763abdec"
+    sha256 cellar: :any, x86_64_linux:      "2f816d73ed8afd8e2bcee43ced57214ed1b244fa307ad0cc358b3e042ac335ff"
   end
 
   depends_on "cmake" => :build
@@ -50,9 +50,9 @@ class Emscripten < Formula
   # https://chromium.googlesource.com/emscripten-releases/+/<commit>/DEPS
   # Then use the listed binaryen_revision for the revision below.
   resource "binaryen" do
-    url "https://github.com/WebAssembly/binaryen/archive/c6a5e65b77a4b6e9d72fa7ba674632aba4b99099.tar.gz"
-    version "c6a5e65b77a4b6e9d72fa7ba674632aba4b99099"
-    sha256 "a807c950b910d247a5f68dd059e775f0c7bda9fecff5a1ef11f4180e1a60ccf8"
+    url "https://github.com/WebAssembly/binaryen/archive/d03c25ea43d8f147fc222f9b88ff3bf641abe8da.tar.gz"
+    version "d03c25ea43d8f147fc222f9b88ff3bf641abe8da"
+    sha256 "f16d9e97dc1b7ce3397f0cf10336f015d7aee9ef54f0d6dd98632436388be81a"
 
     livecheck do
       url "https://raw.githubusercontent.com/emscripten-core/emsdk/refs/tags/#{LATEST_VERSION}/emscripten-releases-tags.json"
@@ -63,7 +63,7 @@ class Emscripten < Formula
         next if release_hash.blank?
 
         release_url = "https://chromium.googlesource.com/emscripten-releases/+/#{release_hash}/DEPS?format=TEXT"
-        match = Base64.decode64(Homebrew::Livecheck::Strategy.page_content(release_url)[:content]).match(regex)
+        match = Homebrew::Livecheck::Strategy.page_content(release_url)[:content].unpack1("m").match(regex)
         next if match.blank?
 
         match[1]
@@ -76,9 +76,9 @@ class Emscripten < Formula
   # See binaryen resource above for instructions on how to update this.
   # Then use the listed llvm_project_revision for the tarball below.
   resource "llvm" do
-    url "https://github.com/llvm/llvm-project/archive/7b58716d96c3ae4c0c4e6f72e29b16137bb6224b.tar.gz"
-    version "7b58716d96c3ae4c0c4e6f72e29b16137bb6224b"
-    sha256 "0791c69319e1861e86ccb438d10b1b1816987f2d99b13d7e95ef08f88f0cedf8"
+    url "https://github.com/llvm/llvm-project/archive/b158b0ae6c559f87be325b8f427c5588e6a48823.tar.gz"
+    version "b158b0ae6c559f87be325b8f427c5588e6a48823"
+    sha256 "29064b66a4bec8f33a92022518378b83e2488aae3aea4a4e9285f12948706a2e"
 
     livecheck do
       url "https://raw.githubusercontent.com/emscripten-core/emsdk/refs/tags/#{LATEST_VERSION}/emscripten-releases-tags.json"
@@ -89,7 +89,7 @@ class Emscripten < Formula
         next if release_hash.blank?
 
         release_url = "https://chromium.googlesource.com/emscripten-releases/+/#{release_hash}/DEPS?format=TEXT"
-        match = Base64.decode64(Homebrew::Livecheck::Strategy.page_content(release_url)[:content]).match(regex)
+        match = Homebrew::Livecheck::Strategy.page_content(release_url)[:content].unpack1("m").match(regex)
         next if match.blank?
 
         match[1]
@@ -194,8 +194,10 @@ class Emscripten < Formula
       # Delete native GraalVM image in incompatible platforms.
       if OS.linux? && Hardware::CPU.intel?
         rm_r("node_modules/google-closure-compiler-linux")
+      elsif OS.linux? && Hardware::CPU.arm?
+        rm_r("node_modules/google-closure-compiler-linux-arm64")
       elsif OS.mac? && Hardware::CPU.arm?
-        rm_r("node_modules/google-closure-compiler-osx")
+        rm_r("node_modules/google-closure-compiler-macos")
       end
 
       # Remove incompatible pre-built binaries
@@ -209,11 +211,14 @@ class Emscripten < Formula
 
         rm_r(dir) if permitted_dir != dir.basename.to_s
       end
+
+      # Remove musl-libc native variants
+      rm_r libexec/"node_modules/lightningcss-#{os}-#{arch}-musl" if OS.linux?
     end
 
     # Add JAVA_HOME to env_script on ARM64 macOS and Linux, so that google-closure-compiler
     # can find OpenJDK
-    emscript_env = { PYTHON: which("python3.14") }
+    emscript_env = { PYTHON: python3 }
     emscript_env.merge! Language::Java.overridable_java_home_env if OS.linux? || Hardware::CPU.arm?
 
     emscripts.each do |emscript|
@@ -222,28 +227,30 @@ class Emscripten < Formula
 
     # Replace universal binaries with their native slices
     deuniversalize_machos libexec/"node_modules/fsevents/fsevents.node"
+
+    (libexec/"post-install").write <<~SH
+      #!/bin/sh
+      set -e
+      config="#{opt_libexec}/.emscripten"
+      [ -e "$config" ] && exit 0
+      if [ -e "$HOME/.emscripten" ]; then
+        echo "Skipping configuration generation"
+        echo "You have a ~/.emscripten configuration file. Remove it and run brew postinstall emscripten"
+        exit 0
+      fi
+      "#{opt_bin}/emcc" --generate-config
+      sed -E -i.bak \
+        -e "s|^LLVM_ROOT[[:space:]]*[?+:!]?=.*$|LLVM_ROOT='#{opt_libexec}/llvm/bin'|" \
+        -e "s|^BINARYEN_ROOT[[:space:]]*[?+:!]?=.*$|BINARYEN_ROOT='#{opt_libexec}/binaryen'|" \
+        -e "s|^NODE_JS[[:space:]]*[?+:!]?=.*$|NODE_JS='#{formula_opt_bin("node")}/node'|" \
+        "$config"
+      rm -f "$config.bak"
+    SH
+    chmod 0755, libexec/"post-install"
   end
 
-  def post_install
-    return if (libexec/".emscripten").exist?
-
-    if File.exist?("#{Dir.home}/.emscripten")
-      ohai "Skipping configuration generation"
-      puts <<~EOS
-        You have a ~/.emscripten configuration file, so the default configuration
-        file was not generated. To generate the default configuration:
-          rm ~/.emscripten
-          brew postinstall emscripten
-      EOS
-      return
-    end
-
-    system bin/"emcc", "--generate-config"
-    inreplace libexec/".emscripten" do |s|
-      s.change_make_var! "LLVM_ROOT", "'#{libexec}/llvm/bin'"
-      s.change_make_var! "BINARYEN_ROOT", "'#{libexec}/binaryen'"
-      s.change_make_var! "NODE_JS", "'#{Formula["node"].opt_bin}/node'"
-    end
+  post_install_steps do
+    run "post-install", base: :libexec
   end
 
   test do

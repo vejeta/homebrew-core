@@ -1,19 +1,17 @@
 class Biber < Formula
   desc "Backend processor for BibLaTeX"
   homepage "https://sourceforge.net/projects/biblatex-biber/"
-  url "https://github.com/plk/biber/archive/refs/tags/v2.21.tar.gz"
-  sha256 "2652cf3ae0abff5fb233aa77f18e70014cc2c70b94a8693c099a3cad9bbb4b20"
+  url "https://github.com/plk/biber/archive/refs/tags/v2.22.tar.gz"
+  sha256 "82adcff9e71b4fc02ad6132f9ccd79137ad390e4d3392c7f681a85246c0cdc01"
   license "Artistic-2.0"
-  revision 2
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "be75b3c9eaecbe7613ecb84f2f7839971d5ac01d8a9ed7059ee6b28194d438c2"
-    sha256 cellar: :any,                 arm64_sequoia: "6fc9e838b5322ed36210125d196aae4f67041d65dccab11f4b940aec74e39364"
-    sha256 cellar: :any,                 arm64_sonoma:  "961f8c770d7f11db05e006c9337f8dad768edaeb79b7ed6d2e17e6e4bdd83619"
-    sha256 cellar: :any,                 sonoma:        "20e097be1791299b36d910b2bb55e96330c2d581961aba453a8bc7e570fc877b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c13171a65288715e776c4b5e7d37081f006cb3ac8b60cf2ad749a409a3fc22e7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8bb333ed55a8c6d2ee8ccf35b88b876127d2cbd16a591febd666e5aa0527acf6"
+    sha256 cellar: :any, arm64_golden_gate: "3ac812c44d3c8b0a8a1a38347b5728a329dd3fb0bd35e95447b94cecac03161c"
+    sha256 cellar: :any, arm64_tahoe:       "ff71789356a3285f6854b6cb5dd75beb85fff1997dab2282517d0701ee06b7e0"
+    sha256 cellar: :any, arm64_sequoia:     "607af65f5f2a5f697a9f2d1a92150ade4630aaf0139f7b152732d366275de8f2"
+    sha256 cellar: :any, arm64_linux:       "0468c4ebd19b8bf432b94bc104093fae6610b88b6a3740a16ef74b7fec4c84e4"
+    sha256 cellar: :any, x86_64_linux:      "c25d46fc70146117cb8bee0030103076cd34079b509f4db211f292a5750f156d"
   end
 
   depends_on "pkgconf" => :build
@@ -458,13 +456,13 @@ class Biber < Formula
   end
 
   resource "Business::ISBN" do
-    url "https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/Business-ISBN-3.013.tar.gz"
-    sha256 "745f1ab95e2b3c638493f3cf9637fb73eed3d4c4c9ccb1a3d50de68c26ec6098"
+    url "https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/Business-ISBN-3.014.tar.gz"
+    sha256 "91135da48dd97fdbb40ea33306a008a2eae35ac5e3fae15fd420beab106b1e7a"
   end
 
   resource "Business::ISBN::Data" do
-    url "https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/Business-ISBN-Data-20260311.001.tar.gz"
-    sha256 "070c0768b95dcdbf70f495560eeb3a801ed72944e47d811bf01c2698bca2d013"
+    url "https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/Business-ISBN-Data-20260812.001.tar.gz"
+    sha256 "b612b851278cad0cb9b20cef7d90ddf10b6aeb4593145eab2e858306a63000fb"
   end
 
   resource "Business::ISMN" do
@@ -488,8 +486,8 @@ class Biber < Formula
   end
 
   resource "DateTime::Calendar::Julian" do
-    url "https://cpan.metacpan.org/authors/id/W/WY/WYANT/DateTime-Calendar-Julian-0.107.tar.gz"
-    sha256 "fcb2b424844bb13bcad46b1c7aa239b5a09bab2556f53bd1f27fad90c260d33d"
+    url "https://cpan.metacpan.org/authors/id/W/WY/WYANT/DateTime-Calendar-Julian-0.108.tar.gz"
+    sha256 "b4cb46cd9e24aff878813ece2da64d8d2677e104366f5dbd161035f8e1fd302e"
   end
 
   resource "DateTime::Format::Builder" do
@@ -548,15 +546,13 @@ class Biber < Formula
   end
 
   resource "List::SomeUtils::XS" do
-    url "https://cpan.metacpan.org/authors/id/D/DR/DROLSKY/List-SomeUtils-XS-0.58.tar.gz"
-    sha256 "4f9e4d2622481b79cc298e8e29de8a30943aff9f4be7992c0ebb7b22e5b4b297"
+    url "https://cpan.metacpan.org/authors/id/D/DR/DROLSKY/List-SomeUtils-XS-0.59.tar.gz"
+    sha256 "1da2d21762f40b58cbc8f3ba5239e849e5c73c4dbe0a5f3c4510118e65a2eae4"
   end
 
   resource "List::Util" do
-    on_macos do
-      url "https://cpan.metacpan.org/authors/id/P/PE/PEVANS/Scalar-List-Utils-1.70.tar.gz"
-      sha256 "e0cc03f9fe3565cdf4d6102654f87bba3bca2d8ff989da38307e857d0ae3c886"
-    end
+    url "https://cpan.metacpan.org/authors/id/P/PE/PEVANS/Scalar-List-Utils-1.70.tar.gz"
+    sha256 "e0cc03f9fe3565cdf4d6102654f87bba3bca2d8ff989da38307e857d0ae3c886"
   end
 
   resource "List::UtilsBy" do
@@ -575,8 +571,8 @@ class Biber < Formula
   end
 
   resource "Mozilla::CA" do
-    url "https://cpan.metacpan.org/authors/id/L/LW/LWP/Mozilla-CA-20250602.tar.gz"
-    sha256 "adeac0752440b2da094e8036bab6c857e22172457658868f5ac364f0c7b35481"
+    url "https://cpan.metacpan.org/authors/id/L/LW/LWP/Mozilla-CA-20260813.tar.gz"
+    sha256 "81f0bd9665eacbb6feef13b0fa16fbb30162c09292542b1206434e569196dd9b"
   end
 
   resource "PerlIO::utf8_strict" do
@@ -600,8 +596,8 @@ class Biber < Formula
   end
 
   resource "Text::CSV_XS" do
-    url "https://cpan.metacpan.org/authors/id/H/HM/HMBRAND/Text-CSV_XS-1.61.tgz"
-    sha256 "2cb9151e8c093921ff68ab9e5c376f7be014a0cb139342f0c3229ac5cdd9fc3a"
+    url "https://cpan.metacpan.org/authors/id/H/HM/HMBRAND/Text-CSV_XS-1.64.tgz"
+    sha256 "65c5662d4fe8ef3039a1b32f641634d0aae6ab10eabbb24f740c75332f2caf30"
   end
 
   resource "Text::Roman" do
@@ -626,7 +622,7 @@ class Biber < Formula
 
   def install
     ENV["ALIEN_INSTALL_TYPE"] = "system"
-    ENV["OPENSSL_PREFIX"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_PREFIX"] = formula_opt_prefix("openssl@3")
     ENV["PERL_MM_USE_DEFAULT"] = "1"
     ENV.prepend_create_path "PERL5LIB", libexec/"lib/perl5"
     ENV.prepend_path "PERL5LIB", libexec/"lib"

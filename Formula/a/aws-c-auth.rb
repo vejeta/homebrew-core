@@ -1,18 +1,18 @@
 class AwsCAuth < Formula
   desc "C99 library implementation of AWS client-side authentication"
   homepage "https://github.com/awslabs/aws-c-auth"
-  url "https://github.com/awslabs/aws-c-auth/archive/refs/tags/v0.10.3.tar.gz"
-  sha256 "20fc5e75529fadd81fd38b25f9d83798b53ab235ebbac92cdfbb716cfcc7593d"
+  url "https://github.com/awslabs/aws-c-auth/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "12a29eb62c61cef4b38c90d4f0dd2657dc585a15c138d60941d6f20c1ad3b12d"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "515ba990b93f205110dcb04357bea20db861b8f604bddd909248578795783216"
-    sha256 cellar: :any,                 arm64_sequoia: "6887071637913cbacc73eef093cd418fd814eab95c8aa3df43881c310ee8b923"
-    sha256 cellar: :any,                 arm64_sonoma:  "0c62b66b6eda70a2ea0f156cf83bc92b30cb743c7270c48e9a45f93a07d61c95"
-    sha256 cellar: :any,                 sonoma:        "95063b64ac8073c212fc74dc81ee826e501fd66a01daa9a477a9f2302c06f1f8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "dd06b08b83802a46621f0e5e335c09bf82c4d4ad09118ddc23e0fa007d1860f3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b05ef257dcda9e66663a101393802d8e93538b07a80bfb1bbcf8454f13ce8b82"
+    sha256 cellar: :any, arm64_golden_gate: "78862e5d32c2538c658bbf5d02b913bdc8941dd03b4ea56efa1df74f9db366ad"
+    sha256 cellar: :any, arm64_tahoe:       "347f11c6e772a94298aff3463f3044e7234474018dca30a1d97eb0f2f8fdcde4"
+    sha256 cellar: :any, arm64_sequoia:     "a9d57dbf4d39e117ab299795f3fc36e6e57c094630a371817fcdc1031f3dfc4c"
+    sha256 cellar: :any, arm64_sonoma:      "ab507e68ea1ced21d87eb8d321628f357bc1b5399d6956b6d12f98b0ae1ad15c"
+    sha256 cellar: :any, arm64_linux:       "3e6e970fc23afd5a33355ba4e77350852c89daee59de3594b2e8b7a0e50026ec"
+    sha256 cellar: :any, x86_64_linux:      "5b8291ff7e841d525a8ee1b2ea16b15f6dd793f42aadf6ac7ba170a15e82d6a8"
   end
 
   depends_on "cmake" => :build
@@ -53,7 +53,7 @@ class AwsCAuth < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-auth",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

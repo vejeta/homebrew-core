@@ -1,8 +1,8 @@
 class Valkey < Formula
   desc "High-performance data structure server that primarily serves key/value workloads"
   homepage "https://valkey.io"
-  url "https://github.com/valkey-io/valkey/archive/refs/tags/9.1.0.tar.gz"
-  sha256 "7789fe1df257774457bafb4c1d56c9f7020c3879a7f5b4234af9030b2bd82dfd"
+  url "https://github.com/valkey-io/valkey/archive/refs/tags/9.1.2.tar.gz"
+  sha256 "19c23908e7d57e8d91ef85b41f5646307582f10f4f0fb999bbf89ed24ec9c983"
   license all_of: [
     "BSD-3-Clause",
     "BSD-2-Clause", # deps/jemalloc, deps/linenoise, src/lzf*
@@ -13,13 +13,12 @@ class Valkey < Formula
   head "https://github.com/valkey-io/valkey.git", branch: "unstable"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "065a69890faf06afd40894712127dd111a2246d07beb719a0ae135b7903ce804"
-    sha256 cellar: :any, arm64_sequoia: "56d7f776d0d9bc82265d415234018cc20a90f19e65b76d58c5059355a2205b6f"
-    sha256 cellar: :any, arm64_sonoma:  "a58f51ca54dcb90b5ed0469c47cf05a366357b6f1c5eab3b50f51a8721b9d520"
-    sha256 cellar: :any, sonoma:        "1da6e1528f6cb9aa0787951cd5a895f6a6b241461663f1ce679b6f08ba39a435"
-    sha256 cellar: :any, arm64_linux:   "769b0942ae3f446c28e6d970e580728c96316c5bfd4f32e8bda698d9bb2e6850"
-    sha256 cellar: :any, x86_64_linux:  "78e448416a123f80e3f583f2b3d2580452715f922c3996cc283317bbe52bacf9"
+    sha256 cellar: :any, arm64_golden_gate: "a6e719d537a9fa42f7e97f51dc1c10345a95727097ff45f0cfddc77981328279"
+    sha256 cellar: :any, arm64_tahoe:       "a746f300d368d3ee99deb2a4fa75462a0d042c2f6fe87be4146bc0b8b7a24a93"
+    sha256 cellar: :any, arm64_sequoia:     "f4c76aacd3e201ff73c11b7789f3ed9825688bd5ff13cd214b535eff648268d5"
+    sha256 cellar: :any, arm64_sonoma:      "7445bef871f00c179f49a4f674ae3a2108ee5a322a185b5f525254e5f9ce7a56"
+    sha256 cellar: :any, arm64_linux:       "ba3807aa5e6479aaa550809c0dfae7f2b1234561af9981bbdb26ae5eeac8760c"
+    sha256 cellar: :any, x86_64_linux:      "3f3fb3b5a57b1fd215dc80cfc3d9eab1f5374e833b09e51c0026c5e374857a69"
   end
 
   depends_on "openssl@3"

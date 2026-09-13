@@ -2,10 +2,10 @@ class RocqElpi < Formula
   desc "Elpi extension language for Rocq"
   homepage "https://github.com/LPCIC/coq-elpi"
   # Update resources based on https://github.com/LPCIC/coq-elpi/blob/v#{version}/rocq-elpi.opam#L18-L26
-  url "https://github.com/LPCIC/coq-elpi/releases/download/v3.4.0/rocq-elpi-3.4.0.tar.gz"
-  sha256 "fe81750ca2e5f5976f16e658979a133cfaa2011ae5591e552a1222ceaacaaf06"
+  url "https://github.com/LPCIC/coq-elpi/releases/download/v3.5.1/rocq-elpi-3.5.1.tar.gz"
+  sha256 "08975c8b094c380049dfa31a1d8b32d4ea033b6d926bfa40d0164bc6d613fa46"
   license "LGPL-2.1-or-later"
-  compatibility_version 2
+  compatibility_version 4
 
   livecheck do
     url :stable
@@ -13,12 +13,12 @@ class RocqElpi < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "be46c35509fb00d34ac6281bb2f92b3b23976b245f6be9b0d6e52747ddb73fa0"
-    sha256 arm64_sequoia: "6fe13be6129aec70c23503d8c38c6239ca3ad10e21089f0a7e06c6a70f19fe0e"
-    sha256 arm64_sonoma:  "a0e51fbf32f3a31fa1dbf775b1d9624d1cb758bb967aa6e99b2db163a1115d71"
-    sha256 sonoma:        "c0bc1bd3ac36f0328e2cc0177912705c556590ef24feb63bc7b24c1855367317"
-    sha256 arm64_linux:   "689571286f302ffed321656f9873de1fe385a4c977e0bc1c0abc8cfd829300f7"
-    sha256 x86_64_linux:  "562101224fde20fa87e828d9fc0c848ab4864bfef3ef5042baf6c20c0ceef9de"
+    sha256 arm64_golden_gate: "54fb7ba2020ba693d2331c5774daa6861212561dd51d53c2723f965e77b73554"
+    sha256 arm64_tahoe:       "b6341394e226cdd5be3ec545b56c962226e66f9a3431a07fe8dfc0100b53a7a7"
+    sha256 arm64_sequoia:     "c87ad5e2360c4117466730b23d6126391b5750656a3ef2bb246f716cd564be31"
+    sha256 arm64_sonoma:      "5eb26ed4b853c93324dcf45a02e21f175a3c78ad52ead536996c2765384b016e"
+    sha256 arm64_linux:       "4aa189b2ce84e04f88e5e350b0dc29c1cbbf25203a09612c87f57fd1d86807f0"
+    sha256 x86_64_linux:      "d3b4972263316c9f862c27d5390c15594c87b86409679081f78adf73dd725651"
   end
 
   depends_on "dune" => :build
@@ -32,8 +32,8 @@ class RocqElpi < Formula
   # The result is similar to using `--deps-only` in other formulae. We can't
   # run that here as it installs a duplicate copy of `rocq`.
   resource "elpi" do
-    url "https://raw.githubusercontent.com/LPCIC/elpi/refs/tags/v3.7.1/elpi.opam"
-    sha256 "24e253b1cd5afb678f0f1e0d7f340ac3c549cf974a5c029a402c2fab5d582635"
+    url "https://raw.githubusercontent.com/LPCIC/elpi/refs/tags/v3.7.3/elpi.opam"
+    sha256 "c3ce914dde7fbfba6bd94ab872d65307a4d55a90c5b9fa1361573f07de8a2405"
   end
 
   resource "ppx_optcomp" do
@@ -56,7 +56,28 @@ class RocqElpi < Formula
     # Add symlinks to reduce subdirectories in path needed to use rocq-elpi
     libexec.install_symlink libexec.glob("ocaml-system/*")
 
+    # `ocamlfind` 1.9.9 writes relative paths, which resolve against the working
+    # directory rather than the switch.
+    inreplace libexec/"ocaml-system/lib/findlib.conf" do |s|
+      s.gsub!(/^destdir=.*/, "destdir=\"#{libexec}/lib\"")
+      s.gsub!(/^path=.*/, "path=\"#{HOMEBREW_PREFIX}/lib/ocaml:#{libexec}/lib\"")
+    end
+
     ENV["OCAMLFIND_CONF"] = libexec/"lib/findlib.conf"
+
+    # dune 3.24 replaced the Coq build language with the Rocq build language.
+    dune_files = buildpath.glob("**/{dune,dune-project}")
+    {
+      "(lang dune 3.13)" => "(lang dune 3.24)",
+      "(using coq 0.8)"  => "(using rocq 0.11)",
+      "(coq (flags"      => "(rocq (flags",
+      "coq.theory"       => "rocq.theory",
+      "coq.pp"           => "rocq.pp",
+      "%{coq:"           => "%{rocq:",
+    }.each do |before, after|
+      inreplace dune_files.select { |f| f.read.include?(before) }, before, after
+    end
+
     system "dune", "build", "-p", name, "@install"
     system "dune", "install", name, "--prefix=#{prefix}",
                                     "--libdir=#{lib}/ocaml",
@@ -80,7 +101,7 @@ class RocqElpi < Formula
     ENV["OCAMLFIND_CONF"] = libexec/"lib/findlib.conf"
     cp pkgshare/"example_data_base.v", testpath
     space = " "
-    assert_equal <<~TEXT, shell_output("#{Formula["rocq"].bin}/rocq compile example_data_base.v")
+    assert_equal <<~TEXT, shell_output("#{formula_opt_bin("rocq")}/rocq compile example_data_base.v")
       The Db contains [phone_prefix USA 1]
       Phone prefix for USA is 1
       The Db contains#{space}

@@ -7,16 +7,17 @@ class Gtkglext < Formula
   revision 4
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:    "764e97c887571389641f45ef171ca06af71ac4bc5fcaaff56e85c9d663cad92a"
-    sha256 cellar: :any,                 arm64_sequoia:  "c7d1eb4cd50853e471d11db5256550eb6eea8d0b66424e66bf4662f54bbcfc64"
-    sha256 cellar: :any,                 arm64_sonoma:   "dbda7d73cfcf8ff56426e761be3d928b47cc25142be9e436f29634f306ceb02d"
-    sha256 cellar: :any,                 arm64_ventura:  "97c561405376a0e3f03d661edb63332c449464eca670d94d95276d7a16708ada"
-    sha256 cellar: :any,                 arm64_monterey: "4082e12c1b01e56342b49fb16241fb6e4e52b6c1f5691052b332f75b8892781f"
-    sha256 cellar: :any,                 sonoma:         "ea372181dc03023ea581b14ca996646f6da8cdb54d81911f5b999281c70ecdd7"
-    sha256 cellar: :any,                 ventura:        "986da9680b6032a4f4ae363e3c18176dce0bd276367e311c36b09494198d79d1"
-    sha256 cellar: :any,                 monterey:       "6f045d38e2a584449fa6b5fc275f13b46bce7a4bd892219bb9dbe9bae44a9835"
-    sha256                               arm64_linux:    "8111b6fa90b879f9572ff71ebec5ff279bc5b4532c19f52331286f39783c04ab"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "bea86597c739ebbf55d551970dee174085bfc3d0c4d70f06f0cce969979ef2af"
+    sha256 cellar: :any,                 arm64_golden_gate: "dd7b07a12929549f8f9360b2115b695b5a140380f73de7334d332a4a01af73e8"
+    sha256 cellar: :any,                 arm64_tahoe:       "764e97c887571389641f45ef171ca06af71ac4bc5fcaaff56e85c9d663cad92a"
+    sha256 cellar: :any,                 arm64_sequoia:     "c7d1eb4cd50853e471d11db5256550eb6eea8d0b66424e66bf4662f54bbcfc64"
+    sha256 cellar: :any,                 arm64_sonoma:      "dbda7d73cfcf8ff56426e761be3d928b47cc25142be9e436f29634f306ceb02d"
+    sha256 cellar: :any,                 arm64_ventura:     "97c561405376a0e3f03d661edb63332c449464eca670d94d95276d7a16708ada"
+    sha256 cellar: :any,                 arm64_monterey:    "4082e12c1b01e56342b49fb16241fb6e4e52b6c1f5691052b332f75b8892781f"
+    sha256 cellar: :any,                 sonoma:            "ea372181dc03023ea581b14ca996646f6da8cdb54d81911f5b999281c70ecdd7"
+    sha256 cellar: :any,                 ventura:           "986da9680b6032a4f4ae363e3c18176dce0bd276367e311c36b09494198d79d1"
+    sha256 cellar: :any,                 monterey:          "6f045d38e2a584449fa6b5fc275f13b46bce7a4bd892219bb9dbe9bae44a9835"
+    sha256                               arm64_linux:       "8111b6fa90b879f9572ff71ebec5ff279bc5b4532c19f52331286f39783c04ab"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "bea86597c739ebbf55d551970dee174085bfc3d0c4d70f06f0cce969979ef2af"
   end
 
   deprecate! date: "2026-03-14", because: :repo_archived
@@ -56,58 +57,50 @@ class Gtkglext < Formula
   # All these MacPorts patches have already been included upstream. A new release
   # of gtkglext for gtk+2.0 remains uncertain though.
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-configure.diff"
-    sha256 "aca35cd6ae28613b375301068715f82b59bd066a32b2f4d046177478950ab026"
+    file "Patches/gtkglext/patch-configure.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-examples-pixmap-mixed.c.diff"
-    sha256 "d2fe00bfcf96b3c78dd4b01aa119a7860a34ca6080c57f0ccc7a8e2fc4a3c92b"
+    file "Patches/gtkglext/patch-examples-pixmap-mixed.c.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-examples-pixmap.c.diff"
-    sha256 "d955b18784d3e83c1f698e63875d98de5bad9eae1e84b66549dfe25d9ff94d51"
+    file "Patches/gtkglext/patch-examples-pixmap.c.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gdk-gdkglglext.h.diff"
-    sha256 "a1b6a97016013d5cda73760bbf2a970bae318153c2810291b81bd49ed67de80b"
+    file "Patches/gtkglext/patch-gdk-gdkglglext.h.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gdk-gdkglquery.c.diff"
-    sha256 "a419b8d523f123d1ab59e4de1105cdfc72bf5a450db8031809dcbc84932b539f"
+    file "Patches/gtkglext/patch-gdk-gdkglquery.c.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gdk-gdkglshapes.c.diff"
-    sha256 "bc01fccec833f7ede39ee06ecc2a2ad5d2b30cf703dc66d2a40a912104c6e1f5"
+    file "Patches/gtkglext/patch-gdk-gdkglshapes.c.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gdk-makefile.in.diff"
-    sha256 "d0bc857f258640bf4f423a79e8475e8cf86e24f9994c0a85475ce87f41bcded6"
+    file "Patches/gtkglext/patch-gdk-makefile.in.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gtk-gtkglwidget.c.diff"
-    sha256 "7f7918d5a83c8f36186026a92587117a94014e7b21203fe9eb96a1c751c3c317"
+    file "Patches/gtkglext/patch-gtk-gtkglwidget.c.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-gtk-makefile.in.diff"
-    sha256 "49f58421a12c2badd84ae6677752ba9cc23c249dac81987edf94abaf0d088ff6"
+    file "Patches/gtkglext/patch-gtk-makefile.in.diff"
   end
 
   patch :p0 do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/gtkglext/patch-makefile.in.diff"
-    sha256 "0d112b417d6c51022e31701037aa49ea50f270d3a34c263599ac0ef64c2f6743"
+    file "Patches/gtkglext/patch-makefile.in.diff"
   end
 
   patch :p0 do
     url "https://trac.macports.org/raw-attachment/ticket/56260/patch-index-gdkglshapes-osx.diff"
     sha256 "699ddd676b12a6c087e3b0a7064cc9ef391eac3d84c531b661948bf1699ebcc5"
+    type :unofficial
+    resolves "https://trac.macports.org/ticket/56260"
   end
 
   def install

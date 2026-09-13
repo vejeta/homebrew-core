@@ -5,13 +5,13 @@ class Gstreamer < Formula
   compatibility_version 1
 
   stable do
-    url "https://gitlab.freedesktop.org/gstreamer/gstreamer/-/archive/1.28.4/gstreamer-1.28.4.tar.bz2"
-    sha256 "20d636eba1225a02ab6c13424e2d66504ec4b7fd087804c89b229451defcf165"
+    url "https://gitlab.freedesktop.org/gstreamer/gstreamer/-/archive/1.28.7/gstreamer-1.28.7.tar.bz2"
+    sha256 "4aabbbf88837a592d425c592c852c577359df65f62c2f58d57db7695d6ebbaa8"
 
     # When updating this resource, use the tag that matches the GStreamer version.
     resource "rs" do
-      url "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-1.28.4/gst-plugins-rs-gstreamer-1.28.4.tar.bz2"
-      sha256 "f98d46d712ece665b2f86f72b0bf0283da4a455ba8dab3ef43a9029939647509"
+      url "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-1.28.7/gst-plugins-rs-gstreamer-1.28.7.tar.bz2"
+      sha256 "d5acc3e2cd92f09ccfefa357905758274b205ce9b3521ab1d88dbb4072a25f21"
 
       livecheck do
         formula :parent
@@ -25,12 +25,12 @@ class Gstreamer < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "c27ffedb0569b0e39fedb34dab90ed69644eef368dc87e62831a3dc8fbe8e785"
-    sha256 arm64_sequoia: "34fa87d1a6806e8606034d95ed3541e9e321cc08bb6f6b56836d72cd2edc421e"
-    sha256 arm64_sonoma:  "587823163b603403cff468b0fa300491a2555b02f3f3fd73fa4be585ac649c89"
-    sha256 sonoma:        "9bcf9c2b50e5f635dd46e1bd5dcad5d37dd65f36630eee14baab79c4ad970356"
-    sha256 arm64_linux:   "2783ea0e25243b265265e6bc90737aa07e12e33eaebe7e4fd8abbbb018b422b7"
-    sha256 x86_64_linux:  "9f2afb97f95029df24da4925dd89a1b32ebf7a54757213da71397fc93a6e34bb"
+    rebuild 1
+    sha256 arm64_golden_gate: "d3d5e9fd43776adfbbd36cdb36dd3d7e82cb4ee133f4cd3096bbc3bab7ff5e1c"
+    sha256 arm64_tahoe:       "e0d0a7e8224cd9d3374671fda5b03fd36468382211d1e261a305813739674f85"
+    sha256 arm64_sequoia:     "a70c8499dcef3b7f5cb588797754d437a05ff0e440eac3ef07a01ba57fe4be32"
+    sha256 arm64_linux:       "1e7eda59cbe6ae72ec18d5674b73a910d79e0d3717d56858c70a204da4e97c8e"
+    sha256 x86_64_linux:      "7a3cabf13bd1005dccb1a470fea2ac685dafa61b1e5303b3ba1fadba3f9109ae"
   end
 
   head do
@@ -55,7 +55,6 @@ class Gstreamer < Formula
   depends_on "dav1d"
   depends_on "faac"
   depends_on "faad2"
-  depends_on "fdk-aac"
   depends_on "ffmpeg"
   depends_on "flac"
   depends_on "gdk-pixbuf"
@@ -141,10 +140,6 @@ class Gstreamer < Formula
     depends_on "nasm" => :build
   end
 
-  def python3
-    Formula["python@3.14"].opt_bin/"python3.14"
-  end
-
   skip_clean "lib/gstreamer-1.0/libgstnice.dylib", "lib/gstreamer-1.0/libgstnice.so"
 
   # These paths used to live in various `gst-*` formulae.
@@ -153,6 +148,14 @@ class Gstreamer < Formula
   link_overwrite "lib/pkgconfig/gst*.pc", "lib/python3.14/site-packages/gi/overrides/*", "include/gstreamer-1.0/*"
   link_overwrite "share/gir-1.0/Gst*.gir", "share/gir-1.0/GES-1.0.gir", "share/gstreamer-1.0/*"
   link_overwrite "share/locale/*/LC_MESSAGES/gst-*.mo", "share/man/man1/g*"
+
+  # Support faac 2.0 API
+  patch do
+    url "https://gitlab.freedesktop.org/gstreamer/gstreamer/-/commit/49b4b4129e3b488f246493d3a57dc70652ec9dcf.diff"
+    sha256 "25ef9fc417878e0aac46ffb0f16c5a5d1a44341cd3364c97111980fb5bfd64b8"
+    type :unofficial
+    resolves "https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12148"
+  end
 
   # Avoid overlinking of `gst-python` python extension module.
   # https://gitlab.freedesktop.org/gstreamer/gst-python/-/merge_requests/41
@@ -199,6 +202,7 @@ class Gstreamer < Formula
       -Dgst-editing-services:pygi-overrides-dir=#{site_packages}/gi/overrides
       -Dgst-python:pygi-overrides-dir=#{site_packages}/gi/overrides
       -Dgst-python:python=#{python3}
+      -Dgst-plugins-bad:fdkaac=disabled
       -Dgst-plugins-bad:opencv=disabled
       -Dgst-plugins-bad:sctp=enabled
       -Dgst-plugins-bad:sctp-internal-usrsctp=disabled
@@ -233,14 +237,14 @@ class Gstreamer < Formula
     ENV.append_to_rustflags "--codegen link-args=-Wl,#{rpath_args.join(",")}"
 
     # Make sure the `openssl-sys` crate uses our OpenSSL.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "meson", "setup", "build", *args, *std_meson_args
     system "meson", "compile", "-C", "build", "--verbose"
     system "meson", "install", "-C", "build"
 
     # Support finding the `libnice` plugin, which is in a separate formula.
-    libnice_gst_plugin = Formula["libnice-gstreamer"].opt_libexec/"gstreamer-1.0"/shared_library("libgstnice")
+    libnice_gst_plugin = formula_opt_libexec("libnice-gstreamer")/"gstreamer-1.0"/shared_library("libgstnice")
     gst_plugin_dir = lib/"gstreamer-1.0"
     ln_sf libnice_gst_plugin.relative_path_from(gst_plugin_dir), gst_plugin_dir
   end
@@ -262,38 +266,20 @@ class Gstreamer < Formula
     #   https://github.com/orgs/Homebrew/discussions/3740
     system bin/"gst-validate-launcher", "--usage"
 
+    # The macOS command-line tools start NSApplication even for plugin inspection.
     system python3, "-c", <<~PYTHON
       import gi
       gi.require_version('Gst', '1.0')
-      from gi.repository import Gst
+      gi.require_version('GES', '1.0')
+      from gi.repository import GES, Gst
       print (Gst.Fraction(num=3, denom=5))
+      print (GES.version())
+      Gst.init(None)
+      assert Gst.Registry.get().get_plugin_list()
+      for plugin in ["libav", "dvbsuboverlay", "volume", "cairo", "dvdsub", "x264", "rtspclientsink", "rsfile"]:
+          assert Gst.Plugin.load_by_name(plugin), plugin
+      assert Gst.ElementFactory.make("hlsdemux2", None)
     PYTHON
-
-    # FIXME: The initial plugin load takes a long time without extra permissions on
-    # macOS, which frequently causes the slower Intel macOS runners to time out.
-    # Need to allow a longer timeout or see if CI terminal can be made a developer tool.
-    #
-    # Ref: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1119
-    skip_plugins = OS.mac? && Hardware::CPU.intel? && ENV["HOMEBREW_GITHUB_ACTIONS"]
-    ENV["GST_PLUGIN_SYSTEM_PATH"] = testpath if skip_plugins
-
-    ENV["LC_ALL"] = "C"
-    ENV["LANG"] = "C"
-    gst_inspect_output = shell_output(bin/"gst-inspect-1.0")
-    assert_match(/Total count: \d+ plugins?/, gst_inspect_output)
-    return if skip_plugins
-
-    system bin/"ges-launch-1.0", "--ges-version"
-    system bin/"gst-inspect-1.0", "libav"
-    system bin/"gst-inspect-1.0", "--plugin", "dvbsuboverlay"
-    system bin/"gst-inspect-1.0", "--plugin", "fdkaac"
-    system bin/"gst-inspect-1.0", "--plugin", "volume"
-    system bin/"gst-inspect-1.0", "--plugin", "cairo"
-    system bin/"gst-inspect-1.0", "--plugin", "dvdsub"
-    system bin/"gst-inspect-1.0", "--plugin", "x264"
-    system bin/"gst-inspect-1.0", "--plugin", "rtspclientsink"
-    system bin/"gst-inspect-1.0", "--plugin", "rsfile"
-    system bin/"gst-inspect-1.0", "hlsdemux2"
   end
 end
 

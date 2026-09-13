@@ -14,12 +14,13 @@ class Trino < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5c80298e351182358e20a726d986b05f0f814b5cefc63bd1fea48191d4e7d7a4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1ed73d00bd5967d64423e902cf1c4a95a98465f989f0b18e132449c1f596157c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "650f9396b6330b486eff57179aa12fb0db0c43051ee6dda4b48cb58fbe964ee1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5d0d4904ca0694c9ae7e929ffd189334575b7578f69a486f76eed7c56f75145e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ec736f795ac95764efc7be9505aed6c0aec627582e36c5b8e72142b2bacba08d"
+    sha256 cellar: :any_skip_relocation, sonoma:            "5c80298e351182358e20a726d986b05f0f814b5cefc63bd1fea48191d4e7d7a4"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "1ed73d00bd5967d64423e902cf1c4a95a98465f989f0b18e132449c1f596157c"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "650f9396b6330b486eff57179aa12fb0db0c43051ee6dda4b48cb58fbe964ee1"
   end
 
   depends_on "go" => :build
@@ -86,7 +87,7 @@ class Trino < Formula
     arch = Hardware::CPU.intel? ? "amd64" : Hardware::CPU.arch.to_s
     platform_dir = buildpath/"bin/#{OS.kernel_name.downcase}-#{arch}"
     resource("launcher").stage do |r|
-      ldflags = "-s -w -X launcher/args.Version=#{r.version}"
+      ldflags = "-X launcher/args.Version=#{r.version}"
       system "go", "build", "-C", "src/main/go", *std_go_args(ldflags:, output: platform_dir/"launcher")
     end
     if OS.linux?
@@ -137,7 +138,6 @@ class Trino < Formula
                                               "--data-dir", testpath,
                                               "--config", testpath/"config.properties"
     sleep 30
-    sleep 30 if OS.mac? && Hardware::CPU.intel?
 
     query = "SELECT state FROM system.runtime.nodes"
     output = shell_output("#{bin}/trino --debug --server localhost:#{port} --execute '#{query}'")

@@ -1,8 +1,8 @@
 class Pkgsite < Formula
   desc "Documentation server for Go packages"
   homepage "https://pkg.go.dev/golang.org/x/pkgsite"
-  url "https://github.com/golang/pkgsite/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "e7091b7d1db3559b5cc2754c5f9fe6ab1ebf0d65462f8699f4855a18b15fc6b9"
+  url "https://github.com/golang/pkgsite/archive/refs/tags/v0.5.0.tar.gz"
+  sha256 "ec88faa9940cdcd58ed15058a1a932f81b4c3a21cf37b3119bf974a3137373fd"
   license "BSD-3-Clause"
   head "https://go.googlesource.com/pkgsite.git", branch: "master"
 
@@ -12,18 +12,18 @@ class Pkgsite < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "81a69fc09bda084b278abbf2181e845ee492d853c7fd231dc42c942143ba5d64"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "81a69fc09bda084b278abbf2181e845ee492d853c7fd231dc42c942143ba5d64"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "81a69fc09bda084b278abbf2181e845ee492d853c7fd231dc42c942143ba5d64"
-    sha256 cellar: :any_skip_relocation, sonoma:        "aff8659e1ec65827447c75cf4cfe9f48680aed9cefbf45ce7122023126634554"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b26829257cdb739e01d2aa4bb12985b5296f4d51f887d941f3fdc0d7d9b0e057"
-    sha256 cellar: :any,                 x86_64_linux:  "c79fdd8074e5cf46b6da34d07e5d9196d1e9e37f592b3de41cb323d695c74356"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "bea59e96a94b29716c223383743fa690b707e4664ff1bf386cad8b5e8d17d239"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bea59e96a94b29716c223383743fa690b707e4664ff1bf386cad8b5e8d17d239"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bea59e96a94b29716c223383743fa690b707e4664ff1bf386cad8b5e8d17d239"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bea59e96a94b29716c223383743fa690b707e4664ff1bf386cad8b5e8d17d239"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "de5ea560f4f84d80072723b22dc9d804d933d06a3c39872cfd01107da76dfbfc"
+    sha256 cellar: :any,                 x86_64_linux:      "814fc969c6ba654e77f16e63cd3fc6254aa60291efc8401efa36e3c6af64359e"
   end
 
   depends_on "go" => [:build, :test]
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w"), "./cmd/pkgsite"
+    system "go", "build", *std_go_args, "./cmd/pkgsite"
   end
 
   test do
@@ -60,10 +60,10 @@ class Pkgsite < Formula
 
     raise "pkgsite exited unexpectedly" if Process.waitpid(pid, Process::WNOHANG)
 
-    package_output = shell_output("curl -s http://127.0.0.1:#{port}/v1beta/package/example.com/testmod")
+    package_output = shell_output("curl -s http://127.0.0.1:#{port}/v1/package/example.com/testmod")
     assert_match '"modulePath":"example.com/testmod"', package_output
 
-    symbols_output = shell_output("curl -s http://127.0.0.1:#{port}/v1beta/symbols/example.com/testmod")
+    symbols_output = shell_output("curl -s http://127.0.0.1:#{port}/v1/symbols/example.com/testmod")
     assert_match '"name":"Hello"', symbols_output
     assert_match '"kind":"Function"', symbols_output
     assert_match "func Hello() string", symbols_output

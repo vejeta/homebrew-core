@@ -1,8 +1,8 @@
 class DosboxX < Formula
   desc "DOSBox with accurate emulation and wide testing"
   homepage "https://dosbox-x.com/"
-  url "https://github.com/joncampbell123/dosbox-x/archive/refs/tags/dosbox-x-v2026.06.02.tar.gz"
-  sha256 "763d4dfc4f2f9f3d7db550a434db44e9435d1ab4c6459da7373852f1d5dd56f0"
+  url "https://github.com/joncampbell123/dosbox-x/archive/refs/tags/dosbox-x-v2026.08.31.tar.gz"
+  sha256 "992ea538ea858f9fb196b39de2276ce3048c731965e144e6288202abed109782"
   license "GPL-2.0-or-later"
   version_scheme 1
   head "https://github.com/joncampbell123/dosbox-x.git", branch: "master"
@@ -19,19 +19,18 @@ class DosboxX < Formula
   end
 
   bottle do
-    sha256               arm64_tahoe:   "e0c643c204813ed9d25afae6c2d9112f6a25e5b126553980941352e3e6f7e19e"
-    sha256               arm64_sequoia: "f35d0c029050911383efb4b6623aeed95ef6cc29687c7ac2375b6345aaac4b85"
-    sha256               arm64_sonoma:  "08cfa45abcbb0baa3e130404a22f558bfa2a0ea14a92732871188472062f452f"
-    sha256               sonoma:        "2edbc39a04e63939c1f71c2257c8cac46d0f1b9959273b1e48373f6d29b734bd"
-    sha256               arm64_linux:   "2d3f460d807fe642fb39789ecc9f1bd4b2ea6b88f8b26a3a183ec2c2d2a25f64"
-    sha256 cellar: :any, x86_64_linux:  "eab6f4370e38c207c4819048d988f4ad40b385ad528a24365c0b7d39734a2479"
+    sha256 arm64_golden_gate: "4516f94268f438175e28db9efbe0a8c8227d95fd94fc6acadc516f33ddd379e4"
+    sha256 arm64_tahoe:       "ac291913fcbbedb30739eac8f63c7f4231e089718986fb782610d30f78e0963e"
+    sha256 arm64_sequoia:     "4d8558778681d2261f901d6ec705ed93ac9afed7196ddf179bb6656e363ebfc4"
+    sha256 arm64_sonoma:      "aded9fe9a2c4c843d769118ceef3ab4b25ce14b2bb2b1abc6c28e888a2056c5c"
+    sha256 arm64_linux:       "ddd78322191cad52b47cdfa728de559a62f61d9e19086e4469cdb98de28a4c2f"
+    sha256 x86_64_linux:      "a70023e71a690b3ce491cc334efb47ad8aa428ef6f750163078838acc5aab468"
   end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "pkgconf" => :build
 
-  depends_on xcode: :build # For metal
   depends_on "fluid-synth"
   depends_on "freetype"
   depends_on "libpng"
@@ -42,6 +41,7 @@ class DosboxX < Formula
   uses_from_macos "ncurses"
 
   on_macos do
+    depends_on xcode: :build # For metal
     depends_on "gettext"
     depends_on "glib"
   end
@@ -54,8 +54,6 @@ class DosboxX < Formula
   end
 
   def install
-    ENV.cxx11
-
     # Set `LDFLAGS` to link against the Metal and QuartzCore frameworks on macOS Ventura and later
     # during ./configure to detect the Metal framework
     ENV.append "LDFLAGS", "-framework Metal -framework QuartzCore" if OS.mac? && MacOS.version >= :ventura

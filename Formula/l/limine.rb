@@ -1,8 +1,8 @@
 class Limine < Formula
-  desc "Modern, advanced, portable, multiprotocol bootloader and boot manager"
+  desc "Modern, secure, portable, multiprotocol bootloader and boot manager"
   homepage "https://github.com/Limine-Bootloader/Limine"
-  url "https://github.com/Limine-Bootloader/Limine/releases/download/v12.3.3/limine-12.3.3.tar.gz"
-  sha256 "f1a529da5cd50a5ca37ba5873133a7b8e72584b127d7331fe94e554e5e6012f7"
+  url "https://github.com/Limine-Bootloader/Limine/releases/download/v12.9.0/limine-12.9.0.tar.gz"
+  sha256 "adea922af3b9c8179a4676bcecc8e4df2f3ef72ad36b3f4afab44cbf5f265e36"
   license "BSD-2-Clause"
 
   livecheck do
@@ -11,12 +11,11 @@ class Limine < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "806415bfd26dd793a172e9f6ba2f015f707364b265f4cf83b33f46a53bc49769"
-    sha256 arm64_sequoia: "03d6617b4e6a388ddc3413098b403a7beed91901ac4e1d68278eca307dc9fc64"
-    sha256 arm64_sonoma:  "77aa10be24c0a332f5fc68913e9ad5f0ed0c1d1e7b0e209e143c55ac496d1576"
-    sha256 sonoma:        "0ee9f7ecaf5d8345096127341ec922d9c5efa08ec41f08b4c9a7b634a7d4907b"
-    sha256 arm64_linux:   "28b7a816a143492e67fd84d594cfd1463038a289ed8b0d00b3c176f71aefadf4"
-    sha256 x86_64_linux:  "be7a1aa14859504bf922dc7e9640d916f117b8f0e635b85a11fda21a219e6ae8"
+    sha256 arm64_golden_gate: "765fe46762eb3e376e221a68c7fe17b7f5951e2490b50e3a481e3230c021bb64"
+    sha256 arm64_tahoe:       "cc0a061981f1edb3fe6a1b1072c0fbd8467cc81d3ce53b8037442af0e4983b62"
+    sha256 arm64_sequoia:     "ace7b05408a40874d668f9e00bbb582041d5294b67051515804244bf8aae3058"
+    sha256 arm64_linux:       "db9a07197b6333b3692c9a1338b57213eeaeac224356d435437bf3201a5ce40a"
+    sha256 x86_64_linux:      "29170d29dccf17875e2d664deabd5e0cbe84e6dab6c57408b409631798930df5"
   end
 
   # The reason to have LLVM and LLD as dependencies here is because building the
@@ -33,7 +32,7 @@ class Limine < Formula
   def install
     # Homebrew LLVM is not in path by default. Get the path to it, and override the
     # build system's defaults for the target tools.
-    llvm_bins = Formula["llvm"].opt_bin
+    llvm_bins = formula_opt_bin("llvm")
 
     system "./configure", *std_configure_args, "--enable-all",
            "TOOLCHAIN_FOR_TARGET=#{llvm_bins}/llvm-",
@@ -46,7 +45,7 @@ class Limine < Formula
   test do
     bytes = 8 * 1024 * 1024 # 8M in bytes
     (testpath/"test.img").write("\0" * bytes)
-    output = shell_output("#{bin}/limine bios-install #{testpath}/test.img 2>&1")
-    assert_match "installed successfully", output
+    output = shell_output("#{bin}/limine bios-install #{testpath}/test.img 2>&1", 1)
+    assert_match "error: Could not determine if the device has a valid partition table.", output
   end
 end

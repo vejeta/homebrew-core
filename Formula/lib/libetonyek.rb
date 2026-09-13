@@ -13,12 +13,13 @@ class Libetonyek < Formula
 
   bottle do
     rebuild 1
-    sha256               arm64_tahoe:   "15e4106e5a95482d49ca870517bb9ec974028d31b4e6ad71b82b7bfdbf637816"
-    sha256               arm64_sequoia: "83bb5e23e86d7476934b74bda30cd21958299d3ac87f702b40536f1b4e41af96"
-    sha256               arm64_sonoma:  "d57c06d659c57a25dd60cd7e4484061640fde9f755395a783095d87f8c65fc42"
-    sha256 cellar: :any, sonoma:        "af39f35143e4fcfc2e82eb18a96c5c02957fada39033d52324ff5edbb4944efe"
-    sha256               arm64_linux:   "43d455ef90f218ca763f9821d4798b9cd09c4e9d699436c4764719646e805cdf"
-    sha256               x86_64_linux:  "b2983d0f4f6f8037ab0ec443afe5527759cb94342d60d26442b776f7c2c8e7a1"
+    sha256               arm64_golden_gate: "3c80844ed5366106f68f8d6592d3487cd7f25a531d34dbcbc75592013763613a"
+    sha256               arm64_tahoe:       "15e4106e5a95482d49ca870517bb9ec974028d31b4e6ad71b82b7bfdbf637816"
+    sha256               arm64_sequoia:     "83bb5e23e86d7476934b74bda30cd21958299d3ac87f702b40536f1b4e41af96"
+    sha256               arm64_sonoma:      "d57c06d659c57a25dd60cd7e4484061640fde9f755395a783095d87f8c65fc42"
+    sha256 cellar: :any, sonoma:            "af39f35143e4fcfc2e82eb18a96c5c02957fada39033d52324ff5edbb4944efe"
+    sha256               arm64_linux:       "43d455ef90f218ca763f9821d4798b9cd09c4e9d699436c4764719646e805cdf"
+    sha256               x86_64_linux:      "b2983d0f4f6f8037ab0ec443afe5527759cb94342d60d26442b776f7c2c8e7a1"
   end
 
   depends_on "boost" => :build
@@ -44,6 +45,7 @@ class Libetonyek < Formula
   patch :p0 do
     url "https://src.fedoraproject.org/rpms/libetonyek/raw/65a93fb7f21fb0e668d78644ec6aa7843e5372f5/f/mdds3.patch"
     sha256 "cd390fa4280b78fd0d1a7f587ab576d8ef0c4848036c8b0c821b576c6745db17"
+    type :unofficial
   end
 
   def install

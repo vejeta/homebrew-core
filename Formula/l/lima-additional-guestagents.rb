@@ -1,18 +1,19 @@
 class LimaAdditionalGuestagents < Formula
   desc "Additional guest agents for Lima"
   homepage "https://lima-vm.io/"
-  url "https://github.com/lima-vm/lima/archive/refs/tags/v2.1.3.tar.gz"
-  sha256 "3f6dd39922eb42ff6aa497c28b7573775864a38554002719fdbf64a05033f87e"
+  url "https://github.com/lima-vm/lima/archive/refs/tags/v2.2.0.tar.gz"
+  sha256 "cdba3804df7d8c00a2af674a3fe0b24c19673a0e846e5f75ac9badf227ce52f5"
   license "Apache-2.0"
   head "https://github.com/lima-vm/lima.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0aa328fa70cdf0ee24e53528827c111888a68ecbe2d36ec67c7262cc907a3659"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "84c4f7dd6f19bb2cd825bb8ed019aa51d3e0ee206dbe680fda8ab71d1dcf2aa9"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a8631eb60e8441f481544946a5c764ab087bfaa4aa87335789598ce7fe2a4a42"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a6b8107d8d78c9246fd397b0f9b2ee9ccf2f114d28dbdb7a90013c22775957b7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "030667db69450354105094f9765442505afdb1dc7171a303d03ee78e8d4f9dc9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0c1f5bdd9ef509eb444cfc813f2abc5475b55dd0e12386405c8838d5ef56c8b3"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8800b22e8338e56b12a6e5729dbd4bd746221a095b351ceaf4706ee8e54e02ff"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "823fd949022115e17e20e05ae0a20e233e5b343947e16bf220f3a712c5cc43ee"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "604da27ed9c297f794e7e4cdfd7c67529ecf244397e19d1039989931a1b53d0d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "9f4be973bcac94aa35e94417cc936ad8854cea97a2af8bbb55a8174317ac7c93"
+    sha256 cellar: :any_skip_relocation, sonoma:            "98fbcdf147bd527ba38ceeae95b3d53e0f8ff5994999caff02e90346db587a1f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "568a624b8a94f41d2bd189f345ff3beb01571089325f3bd7f0d297f64a2ae3dc"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "f8f4a15861fbbfebc7f24c23871c47c08dc560a1b1340ffd378f3e5730ecb237"
   end
 
   depends_on "go" => :build

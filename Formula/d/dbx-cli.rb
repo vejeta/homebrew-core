@@ -1,47 +1,38 @@
 class DbxCli < Formula
   desc "Command-line interface for DBX database connections, schema, and safe queries"
   homepage "https://dbxio.com"
-  url "https://registry.npmjs.org/@dbx-app/cli/-/cli-0.4.11.tgz"
-  sha256 "ef704cda14c2199f4c8b8e44ef4e86217f6784356715ea77bc2de4431b3750fc"
+  url "https://github.com/t8y2/dbx/archive/refs/tags/packages-v0.4.86.tar.gz"
+  sha256 "abe776327039d1122fd1a4d6660fc2f7f9d76e8cfed0831eb990d2ad83608d35"
   license "Apache-2.0"
 
-  bottle do
-    sha256               arm64_tahoe:   "1488c2714ac30f54e0d23a1dbb1fe272a312309696a256a90a46ba4ec0508b92"
-    sha256               arm64_sequoia: "ca9a5b38886d4d09e76ad5cab9dbfd1ba6bdd0ae125ff21f1f6ff2352dce8c3e"
-    sha256               arm64_sonoma:  "1bef04d772c8e8175b455f1dac639254cc0500e85c677f7ebdb127c20efb8de2"
-    sha256               sonoma:        "6e98f0de466463fd4b6b9df0d27de0f8eb6900b0dfe0c60bb300238e15884a38"
-    sha256 cellar: :any, arm64_linux:   "2d1ef32a6f25c1403a8c05981ee8c911f05df22f17cf2162d29a3db95a57c743"
-    sha256 cellar: :any, x86_64_linux:  "a97dbe61fe40109278c25ce783197cb4ac492f6ea27414db6a93ea9b95b4cb4e"
+  livecheck do
+    url :stable
+    regex(/^packages-v?(\d+(?:\.\d+)+)$/i)
   end
 
-  depends_on "node"
+  bottle do
+    sha256 cellar: :any, arm64_golden_gate: "7fa3e2667b12259deb00b3b79cfd582d7bc4ca659c1108048a72c98f9004b9f9"
+    sha256 cellar: :any, arm64_tahoe:       "72950001f5826d9c71fe3935463da63b64e8f84b0dfce8ae740cc5a08a492722"
+    sha256 cellar: :any, arm64_sequoia:     "a724a2c170c6cafdc0f5fb9d8125910e9ea4f22b08651f89ebe7e81a63069b90"
+    sha256 cellar: :any, arm64_linux:       "d2e2709979259493d9f3f904029ceb39d357233cce2fd8b63b80df872f5ff1dd"
+    sha256 cellar: :any, x86_64_linux:      "5dcfbfe5b122f91057215ab0f24c0b824e0285127c85ef51202d54b6756e5855"
+  end
+
+  depends_on "pkgconf" => :build
+  depends_on "rust" => :build
+  depends_on "openssl@4"
 
   on_linux do
-    depends_on "pkgconf" => :build
-    depends_on "glib"
-    depends_on "libsecret"
+    depends_on "fontconfig"
   end
 
   def install
-    system "npm", "install", *std_npm_args
-    bin.install_symlink libexec.glob("bin/*")
-
-    # Rebuild better-sqlite3 and keytar native bindings for the current platform.
-    # prebuild-install is blocked by the Homebrew sandbox during npm install,
-    # so we must rebuild them explicitly via node-gyp.
-    node_modules = libexec/"lib/node_modules/@dbx-app/cli/node_modules"
-
-    cd node_modules/"better-sqlite3" do
-      system "npm", "run", "build-release"
-    end
-
-    cd node_modules/"keytar" do
-      rm_r "prebuilds" if File.directory?("prebuilds")
-      system "npm", "run", "build"
-    end
+    system "cargo", "install", *std_cargo_args(path: "crates/dbx-cli")
   end
 
   test do
+    assert_match version.to_s, shell_output("#{bin}/dbx --version")
+
     output = shell_output("#{bin}/dbx capabilities --json")
     capabilities = JSON.parse(output)
     assert capabilities.key?("directQueryTypes"), "Missing directQueryTypes"

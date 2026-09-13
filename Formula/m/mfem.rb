@@ -1,19 +1,18 @@
 class Mfem < Formula
   desc "Free, lightweight, scalable C++ library for FEM"
   homepage "https://mfem.org/"
-  url "https://github.com/mfem/mfem/archive/refs/tags/v4.9.tar.gz"
-  sha256 "ea3ac13e182c09f05b414b03a9bef7a4da99d45d67ee409112b8f11058447a7c"
+  url "https://github.com/mfem/mfem/archive/refs/tags/v4.10.tar.gz"
+  sha256 "d5aabe991b8b5569aa26e2b5d4b59ac617ee10ebac3d45fd6ff9c74b2c1a47dd"
   license "BSD-3-Clause"
-  revision 1
   head "https://github.com/mfem/mfem.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "8974f38b6753c04fcea78d3cea7e8f09e9d00200c7c20f3c04aef3f7af64afc4"
-    sha256 cellar: :any,                 arm64_sequoia: "2672c4cdedf6ae743fdf5de3d61bd1582c9edf08c484ec23a1fe174f2e274ebf"
-    sha256 cellar: :any,                 arm64_sonoma:  "f91e29927107cb64ab3c32c6e1c1227b0b9108d5c671114721b6889235589852"
-    sha256 cellar: :any,                 sonoma:        "e3fb59206a0af49d8b6d518b921b62533f38ac8f69c7e6d3615f147e75bb5560"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "80164924078003ac86b7197f2e6b077dec14c55e2b4cf1511fddd5af2bd0addc"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "dec7c79abbe13b993334d214016e5284f433424bc9bb21f4bdfbcf50b37a22cd"
+    sha256 cellar: :any, arm64_golden_gate: "ac1f123bec4f991b171e83c7a8d0bb7c77ae54f2dc7cb3dee96e4744d878aedf"
+    sha256 cellar: :any, arm64_tahoe:       "46242c48b61f80f57bd26ee0dd2a1afd56d1c09ab4329e1a08ef36b00aed530e"
+    sha256 cellar: :any, arm64_sequoia:     "26f2daf4dda7fa640f3da037c99a0ee542433b3feb96e215074f6c6f14255b78"
+    sha256 cellar: :any, arm64_sonoma:      "166908a8d88bee3f06765e1cefa05241dc3ff2dd0f8c3e72be76ded3ac7539a3"
+    sha256 cellar: :any, arm64_linux:       "5d6fedfee8aaed6933bf7ca49974710333d0dffe9cfdd8adac131c77c63e6ec2"
+    sha256 cellar: :any, x86_64_linux:      "37bf1ddc4a9b1b1338749ec0d12b3d43c460866cd86eb7da48a41646a098cb41"
   end
 
   depends_on "cmake" => :build

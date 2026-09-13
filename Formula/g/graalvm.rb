@@ -1,8 +1,8 @@
 class Graalvm < Formula
   desc "JDK distribution with Graal compiler and Native Image"
   homepage "https://www.graalvm.org/"
-  url "https://github.com/oracle/graal/archive/refs/tags/graal-25.0.2.tar.gz"
-  sha256 "c191206404d4cc706a9b1e2242f0f4b90df7c776a748bcfd8fa1da47d8314839"
+  url "https://github.com/oracle/graal/archive/refs/tags/graal-25.3.4.1.tar.gz"
+  sha256 "b23958094838298a9959d6f189f064915504ba2dd827c07c14fab0febd9e2d8c"
   license "GPL-2.0-only" => { with: "Classpath-exception-2.0" }
 
   livecheck do
@@ -11,12 +11,12 @@ class Graalvm < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "68033cc0c5d778458170cfafd25f461778098b0c159d9429da4c1fa706e56330"
-    sha256 cellar: :any, arm64_sequoia: "6ff9d912cf54e737e465f0522b08420283620e18df6fb1a6e64c2af4d3caffdf"
-    sha256 cellar: :any, arm64_sonoma:  "1971cf58609536cab99baa93db286015730f50937cf01616af73a9b91f7e725a"
-    sha256               arm64_linux:   "3d265f2ed505cf997f0cdade8c7d43d28b0a631c7596ac20b0d864a6f5caa5ef"
-    sha256               x86_64_linux:  "9ea8345595c00a92b82e8d4ca53139522203073e2461fdce67caded0fe1cc185"
+    sha256 cellar: :any, arm64_golden_gate: "fa82117341db01538e98a9bbe41515022b1df4e47fd589bd8968d4037016e637"
+    sha256 cellar: :any, arm64_tahoe:       "3fb2dc918c9eee6fe867ed67ffe032145b16635fd35090033d0f3b7bb6fc86f0"
+    sha256 cellar: :any, arm64_sequoia:     "f12bfb3fa10e9293562c1663153063bf738624ec3a729cc4c077d5e7cf226b8a"
+    sha256 cellar: :any, arm64_sonoma:      "b49a50e8facc9cb6dbc68b3cec8540081920e46c229007d1263ed6857581fadc"
+    sha256               arm64_linux:       "31a115f3cf1412c6b7cadc0b643fcf35280a7e037d97c01707524e3ea1499528"
+    sha256               x86_64_linux:      "bb445c3d5c0e26a771bd65eab529323afd8238d70fd626410963ae2fe4fad63a"
   end
 
   keg_only "installs a JDK which shadows openjdk"
@@ -26,7 +26,6 @@ class Graalvm < Formula
   depends_on "ninja" => :build
   depends_on "openjdk@25" => :build
   depends_on "pkgconf" => :build
-  depends_on xcode: :build
   depends_on "freetype"
   depends_on "giflib"
   depends_on "harfbuzz"
@@ -34,44 +33,44 @@ class Graalvm < Formula
   depends_on "libpng"
   depends_on "little-cms2"
 
-  uses_from_macos "cups"
-  uses_from_macos "unzip"
-  uses_from_macos "zip"
+  uses_from_macos "unzip" => :build
+  uses_from_macos "zip" => :build
+  uses_from_macos "cups" => :no_linkage
 
   on_macos do
+    depends_on xcode: :build # for metal
     depends_on arch: :arm64
   end
 
   on_linux do
+    depends_on "libxt" => :build
     depends_on "alsa-lib"
-    depends_on "fontconfig"
+    depends_on "fontconfig" => :no_linkage
     depends_on "libx11"
     depends_on "libxext"
     depends_on "libxi"
-    depends_on "libxrandr"
+    depends_on "libxrandr" => :no_linkage
     depends_on "libxrender"
-    depends_on "libxt"
     depends_on "libxtst"
     depends_on "zlib-ng-compat"
   end
 
   resource "labs-openjdk" do
-    url "https://github.com/graalvm/labs-openjdk/archive/refs/tags/25.0.2+10-jvmci-b01.tar.gz"
-    version "25.0.2+10-jvmci-b01"
-    sha256 "94c47dfdb6e0e658426e0837678d1599aaa8dd919d8754d73ce4d8004e7c667f"
+    url "https://github.com/graalvm/labs-openjdk/archive/refs/tags/jvmci-25.3-b22.tar.gz"
+    version "25.3-b22"
+    sha256 "b93afb50b186b69d15c573706fb00d326a35f1a7f05f76b3dd4ac4201df2d98e"
 
     livecheck do
-      regex(/(\d+(?:\.\d+)+\+\d+-jvmci-b\d+)/i)
-      strategy :github_releases
+      url "https://raw.githubusercontent.com/oracle/graal/refs/tags/graal-#{LATEST_VERSION}/common.json"
+      regex(/jvmci[._-]v?(\d+(?:\.\d+)+-b\d+)$/i)
+      strategy :json do |json, regex|
+        json.dig("jdks", "labsjdk-ce-latest", "version")&.[](regex, 1)
+      end
     end
   end
 
   def install
-    boot_jdk = if OS.mac?
-      Formula["openjdk@25"].opt_libexec/"openjdk.jdk/Contents/Home"
-    else
-      Formula["openjdk@25"].opt_libexec
-    end
+    boot_jdk = Language::Java.java_home("25")
     java_options = ENV.delete("_JAVA_OPTIONS")
 
     labs_openjdk = buildpath/"labs-openjdk"
@@ -103,8 +102,8 @@ class Graalvm < Formula
       -Wl,-rpath,#{loader_path.gsub("$", "\\$$")}/server
     ]
 
-    labsjdk_version = resource("labs-openjdk").version.to_s
-    match = labsjdk_version.match(/(?<java>\d+(?:\.\d+)+)\+(?<build>\d+)-(?<opt>jvmci-b\d+)/)
+    labsjdk_version = JSON.parse(File.read("common.json")).dig("jdks", "labsjdk-ce-latest", "version")
+    match = labsjdk_version.match(/(?<java>\d+(?:\.\d+)*)\+(?<build>\d+)-(?<opt>jvmci(?:-\d+(?:\.\d+)*)?-b\d+)/)
     odie "Failed to parse LabsJDK version: #{labsjdk_version}" if match.nil?
 
     args += [
@@ -121,8 +120,8 @@ class Graalvm < Formula
 
       args += %W[
         --enable-dtrace
-        --with-freetype-include=#{Formula["freetype"].opt_include}
-        --with-freetype-lib=#{Formula["freetype"].opt_lib}
+        --with-freetype-include=#{formula_opt_include("freetype")}
+        --with-freetype-lib=#{formula_opt_lib("freetype")}
         --with-sysroot=#{MacOS.sdk_path}
       ]
     else
@@ -152,7 +151,7 @@ class Graalvm < Formula
 
     odie "Failed to locate built LabsJDK image" if labsjdk_home.empty?
 
-    mx = Formula["mx"].opt_bin/"mx"
+    mx = formula_opt_bin("mx")/"mx"
 
     output = buildpath/"build"
 
@@ -215,7 +214,7 @@ class Graalvm < Formula
     JAVA
 
     if OS.linux?
-      ENV.prepend_path "LIBRARY_PATH", Formula["zlib-ng-compat"].opt_lib
+      ENV.prepend_path "LIBRARY_PATH", formula_opt_lib("zlib-ng-compat")
       ENV.prepend "NATIVE_IMAGE_OPTIONS", "-ELIBRARY_PATH"
     end
 

@@ -1,8 +1,8 @@
 class Swig < Formula
   desc "Generate scripting interfaces to C/C++ code"
   homepage "https://www.swig.org/"
-  url "https://downloads.sourceforge.net/project/swig/swig/swig-4.4.1/swig-4.4.1.tar.gz"
-  sha256 "40162a706c56f7592d08fd52ef5511cb7ac191f3593cf07306a0a554c6281fcf"
+  url "https://downloads.sourceforge.net/project/swig/swig/swig-4.5.1/swig-4.5.1.tar.gz"
+  sha256 "7fec50b27deddab5455a9633780b6341eddfb96215a7619e93a76eb27178f653"
   license "GPL-3.0-or-later"
   compatibility_version 1
 
@@ -12,15 +12,12 @@ class Swig < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 arm64_tahoe:   "296e06c126d3bc5ce67eae4496e4fb15f53b1147fd727e59744449d118ddf3c4"
-    sha256 arm64_sequoia: "3f5f55dfeafa86f7fde759a6ed895c17711f795bc5c5dc653e948b160b39e095"
-    sha256 arm64_sonoma:  "3deb29512380d6f2438509ef376b9c6420e0c09929f1ba46c6a6defc80b0c938"
-    sha256 tahoe:         "7101266ed6af8753601bfa9e161f69b2293bf21c20d85a0215a33afadc8e2bfd"
-    sha256 sequoia:       "4a6c4df0a64de986d68c579f9fffa7b51da50a037370584e0c30575be14d86d1"
-    sha256 sonoma:        "b46f000c265b1862456a228ada44689992430d48c7d913ccfbf6d39fdb39452c"
-    sha256 arm64_linux:   "da35dceea818eca91178d1d69b9ebf15ba68ac343e47fec99c4a3edf889c023e"
-    sha256 x86_64_linux:  "a225dfc60e2cf8404edf0275411d60d831b4fbcc707a5019e9246aef10915d98"
+    sha256 arm64_golden_gate: "eb8e83568acb93e4ac956a0e25f58a9ed4427fade74f7ffa9a663ec90e81c71a"
+    sha256 arm64_tahoe:       "da75d54cd9ad9ae5c7bfc712734f8a971f61735f030584f34e929462223208c3"
+    sha256 arm64_sequoia:     "81ecbdfb1e57316004365b47a1c3f3cea100c3ef5f7a9ff0c218b8da73821461"
+    sha256 arm64_sonoma:      "aae4b6f5244c4c56ec3972870855203a78bf7719416365c7f487c549e066de00"
+    sha256 arm64_linux:       "29bcdf36ce033dcc962832928418a115a1ac7833252b8ae47f41875941a7e0bc"
+    sha256 x86_64_linux:      "7d404ec2a625493509c20bfa598c8a7b9bee7c90f99d884822307cae9164f53a"
   end
 
   head do
@@ -76,7 +73,8 @@ class Swig < Formula
     ENV.remove_from_cflags(/-march=\S*/)
     system bin/"swig", "-python", "test.i"
     system "python3", "-m", "venv", ".venv"
-    system testpath/".venv/bin/pip", "install", *std_pip_args(prefix: false, build_isolation: true), "."
+    # Avoid `std_pip_args`: the macOS system pip is too old for its cooldown flag
+    system testpath/".venv/bin/pip", "install", "--verbose", "--no-deps", "."
     assert_equal "2", shell_output("#{testpath}/.venv/bin/python3 ./run.py").strip
   end
 end

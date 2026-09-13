@@ -13,12 +13,13 @@ class KyotoTycoon < Formula
 
   bottle do
     rebuild 1
-    sha256 arm64_tahoe:   "409039aba15f91854558024a2b4b4e7238164950a0f9aaecd576c0414c9b225b"
-    sha256 arm64_sequoia: "8b2c6c299276fdc723900da83356a6fcdad858b663efa0e62b58e82270ea9c1b"
-    sha256 arm64_sonoma:  "7558ae59191b5f274713d90d4125549d13731f3565ec4d695a90e2fa6d61c152"
-    sha256 sonoma:        "0124e888f1cf8dd1384369bd9d0679cff458c2e6c317655cd36f92ed41191e16"
-    sha256 arm64_linux:   "566a096ee78096abada9b56c8589a5a5a5a780e36887ba87fce266925d412499"
-    sha256 x86_64_linux:  "2c980249e288c8d49296641182d32f63233d5da165f3a5a70e0d6fff82621385"
+    sha256 arm64_golden_gate: "7d0f49f7308d248c4a42634c50a8ccfb712377b894675306e023df21d02abe63"
+    sha256 arm64_tahoe:       "409039aba15f91854558024a2b4b4e7238164950a0f9aaecd576c0414c9b225b"
+    sha256 arm64_sequoia:     "8b2c6c299276fdc723900da83356a6fcdad858b663efa0e62b58e82270ea9c1b"
+    sha256 arm64_sonoma:      "7558ae59191b5f274713d90d4125549d13731f3565ec4d695a90e2fa6d61c152"
+    sha256 sonoma:            "0124e888f1cf8dd1384369bd9d0679cff458c2e6c317655cd36f92ed41191e16"
+    sha256 arm64_linux:       "566a096ee78096abada9b56c8589a5a5a5a780e36887ba87fce266925d412499"
+    sha256 x86_64_linux:      "2c980249e288c8d49296641182d32f63233d5da165f3a5a70e0d6fff82621385"
   end
 
   depends_on "lua" => :build
@@ -31,22 +32,20 @@ class KyotoTycoon < Formula
 
   # Build patch (submitted upstream)
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/kyoto-tycoon/0.9.56.patch"
-    sha256 "7a5efe02a38e3f5c96fd5faa81d91bdd2c1d2ffeb8c3af52878af4a2eab3d830"
+    file "Patches/kyoto-tycoon/0.9.56.patch"
   end
 
   # Homebrew-specific patch to support testing with ephemeral ports (submitted upstream)
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/kyoto-tycoon/ephemeral-ports.patch"
-    sha256 "736603b28e9e7562837d0f376d89c549f74a76d31658bf7d84b57c5e66512672"
+    file "Patches/kyoto-tycoon/ephemeral-ports.patch"
   end
 
   def install
     ENV.append_to_cflags "-fpermissive" if OS.linux?
     ENV.append "CXXFLAGS", "-std=c++98"
     system "./configure", "--prefix=#{prefix}",
-                          "--with-kc=#{Formula["kyoto-cabinet"].opt_prefix}",
-                          "--with-lua=#{Formula["lua"].opt_prefix}"
+                          "--with-kc=#{formula_opt_prefix("kyoto-cabinet")}",
+                          "--with-lua=#{formula_opt_prefix("lua")}"
     system "make"
     system "make", "install"
   end

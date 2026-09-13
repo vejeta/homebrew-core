@@ -3,25 +3,25 @@ class Mediamtx < Formula
   homepage "https://mediamtx.org"
   # need to use the tag to generate the version info
   url "https://github.com/bluenviron/mediamtx.git",
-      tag:      "v1.19.1",
-      revision: "6a5761f7e6c41ea2202696a0a683809b79646eba"
+      tag:      "v1.21.0",
+      revision: "2c6727904fbf233615de74a6c54a9b94dbf6025d"
   license "MIT"
   head "https://github.com/bluenviron/mediamtx.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8e3ef772e14e7183e7655179fd839005b9d9e8133e82ac8f9b8bff3283a672eb"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8e3ef772e14e7183e7655179fd839005b9d9e8133e82ac8f9b8bff3283a672eb"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8e3ef772e14e7183e7655179fd839005b9d9e8133e82ac8f9b8bff3283a672eb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "eb62ec1d83193327364d570a4b49cda9c69dd6ae009b056937cbe0af6e4d7e2b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d69891f9b127dae36a5963295a7ff5b7f7435ec84b7302f629ede4d57ceea4f7"
-    sha256 cellar: :any,                 x86_64_linux:  "fa346ab543fc5ef1e5f38c0743589349d370580941b8fd03273e958c01e2279d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f266b0c23a91e26fff3cd4f09791df6f3363e7acc6c138864678f07abff74799"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e5c2bddcc1cb25b4e239147054e83312958fa674243a5b0e488e79aba6cb0559"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e5c2bddcc1cb25b4e239147054e83312958fa674243a5b0e488e79aba6cb0559"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e5c2bddcc1cb25b4e239147054e83312958fa674243a5b0e488e79aba6cb0559"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "cb3cb875de337dba5149ca3cc846e684cb007c74d1c16c0b8580f2eace66435d"
+    sha256 cellar: :any,                 x86_64_linux:      "38bb579aad8529bf38edddafa3ba19a4fb9126c3708e7e15b3dba9f105e8785b"
   end
 
   depends_on "go" => :build
 
   def install
     system "go", "generate", "./..."
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
 
     # Install default config
     pkgetc.install "mediamtx.yml"

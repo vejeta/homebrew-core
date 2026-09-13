@@ -2,6 +2,7 @@ class Krb5 < Formula
   desc "Network authentication protocol"
   homepage "https://web.mit.edu/kerberos/"
   url "https://kerberos.org/dist/krb5/1.22/krb5-1.22.2.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/krb5-1.22.2.tar.gz"
   sha256 "3243ffbc8ea4d4ac22ddc7dd2a1dc54c57874c40648b60ff97009763554eaf13"
   # From Fedora: https://src.fedoraproject.org/rpms/krb5/blob/rawhide/f/krb5.spec
   license all_of: [
@@ -32,12 +33,13 @@ class Krb5 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "2968bf9d040cd58eb2933ddf03cd004d1f9abe8b19bd7f028ea8666ad47714ab"
-    sha256 arm64_sequoia: "a9db2ba99f3e99279c4aac0277cdba955510d27f09bde6051b100e660c1a1c28"
-    sha256 arm64_sonoma:  "b63debb64f3b2d7875f0868e5cefbe3375ff635df7f0d1e4fc76f3716cdbb3a5"
-    sha256 sonoma:        "a4ab63ede148b1230e05c3002024e37d402ad3a18c98976d71a83920a879c462"
-    sha256 arm64_linux:   "1e75b209585cd4b2155eb8eebadaf3c4df5948981fecfaa5633a60e5918a78d7"
-    sha256 x86_64_linux:  "5c06477705002279f07de13c147866235a99abe1495ae4deb1eed805ec542245"
+    sha256 arm64_golden_gate: "8a876568262b406f742c97e91e629ee1633308adab22510ed2b5c15636dc131c"
+    sha256 arm64_tahoe:       "2968bf9d040cd58eb2933ddf03cd004d1f9abe8b19bd7f028ea8666ad47714ab"
+    sha256 arm64_sequoia:     "a9db2ba99f3e99279c4aac0277cdba955510d27f09bde6051b100e660c1a1c28"
+    sha256 arm64_sonoma:      "b63debb64f3b2d7875f0868e5cefbe3375ff635df7f0d1e4fc76f3716cdbb3a5"
+    sha256 sonoma:            "a4ab63ede148b1230e05c3002024e37d402ad3a18c98976d71a83920a879c462"
+    sha256 arm64_linux:       "1e75b209585cd4b2155eb8eebadaf3c4df5948981fecfaa5633a60e5918a78d7"
+    sha256 x86_64_linux:      "5c06477705002279f07de13c147866235a99abe1495ae4deb1eed805ec542245"
   end
 
   keg_only :provided_by_macos

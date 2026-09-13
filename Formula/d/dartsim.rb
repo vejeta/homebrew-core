@@ -1,17 +1,23 @@
 class Dartsim < Formula
   desc "Dynamic Animation and Robotics Toolkit"
   homepage "https://dartsim.github.io/"
-  url "https://github.com/dartsim/dart/archive/refs/tags/v6.19.2.tar.gz"
-  sha256 "7184ab67e75ee4436d49b24f1771a5598cc2f517344e1d363c101391a8584d9a"
+  url "https://github.com/dartsim/dart/archive/refs/tags/v6.19.4.tar.gz"
+  sha256 "627a6d21650427da634503829eba6c0c20887cd3441082eb44187fb3f9250150"
   license "BSD-2-Clause"
 
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
   bottle do
-    sha256               arm64_tahoe:   "87938cb3f9409fb320d23f6f5dc15177288760000bae9610973d383f3a53dada"
-    sha256               arm64_sequoia: "e5c8e84c886047642ab59a73a82d15a8bed6ef5d5f2f7df7e2727f494a7a792a"
-    sha256               arm64_sonoma:  "cd24aff56b882ed1d78b8ff32bb544807dcbcfddb4ba7f8bb26acb0bc10cd46d"
-    sha256               sonoma:        "d3b9800b9cbbbee41519cedba7bd90160d49c3910a8b26806efe197d651370c1"
-    sha256               arm64_linux:   "aa72545c813df35fd3798fc26757c5421a61eb66f561b0376de370fc8c0ce1b7"
-    sha256 cellar: :any, x86_64_linux:  "f6df2e39a2f3f66ee4df8a05e3dd1326c871658773576e3186caebbf087bdbf6"
+    sha256               arm64_golden_gate: "bb85a1238c4fb94601e7377530ec6b132ef623f153015104fa625e085d3b8969"
+    sha256               arm64_tahoe:       "f63057be0ef688c2d1eb482a39aa4f1a4e05cb1709c0d167ef8ecaa3f97c2293"
+    sha256               arm64_sequoia:     "776e505b28c9bac1ae279cd6098e99a6c5a802eb5ec2c84b6b459840d6dc07d1"
+    sha256               arm64_sonoma:      "5bb7f57da268c37c6051d3a870b2bd2d0c439ba0c5aa8c553d4b588bcc585445"
+    sha256               sonoma:            "15ef52ed76a01bdb93383be08334b329484af03a709820ef54a27a99daaa9ce5"
+    sha256               arm64_linux:       "ac94c358317cd1172ab84b97b48247a1a2833a676308a6a195c9680edc6da6d6"
+    sha256 cellar: :any, x86_64_linux:      "772da48e17dfcb714fbe921a120e6493b4b61766d5e24d8f20e977c63e0989b4"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -77,16 +83,13 @@ class Dartsim < Formula
     CMAKE
     system ENV.cxx, "test.cpp", "-I#{Formula["eigen"].include}/eigen3",
                     "-I#{include}", "-L#{lib}", "-ldart",
-                    "-L#{Formula["assimp"].opt_lib}", "-lassimp",
-                    "-L#{Formula["libccd"].opt_lib}", "-lccd",
-                    "-L#{Formula["fcl"].opt_lib}", "-lfcl",
+                    "-L#{formula_opt_lib("assimp")}", "-lassimp",
+                    "-L#{formula_opt_lib("libccd")}", "-lccd",
+                    "-L#{formula_opt_lib("fcl")}", "-lfcl",
                     "-std=c++17", "-o", "test"
     system "./test"
-    # build with cmake
-    mkdir "build" do
-      system "cmake", ".."
-      system "make"
-      system "./test_cmake"
-    end
+    system "cmake", "-S", ".", "-B", "build"
+    system "cmake", "--build", "build"
+    system "build/test_cmake"
   end
 end

@@ -14,21 +14,22 @@ class CfrDecompiler < Formula
 
   bottle do
     rebuild 2
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ab8834addd1841f1c2956e76a9ad07ba5de8baca81dcb20834ab0509c3c06c13"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "40e70dbc8a02f9af88b53433bb613530987d9cb816ac2225f2d723c40aa28571"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8ea66fb664c3dfa1afd2f261fe9899ad1a3edfd8ceb83fb43e1d35136bdb41ae"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a2b939bf2b019303372c0a586249644cbfae34da0fc124f61c0d41039b834279"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "acb9fe0f76e43403de2c4f013238038b1359c1aed573cb0081d0414342b2e410"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b080b0a210c10148733e753b1b4ff7fcb4a05c67a086b8c698b99250a94e3e1f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b283f3c6446a897cb229ac5e5ec5d2887c188c7e19f24059d0372c0764a0dcc1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ab8834addd1841f1c2956e76a9ad07ba5de8baca81dcb20834ab0509c3c06c13"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "40e70dbc8a02f9af88b53433bb613530987d9cb816ac2225f2d723c40aa28571"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "8ea66fb664c3dfa1afd2f261fe9899ad1a3edfd8ceb83fb43e1d35136bdb41ae"
+    sha256 cellar: :any_skip_relocation, sonoma:            "a2b939bf2b019303372c0a586249644cbfae34da0fc124f61c0d41039b834279"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "acb9fe0f76e43403de2c4f013238038b1359c1aed573cb0081d0414342b2e410"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "b080b0a210c10148733e753b1b4ff7fcb4a05c67a086b8c698b99250a94e3e1f"
   end
 
   depends_on "maven" => :build
   depends_on "openjdk@21"
 
   def install
-    ENV["JAVA_HOME"] = Formula["openjdk@21"].opt_prefix
+    ENV["JAVA_HOME"] = formula_opt_prefix("openjdk@21")
     # changing the compiler because 6 is used by upstream and openjdk no longer supports it
-    system Formula["maven"].bin/"mvn", "package", "-Dmaven.compiler.source=8", "-Dmaven.compiler.target=8"
+    system formula_opt_bin("maven")/"mvn", "package", "-Dmaven.compiler.source=8", "-Dmaven.compiler.target=8"
 
     cd "target" do
       if build.head?
@@ -50,7 +51,7 @@ class CfrDecompiler < Formula
       doc.install doc_jar
       mkdir doc/"javadoc"
       cd doc/"javadoc" do
-        system Formula["openjdk@21"].bin/"jar", "-xf", doc/doc_jar
+        system formula_opt_bin("openjdk@21")/"jar", "-xf", doc/doc_jar
         rm_r("META-INF")
       end
     end
@@ -71,7 +72,7 @@ class CfrDecompiler < Formula
       }
     JAVA
     (testpath/"T.java").write fixture
-    system Formula["openjdk@21"].bin/"javac", "T.java"
+    system formula_opt_bin("openjdk@21")/"javac", "T.java"
     output = pipe_output("#{bin}/cfr-decompiler --comments false T.class")
     assert_match fixture, output
   end

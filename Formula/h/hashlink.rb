@@ -1,40 +1,32 @@
 class Hashlink < Formula
   desc "Virtual machine for Haxe"
   homepage "https://hashlink.haxe.org/"
+  url "https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.16.tar.gz"
+  sha256 "c392ce6e1d3670bcb60c85d83a161591707de9cdb6b00b48e79f9ea7807fc5a9"
   license "MIT"
-  revision 1
   head "https://github.com/HaxeFoundation/hashlink.git", branch: "master"
 
-  stable do
-    url "https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.15.tar.gz"
-    sha256 "3c3e3d47ed05139163310cbe49200de8fb220cd343a979cd1f39afd91e176973"
-
-    # Backport fix for arm64 linux, https://github.com/HaxeFoundation/hashlink/pull/765
-    patch do
-      url "https://github.com/HaxeFoundation/hashlink/commit/6794cdbe4407d26f405e5978890de67d4d42a96d.patch?full_index=1"
-      sha256 "fe885f32e89831a3269cb0da738316843af8ee80f55dc859c97a9cfb1725e7d8"
-    end
-  end
-
   bottle do
-    rebuild 2
-    sha256 cellar: :any,                 arm64_tahoe:   "63eb38d4dbc69ab9f8c71ecfd3c8b1f81673ddf015454e0141289747c0ac4269"
-    sha256 cellar: :any,                 arm64_sequoia: "f81bd39b0a2962b274cad50e95190e5c86d4f9da5cbd27b8b5a7a3c807e3af00"
-    sha256 cellar: :any,                 arm64_sonoma:  "454fec90a208dd51f0a65bb848be96e8f343c2c1b038c7f26a7805cae6c74dbb"
-    sha256 cellar: :any,                 sonoma:        "8e5ebb95cd5752506bef4698f51e476d7de12aa64ed962a0664a48ffc63d60d8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "48372fc177336412549a92467756268d1da1ca27718ef3b68b2b4824bee10a8e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2d7d71f666e42bc1e991d8376470e7755653ec6b1629b4d080e2a5d3bb541b4d"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "ccb57d0a18737a1a13d72719b6d458d1cac451030d3e9038a098a89907c7a6d2"
+    sha256 cellar: :any, arm64_tahoe:       "1fea142f31dba20b19f08a1356ad960560071acfde00211a5f14105087c354ec"
+    sha256 cellar: :any, arm64_sequoia:     "6992c2e2183662a7fba3df186a2c996d21561cd45cb418d4a23b1135bd526240"
+    sha256 cellar: :any, arm64_linux:       "2e2c30a5a813cace3208c460d4f76715f73806c7094319ca8d1ea9765c5f5ec9"
+    sha256 cellar: :any, x86_64_linux:      "62190ca7bad1f1feb11e38b998dc5f35901fc96dcb6143205547aac7c5cf491b"
   end
 
+  deprecate! date: "2027-03-31", because: "needs deprecated `haxe` which needs EOL `mbedtls@3`"
+
+  depends_on "pkgconf" => :build
   depends_on "haxe" => :test
   depends_on "jpeg-turbo"
   depends_on "libogg"
   depends_on "libpng"
   depends_on "libuv"
   depends_on "libvorbis"
-  depends_on "mbedtls@3"
+  depends_on "mbedtls"
   depends_on "openal-soft"
-  depends_on "sdl2-compat"
+  depends_on "sdl3"
 
   uses_from_macos "sqlite"
 
@@ -48,12 +40,7 @@ class Hashlink < Formula
     # NOTE: This installs lib/*.hdll files which would be audited by `--new`.
     # These appear to be renamed shared libraries specifically used by HashLink.
     args = ["PREFIX=#{prefix}"]
-
-    if OS.linux?
-      args << "ARCH=arm64" if Hardware::CPU.arm?
-      # On Linux, also set RPATH in LIBFLAGS, so that the linker will also add the RPATH to .hdll files.
-      inreplace "Makefile", "LIBFLAGS =", "LIBFLAGS = -Wl,-rpath,${INSTALL_LIB_DIR}"
-    end
+    args << "ARCH=arm64" if OS.linux? && Hardware::CPU.arm?
 
     system "make", *args
     system "make", "install", *args

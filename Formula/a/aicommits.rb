@@ -1,15 +1,17 @@
 class Aicommits < Formula
   desc "Writes your git commit messages for you with AI"
   homepage "https://github.com/Nutlope/aicommits"
-  url "https://registry.npmjs.org/aicommits/-/aicommits-3.4.0.tgz"
-  sha256 "1510a60a74d886065293608cd2a40abefa7dec2ae02ccfa4aee2623f3cb07724"
+  url "https://registry.npmjs.org/aicommits/-/aicommits-4.2.2.tgz"
+  sha256 "99cdc88298beb754cb704a49871ea163ce7f8f73f4966266db8e6f2c282d4552"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "64b72a5992dee039b581e85ad554c9d8524c913017dba7b6979747fdb4bf469d"
+    sha256 cellar: :any_skip_relocation, all: "d74186c66f6dc810e74c4ece8d260b0ec7c61c479d1218ac1864cdaeb19cbdb6"
   end
 
   depends_on "node"
+
+  deny_network_access! [:postinstall, :test]
 
   def install
     system "npm", "install", *std_npm_args

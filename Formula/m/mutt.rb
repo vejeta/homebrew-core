@@ -10,9 +10,9 @@
 class Mutt < Formula
   desc "Mongrel of mail user agents (part elm, pine, mush, mh, etc.)"
   homepage "http://www.mutt.org/"
-  url "https://ftp.osuosl.org/pub/mutt/mutt-2.4.0.tar.gz"
-  mirror "http://ftp.mutt.org/pub/mutt/mutt-2.4.0.tar.gz"
-  sha256 "8f6ca2ef42f8f07cdc8ec391e8aa41a702490eae55ac72016b0b94ddf44ae292"
+  url "https://ftp.osuosl.org/pub/mutt/mutt-2.4.2.tar.gz"
+  mirror "http://ftp.mutt.org/pub/mutt/mutt-2.4.2.tar.gz"
+  sha256 "2703ff1a51a99c3163d4fd998ac22e982bbd5493d512a7c5bde716a8adba0394"
   license "GPL-2.0-or-later"
 
   livecheck do
@@ -21,12 +21,12 @@ class Mutt < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "583d2f9f185f759353e0043d3949b7e638cf4d0561c31f60f230b1f89d45cf73"
-    sha256 arm64_sequoia: "278d34cad76edf2bc9737ca0d6dae4679224119dab01cace556c422674a2f43b"
-    sha256 arm64_sonoma:  "867fd98d847854606e1dad1a91bfb330f66679c2f43725076b360c9b2e31fd97"
-    sha256 sonoma:        "eca1a996bcad104f2418feb012484e5e4ad3003f86d900a2d31e47d2bb296e15"
-    sha256 arm64_linux:   "39a813e4ee156f610c89f5d231c310893e38deabbad5ad9edcea44430440aad7"
-    sha256 x86_64_linux:  "062449bfd8b45ec93d42ec205794e69ab84513cbf5ec52332f8b5b4ca0810851"
+    sha256 arm64_golden_gate: "695ca4f237e987b8121e9997a05b73d83654394624f737e45b5bb733d8d35a6f"
+    sha256 arm64_tahoe:       "85472b3588f5f0d7468c28564740d94f4ba8b76003f719d20394795cdabd3cd2"
+    sha256 arm64_sequoia:     "d0e62c89594c32f7635a125b454d79dc2b38104d2d64d57456a45e32b65103ca"
+    sha256 arm64_sonoma:      "91ed9e4e9b0d6885c48355265dd724e6efd685639e4c34e1a2560db10801fdae"
+    sha256 arm64_linux:       "dac27c9ff346a88230810b1084725f3bbd3f60fc1de3795803c914b4bcc1e263"
+    sha256 x86_64_linux:      "543d6134dfaa023dd55d1833c0d793573634e6ec448bbfcc7490c4ef220cbaa2"
   end
 
   head do
@@ -82,7 +82,7 @@ class Mutt < Formula
       --with-idn2
       --with-lmdb
       --with-sasl
-      --with-ssl=#{Formula["openssl@3"].opt_prefix}
+      --with-ssl=#{formula_opt_prefix("openssl@3")}
     ]
 
     configure = build.head? ? "./prepare" : "./configure"

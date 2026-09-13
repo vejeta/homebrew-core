@@ -1,25 +1,24 @@
 class GoCamo < Formula
   desc "Secure image proxy server"
   homepage "https://github.com/cactus/go-camo"
-  url "https://github.com/cactus/go-camo/archive/refs/tags/v2.7.4.tar.gz"
-  sha256 "5f9122ce87e665a37e1644400b8564a600f6db39f0f55eec9d72aedb5c867c08"
+  url "https://github.com/cactus/go-camo/archive/refs/tags/v2.7.6.tar.gz"
+  sha256 "81edd70f806ac4e2b5a3cc0c2ce3493de4b54395c6e741e45b4efbccb295b71a"
   license "MIT"
   head "https://github.com/cactus/go-camo.git", branch: "master"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "919f42541c908c62a60c840c0f26867c82332d237b5e82ebdf8cadb1684ef8b8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "087d894955e5ace72ca2ce2c2c3b3b5d6f76d1f68352db07a9e769bf27f9ec00"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6965c254dfc62dc37fcfb3413ad6290f8390f5e3ad783a83195133c724a65501"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1d01cb7bac65afcf2f9b997e99f33bd93823ecb3ce5f357824f5e232d561507e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5f74c83ea332825549ff79daf04345787159c9aaa576dc6f6a918175d298082f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c0750cda508bfdbfb22b97ffe80d5fbd3554d11e8e1d1938c6830036484e4233"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "e5bab641261f28e9fca0b464271ad70f72a3ec6f7fe0b52e37b0c752664c6181"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9201bf242753aad3e3079ba521736da298f6ee07fd606aa9444ed6019550b3ef"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "56eca7ac0c1e597dbe48cba793e2e8511b4ee1f4975eaa2dbb4dc7805fa00d47"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "a47f0fd499638f9df31f04118713c7907e77da5f96b6218042f404661a158bbf"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "6a5439264d7fb6e5f2283bfbb226ae766d009e69c8466d26de972f052a286708"
+    sha256 cellar: :any,                 x86_64_linux:      "c7c2cc3acf8a187a737ad77b8e088a4c3099c097c1048749579900af6ba23809"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.ServerVersion=#{version}"
+    ldflags = "-X main.ServerVersion=#{version}"
     tags = "netgo,production"
     system "go", "build", *std_go_args(ldflags:, tags:), "./cmd/go-camo"
     system "go", "build", *std_go_args(ldflags:, tags:, output: bin/"url-tool"), "./cmd/url-tool"

@@ -1,8 +1,8 @@
 class Coder < Formula
   desc "Tool for provisioning self-hosted development environments with Terraform"
   homepage "https://coder.com"
-  url "https://github.com/coder/coder/archive/refs/tags/v2.33.9.tar.gz"
-  sha256 "a4ca9e6b4f0c74cd0e1df3ddb48572f578df892f8f336d4230216f9d47a7764c"
+  url "https://github.com/coder/coder/archive/refs/tags/v2.36.5.tar.gz"
+  sha256 "50bb05d9e5e0d2cba499a7479b293e620cc868c5a1f58c1314d07648ae9daef3"
   license "AGPL-3.0-only"
   head "https://github.com/coder/coder.git", branch: "main"
 
@@ -15,19 +15,19 @@ class Coder < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "08627790262cdacbde623a3da6c1b97d6017c53e2e955c946130c1ef90fb5133"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d6b5a40bd7415867d13f6d50286c40adf3989068d1af8e02012ef549630cc75d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9906fd1cde1872bfae361317cb0e9b8b3c78613405f86404f4fc9866ae1bff47"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e368aee4256d03df825b4945d2522d4971f57196fa9401b88608ac58f03f5e44"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "df1b4e831ad82e5d1130ad68726eb0f8b67fe4a8c25641afa72f9485895ca870"
-    sha256 cellar: :any,                 x86_64_linux:  "8136904c1c74f470f6dfe4d5d1e57eb4dee1daa09079e1bdddbfa9daab4f9a66"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "02f577235038184f4ad2c33a21b0b81066c7e4e302d15dd68ca5bc78b2ac11fd"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4e36e89aa052d371edf9af10a3f31ddc990a38453c54efce695b4940be763510"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3beb7dd80e7f4b729c888732fda28132a2fc18ceb807ae7bb97c344007fa75d7"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e15784163eb5cb461f20cff94fc5fa787050063dcfd25bce103d09736871341c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d12f60326544151f473b01b73b315178fa83ad1c1a0746bd47f6e343a7cd09ad"
+    sha256 cellar: :any,                 x86_64_linux:      "255eb401b9f7fdd55e4e935528244ebf51e5a3849f27dbc5d198d59f93d244ab"
   end
 
-  depends_on "go" => :build
+  # TODO: unpin go@1.26 when coder supports go 1.27
+  depends_on "go@1.26" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/coder/coder/v2/buildinfo.tag=#{version}
       -X github.com/coder/coder/v2/buildinfo.agpl=true
     ]

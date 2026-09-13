@@ -1,10 +1,10 @@
 class Cmake < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
-  url "https://github.com/Kitware/CMake/releases/download/v4.3.4/cmake-4.3.4.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/cmake-4.3.4.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/legacy/cmake-4.3.4.tar.gz"
-  sha256 "fdeff897b9eb49d764539f2b1edc6eb7e1440df325678a97c1978499e931adda"
+  url "https://github.com/Kitware/CMake/releases/download/v4.4.3/cmake-4.4.3.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/cmake-4.4.3.tar.gz"
+  mirror "http://fresh-center.net/linux/misc/legacy/cmake-4.4.3.tar.gz"
+  sha256 "c46400618b4f1f2b43507f24fb22f3ae830c3416cf23b776e16e1d413aa892f0"
   license "BSD-3-Clause"
   compatibility_version 1
   head "https://gitlab.kitware.com/cmake/cmake.git", branch: "master"
@@ -18,14 +18,15 @@ class Cmake < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "57153a33735188968afebfaa33c6f09760e87abb20e8d13034c7e0491b8fc1cf"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5648b07aa9fefcae2347c2293b87230f89977a8175c9aa25e4ef453199474852"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1276a30a3f7f8defd40c957d0ec4f8df1fcede8d94788d7b01de778e1769c1bb"
-    sha256 cellar: :any_skip_relocation, tahoe:         "c4c176ac29045aa72314f6563c827276bcfdc42cd12cfd4f4380dd72e77ae9bd"
-    sha256 cellar: :any_skip_relocation, sequoia:       "a10ac458fc4f92c88ceff5ea6d954b84e04b9ceaaa14abb8680a091e7e413982"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c4e028b74980910a9a949a9b7ff6e2c09b52311afa2b5e6f1d37236a6ac1db28"
-    sha256 cellar: :any,                 arm64_linux:   "3e2c7898dae65acfb80afc75482baeb9549f7cc0ec50a02bfc5b14d4f0d0de6a"
-    sha256 cellar: :any,                 x86_64_linux:  "5e9c12e11e9145146204f2d7e8ead6559b748cbcdff3253b68b5158e9f35b630"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f0687dd7fc33beea223f96946fb64b2dc1345990048b145bc160f9db218b3975"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "0a53d2312ce16641029e616591e15dd256258401b401f5663d9560fddf78fc25"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "49b8b85daec411080b7cfaaaed84846d1e08c366ddb27b199e61ff21cf881646"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "d50416765d0be66fba64b845e9198c9185a9b26a4baea54a50996c3a68b56238"
+    sha256 cellar: :any_skip_relocation, tahoe:             "9e321dc7e2f284ece5f048949ad98caeabc9c5fd853c90a1d2c930a33e0bf44e"
+    sha256 cellar: :any_skip_relocation, sequoia:           "0422f40c02b98e088ffe0a8f37c6b7efb24ed4f8832cb9efe0e53f97225e586f"
+    sha256 cellar: :any_skip_relocation, sonoma:            "f4176e173808ea4a59acb6182ec5bbb0be6fe3e452dbdfd0f8303a6377b13fee"
+    sha256 cellar: :any,                 arm64_linux:       "bc56c4bb2c45965103d613f962e9d0ec14989fc9355a908686cfe17532317bef"
+    sha256 cellar: :any,                 x86_64_linux:      "b37d85310c00b84eaaa62fa96d51251f6f59fba39e36495eab224f0b76909043"
   end
 
   uses_from_macos "ncurses"
@@ -34,7 +35,7 @@ class Cmake < Formula
     depends_on "openssl@3"
   end
 
-  conflicts_with cask: "cmake-app"
+  deny_network_access!
 
   def install
     args = %W[

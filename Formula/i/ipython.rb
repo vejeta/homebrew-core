@@ -3,30 +3,25 @@ class Ipython < Formula
 
   desc "Interactive computing in Python"
   homepage "https://ipython.org/"
-  url "https://files.pythonhosted.org/packages/e2/23/3a27530575643c8bb7bfc757a28e2e7ef80092afbf59a2bc5716320b6602/ipython-9.14.1.tar.gz"
-  sha256 "f913bf74df06d458e46ced84ca506c23797590d594b236fe60b14df213291e7b"
+  url "https://files.pythonhosted.org/packages/b9/32/99451b1283ec5d92ad77073f12e1c667dc10775384d8f15c2914207149dd/ipython-9.17.1.tar.gz"
+  sha256 "8919be8c27f20a6f4423145028063f6637b42a03ce57665bb12015ee1f073529"
   license "BSD-3-Clause"
   head "https://github.com/ipython/ipython.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a7dfcb6094874fb3ebe359726ed07d3b1e9c53f2d9a554d05d899ca06f3b26b1"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f1cf1c11f148a3ccc73d0cdd698e1560e07f6313583b512f63624fe67aae2b05"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "53a6ad8d9e9f9880817af47dd85b2c1b54ac7b1548e2148becdfd7c3f3461b0d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8d0084fd7d629a2fb9a277d1c4e44a2041a71f8157f922ecb492136bfc7f0e4a"
-    sha256 cellar: :any,                 arm64_linux:   "0b79dd344224fe0e4698acba7d4ae3d688c51cc577970a1c513bff5078f729bb"
-    sha256 cellar: :any,                 x86_64_linux:  "aaf18cd2f7a74cdb225e9cc64b887239e9dd94ff7960e374b1104a6fcfa52ca9"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "bf498fb6f0b79540161f997f49d590f493e91196b6a0560bc0f507f7d24ea243"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e9c5a8fa8341fd0e8366b3809b69d1c33ec448ea49c7665359e4704b6cc459ec"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ede02525b1d8a6565ec5629eb6bb368c711b829f1d59fea0c29131c787efabfe"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "c1dce825656a8f617f06edcc9b7eb1e176396b854666d33463790765c62c9152"
+    sha256 cellar: :any,                 arm64_linux:       "42657843c15ee8a448c391fcdf56c760ae15089f14619b14a7b5833ae42009c5"
+    sha256 cellar: :any,                 x86_64_linux:      "9b0aa6632516554f6a45a3c09af25c934a6c527ffb5aedf1d10746923f2c878b"
   end
 
   depends_on "python@3.14"
 
   resource "asttokens" do
-    url "https://files.pythonhosted.org/packages/be/a5/8e3f9b6771b0b408517c82d97aed8f2036509bc247d46114925e32fe33f0/asttokens-3.0.1.tar.gz"
-    sha256 "71a4ee5de0bde6a31d64f6b13f2293ac190344478f081c3d1bccfcf5eacb0cb7"
-  end
-
-  resource "decorator" do
-    url "https://files.pythonhosted.org/packages/60/8b/32f9823da46cde7df2087faa08cd98d01b908f8dcab982cdba9c84e85355/decorator-5.3.1.tar.gz"
-    sha256 "4cbcdd55a6efadb9dbea26b858f4fb3264567b52d69ca0d25b721b553f60ea82"
+    url "https://files.pythonhosted.org/packages/25/1e/faf0f247f6f881b98fc4d6d07e14085cb89d13665084e6d6ac1dc2c03d0b/asttokens-3.0.2.tar.gz"
+    sha256 "3ecdbd8f2cc195f53ccada3a613538bb5f9ef6f6869129f13e03c30a677b8fe2"
   end
 
   resource "executing" do
@@ -60,8 +55,8 @@ class Ipython < Formula
   end
 
   resource "prompt-toolkit" do
-    url "https://files.pythonhosted.org/packages/a1/96/06e01a7b38dce6fe1db213e061a4602dd6032a8a97ef6c1a862537732421/prompt_toolkit-3.0.52.tar.gz"
-    sha256 "28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855"
+    url "https://files.pythonhosted.org/packages/7d/ea/39b988c938f75cb75d7045b5c69f8bfed47ee2152c8837fb403de29d6fb8/prompt_toolkit-3.0.53.tar.gz"
+    sha256 "9ec8a0ad96d5c56148b3f914aa79c1564c3fde5d2e6b876e7bc327e353cf8fa6"
   end
 
   resource "psutil" do
@@ -80,8 +75,8 @@ class Ipython < Formula
   end
 
   resource "pygments" do
-    url "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz"
-    sha256 "6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"
+    url "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da6b31b0021b0f37d329e202d4169aeb164493778f25b/pygments-2.21.0.tar.gz"
+    sha256 "610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c"
   end
 
   resource "stack-data" do
@@ -90,13 +85,13 @@ class Ipython < Formula
   end
 
   resource "traitlets" do
-    url "https://files.pythonhosted.org/packages/57/a9/a2584b8313b89f94869ddb3c4074617a691de1812a614d2d50e32ca5a7a6/traitlets-5.15.1.tar.gz"
-    sha256 "7b1c07854fe25acb39e009bae49f11b79ff6cbb2f27999104e9110e7a6b53722"
+    url "https://files.pythonhosted.org/packages/2c/2e/a7fbfe268c8a3b32546930c0297c101d65a4a14c304ad5790a9f478f0e4e/traitlets-5.16.1.tar.gz"
+    sha256 "ed900c2b631aa3a112811139fa97b8d2c3bad5e989656bba4b7e52c7852c18c1"
   end
 
   resource "wcwidth" do
-    url "https://files.pythonhosted.org/packages/2c/ee/afaf0f85a9a18fe47a67f1e4422ed6cf1fe642f0ae0a2f81166231303c52/wcwidth-0.7.0.tar.gz"
-    sha256 "90e3a7ea092341c44b99562e75d09e4d5160fe7a3974c6fb842a101a95e7eed0"
+    url "https://files.pythonhosted.org/packages/36/57/ed58088fafdf4c55a0ad6bde846502567645424d7ebf325230b9237f4085/wcwidth-0.8.3.tar.gz"
+    sha256 "d128512515fbf4612e0ff21fd6380399210318b7b54a9af59dff8454cf9730eb"
   end
 
   def install

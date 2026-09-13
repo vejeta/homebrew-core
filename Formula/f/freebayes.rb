@@ -20,12 +20,13 @@ class Freebayes < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "6ac99ac74405aba54f7b65a2b36ca561ba46b5566829dc1c2b9758cc8be12aca"
-    sha256 cellar: :any, arm64_sequoia: "514ae73cd4c7187fd2bbcbb18ac5f6f688ac03f389e7ec93c50fc29136f2c5be"
-    sha256 cellar: :any, arm64_sonoma:  "7c97223f0041563242414bd68dc319fd288d7521add1d8f87671f98f8ba79c64"
-    sha256 cellar: :any, sonoma:        "1a6e217f03bd2122f3ef8ab00c72ae7780018794ffb8dc67972760dd2b3bf727"
-    sha256               arm64_linux:   "4eba699d3f1534639286e3b1f8b5aa3dad87a474bff7d99a92c35a6298f2d3df"
-    sha256               x86_64_linux:  "9bff5501fddada4a471d2b1d8580bf71e7dbf7ad405ca7b7381ae3050bd6e775"
+    sha256 cellar: :any, arm64_golden_gate: "ff276b47041a9d546f9a7dc04c7d4d721a62470d8520c50e7d90fd580e3d1503"
+    sha256 cellar: :any, arm64_tahoe:       "6ac99ac74405aba54f7b65a2b36ca561ba46b5566829dc1c2b9758cc8be12aca"
+    sha256 cellar: :any, arm64_sequoia:     "514ae73cd4c7187fd2bbcbb18ac5f6f688ac03f389e7ec93c50fc29136f2c5be"
+    sha256 cellar: :any, arm64_sonoma:      "7c97223f0041563242414bd68dc319fd288d7521add1d8f87671f98f8ba79c64"
+    sha256 cellar: :any, sonoma:            "1a6e217f03bd2122f3ef8ab00c72ae7780018794ffb8dc67972760dd2b3bf727"
+    sha256               arm64_linux:       "4eba699d3f1534639286e3b1f8b5aa3dad87a474bff7d99a92c35a6298f2d3df"
+    sha256               x86_64_linux:      "9bff5501fddada4a471d2b1d8580bf71e7dbf7ad405ca7b7381ae3050bd6e775"
   end
 
   depends_on "cmake" => :build
@@ -45,6 +46,8 @@ class Freebayes < Formula
     patch do
       url "https://github.com/ekg/intervaltree/commit/aa5937755000f1cd007402d03b6f7ce4427c5d21.patch?full_index=1"
       sha256 "7ae1070e3f776f10ed0b2ea1fdfada662fcba313bfc5649d7eb27e51bd2de07b"
+      type :backport
+      resolves "https://github.com/ekg/intervaltree/pull/32"
     end
   end
 
@@ -54,7 +57,7 @@ class Freebayes < Formula
       s.gsub! "incdir = include_directories(", "incdir = include_directories('contrib',"
 
       # add tabixpp to library directories, https://github.com/mesonbuild/meson/issues/8091
-      s.gsub! "find_library('tabixpp'", "\\0, dirs: '#{Formula["tabixpp"].opt_lib}'"
+      s.gsub! "find_library('tabixpp'", "\\0, dirs: '#{formula_opt_lib("tabixpp")}'"
     end
 
     # install intervaltree

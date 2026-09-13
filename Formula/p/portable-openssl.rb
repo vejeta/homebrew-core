@@ -2,11 +2,9 @@ require File.expand_path("../../Abstract/portable-formula", __dir__)
 
 class PortableOpenssl < PortableFormula
   desc "Cryptography and SSL/TLS Toolkit"
-  homepage "https://openssl.org/"
-  url "https://github.com/openssl/openssl/releases/download/openssl-3.6.2/openssl-3.6.2.tar.gz"
-  mirror "https://www.openssl.org/source/openssl-3.6.2.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/openssl-3.6.2.tar.gz"
-  sha256 "aaf51a1fe064384f811daeaeb4ec4dce7340ec8bd893027eee676af31e83a04f"
+  homepage "https://openssl-library.org"
+  url "https://github.com/openssl/openssl/releases/download/openssl-4.0.2/openssl-4.0.2.tar.gz"
+  sha256 "736b467530f916737b7031310ccb21d8218c6229e61e8e160cd1d3458cd543a8"
   license "Apache-2.0"
 
   livecheck do
@@ -28,8 +26,8 @@ class PortableOpenssl < PortableFormula
 
   resource "cacert" do
     # https://curl.se/docs/caextract.html
-    url "https://curl.se/ca/cacert-2026-03-19.pem"
-    sha256 "b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171"
+    url "https://curl.se/ca/cacert-2026-08-13.pem"
+    sha256 "f66dff1bdf8f96060b8177976f8b7d9254bc89bc4db933d769f7384d28480bc9"
 
     livecheck do
       url "https://curl.se/docs/caextract.html"
@@ -67,9 +65,11 @@ class PortableOpenssl < PortableFormula
       no-legacy
       no-module
       no-shared
-      no-engine
     ]
   end
+
+  # Tests require network access
+  allow_network_access! :build
 
   def install
     # OpenSSL is not fully portable and certificate paths are backed into the library.

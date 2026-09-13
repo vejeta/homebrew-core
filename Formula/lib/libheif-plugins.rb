@@ -1,22 +1,21 @@
 class LibheifPlugins < Formula
   desc "ISO/IEC 23008-12:2017 HEIF file format decoder and encoder"
   homepage "https://www.libde265.org/"
-  url "https://github.com/strukturag/libheif/releases/download/v1.23.0/libheif-1.23.0.tar.gz"
-  sha256 "4c9182b18897617182eed12ab5eb9f9d855b3aa3a736d6bdb31abc034ec7d393"
+  url "https://github.com/strukturag/libheif/releases/download/v1.23.4/libheif-1.23.4.tar.gz"
+  sha256 "d0c02b4b0e978f34a1974b6f3eea7975a537bf7a9195ffeea38e7242ff316fdd"
   license "LGPL-3.0-or-later"
-  revision 2
 
   livecheck do
     formula "libheif"
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "845d6f5bc6c60db7243f5ca7e329b282d64da6375dd190ca22264580e7088158"
-    sha256 cellar: :any, arm64_sequoia: "328f4dd39597002192b4a8ffb15a59ffb0bfd1831e95243cb48f8c9c55573b58"
-    sha256 cellar: :any, arm64_sonoma:  "a3d678446689ad414665dcf580bfcb73e82b47bf586fd23f3fb06f7ff09893f2"
-    sha256 cellar: :any, sonoma:        "4cd0e6218e7cf096c615daad10ea001d028b319a2ca19597596993977ba1e1a5"
-    sha256 cellar: :any, arm64_linux:   "addfc733947efa0f2862707ec2bd134731249b4f2b51907c5831a6012d2a3f29"
-    sha256 cellar: :any, x86_64_linux:  "c955573f505b28904a4a659914ba76e519fc3a4c81724f5d8d0a62298adc6935"
+    sha256 cellar: :any, arm64_golden_gate: "7096690d937138bcd1d38263f897bf720d838ee5a10d94d9f2fa041cd3f437d5"
+    sha256 cellar: :any, arm64_tahoe:       "9cd1b18c4425d5e0e3b443d4ce55275a8ff669b6004deef6272d4ebc317379fb"
+    sha256 cellar: :any, arm64_sequoia:     "e97a838b80bee6f36eceeadf2e1e14a0866284929025d0daca9d4780490290e2"
+    sha256 cellar: :any, arm64_sonoma:      "2b4c4ecbb485d54f375d9ea33f865f2f2f9be1498ca5a500ecaea14315168dca"
+    sha256 cellar: :any, arm64_linux:       "9f851327fd6ba3af76802d167c82b36ffc3d8e240d42c7e4961f73a48cf5727b"
+    sha256 cellar: :any, x86_64_linux:      "6b93ce92fbcc185f1d17ecf8533532fcc06d900c40127f3f5a047c7203571f74"
   end
 
   depends_on "cmake" => :build
@@ -48,7 +47,7 @@ class LibheifPlugins < Formula
     ]
 
     args = %W[
-      -DCMAKE_INSTALL_RPATH=#{rpath(source: lib/"libheif", target: Formula["libheif"].opt_lib)}
+      -DCMAKE_INSTALL_RPATH=#{rpath(source: lib/"libheif", target: formula_opt_lib("libheif"))}
       -DPLUGIN_DIRECTORY=#{HOMEBREW_PREFIX}/lib/libheif
       -DPLUGIN_INSTALL_DIRECTORY=#{lib}/libheif
       -DWITH_AOM_DECODER=OFF
@@ -66,7 +65,7 @@ class LibheifPlugins < Formula
   end
 
   test do
-    libheif_bin = Formula["libheif"].bin
+    libheif_bin = formula_opt_bin("libheif")
     decoders = shell_output("#{libheif_bin}/heif-dec --list-decoders")
     encoders = shell_output("#{libheif_bin}/heif-enc --list-encoders")
 

@@ -1,23 +1,33 @@
 class ForgejoCli < Formula
   desc "CLI tool for interacting with Forgejo"
   homepage "https://codeberg.org/forgejo-contrib/forgejo-cli"
-  url "https://codeberg.org/forgejo-contrib/forgejo-cli/archive/v0.5.0.tar.gz"
-  sha256 "028ebcbd744301fbfd144cd9bc5ff0a27e02d99b02c8abafb20742299715c556"
   license any_of: ["Apache-2.0", "MIT"]
   head "https://codeberg.org/forgejo-contrib/forgejo-cli.git", branch: "main"
 
+  stable do
+    url "https://static.crates.io/crates/forgejo-cli/forgejo-cli-0.6.0.crate"
+    sha256 "4d56acd6ab5caab2870d6e301cd6e42741ca98761fc1d5890dad09b21b44780e"
+
+    # Fix issue with shell completions.
+    # Remove with `stable` block with next release.
+    patch do
+      url "https://codeberg.org/forgejo-contrib/forgejo-cli/commit/42136622787b3a289b80565d2756263394dda855.patch"
+      sha256 "f1ac36eb47411b1c11b1200de1750040a94f456b26655eeab1971c3767b28bec"
+    end
+  end
+
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "da03e5e9283bacfecb9085684ba35701932a95254486a5d25b841f898715bcc5"
-    sha256 cellar: :any,                 arm64_sequoia: "50ef4d22fdd29d0144769db602da1a46098c6649959f702c7193a6ce55a474af"
-    sha256 cellar: :any,                 arm64_sonoma:  "b1d585c8520c57d6cb8a2309e3ea1ca71cdc278e371b3ed35d58645b1ea6af54"
-    sha256 cellar: :any,                 sonoma:        "90fdf8e55f03114a11c912f20ea1eeb60c09f26a69628ce94c6e1a5d9066076b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "dee5a25bc9af4873f25cadd9152a7b43a7fe9f281694cc617d9b7c5a181ee4e0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8bd9495f4637a8392608b9dfb0cb76c9b1e4a6fac326e5ef29008ee232d1f218"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:   "bb4370c4503b1feefe1cdbab8600560eb5ec835f3b21558dbee10571a8a06b07"
+    sha256 cellar: :any, arm64_sequoia: "870b77f42e1e571568d9e8d4d9e0fc319fa1244b76d21ddb35e1c9a8282b38ff"
+    sha256 cellar: :any, arm64_sonoma:  "a005e1e6a4af9b758807729c633a3eadd197f0d1a30360ecdcf1cb463e776fba"
+    sha256 cellar: :any, arm64_linux:   "47e4ec22711a753fbc539a9ce817ba6b2670736254c1685255f6bc0b16e9a18d"
+    sha256 cellar: :any, x86_64_linux:  "8c30ca23f99312e2b6cb420b5308673890063e8abf61dc8981b98cfe301d4bc2"
   end
 
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   on_linux do
     depends_on "zlib-ng-compat"

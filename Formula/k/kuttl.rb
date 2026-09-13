@@ -7,12 +7,13 @@ class Kuttl < Formula
   head "https://github.com/kudobuilder/kuttl.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4cda7934094575e8a9788d66e5ecc75a22f840132020b1752e2b96c517c3cb02"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "01f2b46e610f641f50cf50cfc01c56b960b7fc5e28acf8b1e837149628db1e35"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6076a9df8d80b2dd8a6367bf86f6a2e4dc592c68ff94bc484596d57718247ecd"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1ad73996974ea968b07c6cbe3548e8d0bc9822d401329fa2124b212163d6e80d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "add1eafb789240a5f286712a64053edb434003ac3981690691c13f373edf7e58"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f56b90a6d0bcc3ada605317e74a64851e87435018d3c3a8205fa56d1f00bfad2"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b0675852e594d39b3bb7f4a618c56b0b0426ed3f9cb9cc3ca08e74f6bad71f86"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4cda7934094575e8a9788d66e5ecc75a22f840132020b1752e2b96c517c3cb02"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "01f2b46e610f641f50cf50cfc01c56b960b7fc5e28acf8b1e837149628db1e35"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6076a9df8d80b2dd8a6367bf86f6a2e4dc592c68ff94bc484596d57718247ecd"
+    sha256 cellar: :any_skip_relocation, sonoma:            "1ad73996974ea968b07c6cbe3548e8d0bc9822d401329fa2124b212163d6e80d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "add1eafb789240a5f286712a64053edb434003ac3981690691c13f373edf7e58"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "f56b90a6d0bcc3ada605317e74a64851e87435018d3c3a8205fa56d1f00bfad2"
   end
 
   depends_on "go" => :build
@@ -21,7 +22,6 @@ class Kuttl < Formula
   def install
     project = "github.com/kudobuilder/kuttl"
     ldflags = %W[
-      -s -w
       -X #{project}/internal/version.gitVersion=v#{version}
       -X #{project}/internal/version.gitCommit=#{tap.user}
       -X #{project}/internal/version.buildDate=#{time.iso8601}
@@ -36,7 +36,7 @@ class Kuttl < Formula
     assert_match version.to_s, version_output
     assert_match stable.specs[:revision].to_s, version_output
 
-    kubectl = Formula["kubernetes-cli"].opt_bin / "kubectl"
+    kubectl = formula_opt_bin("kubernetes-cli") / "kubectl"
     assert_equal version_output, shell_output("#{kubectl} kuttl version")
 
     (testpath / "kuttl-test.yaml").write <<~YAML

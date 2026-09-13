@@ -1,10 +1,10 @@
 class Imagemagick < Formula
   desc "Tools and libraries to manipulate images in select formats"
-  homepage "https://imagemagick.org/index.php"
-  url "https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-25/ImageMagick-7.1.2-25.7z"
-  sha256 "a83f48a58e9d5f0fd7a6712bdc1ee76281c8f429d1dbc9b05b47719eaabb1dfb"
+  homepage "https://imagemagick.org"
+  url "https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-31/ImageMagick-7.1.2-31.7z"
+  sha256 "a050a1f6b632cf3a5b326fe6fb863790ce4d52d55fba9c6a7645b42599660e18"
   license "ImageMagick"
-  compatibility_version 1
+  compatibility_version 3
   head "https://github.com/ImageMagick/ImageMagick.git", branch: "main"
 
   livecheck do
@@ -14,12 +14,12 @@ class Imagemagick < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "4bf60da9f162896e27798f7e95036f5675dee9af2b404f8b82b43cc8202e571a"
-    sha256 arm64_sequoia: "440c3c25de2111cfea357c7b01571cbd2e6d8eee2550a08e3f550e5dd37e0d32"
-    sha256 arm64_sonoma:  "e258997a8c6266aef133eff6cd887633f95e393a1c41daef81c383da9fae6cbd"
-    sha256 sonoma:        "249a896708b5a45b736a2a09cb82339cf25313ee77e3600817c15f0d83610665"
-    sha256 arm64_linux:   "7f4fc242ad4742203cb4e93eec19acc8229e67bd37d6d1c21bd22b212b9ccde1"
-    sha256 x86_64_linux:  "bf7b73727561884518679549ffb7d10999abbce9ba766be652d1211942ed15ca"
+    sha256 arm64_golden_gate: "76cc147ed873f94f322ed398c00fc91308d2b91f7ce5456593cafc416e545f98"
+    sha256 arm64_tahoe:       "f72504a4f06aa03a45d787ea6fb43d14d31833b85d128b317a9a9b6ec0da62c9"
+    sha256 arm64_sequoia:     "035185eb153f354021cf8aa54022ec42a2064f07c0de5118424066a8eed98755"
+    sha256 arm64_sonoma:      "39624884b98c527f93677951289db3759cb902a8d73f69552a73fb65903a7bca"
+    sha256 arm64_linux:       "5949df67af1593e6d2b82ca721d1029174707f4f9aa8d47d436882a4dd06afa9"
+    sha256 x86_64_linux:      "c26e8a7a710f22a741474f32c3f8b034adf53d18fc15e372d2addce4469302df"
   end
 
   depends_on "pkgconf" => :build
@@ -47,9 +47,11 @@ class Imagemagick < Formula
 
   skip_clean :la
 
+  deny_network_access!
+
   def install
     # Avoid references to shim
-    inreplace Dir["**/*-config.in"], "@PKG_CONFIG@", Formula["pkg-config"].opt_bin/"pkg-config"
+    inreplace Dir["**/*-config.in"], "@PKG_CONFIG@", formula_opt_bin("pkg-config")/"pkg-config"
     # versioned stuff in main tree is pointless for us
     inreplace "configure", "${PACKAGE_NAME}-${PACKAGE_BASE_VERSION}", "${PACKAGE_NAME}"
 

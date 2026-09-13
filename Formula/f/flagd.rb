@@ -2,8 +2,8 @@ class Flagd < Formula
   desc "Feature flag daemon with a Unix philosophy"
   homepage "https://flagd.dev"
   url "https://github.com/open-feature/flagd.git",
-      tag:      "flagd/v0.16.0",
-      revision: "80b9e9548163c1adbd28d45ca52364956e7fa08f"
+      tag:      "flagd/v0.16.3",
+      revision: "c643e5f033f64b2e192ad871133582a62069c568"
   license "Apache-2.0"
   head "https://github.com/open-feature/flagd.git", branch: "main"
 
@@ -18,12 +18,12 @@ class Flagd < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e8581d2077862dc033418e8732352b776a94e8f61e067d2129494e3a8ae7244f"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "be8818904d771753ac4f7a13aa48512b97dfbec25ccdf6b5c36d98f8ae108dfa"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "56b40a77d38f430655eff223f542b974963973f21dc1228615036e54c0a143c2"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a350e3bfef2e64733709bc7e9f09eec79d24135c98e0efbb29bfa3db9a0cdc46"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "82bc009fcdbe2f76fe1b8727c490cc2b550559aca1c6884cd097cd024329c1e7"
-    sha256 cellar: :any,                 x86_64_linux:  "44efbc94f7d377582551d237f7c73858f77e714c13c7e386811085bb993d2855"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1902541851dedaf8841cefd36f971a4eae4e6fb0a1884d5a61b202727a9de793"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "214cd430141c28c55a454c22751db046d5e5566429ad4e14be428222be4d0020"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "19376055e61121c2e19e937705f646d10899e461fcd51add9280ce6b6a2b9f05"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2a8e9b8e303bafa5a639ecd3756430c23ff65d078976515e7eac527874d7c643"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7cffdeb70f7aff7b9b5c809a34acd7f39e3030b1712e2a5a5cecc2997d8e9b59"
+    sha256 cellar: :any,                 x86_64_linux:      "ac0b0943b7a9763bb75f11b39c7153a7cfd549d5234255e4c3909b77773385ef"
   end
 
   depends_on "go" => :build
@@ -31,7 +31,6 @@ class Flagd < Formula
   def install
     ENV["GOPRIVATE"] = "buf.build/gen/go"
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.commit=#{Utils.git_head}
       -X main.date=#{time.iso8601}
@@ -56,7 +55,6 @@ class Flagd < Formula
     pid = spawn bin/"flagd", "start", "-f", json_url, "-p", port.to_s
     begin
       sleep 3
-      sleep 5 if OS.mac? && Hardware::CPU.intel?
       assert_match(/true/, shell_output(resolve_boolean_command))
     ensure
       Process.kill("TERM", pid)

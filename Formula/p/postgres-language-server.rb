@@ -1,18 +1,19 @@
 class PostgresLanguageServer < Formula
   desc "Language Server for Postgres"
   homepage "https://pg-language-server.com/"
-  url "https://github.com/supabase-community/postgres-language-server/archive/refs/tags/0.25.4.tar.gz"
-  sha256 "43b5305a268ffaa297b22adb05350e4e2c08a9a398dea45bf6cf990d1e9c94d0"
+  url "https://github.com/supabase-community/postgres-language-server/archive/refs/tags/0.25.7.tar.gz"
+  sha256 "83875c5ea149d2742f4ba777c14391148e790cb2364decae4d3b7365ce20fdd0"
   license "MIT"
   head "https://github.com/supabase-community/postgres-language-server.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "d5bae62fe118023912d0e76f19e7417fecaa54a76928b27a2ea459b6798767c9"
-    sha256 cellar: :any, arm64_sequoia: "6a5e473ce7555282e13de8ff1462d5d8b8d2ed9ec875d624cfff63b4e5ac06e9"
-    sha256 cellar: :any, arm64_sonoma:  "ae7440985288b2081f2876e263c2a064d3e344b4fb7fb69736470c300fc6d593"
-    sha256 cellar: :any, sonoma:        "5c14b751becf669e3e60c0b4188d4723d3c06e849c917d7b44159110a621699e"
-    sha256 cellar: :any, arm64_linux:   "02b2a22a3f0adbadd5d2964ff86de3c6890d828e637ae10545dedbe98cd8c40c"
-    sha256 cellar: :any, x86_64_linux:  "712f4e93860ef026c38dace0476af15153dcd8c05cbe512785fe85e46ccb4a01"
+    sha256 cellar: :any, arm64_golden_gate: "17c94da3cb20343716c8f0fec32bee46cc65daa7f5d6680d35b9b7374a924b4b"
+    sha256 cellar: :any, arm64_tahoe:       "036455622a7f0937d8fd4942a29fc39cd61d37f81f3d3d918d0736f1ac04f6a8"
+    sha256 cellar: :any, arm64_sequoia:     "41783ef3482d5565185f6992b7308c778b73c59f65bc5774301d780f235a84c3"
+    sha256 cellar: :any, arm64_sonoma:      "9611b6b3b4e0b65d2429dbe1209fde65e4f5d3638d27102dd233b76993b62728"
+    sha256 cellar: :any, sonoma:            "9179f011e065e36f32ce104ca98f6763628ac5c559eafd80a3e8cf08e9aae3ff"
+    sha256 cellar: :any, arm64_linux:       "183a50ee8c6e380149eb91059887a7d4e4d9b787d0249923c271e728eadbcad2"
+    sha256 cellar: :any, x86_64_linux:      "49fd561e20a2da4c4a00701640fba61621a6293c5081cfed6792970668149502"
   end
 
   depends_on "llvm" => :build
@@ -24,7 +25,7 @@ class PostgresLanguageServer < Formula
 
   def install
     ENV["PGLS_VERSION"] = version.to_s
-    ENV["LIBPG_QUERY_PATH"] = Formula["libpg_query"].opt_prefix
+    ENV["LIBPG_QUERY_PATH"] = formula_opt_prefix("libpg_query")
     system "cargo", "install", *std_cargo_args(path: "crates/pgls_cli")
   end
 

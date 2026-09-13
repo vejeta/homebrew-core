@@ -1,8 +1,8 @@
 class Dagger < Formula
   desc "Portable devkit for CI/CD pipelines"
   homepage "https://dagger.io"
-  url "https://github.com/dagger/dagger/archive/refs/tags/v0.21.7.tar.gz"
-  sha256 "f6b5e327f0fb51f4b8407a925df1d29b1ac3b1a32ff924c65da17f04176d7f9d"
+  url "https://github.com/dagger/dagger/archive/refs/tags/v0.21.9.tar.gz"
+  sha256 "652fffab225340df36ea4f65eded61628a9cf5f1dd2ac2f667aadaa5d84eb430"
   license "Apache-2.0"
   head "https://github.com/dagger/dagger.git", branch: "main"
 
@@ -12,21 +12,21 @@ class Dagger < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5008a2d25a6c2017dc99c52f01945bbbe4c575a9d2da6a94aa6b72921f24b166"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5008a2d25a6c2017dc99c52f01945bbbe4c575a9d2da6a94aa6b72921f24b166"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5008a2d25a6c2017dc99c52f01945bbbe4c575a9d2da6a94aa6b72921f24b166"
-    sha256 cellar: :any_skip_relocation, sonoma:        "91c16369880adb29326fb4894884791540fd80af8651875a13a68f893d490949"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d7b8a0e8beeb2eb673358e0b3642d031a98b2921f58554e8b35561b5f8245d51"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b856a9bc7fc5c29e0b48364bcac9030fbd67c8f483f2137978638e68a2963e8d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c006567c0c30ac15fa2ae409dc9038e775193e180d1ae9ce2c5c72b2f7376723"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c006567c0c30ac15fa2ae409dc9038e775193e180d1ae9ce2c5c72b2f7376723"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c006567c0c30ac15fa2ae409dc9038e775193e180d1ae9ce2c5c72b2f7376723"
+    sha256 cellar: :any_skip_relocation, sonoma:        "8af26bb659202fc0f636a248128080ae58d507f5eb82bc47e7146494cb2dc8ad"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "152fde54f74bfba2f50cf583263e309839d8fd73d6074a2a2a73dfbd7bc3f6b7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "010f907d51bbaa26e7d1ac8f1e10bb117532cb7f58c4406952f79ca795b23a47"
   end
 
-  depends_on "go" => :build
+  # TODO: switch back to `go` when x/net is bumped past v0.54.0 (broken with Go 1.27)
+  depends_on "go@1.26" => :build
   depends_on "docker" => :test
 
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
     ldflags = %W[
-      -s -w
       -X github.com/dagger/dagger/engine.Version=v#{version}
       -X github.com/dagger/dagger/engine.Tag=v#{version}
     ]

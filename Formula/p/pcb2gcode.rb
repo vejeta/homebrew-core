@@ -1,10 +1,26 @@
 class Pcb2gcode < Formula
   desc "Command-line tool for isolation, routing and drilling of PCBs"
   homepage "https://github.com/pcb2gcode/pcb2gcode"
-  url "https://github.com/pcb2gcode/pcb2gcode/archive/refs/tags/v3.0.4.tar.gz"
-  sha256 "46351d4b7479059becae064cc68f2d1d68d42ae314ff7a1d9a240c71a3c0c98c"
   license "GPL-3.0-or-later"
+  revision 1
   head "https://github.com/pcb2gcode/pcb2gcode.git", branch: "master"
+
+  stable do
+    url "https://github.com/pcb2gcode/pcb2gcode/archive/refs/tags/v3.0.4.tar.gz"
+    sha256 "46351d4b7479059becae064cc68f2d1d68d42ae314ff7a1d9a240c71a3c0c98c"
+
+    # Backport fix for newer Boost
+    patch do
+      url "https://github.com/pcb2gcode/pcb2gcode/commit/1120553b454625a888b113d0f1e241f7f379d771.patch?full_index=1"
+      sha256 "f3da7ab233cf12d7d0fa209add3492aed435b5c85f6dd0b89d172f2cc8f3eaac"
+      type :backport
+    end
+    patch do
+      url "https://github.com/pcb2gcode/pcb2gcode/commit/b3e196f97fde0a0c5bf5c9c32c163876d13976e1.patch?full_index=1"
+      sha256 "eb155e538ba346adfb33027e1b3869c81b12aade39b25f1d1709471f749abecd"
+      type :backport
+    end
+  end
 
   livecheck do
     url :stable
@@ -13,13 +29,16 @@ class Pcb2gcode < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "a0ee0759888cdc1df63db194da77d2d1964e3ca80149364809117b388090cdbb"
-    sha256 cellar: :any,                 arm64_sequoia: "1cb1185825413d823d5c5db4886a69942d932a909627a4136df485c8375c883d"
-    sha256 cellar: :any,                 arm64_sonoma:  "9c6d3d7d32f25c17bdaf908eff61bd3ff2660fde46d03baf3336f422f488723d"
-    sha256 cellar: :any,                 sonoma:        "67c13b9634a892c495204267d66b00635dbeb7ffe24ee088bffc61c18528f058"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ccf34a378edf5529f4a112acbc65ce4ddf2ff209eb5651221615ea014009ba44"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0788506858ed2a230f70518f05581ea109f6425593e7a74f78667067272a3215"
+    sha256 cellar: :any, arm64_golden_gate: "26e8e9c12d30a9a6dc13950743b270eba5c7c593a438ccbd07dab35cb7194eff"
+    sha256 cellar: :any, arm64_tahoe:       "cbe95f92cdb176d5c686ce4cc1bb1daffc7c787c868d34f868c17cc4b854ac4e"
+    sha256 cellar: :any, arm64_sequoia:     "2d32f276420a6405a587a6c5ae851011c441f99ff5e73252bcec33940c9b561f"
+    sha256 cellar: :any, arm64_sonoma:      "e9bbb4b5dda395d3f121db13f2d07e16e9c451820031c8f3b2f69ee39d055c07"
+    sha256 cellar: :any, arm64_linux:       "79db6cfd400cffa86c6e3a5edd88e88bab36f4fdcc4369602b7f0a574ac379b4"
+    sha256 cellar: :any, x86_64_linux:      "2320761478615db219ce64902e39e738397dd7f829214dbe910e35c4d4cf1487"
   end
+
+  deprecate! date: "2026-08-28", because: "uses deprecated `gerbv` which needs EOL `gtk+`"
+  disable! date: "2027-08-28", because: "uses deprecated `gerbv` which needs EOL `gtk+`"
 
   depends_on "cmake" => :build
   depends_on "pkgconf" => :build

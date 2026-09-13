@@ -1,8 +1,8 @@
 class Tanka < Formula
   desc "Flexible, reusable and concise configuration for Kubernetes using Jsonnet"
   homepage "https://tanka.dev"
-  url "https://github.com/grafana/tanka/archive/refs/tags/v0.37.3.tar.gz"
-  sha256 "ef2a0d390097fee64cd1e37b11f886b7abd4634a2b5ae90618449ee38ddba2d0"
+  url "https://github.com/grafana/tanka/archive/refs/tags/v0.39.0.tar.gz"
+  sha256 "9cf01cae4bdf45a8bf6474418dbc6556adc8eff9a4608c593068190993649c90"
   license "Apache-2.0"
   head "https://github.com/grafana/tanka.git", branch: "main"
 
@@ -12,12 +12,13 @@ class Tanka < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "83cc238fd19cfa147aa4d94a6800d9addba48d723ad588325b44abf186252201"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "83cc238fd19cfa147aa4d94a6800d9addba48d723ad588325b44abf186252201"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "83cc238fd19cfa147aa4d94a6800d9addba48d723ad588325b44abf186252201"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9df30b20e1a287b72dcfffa211a27d626ec4044fe0cde80e26b337ec5bbdda7c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "167a7c6831ab961d18c8da482b5cd108848aef0b1bf2252a843c738d647ed6e4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "25ec038ab5e8a0ef876cf5f6f589fb01ddfdc771a746c97d9e61d4f4fd912477"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0298e625fc254eebcc6658c908b354cbdab803cf6fbea791fb1bf24b7c963c7a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "499f2cd3facfe8e4375d80c89686b163cb17841a6853349792b1c50cb5f5a21d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "499f2cd3facfe8e4375d80c89686b163cb17841a6853349792b1c50cb5f5a21d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "499f2cd3facfe8e4375d80c89686b163cb17841a6853349792b1c50cb5f5a21d"
+    sha256 cellar: :any_skip_relocation, sonoma:            "e2e52abf7d02b92ccfd68383f72ea2256397231cd95335d3ea97cf0b3ab7edc2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "5daaa0d089b8c1d77f1fecbfe4e89b8854590f267418ceb68131b46422d1becd"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "2c9c5b6ee866fd9e6ec87266a405815f2a1d62741346fcb54b2bde01709bb580"
   end
 
   depends_on "go" => :build
@@ -25,10 +26,7 @@ class Tanka < Formula
 
   def install
     ENV["CGO_ENABLED"] = "0"
-    ldflags = %W[
-      -s -w
-      -X github.com/grafana/tanka/pkg/tanka.CurrentVersion=#{version}
-    ]
+    ldflags = %W[-X github.com/grafana/tanka/pkg/tanka.CurrentVersion=#{version}]
     system "go", "build", *std_go_args(ldflags:, output: bin/"tk"), "./cmd/tk"
   end
 

@@ -4,15 +4,16 @@ class Ncnn < Formula
   url "https://github.com/Tencent/ncnn/archive/refs/tags/20260526.tar.gz"
   sha256 "da1ade826bc22858a9fb87ae052789bbd614d042b3ec2c22e6544ca83db6bc04"
   license "BSD-3-Clause"
+  revision 5
   head "https://github.com/Tencent/ncnn.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "fc7a60dfe2b4bb70a850581c88b899b8cdb8599234fdb63bd19e57f04e70b5e6"
-    sha256 cellar: :any, arm64_sequoia: "7dc237211fb184b74f0c3c08a036bbe3fbe0c1019a120306f7d023ed991bfb27"
-    sha256 cellar: :any, arm64_sonoma:  "ac9473d5382a3962246d667970372e7a476d27401fbaebc03663f1a8981fb8ee"
-    sha256 cellar: :any, sonoma:        "bd86250c8cc5c6ad997822a2930a4faa6c5c0c6803aa0f5ea99c4f3290cd071a"
-    sha256               arm64_linux:   "229ad51bb9a6fd29d9fed21f33ae4775a5d018a21a866683e1496df2f29cc1ae"
-    sha256               x86_64_linux:  "bc5ff5f68cc4e85a11273877d967e9f8c7ab0524981a622a945084fb44b0e9cf"
+    sha256 cellar: :any, arm64_golden_gate: "2c17db6e43049e809fb5cd6acdd2b80b4fe65210e9e981c9bfaf5d12cbfa641a"
+    sha256 cellar: :any, arm64_tahoe:       "f273f90de600dcdb743d864829d3661d920a5c857c6c06b6922f1848b932436f"
+    sha256 cellar: :any, arm64_sequoia:     "d0e8d070276f2015dda656cc6b523d6520f79745e512ec9d5c932d657a00276a"
+    sha256 cellar: :any, arm64_sonoma:      "df92e9aa25d56103911c147d521dc1b0fe4cadfdd3a17ea09c506a9e92ee5f3a"
+    sha256               arm64_linux:       "26c65250954a7950cc67f6a919006f22b1041eed79ad83d88032b33e370835b3"
+    sha256               x86_64_linux:      "97cc5e2345c54d5e07fa684843247d7dc25cdd65dacce6de7d8489ccc9c1168c"
   end
 
   depends_on "cmake" => :build
@@ -43,14 +44,14 @@ class Ncnn < Formula
       -DNCNN_BUILD_BENCHMARK=OFF
       -DNCNN_BUILD_EXAMPLES=OFF
       -DNCNN_SYSTEM_GLSLANG=ON
-      -DGLSLANG_TARGET_DIR=#{Formula["glslang"].opt_lib}/cmake
+      -DGLSLANG_TARGET_DIR=#{formula_opt_lib("glslang")}/cmake
       -DNCNN_VULKAN=ON
     ]
 
     if OS.mac?
       args += %W[
-        -DVulkan_INCLUDE_DIR=#{Formula["molten-vk"].opt_include}
-        -DVulkan_LIBRARY=#{Formula["molten-vk"].opt_lib/shared_library("libMoltenVK")}
+        -DVulkan_INCLUDE_DIR=#{formula_opt_include("molten-vk")}
+        -DVulkan_LIBRARY=#{formula_opt_lib("molten-vk")/shared_library("libMoltenVK")}
       ]
 
       # Apple Clang 16 crashes compiling AVX-VNNI(-INT8) and AVX-512(BF16/FP16) intrinsics.

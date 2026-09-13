@@ -3,9 +3,10 @@ class KnotResolver < Formula
 
   desc "Minimalistic, caching, DNSSEC-validating DNS resolver"
   homepage "https://www.knot-resolver.cz"
-  url "https://secure.nic.cz/files/knot-resolver/knot-resolver-6.4.0.tar.xz"
-  sha256 "4f4bfe09f8d73b0ee7d670dd1c90f5f2ac0e9060f9b1478355f26f273746ac80"
+  url "https://knot-resolver.nic.cz/release/knot-resolver-6.4.2.tar.xz"
+  sha256 "854ad23367bab66392f7d74f142f2219e3090ae81126b635430fce7b1916f1a3"
   license all_of: ["CC0-1.0", "GPL-3.0-or-later", "LGPL-2.1-or-later", "MIT"]
+  revision 1
   head "https://gitlab.labs.nic.cz/knot/knot-resolver.git", branch: "master"
 
   livecheck do
@@ -14,12 +15,12 @@ class KnotResolver < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "fbd5c0e35c82dfc1137bfe286d9e1a11c4c00123eeb1dd73ea0c1cceebb08726"
-    sha256 arm64_sequoia: "bc327fdcf4b8775e77a5c2d279603e39de86de1c353a1b7948ec9c092e4b3790"
-    sha256 arm64_sonoma:  "0c268f0d0dbc155e205f42379f4261bbbaec323a5e5cfe48d0dd4959b69d398b"
-    sha256 sonoma:        "73418879dc4a3772221049bc9216e178fa73445cb01d148997bb9ed9f15cb335"
-    sha256 arm64_linux:   "9ec1ef89f88d932103b66d20f873f1573c359d8922c18aeec92dc3b2222b378c"
-    sha256 x86_64_linux:  "2299a71b71ead35d3c5df779c076e2ab0b0af6dfeda1b1443848c8e0e1688051"
+    sha256 arm64_golden_gate: "55008fb4d524b225f13a5edc7c20e735e623b77d9ffcf4d4a00867f7748a4333"
+    sha256 arm64_tahoe:       "b7a7cdb1b43766baa89f24ce9dc60776a9f323fec5c12e5b508f5bfb15790f01"
+    sha256 arm64_sequoia:     "adbbc0e9730df937be5f36ab0a3408a6947e759487e96d6e0440ca72a1547f2b"
+    sha256 arm64_sonoma:      "8ab4eac02c65aba69893834f72c76bd9cefa62abe4c4eb138d8e7dcc4368e285"
+    sha256 arm64_linux:       "7b010b273f37049e385d7f9414dae44753d24b05b4a6db7e30629def07f1f2c5"
+    sha256 x86_64_linux:      "c31cff060e1c33de5dcddc1b48983fca509b15067fe03dfb5415ac0e0328f94b"
   end
 
   depends_on "meson" => :build
@@ -48,13 +49,13 @@ class KnotResolver < Formula
                 extra_packages: %w[aiohttp jinja2 prometheus-client pyyaml supervisor typing-extensions watchdog]
 
   resource "aiohappyeyeballs" do
-    url "https://files.pythonhosted.org/packages/33/c6/61a2d7b7572279226bb2e7f61d7a19ca7c90da0329c93fa0d560cbf288d8/aiohappyeyeballs-2.6.2.tar.gz"
-    sha256 "e202810ee718bd01fc6ef49e8ea53d023d5cb6b581076d7925aa499fa55dbe64"
+    url "https://files.pythonhosted.org/packages/ce/f4/eec0465c2f67b2664688d0240b3212d5196fd89e741df67ddb81f8d35658/aiohappyeyeballs-2.7.1.tar.gz"
+    sha256 "065665c041c42a5938ed220bdcd7230f22527fbec085e1853d2402c8a3615d9d"
   end
 
   resource "aiohttp" do
-    url "https://files.pythonhosted.org/packages/82/78/8ea7308cac6934de8c74a14f3d5f65d1c89287426688be79538d0e5c013d/aiohttp-3.14.1.tar.gz"
-    sha256 "307f2cff90a764d329e77040603fa032db89c5c24fdad50c4c15334cba744035"
+    url "https://files.pythonhosted.org/packages/58/d9/22ce5786ac0c1653ae8b6c23bded02c1686d11f0dbb45b31ce128e0df985/aiohttp-3.14.3.tar.gz"
+    sha256 "9491196535a88924a60afd5b5f434b5b203b6cc616250878dbdb223a8f7844bc"
   end
 
   resource "aiosignal" do
@@ -93,8 +94,8 @@ class KnotResolver < Formula
   end
 
   resource "prometheus-client" do
-    url "https://files.pythonhosted.org/packages/1b/fb/d9aa83ffe43ce1f19e557c0971d04b90561b0cfd50762aafb01968285553/prometheus_client-0.25.0.tar.gz"
-    sha256 "5e373b75c31afb3c86f1a52fa1ad470c9aace18082d39ec0d2f918d11cc9ba28"
+    url "https://files.pythonhosted.org/packages/52/73/f1334c29c2af4cd9dba6c7817e61b611bd0215e2eb5565c6064a4de18802/prometheus_client-0.26.0.tar.gz"
+    sha256 "04a91bcf94e2cf74a44a1a874d651a2e853ed354b6e822f3b7487751465d5c2b"
   end
 
   resource "propcache" do
@@ -113,8 +114,8 @@ class KnotResolver < Formula
   end
 
   resource "typing-extensions" do
-    url "https://files.pythonhosted.org/packages/72/94/1a15dd82efb362ac84269196e94cf00f187f7ed21c242792a923cdb1c61f/typing_extensions-4.15.0.tar.gz"
-    sha256 "0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"
+    url "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz"
+    sha256 "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
   end
 
   resource "watchdog" do
@@ -123,9 +124,11 @@ class KnotResolver < Formula
   end
 
   resource "yarl" do
-    url "https://files.pythonhosted.org/packages/79/12/1e8f37460ea0f7eb59c221fdaf0ed75e7ac43e97f8093b9c6f411df50a78/yarl-1.24.2.tar.gz"
-    sha256 "9ac374123c6fd7abf64d1fec93962b0bd4ee2c19751755a762a72dd96c0378f8"
+    url "https://files.pythonhosted.org/packages/31/33/ebe9e3d1f86c7a0b51094c0a146392045ca1631d2664889539dec8088a33/yarl-1.24.5.tar.gz"
+    sha256 "e81b83143bee16329c23db3c1b2d82b29892fcbcb849186d2f6e98a5abe9a57f"
   end
+
+  deny_network_access! :test
 
   def install
     args = %W[

@@ -8,12 +8,13 @@ class Code2prompt < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "14aa4f7a6f013ffc948306bbe0210b951ccc0523d78ebd1b1c5ef0a36c08f1c2"
-    sha256 cellar: :any,                 arm64_sequoia: "e7bdea92a684ab0483bad093e9aa554d2df195d77eb2676f1f469b71c524a7ed"
-    sha256 cellar: :any,                 arm64_sonoma:  "d25ee8e05d2016985e5ebcf1befe31d2ddbd9b67fc482ed9d00a39f0e61ff04b"
-    sha256 cellar: :any,                 sonoma:        "48fb47f8ece13be5215c64d39b3b641498fe3f9e46c901dedaa2123adddd9361"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8133b94fe8d8ff29a3b14dfadfd7c333b40f811193d0a0cc8fa81805e8851133"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "901f372469f56db97e43cb4ad0beff306ed34532bb7728be03d71cfd19ca8fa1"
+    sha256 cellar: :any,                 arm64_golden_gate: "441b8a6c936cb89ff361792add840d2dc77b149c48301187fd917caab76e0c53"
+    sha256 cellar: :any,                 arm64_tahoe:       "14aa4f7a6f013ffc948306bbe0210b951ccc0523d78ebd1b1c5ef0a36c08f1c2"
+    sha256 cellar: :any,                 arm64_sequoia:     "e7bdea92a684ab0483bad093e9aa554d2df195d77eb2676f1f469b71c524a7ed"
+    sha256 cellar: :any,                 arm64_sonoma:      "d25ee8e05d2016985e5ebcf1befe31d2ddbd9b67fc482ed9d00a39f0e61ff04b"
+    sha256 cellar: :any,                 sonoma:            "48fb47f8ece13be5215c64d39b3b641498fe3f9e46c901dedaa2123adddd9361"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "8133b94fe8d8ff29a3b14dfadfd7c333b40f811193d0a0cc8fa81805e8851133"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "901f372469f56db97e43cb4ad0beff306ed34532bb7728be03d71cfd19ca8fa1"
   end
 
   depends_on "pkgconf" => :build
@@ -26,7 +27,7 @@ class Code2prompt < Formula
 
   def install
     # Ensure the correct `openssl` will be picked up.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "cargo", "install", *std_cargo_args(path: "crates/code2prompt")
   end
@@ -46,8 +47,8 @@ class Code2prompt < Formula
     assert_match "ChatGPT models, text-embedding-ada-002", JSON.parse(json_output)["model_info"]
 
     [
-      Formula["openssl@3"].opt_lib/shared_library("libssl"),
-      Formula["openssl@3"].opt_lib/shared_library("libcrypto"),
+      formula_opt_lib("openssl@3")/shared_library("libssl"),
+      formula_opt_lib("openssl@3")/shared_library("libcrypto"),
     ].each do |library|
       assert Utils.binary_linked_to_library?(bin/"code2prompt", library),
              "No linkage with #{library.basename}! Cargo is likely using a vendored version."

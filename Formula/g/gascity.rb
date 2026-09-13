@@ -1,18 +1,19 @@
 class Gascity < Formula
   desc "Orchestration-builder SDK for multi-agent coding workflows"
   homepage "https://github.com/gastownhall/gascity"
-  url "https://github.com/gastownhall/gascity/archive/refs/tags/v1.3.1.tar.gz"
-  sha256 "ec728d55175dacb5fa24e20c3f4fa3198c0414f748a16ce68dc19f83092d35fe"
+  url "https://github.com/gastownhall/gascity/archive/refs/tags/v1.4.1.tar.gz"
+  sha256 "2444a9ef08501b41eb20e5f7ad7dc84776d48f29b192e7a9fcd87409bcac9852"
   license "MIT"
   head "https://github.com/gastownhall/gascity.git", branch: "main"
 
   bottle do
-    sha256                               arm64_tahoe:   "9d5e816bbea2fbb05db60a150b12a7883e5c8a751ebdd48a38e9cfcfe54008bb"
-    sha256                               arm64_sequoia: "b39b46164b99829fc6f471b3e7238d38259607a2dffa093e904fac4be6dcdf52"
-    sha256                               arm64_sonoma:  "5fd5c69d957508f6a17db2f177c5e3e0509454827738ee4d41eefe5d6bf917ae"
-    sha256 cellar: :any,                 sonoma:        "83ab6e18e4ef4560e84ee7a273516a66eec2397957c07d6174c4d5d9176f670e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "0e6c12e5b76ffb596aca0edb72e352148fbbeb74ec35d39161244c4aee1e7767"
-    sha256 cellar: :any,                 x86_64_linux:  "ed499ebfe4783bd195f2b10bc53ec02962130ec7fecbacc1c3c99d582e3e6043"
+    sha256                               arm64_golden_gate: "6b28a165ef697df4adef141188934703609127dbe92bd0f9a146a49358efe683"
+    sha256                               arm64_tahoe:       "5cae02492a44f9445375783cf4b464dfe9be4b879dfafc9ddaf2e4081d17f58e"
+    sha256                               arm64_sequoia:     "2c9502118c6fc2f02a1d99313e498a2fd9f4b1be2becf4e314e2c669b197db7d"
+    sha256                               arm64_sonoma:      "e4ad1852ae48555613a3adfd9c244546c165713fa5dc92bef00a6daf81c1bf7c"
+    sha256 cellar: :any,                 sonoma:            "3db59f1eda3fc6a4afdad0d57dfad9e4fe1350a0af12546733e8af985ea25d4f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "93022130a0451a6b15898e0d567d2cf109926b579fa31bf0095ab68fe5d26289"
+    sha256 cellar: :any,                 x86_64_linux:      "c9746af0a20800cba8632d3438c2f4a1a3f1b37c5cee54ed361f260543e3ee25"
   end
 
   depends_on "go" => :build
@@ -26,12 +27,16 @@ class Gascity < Formula
     depends_on "flock"
   end
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-    ]
-    system "go", "build", *std_go_args(ldflags:, output: bin/"gc"), "./cmd/gc"
+    # TODO: Remove http2legacy tag when Gascity works without it in Go 1.27 (in release > 1.4.1?)
+    # ref: https://github.com/gastownhall/gascity/pull/5030
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}", tags: "http2legacy", output: bin/"gc"), "./cmd/gc"
   end
 
   test do

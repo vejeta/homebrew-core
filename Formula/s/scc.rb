@@ -1,8 +1,8 @@
 class Scc < Formula
   desc "Fast and accurate code counter with complexity and COCOMO estimates"
   homepage "https://github.com/boyter/scc/"
-  url "https://github.com/boyter/scc/archive/refs/tags/v3.7.0.tar.gz"
-  sha256 "447233f70ebcc24f1dafb27b093afdd17d3a1d662de96e8226130c5308b02d01"
+  url "https://github.com/boyter/scc/archive/refs/tags/v4.1.0.tar.gz"
+  sha256 "4f3cf36010c542b10d5582afb91c668b26889160b184deee21b4319347030a7c"
   license any_of: ["MIT", "Unlicense"]
   head "https://github.com/boyter/scc.git", branch: "master"
 
@@ -12,19 +12,18 @@ class Scc < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "6770468fcdb16a8f1fcae82285026a84eadd5524fef199c6f56a7213ee195239"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6770468fcdb16a8f1fcae82285026a84eadd5524fef199c6f56a7213ee195239"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6770468fcdb16a8f1fcae82285026a84eadd5524fef199c6f56a7213ee195239"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8a1ad7fa233caf6383633e0180fc9c80b468abe1fb55af63ddbe0fca153efd4c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6e0d003227e2164092960ac21ddfe9b4429bf8afa04c49f5f65f06689a8e5d76"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8c1ed3b5514ca73c3783e66ce81d563c860ef46585dbdac0a9f7d8c805c4c823"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "74e37c3265026b9cbe198cc876d592b94a59636ad22ebcc5a83935cbf6826d3c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "74e37c3265026b9cbe198cc876d592b94a59636ad22ebcc5a83935cbf6826d3c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "74e37c3265026b9cbe198cc876d592b94a59636ad22ebcc5a83935cbf6826d3c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "74e37c3265026b9cbe198cc876d592b94a59636ad22ebcc5a83935cbf6826d3c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "19a4f2048124c8b2f493e96738a9795c17f31d9d94ccf61894c768e6e52efde3"
+    sha256 cellar: :any,                 x86_64_linux:      "256fd514180a491c9d415b665dc21de9d0f026efdab2f582e56662224866997d"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
     generate_completions_from_executable(bin/"scc", shell_parameter_format: :cobra)
   end
 

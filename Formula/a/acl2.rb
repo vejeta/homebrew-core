@@ -4,7 +4,7 @@ class Acl2 < Formula
   url "https://github.com/acl2/acl2/archive/refs/tags/8.7.tar.gz"
   sha256 "d6013c22e190cbd702870d296b5370a068c14625bf7f9d305d2d87292b594d52"
   license "BSD-3-Clause"
-  revision 3
+  revision 6
 
   livecheck do
     url :stable
@@ -12,24 +12,22 @@ class Acl2 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "6559de7cf39d0c435ab09883b540b413698c4827e40d502dc6e37f6ad5a96062"
-    sha256 arm64_sequoia: "0fdd11e0379a2570626fbbd21b12349d25ee32b60fb662416d238506b8d45651"
-    sha256 arm64_sonoma:  "08f5122aee4b46a0e5f331ea2a0ec9db5a497fd3d5be0cd67926b96abb34279f"
-    sha256 sonoma:        "a3789e0a2c23a53eb647b7ff6636ca27e29befea018a08eb9fdda9e918983282"
-    sha256 x86_64_linux:  "e3e40ab5bb221f2deffde4678e142b6037c22938ef26d8adddfe0e1843b0cd60"
+    sha256 arm64_golden_gate: "876c1191c764794eaa49092618fe04f6aa37c2be7893240da7d389bd095c1a11"
+    sha256 arm64_tahoe:       "78143826f951f09570c6322c57a1e050ecab473f06669a29ee454079575a09c2"
+    sha256 arm64_sequoia:     "5d6cb354d886b5485c15ee1f846ea047854fbfe92791382f209c8db812fe906a"
+    sha256 arm64_sonoma:      "6415333e59af5e96233aea4ecb4c83192353acae63902ae93d2bb65991dc1272"
+    sha256 x86_64_linux:      "75dcfc87206f0977870b59e285aae2d96a5d52d0cba2c0b525fb70874d3ce72b"
   end
 
   depends_on "sbcl"
 
+  on_linux do
+    # ACL2 rejects a Lisp that doesn't error on floating-point overflow
+    depends_on arch: :x86_64
+  end
+
   def install
     # Remove prebuilt binaries
-    rm([
-      "books/kestrel/axe/x86/examples/popcount/popcount-macho-64.executable",
-      "books/kestrel/axe/x86/examples/factorial/factorial.macho64",
-      "books/kestrel/axe/x86/examples/tea/tea.macho64",
-      "books/kestrel/axe/x86/examples/tea/tea.elf64",
-      "books/kestrel/axe/x86/examples/add/add.elf64",
-    ])
     rm_r buildpath.glob("books/kestrel/axe/*/{examples,tests}")
 
     # Move files and then build to avoid saving build directory in files

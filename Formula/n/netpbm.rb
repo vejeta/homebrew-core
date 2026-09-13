@@ -3,8 +3,8 @@ class Netpbm < Formula
   homepage "https://netpbm.sourceforge.net/"
   # Maintainers: Look at https://sourceforge.net/p/netpbm/code/HEAD/tree/
   # for stable versions and matching revisions.
-  url "https://svn.code.sf.net/p/netpbm/code/stable", revision: "5175"
-  version "11.02.23"
+  url "https://svn.code.sf.net/p/netpbm/code/stable", revision: "5319"
+  version "11.02.29"
   license "GPL-3.0-or-later"
   version_scheme 1
   compatibility_version 1
@@ -19,12 +19,12 @@ class Netpbm < Formula
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256 arm64_tahoe:   "9e1d26b1727bc4ebae91c3548b6c86c7834147816f9d57365262dd9b6d088ec7"
-    sha256 arm64_sequoia: "52ae7ab2ca13d4aa982c4d0967266a4fe2ea80d591147fc2eb5e22db379139a5"
-    sha256 arm64_sonoma:  "66056550ea849f60574e93ea65b4d3bcbda942e5c0fdfa8968ed9e74ce77f87f"
-    sha256 sonoma:        "85941e1440bb2be9ef240d164b5f2e5161daef73a4ecb6f277e88bd78bc49487"
-    sha256 arm64_linux:   "ef62b175b3168a6a263a6b366e1a2dcc2a5cebe7568d75aba59bcc7da058d797"
-    sha256 x86_64_linux:  "4a74682213e8d51885fd91fa2b107669ebbe06ee3f872ccd9d92208571457992"
+    sha256 arm64_golden_gate: "dfd7fb5af4f0818424fa9ec1fbb1bc75057e8034213912b9dba663fe0a5908e8"
+    sha256 arm64_tahoe:       "559514ccb42088b161a8e5b31bf8fce39f3f2f619fd58cadcb98f368a7e88fbc"
+    sha256 arm64_sequoia:     "574b837bd16cfb8ff8d09b569e0355fb6560d897517cbf4c3c8f77741326da66"
+    sha256 arm64_sonoma:      "85a82ebce6e60089679b0af9f646c6d415134afcf8c5890d044669b0fa73da57"
+    sha256 arm64_linux:       "2c9e56afec45bc11f7151ea20f1a22c30a0b09db7ddca9038c0a4e288912b12d"
+    sha256 x86_64_linux:      "d2f9be3fe880babe3bd0e74559fd888c4d0f5d40d982d570f7c603005111ce33"
   end
 
   depends_on "pkgconf" => :build
@@ -46,8 +46,8 @@ class Netpbm < Formula
   resource "html" do
     # Rolling release, latest revision also documents previous software versions
     # NOTE: Keep "revision" and "version" in sync
-    url "https://svn.code.sf.net/p/netpbm/code/userguide", revision: "5177"
-    version "5177"
+    url "https://svn.code.sf.net/p/netpbm/code/userguide", revision: "5316"
+    version "5316"
 
     livecheck do
       url "https://sourceforge.net/p/netpbm/code/HEAD/log/?path=/userguide"
@@ -66,7 +66,7 @@ class Netpbm < Formula
       s.change_make_var! "PNGLIB", "-lpng"
       s.change_make_var! "ZLIB", "-lz"
       s.change_make_var! "JASPERLIB", "-ljasper"
-      s.change_make_var! "JASPERHDR_DIR", Formula["jasper"].opt_include/"jasper"
+      s.change_make_var! "JASPERHDR_DIR", formula_opt_include("jasper")/"jasper"
       s.gsub! "/usr/local/netpbm/rgb.txt", prefix/"misc/rgb.txt"
 
       if OS.mac?

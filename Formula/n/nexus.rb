@@ -2,8 +2,8 @@ class Nexus < Formula
   desc "Repository manager for binary software components"
   homepage "https://www.sonatype.com/"
   url "https://github.com/sonatype/nexus-public.git",
-      tag:      "release-3.93.1-04",
-      revision: "9b16eba13cbdd56835607bcebfc3ad1beb6b62de"
+      tag:      "release-3.96.1-01",
+      revision: "825e2a4d4dcf7504e64c1f85c36f0b78d803f083"
   license "EPL-1.0"
 
   # As of writing, upstream is publishing both v2 and v3 releases. The "latest"
@@ -15,12 +15,11 @@ class Nexus < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "7c3f184d65630511ea834b2d45e8fd937c0f8ec62e32f4217404813ea8c09bc4"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9f22293a6c40b5a196b699cfda280895c6140bb77ac7db5fb0b4f0f3e3fa05c7"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "83937a5fba975bdee76c6b0ca9c75df0c9696fabf45336f4c0245c6e61b4492e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c49a88bc13953ae5017f29fa1212f1a86dfbea8cfe67f5ce59446b3b00db0111"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3c0bdc01131b03e8e1fe911b5efe09b837d1da7b6eb7ab623bcc3b8ff79564af"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "307f6e3dd538c7650dae8c86d0473332674ab3d15f723bca05bad0888442a78e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "82985872dd0bd7d737f26407254fed3ad8ba0c9e47c14b9de07398c7d2b566b1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "223e0778e71e402bffbfecb31b55835b3759d5203946be311062d56dafbe88a7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "aa6db379e01db8fcfff1d77f775ea8facb1d63c366f741b58920557ed0f14dad"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c446bd29dfa94422a7a324511a90a51bfb0106f232e420f7585d0444a3bbd144"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "0de2ac2f50c72f0f36b4911c16ab908b4ac84603c72a7352a8ee14f48d579e66"
   end
 
   depends_on "maven" => :build
@@ -85,7 +84,6 @@ class Nexus < Formula
     (testpath/"data/etc/nexus.properties").write "application-port=#{port}"
     pid = spawn({ "NEXUS_KARAF_DATA" => testpath/"data" }, bin/"nexus", "server")
     sleep 50
-    sleep 50 if OS.mac? && Hardware::CPU.intel?
     assert_match "<title>Sonatype Nexus Repository</title>", shell_output("curl --silent --fail http://localhost:#{port}")
   ensure
     Process.kill "TERM", pid

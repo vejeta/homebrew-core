@@ -1,29 +1,30 @@
 class Ctlptl < Formula
   desc "Making local Kubernetes clusters fun and easy to set up"
   homepage "https://github.com/tilt-dev/ctlptl"
-  url "https://github.com/tilt-dev/ctlptl/archive/refs/tags/v0.9.4.tar.gz"
-  sha256 "e3b8a1adf6d57803b0cd688fa7c493cbe741fb87b52c04494d57dc9e8fb457b1"
+  url "https://github.com/tilt-dev/ctlptl/archive/refs/tags/v0.9.6.tar.gz"
+  sha256 "51af2008cf435a808cb297c9564fe94a4207da541871739bde5062a2a8ede933"
   license "Apache-2.0"
   head "https://github.com/tilt-dev/ctlptl.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "dacf571d119f34e01607d4f085de115bedd7be0c1a78281fc67d4130b143c0c0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "553cad861ae161216d7f79184e17faa5080a8477279b6cb6a7efcdabb06fd59a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "de67bd95cabed03a1b6ef4fe09b32bb7046d1f4231c2fd594ba4daf15d1a0d9a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "0484a90ea64f54b8222cdbbbe4b2283f8b4951a4852896d081854211d1e15517"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9f1adbc28012608477636bda47ad156224cd02612ac645ee69c5137b50aa6481"
-    sha256 cellar: :any,                 x86_64_linux:  "7824de83dcc3ae81276cfaa9ed2f29cfc8590bc30d0daed8476f27701ee1b6f3"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "453da89313082fcb816de563fcbe9631bcf80a3b3fcf377c11aca4388e47f624"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9db03c353f03a046fa876cc244cd56091f6d3927adb179d228cc33aee19796f1"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3c7503ccc6cd50a0df9e0ca30253a09b89d6c784f0cab5e3d953f5e5086aa686"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "1beed5579e4c6f67ac9699466173772e99d86a7f5707008aff932b302538ab77"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "12613121d8cf64647383f0323a04bc177e02e25027983f735eab27235d0e3d42"
+    sha256 cellar: :any,                 x86_64_linux:      "88bb473f040239f031c7154bd9ccfc352816cebeb9f36b0ea11b5e338cf632e1"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-      -X main.date=#{time.iso8601}
-    ]
-    system "go", "build", *std_go_args(ldflags:), "./cmd/ctlptl"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/ctlptl"
 
     generate_completions_from_executable(bin/"ctlptl", shell_parameter_format: :cobra)
   end

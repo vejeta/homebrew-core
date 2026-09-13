@@ -48,14 +48,14 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
           stable: ${{ matrix.stable }}
 
       - name: Cache style cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: /home/linuxbrew/.cache/Homebrew/style
           key: style-cache-${{ matrix.stable && 'stable-' || 'main-' }}${{ github.sha }}
@@ -77,7 +77,7 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
@@ -138,7 +138,7 @@ jobs:
     needs: formulae_detect
     outputs:
       syntax-only: ${{ steps.check-labels.outputs.syntax-only }}
-      linux-runner: ${{ steps.check-labels.outputs.linux-runner }}
+      linux-self-hosted: ${{ steps.check-labels.outputs.linux-self-hosted }}
       fail-fast: ${{ steps.check-labels.outputs.fail-fast }}
       test-dependents: ${{ steps.check-labels.outputs.test-dependents }}
       long-timeout: ${{ steps.check-labels.outputs.long-timeout }}
@@ -146,7 +146,7 @@ jobs:
       test-bot-dependents-args: ${{ steps.check-labels.outputs.test-bot-dependents-args }}
       download-concurrency: ${{ steps.check-labels.outputs.download-concurrency }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -188,14 +188,14 @@ jobs:
       runners: ${{steps.determine-runners.outputs.runners}}
       runners_present: ${{steps.determine-runners.outputs.runners_present}}
     env:
-      HOMEBREW_LINUX_RUNNER: ${{needs.setup_tests.outputs.linux-runner}}
+      HOMEBREW_LINUX_SELF_HOSTED: ${{needs.setup_tests.outputs.linux-self-hosted}}
       HOMEBREW_MACOS_LONG_TIMEOUT: ${{needs.setup_tests.outputs.long-timeout}}
       TESTING_FORMULAE: ${{needs.formulae_detect.outputs.testing_formulae}}
       DELETED_FORMULAE: ${{needs.formulae_detect.outputs.deleted_formulae}}
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
@@ -228,10 +228,18 @@ jobs:
       BOTTLES_DIR: ${{matrix.workdir || github.workspace}}/bottles
     steps:
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@main
+        uses: Homebrew/actions/pre-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ matrix.cleanup }}
+
+      - name: Configure macOS cross-build target
+        if: matrix.target_macos
+        env:
+          TARGET_MACOS: ${{ matrix.target_macos }}
+        run: |
+          test -n "$TARGET_MACOS"
+          echo "HOMEBREW_FAKE_MACOS=$TARGET_MACOS" >> "$GITHUB_ENV"
 
       - name: Test formulae
         id: brew-test-bot-formulae
@@ -244,14 +252,14 @@ jobs:
         env:
           HOMEBREW_DOWNLOAD_CONCURRENCY: ${{ needs.setup_tests.outputs.download-concurrency }}
           TEST_BOT_FORMULAE_ARGS: ${{ needs.setup_tests.outputs.test-bot-formulae-args }}
-          TESTING_FORMULAE: ${{ needs.formulae_detect.outputs.testing_formulae }}
+          TESTING_FORMULAE: ${{ matrix.testing_formulae }}
           ADDED_FORMULAE: ${{ needs.formulae_detect.outputs.added_formulae }}
           DELETED_FORMULAE: ${{ needs.formulae_detect.outputs.deleted_formulae }}
         working-directory: ${{ env.BOTTLES_DIR }}
 
       - name: Post-build steps
         if: always()
-        uses: Homebrew/actions/post-build@main
+        uses: Homebrew/actions/post-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           runner: ${{ matrix.runner }}
           cleanup: ${{ matrix.cleanup }}
@@ -266,7 +274,7 @@ jobs:
     needs: [setup_tests, formulae_detect]
     outputs:
       syntax-only: ${{ steps.check-labels.outputs.syntax-only }}
-      linux-runner: ${{ steps.check-labels.outputs.linux-runner }}
+      linux-self-hosted: ${{ steps.check-labels.outputs.linux-self-hosted }}
       fail-fast: ${{ steps.check-labels.outputs.fail-fast }}
       test-dependents: ${{ steps.check-labels.outputs.test-dependents }}
       long-timeout: ${{ steps.check-labels.outputs.long-timeout }}
@@ -275,7 +283,7 @@ jobs:
       test-bot-dependents-args: ${{ steps.check-labels.outputs.test-bot-dependents-args }}
       download-concurrency: ${{ steps.check-labels.outputs.download-concurrency }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -318,14 +326,14 @@ jobs:
       runners: ${{steps.determine-dependent-runners.outputs.runners}}
       runners_present: ${{steps.determine-dependent-runners.outputs.runners_present}}
     env:
-      HOMEBREW_LINUX_RUNNER: ${{needs.setup_dep_tests.outputs.linux-runner}}
+      HOMEBREW_LINUX_SELF_HOSTED: ${{needs.setup_dep_tests.outputs.linux-self-hosted}}
       HOMEBREW_MACOS_LONG_TIMEOUT: ${{needs.setup_dep_tests.outputs.long-timeout}}
       DEPENDENT_SHARDS: ${{needs.setup_dep_tests.outputs.dependent-shards}}
       TESTING_FORMULAE: ${{needs.formulae_detect.outputs.testing_formulae}}
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
@@ -367,7 +375,7 @@ jobs:
       TESTING_FORMULAE: ${{matrix.testing_formulae}}
     steps:
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@main
+        uses: Homebrew/actions/pre-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ matrix.cleanup }}
@@ -393,7 +401,7 @@ jobs:
 
       - name: Steps summary and cleanup
         if: always()
-        uses: Homebrew/actions/post-build@main
+        uses: Homebrew/actions/post-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           runner: ${{ runner.os == 'Linux' && format('{0}-deps', matrix.runner) || matrix.runner }}
           cleanup: ${{ matrix.cleanup }}
@@ -425,15 +433,6 @@ jobs:
             # Silence lint error about backtick usage inside single quotes.
             # shellcheck disable=SC2016
             printf '::error ::`tests` job %s.\n' "$result"
-
-            deps_result="${DEPS_TESTS_RESULT}"
-            if [[ "$deps_result" = "skipped" ]]
-            then
-              # Silence lint error about backtick usage inside single quotes.
-              # shellcheck disable=SC2016
-              printf '::error ::`test_deps` job skipped. Do not merge until re-run with `CI-no-fail-fast-deps`\n'
-            fi
-
             exit 1
           fi
 

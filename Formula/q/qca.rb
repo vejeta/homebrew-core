@@ -1,10 +1,9 @@
 class Qca < Formula
   desc "Qt Cryptographic Architecture (QCA)"
   homepage "https://userbase.kde.org/QCA"
-  url "https://download.kde.org/stable/qca/2.3.10/qca-2.3.10.tar.xz"
-  sha256 "1c5b722da93d559365719226bb121c726ec3c0dc4c67dea34f1e50e4e0d14a02"
+  url "https://download.kde.org/stable/qca/2.3.12/qca-2.3.12.tar.xz"
+  sha256 "d4a2b3aa0272d73ea0c4cd2140960177fa34ddc2030e59a48ecfb80c757572c3"
   license "LGPL-2.1-or-later"
-  revision 5
   head "https://invent.kde.org/libraries/qca.git", branch: "master"
 
   livecheck do
@@ -13,12 +12,12 @@ class Qca < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "4bea07e0d10d689e6d1cedccae2c0bd7c2b5ccb8d13a6b9548f90ce5fd734ae0"
-    sha256 cellar: :any,                 arm64_sequoia: "c36105d102c5015030076c38fdc0d42940df1378b4d1c2953c4b16e67704eeda"
-    sha256 cellar: :any,                 arm64_sonoma:  "bddd51df7a662b953dcfbd7fd42dea92f50bfbd95fcb7c7330625fa1bb3b1c1b"
-    sha256 cellar: :any,                 sonoma:        "1eb3d9c8c5e997ccdbb12ff8ea0aebedabe8e68b09e16c85b652a2eea0ef89aa"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "195c18875bc89c15ce17b8a0e4c6e73b7b57c5e71afafea7f683776d1eddf296"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "220cf9d9b004882e4428fb04dae0971a60a5d3db9b947c7fc33976b001ba4f08"
+    sha256 cellar: :any, arm64_golden_gate: "2a7190fb8d7250e45abb6b9a927e6d33927a4e8736ec040b62209a60a3222226"
+    sha256 cellar: :any, arm64_tahoe:       "1b02c8d91c73e0e3897966b6076078c3aa7cfbd18218020a39f8ecdc10609e30"
+    sha256 cellar: :any, arm64_sequoia:     "c188a4063c87cfe175389fa942c472fdb26540b9e67307cada5b3ba3cb86cbbf"
+    sha256 cellar: :any, arm64_sonoma:      "a3a3b1ff0512ededc0b90b684ee4b97f74edf40bd1c4d950bdd430125fca71f9"
+    sha256 cellar: :any, arm64_linux:       "b58863a6431640cab90f23464ef35558366ef02ff00e7063d8b8776c6298dd8a"
+    sha256 cellar: :any, x86_64_linux:      "b9e7fc7481bbc7dae395e1ddf16069539c98666c28fa25745750a7f6bacd1360"
   end
 
   depends_on "cmake" => :build
@@ -47,7 +46,7 @@ class Qca < Formula
 
   def install
     if OS.mac? && DevelopmentTools.clang_build_version <= 1400
-      ENV.append "LDFLAGS", "-L#{Formula["llvm"].opt_lib}/c++ -L#{Formula["llvm"].opt_lib}/unwind -lunwind"
+      ENV.append "LDFLAGS", "-L#{formula_opt_lib("llvm")}/c++ -L#{formula_opt_lib("llvm")}/unwind -lunwind"
     end
 
     ENV["QC_CERTSTORE_PATH"] = Formula["ca-certificates"].pkgetc/"cert.pem"

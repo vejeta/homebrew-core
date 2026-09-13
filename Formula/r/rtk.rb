@@ -1,18 +1,17 @@
 class Rtk < Formula
   desc "CLI proxy to minimize LLM token consumption"
   homepage "https://www.rtk-ai.app/"
-  url "https://github.com/rtk-ai/rtk/archive/refs/tags/v0.42.4.tar.gz"
-  sha256 "59c3864751715913c040732d216bf07114fb803158ebff8fe44ad7b23c3f5fc2"
+  url "https://github.com/rtk-ai/rtk/archive/refs/tags/v0.49.0.tar.gz"
+  sha256 "74b226ab00b8698d5084402893c76d93189493bd332b99d0b1e681d1ef860eb8"
   license "Apache-2.0"
   head "https://github.com/rtk-ai/rtk.git", branch: "develop"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "781942e9a0e7e9b5d8c8a18c47ba2aa0dd82052af282ae49ebb7b8ccddefc6b7"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6cbcee1fcb19f777be28e41c2112ccd4a0a4c1e81887c9b2976d0c6c7ef42a0e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9a5353ffd88300e86fcdd64e3f0a6930f390e31a70ce5b07272d60a5efbf830c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5a13438b7c9129e6805fba5d0f8ceea18911eee4627e60dac2eda579407527a4"
-    sha256 cellar: :any,                 arm64_linux:   "47335f518833ed4474dbcea3d12c8ceec87da8d5f3785ef4980a0ca9d44bab29"
-    sha256 cellar: :any,                 x86_64_linux:  "1587ba8698fbe1f9caba0ac1b2281eeca981be72ef3cf9d116ff1c362495c8d3"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b3c21c970af4d008db0b703c8b50e5201b94fe4a08b61aa57b07cd22aae0c123"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d2f3d7a4b24a5c1c4fae1203aff57fb8739354b4a14be8ad4d8ec99d8ae54c1b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d46fc58ee7ada121604048285b002093d78aeb9067dfea80d302faf8fe44d894"
+    sha256 cellar: :any,                 arm64_linux:       "ed2ba35f56632a4a8b18022e77bd3b0e3ca358b36a1c0c26d609e3fc7a0a432a"
+    sha256 cellar: :any,                 x86_64_linux:      "fed3cb8536d3017c33e40bd652eadefc77b746b8498d7472a0629910b81ea126"
   end
 
   depends_on "rust" => :build

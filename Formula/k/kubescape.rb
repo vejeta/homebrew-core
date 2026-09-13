@@ -3,8 +3,8 @@ class Kubescape < Formula
   homepage "https://kubescape.io"
   # Use GitHub repo URL because the version for the build will be automatically fetched from git.
   url "https://github.com/kubescape/kubescape.git",
-      tag:      "v4.0.9",
-      revision: "002e791cd39fed51dd4a86b321c6d184fa672349"
+      tag:      "v4.0.14",
+      revision: "031cd40cc8de696fa30a648001853443019ec97a"
   license "Apache-2.0"
   head "https://github.com/kubescape/kubescape.git", branch: "master"
 
@@ -14,19 +14,25 @@ class Kubescape < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d0457f46c4bc040aba1540aa8e87283951802b6e504e6b6d1146e041f07384b8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5040d23138bf4c489df05cad718c1b87376d8b52c79bb988531fbb2ff854242c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c49f793b5c3b008595d18ff64b7bdb4eee6ab4c9c8400162aa37319a84bc6c46"
-    sha256 cellar: :any_skip_relocation, sonoma:        "199afeb9c9815366bb20aa5d92adc48a059bc8176931ad789cc6d82c80af7648"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "025438f2e16835ba586996bba968f5fe093aac5e834516ae80907be090fc5c50"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "cadfe39692bae78be6c6e8085103af2dff2a07fd19df86a2a6886a4d4a5cb97d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "2f3cf08bc15bf3796bb9fbde28bcbcb13aa67dc602664fe219676473058ee738"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "c05ba5810a3f7d9b0e7fd37bfe1a595af14e4e2189690deec55441b59c9e17ce"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3d762b89ef65a3f92c520ba2d7cb49b27a0fbfe8bbda5afec60f87506f9854be"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "153c218f8ba0d4817b79b806b3024f379cbaf73ef9630e9ba9dd6b5bcfaf30f6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "5e829641eca8e13d628d6604c4bfcb7c089846866a9089f50bb54bd3310a2d3a"
+    sha256 cellar: :any,                 x86_64_linux:      "bce706aee9c557dbd5d25a74d21ff5bf53adafbe041409750291f1826297ea34"
   end
 
   depends_on "go" => :build
 
+  # `test do` block downloads framework artifacts and scans a remote URL
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
-    system "go", "build", *std_go_args(ldflags:)
+    system "go", "build", *std_go_args(ldflags: :goreleaser)
 
     generate_completions_from_executable(bin/"kubescape", shell_parameter_format: :cobra)
   end

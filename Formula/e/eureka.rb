@@ -1,24 +1,24 @@
 class Eureka < Formula
   desc "CLI tool to input and store your ideas without leaving the terminal"
   homepage "https://github.com/simeg/eureka"
-  url "https://github.com/simeg/eureka/archive/refs/tags/v2.0.0.tar.gz"
-  sha256 "e874549e1447ee849543828f49c4c1657f7e6cfe787deea13d44241666d4aaa0"
+  url "https://github.com/simeg/eureka/archive/refs/tags/v2.1.0.tar.gz"
+  sha256 "b9eb7d49b51341976d72280a7edb8857358ef8ec3715cf4f26da12420622c85b"
   license "MIT"
   head "https://github.com/simeg/eureka.git", branch: "master"
 
   bottle do
-    rebuild 2
-    sha256 cellar: :any,                 arm64_tahoe:   "a6de6aac51a1f6070476d08477d227d50b78ffd6b4c6a0d5e2d49b4676ca8db8"
-    sha256 cellar: :any,                 arm64_sequoia: "cccdf775ed4f873ba36ce03a0f044c8332e72820aa2eac3415c863bff9f3bc3a"
-    sha256 cellar: :any,                 arm64_sonoma:  "23e91b5afc7970d9df55240b2253fccda506da2c433b35ced751b1d7af89743f"
-    sha256 cellar: :any,                 sonoma:        "3a266fce693e780d3544d243a2a3216f9af32954c983555bc92dfbb6ceb02876"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "40bc0dc3cca65bc7d4edfb6f40dfa33e5cdc742d462e63998b814e26d7959e21"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "dbb5f7b3f67f69af0ee2a55e048b067d644a980fa8bac2915f413c96b2cb6d64"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "fcca826a0c490097e7e3243bb2568e8d9c9609221086a8bcc29d908af53aed4c"
+    sha256 cellar: :any, arm64_tahoe:       "95e8d555017dd25c4ac2b99589e1b476a2c7fdd9e8a6a345795a007e7fb23ae3"
+    sha256 cellar: :any, arm64_sequoia:     "58a6ab0a632ebc3ab366b1d5f25919a3b56cca97a8b656156ed0e24891013f14"
+    sha256 cellar: :any, arm64_sonoma:      "fb79daf2022ba0b83542df3c81bb4b410ec09b795e706e5349668c0a1b0e2fb0"
+    sha256 cellar: :any, arm64_linux:       "f44d91be16ef8cbe07929da00ce956fe3d54ab59c0adee70c43c3fc245581e9d"
+    sha256 cellar: :any, x86_64_linux:      "c57fe75ad2bfacb2f72567ac2e41d680b7190caaeaf937fcb23a67497ee486ca"
   end
 
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   on_linux do
     depends_on "zlib-ng-compat"

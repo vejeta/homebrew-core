@@ -3,8 +3,8 @@ class V8 < Formula
   homepage "https://v8.dev/docs"
   # Track V8 version from Chrome stable: https://chromiumdash.appspot.com/releases?platform=Mac
   # Check `brew livecheck --resources v8` for any resource updates
-  url "https://github.com/v8/v8/archive/refs/tags/14.8.178.22.tar.gz"
-  sha256 "7c8f53371567113cce0a29e3bf418486af05dabc815bfb189c60bf4b38ca6756"
+  url "https://github.com/v8/v8/archive/refs/tags/15.3.76.10.tar.gz"
+  sha256 "ad3c68074d8ce83ccf7793d0e7042f7d093581491436c543aa0a169581ec20e5"
   license "BSD-3-Clause"
 
   livecheck do
@@ -24,19 +24,22 @@ class V8 < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "a084f3263380788b4dcd204f34bdd595b378c914636a7912bd7f9a9b056873d3"
-    sha256 cellar: :any,                 arm64_sequoia: "b1629af95b7e97a346e76347649cbeea509dc879e972f755338b904870933e62"
-    sha256 cellar: :any,                 arm64_sonoma:  "1ad1dc20a1e5876d3f0c8d3ca6f319d7fdd75431d99ce2802c20b78246ae9972"
-    sha256 cellar: :any,                 sonoma:        "d521b481c2ec7ddef47ff73185d53e950dae59b6d72ef63ce436ed198bb4e825"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6dc729b24d23f92f8953f15a0efd478174dee1802bfcae7e1c229b7dc1e54951"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8c0a3f071aaaa1867c6654225a23eba9f107723c44d5652ca03717051701a024"
+    sha256 cellar: :any, arm64_golden_gate: "2ae5439dd09058e537766892bf75975ac62ddceb9d9f360b501bab6d84606a0e"
+    sha256 cellar: :any, arm64_tahoe:       "6de21f880fdc8c3968d5dd682f40c16b8d130765ca52674e715208604e2b6e87"
+    sha256 cellar: :any, arm64_sequoia:     "4947db4a1139874987cadc05f9ae38584b7e9c83a2e4cf130598374ca98ff2c6"
+    sha256 cellar: :any, arm64_sonoma:      "b7be19f4505e2903b0f76392e2ccebf82670589e2b2e51a7298d46a64424dafb"
+    sha256 cellar: :any, arm64_linux:       "d2529cc43fd516f9bb4505f347e2f9a87e7c71bfd6388dbcb997d8d29fbe48b8"
+    sha256 cellar: :any, x86_64_linux:      "4e0c3b2c65603135821bc62bd72854675a0fa417625c3988d87887fd6a4b1b5f"
   end
 
   depends_on "llvm" => :build
   depends_on "ninja" => :build
-  depends_on xcode: ["10.0", :build] # for xcodebuild, min version required by v8
 
   uses_from_macos "python" => :build
+
+  on_macos do
+    depends_on xcode: ["10.0", :build] # for xcodebuild, min version required by v8
+  end
 
   on_linux do
     depends_on "lld" => :build
@@ -53,11 +56,11 @@ class V8 < Formula
   end
 
   # Look up the correct resource revisions in the DEP file of the specific releases tag
-  # e.g. for CIPD dependency gn: https://chromium.googlesource.com/v8/v8.git/+/refs/tags/<version>/DEPS#74
+  # e.g. for CIPD dependency gn: https://chromium.googlesource.com/v8/v8.git/+/refs/tags/<version>/DEPS#99
   resource "gn" do
     url "https://gn.googlesource.com/gn.git",
-        revision: "6e8dcdebbadf4f8aa75e6a4b6e0bdf89dce1513a"
-    version "6e8dcdebbadf4f8aa75e6a4b6e0bdf89dce1513a"
+        revision: "7324363900ccab92518649e9693d71a4ae71a747"
+    version "7324363900ccab92518649e9693d71a4ae71a747"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -67,8 +70,8 @@ class V8 < Formula
 
   resource "build" do
     url "https://chromium.googlesource.com/chromium/src/build.git",
-        revision: "9b7e5bb55b71044930fcf31b3fe531ad63151813"
-    version "9b7e5bb55b71044930fcf31b3fe531ad63151813"
+        revision: "271143e8fbae4df2ae2c1a187d80b5738635e7c1"
+    version "271143e8fbae4df2ae2c1a187d80b5738635e7c1"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -78,8 +81,8 @@ class V8 < Formula
 
   resource "buildtools" do
     url "https://chromium.googlesource.com/chromium/src/buildtools.git",
-        revision: "22e55595e15ebbbbb4bef118d5a654b185b0b30d"
-    version "22e55595e15ebbbbb4bef118d5a654b185b0b30d"
+        revision: "9e7655f4ee433ef4c6efcffd57e379db8f8c0432"
+    version "9e7655f4ee433ef4c6efcffd57e379db8f8c0432"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -89,8 +92,8 @@ class V8 < Formula
 
   resource "third_party/abseil-cpp" do
     url "https://chromium.googlesource.com/chromium/src/third_party/abseil-cpp.git",
-        revision: "2a7d49fc392cad55159d68d98aa3648bc89795d3"
-    version "2a7d49fc392cad55159d68d98aa3648bc89795d3"
+        revision: "df548c50b2cda67158364d3d23c63043881b391d"
+    version "df548c50b2cda67158364d3d23c63043881b391d"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -111,8 +114,8 @@ class V8 < Formula
 
   resource "third_party/fast_float/src" do
     url "https://chromium.googlesource.com/external/github.com/fastfloat/fast_float.git",
-        revision: "cb1d42aaa1e14b09e1452cfdef373d051b8c02a4"
-    version "cb1d42aaa1e14b09e1452cfdef373d051b8c02a4"
+        revision: "34164f547b7df3f5d794ff67e9f885c36819ebfc"
+    version "34164f547b7df3f5d794ff67e9f885c36819ebfc"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -122,8 +125,8 @@ class V8 < Formula
 
   resource "third_party/fp16/src" do
     url "https://chromium.googlesource.com/external/github.com/Maratyszcza/FP16.git",
-        revision: "3d2de1816307bac63c16a297e8c4dc501b4076df"
-    version "3d2de1816307bac63c16a297e8c4dc501b4076df"
+        revision: "782eea126dc5c755827be751a099eb01826175cf"
+    version "782eea126dc5c755827be751a099eb01826175cf"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -144,8 +147,8 @@ class V8 < Formula
 
   resource "third_party/highway/src" do
     url "https://chromium.googlesource.com/external/github.com/google/highway.git",
-        revision: "84379d1c73de9681b54fbe1c035a23c7bd5d272d"
-    version "84379d1c73de9681b54fbe1c035a23c7bd5d272d"
+        revision: "2607d3b5b0113992fe84d3848859eae13b3b52c1"
+    version "2607d3b5b0113992fe84d3848859eae13b3b52c1"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -155,8 +158,8 @@ class V8 < Formula
 
   resource "third_party/icu" do
     url "https://chromium.googlesource.com/chromium/deps/icu.git",
-        revision: "ee5f27adc28bd3f15b2c293f726d14d2e336cbd5"
-    version "ee5f27adc28bd3f15b2c293f726d14d2e336cbd5"
+        revision: "8cc91d9b6ab9991802fd208ee03a69714fd0251c"
+    version "8cc91d9b6ab9991802fd208ee03a69714fd0251c"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -175,6 +178,17 @@ class V8 < Formula
     end
   end
 
+  resource "third_party/llvm-libc/src" do
+    url "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libc.git",
+        revision: "6fd5620cc4fd3c55ee749e9bf71f52038431f76d"
+    version "6fd5620cc4fd3c55ee749e9bf71f52038431f76d"
+
+    livecheck do
+      url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
+      regex(%r{["']/external/github.com/llvm/llvm-project/libc\.git["']\s*\+\s*["']@["']\s*\+\s*["']([0-9a-f]+)["']}i)
+    end
+  end
+
   resource "third_party/markupsafe" do
     url "https://chromium.googlesource.com/chromium/src/third_party/markupsafe.git",
         revision: "4256084ae14175d38a3ff7d739dca83ae49ccec6"
@@ -188,8 +202,8 @@ class V8 < Formula
 
   resource "third_party/partition_alloc" do
     url "https://chromium.googlesource.com/chromium/src/base/allocator/partition_allocator.git",
-        revision: "b707a2ca5567b06f4b886fbcd888dfa7e8044718"
-    version "b707a2ca5567b06f4b886fbcd888dfa7e8044718"
+        revision: "7d6a15841642fa6b02874e3c461e332f17c7c33d"
+    version "7d6a15841642fa6b02874e3c461e332f17c7c33d"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -210,8 +224,8 @@ class V8 < Formula
 
   resource "third_party/zlib" do
     url "https://chromium.googlesource.com/chromium/src/third_party/zlib.git",
-        revision: "b80f1d1e5256ac25f6aea3f31f13d458981cb1f9"
-    version "b80f1d1e5256ac25f6aea3f31f13d458981cb1f9"
+        revision: "c5cc9edf8992ff36dfca3c2c4f6c8327a66b6782"
+    version "c5cc9edf8992ff36dfca3c2c4f6c8327a66b6782"
 
     livecheck do
       url "https://raw.githubusercontent.com/v8/v8/refs/tags/#{LATEST_VERSION}/DEPS"
@@ -225,30 +239,13 @@ class V8 < Formula
     inreplace buildpath/"build/config/compiler/BUILD.gn" do |s|
       # GCC only flag, not supported by clang
       s.gsub! "cflags += [ \"-fno-lifetime-dse\" ]", ""
-      # Drop Chromium clang flags that upstream LLVM does not (yet) recognize.
-      # TODO: Check this flags are supported by newer llvm
-      s.gsub! "\"-fsanitize-ignore-for-ubsan-feature=array-bounds\",", ""
-      s.gsub! "\"-fsanitize-ignore-for-ubsan-feature=return\",", ""
+      # Google clang fork only flag, not supported by clang, gcc
+      s.gsub! "cflags += [ \"-fdiagnostics-show-inlining-chain\" ]", ""
     end
 
-    # Public headers reference unqualified `nullptr_t`; libstdc++ rejects this.
-    # Remove in next release
-    # ref: https://chromium.googlesource.com/v8/v8/+/6bb04495264b714767107d2bba9a53e42bc30702
-    inreplace %w[include/v8-object.h include/v8-template.h],
-              /(?<!::|std::)\bnullptr_t\b/, "std::nullptr_t"
-
-    # `bigint.h` uses `std::unique_ptr` but never includes <memory>.
-    # Remove in next release
-    # ref: https://chromium.googlesource.com/v8/v8/+/4f9f652d6d4dd16a54ceb978069fb991ecef8fbc
-    inreplace "src/bigint/bigint.h",
-              "#include <utility>",
-              "#include <memory>\n#include <utility>"
-
-    # libstdc++ can't deduce the template parameter for `value_or({})`.
-    # Remove in next release
-    # ref: https://chromium.googlesource.com/v8/v8/+/913f679d5a4a3c4d0c6916cbdd065569945dc2a6
-    inreplace "src/compiler/turboshaft/wasm-shuffle-reducer.cc",
-              "max.value_or({})", "max.value_or(uint8_t{})"
+    # Google clang fork only flag, not supported by clang, gcc
+    inreplace buildpath/"build/config/sanitizers/sanitizers.gni",
+              "\"-fsanitize-ignore-for-ubsan-feature=${invoker.sanitizer}\",", ""
 
     # Build gn from source and add it to the PATH
     cd "gn" do
@@ -287,8 +284,13 @@ class V8 < Formula
     gn_args[:clang_version] = "\"#{llvm.version.major}\""
 
     if OS.linux?
-      ENV["AR"] = DevelopmentTools.locate("ar")
-      ENV["NM"] = DevelopmentTools.locate("nm")
+      ENV["AR"] = llvm.opt_bin/"llvm-ar"
+      ENV["NM"] = llvm.opt_bin/"llvm-nm"
+      # unbundle toolchain uses separate host toolchain and reads BUILD_* variables
+      ENV["BUILD_CC"]  = ENV["CC"]
+      ENV["BUILD_CXX"] = ENV["CXX"]
+      ENV["BUILD_AR"]  = ENV["AR"]
+      ENV["BUILD_NM"]  = ENV["NM"]
       gn_args[:use_sysroot] = false # don't use sysroot
       gn_args[:custom_toolchain] = "\"//build/toolchain/linux/unbundle:default\"" # uses system toolchain
       gn_args[:host_toolchain] = "\"//build/toolchain/linux/unbundle:default\"" # to respect passed LDFLAGS

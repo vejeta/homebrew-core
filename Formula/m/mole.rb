@@ -1,8 +1,8 @@
 class Mole < Formula
   desc "Deep clean and optimize your Mac"
   homepage "https://mole.fit"
-  url "https://github.com/tw93/Mole/archive/refs/tags/V1.43.1.tar.gz"
-  sha256 "352b2ca03c07d938bf2eb4a8d592ea92e25f6456499f7430d7c87102f3c83f13"
+  url "https://github.com/tw93/Mole/archive/refs/tags/V1.54.0.tar.gz"
+  sha256 "d1353803f4b32ca4296de6aaa21d1c17a1e9926f787f541765c357b79fbcdd6c"
   license "GPL-3.0-or-later"
   head "https://github.com/tw93/Mole.git", branch: "main"
 
@@ -15,19 +15,24 @@ class Mole < Formula
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2e90d201a6ceddc06060dd1a1357c83ac51cf5bd1ff0a47042499d03c8b76241"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1fd1cbf86db80a90a43aeefa8a2cfb75b4a6ea3c3d579b5295fb6f304ebf6577"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e78ff0e6a7c9ba675bfb08f47f6a80d0004714194e585a36d90ae467feb9780b"
-    sha256 cellar: :any_skip_relocation, sonoma:        "055db71dd86999be5351a2ee36fda90a429461814c823b9aff5bb21b40a47780"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5522266ca2f6016f84d93cdcc9afba76f9dfa85ee721378ac50510a4e8c0c53a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "25bbe7982cd69d281755a5c4e6476a13929397a1e6bb2670424457a41014d667"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ac6fe3b3ff01a02133ca321a3fcf5939217a9b6f4b38f313008d287fbe0c380f"
   end
 
   depends_on "go" => :build
   depends_on :macos
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     # Remove prebuilt binaries
     buildpath.glob("bin/*-go").map(&:unlink)
-    ldflags = "-s -w -X main.Version=#{version} -X main.BuildTime=#{time.iso8601}"
+    ldflags = "-X main.Version=#{version} -X main.BuildTime=#{time.iso8601}"
     %w[analyze status].each do |cmd|
       system "go", "build", *std_go_args(ldflags:, output: buildpath/"bin/#{cmd}-go"), "./cmd/#{cmd}"
     end
@@ -42,6 +47,8 @@ class Mole < Formula
   end
 
   test do
+    # Point simctl at the CLT so the sandboxed Xcode simulator probes are skipped
+    ENV["DEVELOPER_DIR"] = "/Library/Developer/CommandLineTools"
     assert_match version.to_s, shell_output("#{bin}/mole --version")
     output = shell_output("#{bin}/mole clean --dry-run 2>&1")
     assert_match "Dry run complete - no changes made", output

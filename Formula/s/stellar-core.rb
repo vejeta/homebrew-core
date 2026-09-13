@@ -2,8 +2,8 @@ class StellarCore < Formula
   desc "Backbone of the Stellar (XLM) network"
   homepage "https://www.stellar.org/"
   url "https://github.com/stellar/stellar-core.git",
-      tag:      "v27.0.0",
-      revision: "7696c069d720fb450caeae940769b0a78a157363"
+      tag:      "v28.0.1",
+      revision: "947aad8413c189d85504acf72207e85eeda9b021"
   license "Apache-2.0"
   head "https://github.com/stellar/stellar-core.git", branch: "master"
 
@@ -16,12 +16,12 @@ class StellarCore < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "e1db35501b6114292b42da01af8f9d71ce0eec5f4e9a657bbde5e390df1529a5"
-    sha256 cellar: :any, arm64_sequoia: "30d13f361af9b31b3a15884722b2b06d3447b13f163c6301b171a6b6e2f6bcd6"
-    sha256 cellar: :any, arm64_sonoma:  "dd46939dda24b035ccaf933368944fab0b2aee32f204aab40a7a7b229273c491"
-    sha256 cellar: :any, sonoma:        "e9a008523ee45b367d4c88b0ddc4d0f2f56b9064beb5ab73a38687675e7784af"
-    sha256               arm64_linux:   "5ebd789973f1a08f5666f8930f8a3b8fb00c7d323f439bfcec2908cf8086dbaa"
-    sha256               x86_64_linux:  "b51e342ceed541af963752990c98ebbbc9aacccafee9a5f4bc3ad29bab2b8469"
+    sha256 cellar: :any, arm64_golden_gate: "1bc9c9cc101593df1b000a0211784e268f1f00d5ff6674d15dbd0ed06d606f1a"
+    sha256 cellar: :any, arm64_tahoe:       "a45eba22d3dd41db23c8f67a90245705c92eff9792087643905af0c8b18c3f79"
+    sha256 cellar: :any, arm64_sequoia:     "8ede2f5d5d1f7fc2df785e2f65d48f3d26e475b30ed9712f87aa4e5b46c8d456"
+    sha256 cellar: :any, arm64_sonoma:      "5869860c035e22c125bede8ad5f3268a5fcd0c601a48eaac4c90d414ab4dae07"
+    sha256 cellar: :any, arm64_linux:       "e53ae206410140a852c9efdb31da72b8d9150f049d3b076a9d5e0b1a0c17d50c"
+    sha256 cellar: :any, x86_64_linux:      "3380990ed3f198969a7e294a425b06dbee31d31bb05af6a669d324f541b76e0f"
   end
 
   depends_on "autoconf" => :build
@@ -49,10 +49,34 @@ class StellarCore < Formula
     # remove toolchain selection
     inreplace "src/Makefile.am", "cargo +$(RUST_TOOLCHAIN_CHANNEL)", "cargo"
 
+    # GCC 13+ no longer transitively includes <cstdint>, which the vendored
+    # `libmedida` sources rely on for `uint64_t`. Force-include it.
+    # https://github.com/stellar/medida/pull/34
+    ENV.append "CXXFLAGS", "-include cstdint" if OS.linux?
+
     system "./autogen.sh"
     system "./configure", "--disable-silent-rules",
                           "--enable-postgres",
                           *std_configure_args
+
+    # The p21-p26 soroban host submodules lock `ethnum` 1.5.0, which fails on
+    # current Rust: it transmutes `()` into the now-non-zero-sized
+    # `TryFromIntError` (rustc E0512). 1.5.3 replaces that with a safe
+    # constructor and satisfies their `^1.5.0` requirement. Bump the pinned
+    # lockfiles and the dependency-tree snapshots the build verifies against.
+    # https://github.com/nlordell/ethnum-rs/issues/60
+    buildpath.glob("src/rust/soroban/p2*/Cargo.lock").each do |lockfile|
+      next unless lockfile.read.include?('name = "ethnum"')
+
+      system "cargo", "update", "--manifest-path", lockfile.dirname/"Cargo.toml",
+             "--package", "ethnum", "--precise", "1.5.3"
+    end
+    buildpath.glob("src/rust/src/dep-trees/p2*-expect.txt").each do |expect|
+      next unless expect.read.include?("ethnum v1.5.0")
+
+      inreplace expect, "ethnum v1.5.0", "ethnum v1.5.3"
+    end
+
     system "make", "install"
   end
 

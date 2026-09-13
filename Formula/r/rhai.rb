@@ -1,18 +1,18 @@
 class Rhai < Formula
   desc "Embedded scripting language for Rust"
   homepage "https://rhai.rs/"
-  url "https://github.com/rhaiscript/rhai/archive/refs/tags/v1.25.0.tar.gz"
-  sha256 "5862084ee0c55882b58cdbb9fbee66a5817eac8f4ef16e76e56bcb98b486e03f"
+  url "https://github.com/rhaiscript/rhai/archive/refs/tags/v1.26.1.tar.gz"
+  sha256 "29a9f479d027d39e8a26e71b8c0b168e05a9ecaa00387c82cd78806b6917aba1"
   license any_of: ["Apache-2.0", "MIT"]
   head "https://github.com/rhaiscript/rhai.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b3815b45d329c4028b88735f9ca1724edcef83617513eabcb513b24fc54cf530"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "25f7bc718144eb0319c8e8f581bf3ad747e6697563f9f168e07b6b82dae25acf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b525ab1d4de6d08a19b8b3de149874be6c33fb5f96f39dc1c484eb616e0ad31c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c7d18017b6db42cf55a9db35e27fc8c14d2ec69e54f7dbeb4e400400ce55237f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c9e87cd4abd06d80495689ae2818f41cc76ea851da88417d811a64c2c796117e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8af61f4eeb24a9f4e351047de095b77a483472602a7452cd0f9fb980d47823da"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "26301c3c5315b8670e4e01be7b4cf840a27075f5b1657907546690623422859c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b16adc0b72928c0edbbb18ded468b2b5957143e947d66a862870185574fb7b19"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7cb492dc9a45b02e63a36ba1d94a386d027892da25e9a0c1b471f87f7dfe8719"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "1c8dccbb74cb317ea1fafbecc11ddeba059dde9680df8b0cd86c1368289e2fc9"
+    sha256 cellar: :any,                 arm64_linux:       "d0d38bcfa90885ef5f0e85751682f87aa13bb6f5553ee747f78b81020d06d630"
+    sha256 cellar: :any,                 x86_64_linux:      "27508ca2c9d6689a28f28a0e825d7e67f82dd9c07ead6705adbe25c1d5e9af98"
   end
 
   depends_on "rust" => :build

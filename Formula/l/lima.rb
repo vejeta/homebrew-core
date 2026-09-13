@@ -1,25 +1,32 @@
 class Lima < Formula
   desc "Linux virtual machines"
   homepage "https://lima-vm.io/"
-  url "https://github.com/lima-vm/lima/archive/refs/tags/v2.1.3.tar.gz"
-  sha256 "3f6dd39922eb42ff6aa497c28b7573775864a38554002719fdbf64a05033f87e"
+  url "https://github.com/lima-vm/lima/archive/refs/tags/v2.2.0.tar.gz"
+  sha256 "cdba3804df7d8c00a2af674a3fe0b24c19673a0e846e5f75ac9badf227ce52f5"
   license "Apache-2.0"
   compatibility_version 1
   head "https://github.com/lima-vm/lima.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "da8b5130a2e1325f6eac4028f6eef7a2ceacd9baa3d7dbede73de9f762882bd4"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3cbb5d00303d1cbb1768398f12b89e5b96162fe2ca71d7e76321bbed6cc85bd0"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1798dafe2d590e5fd4bc7e5c8b80aecf86b9f07c9029414eb6f8643c7db09add"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9d0f81a84d8390cabe6d4750d9dbd3c6d66e9ef6445a2290fc1889090c83a039"
-    sha256 cellar: :any,                 arm64_linux:   "6607747ec37e9d2981a95bcff3d7c28567c4530fa2499c0b4678833397f7b928"
-    sha256 cellar: :any,                 x86_64_linux:  "b57294b4216cb4c7fdc12cc4bfd36d8dcc62b3f99c9eb930c9a511cf16142a8e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "89d34780f56451a51f5c29e45a8f33d9b1455baf4023d0a6d51600630ed4d892"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9dfb60d4c7d0c6721eee679ab188d8b502ad61d1063c9914b830b66ce795b4a4"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bf9f97484c9dc02cfd4a0a9dacf6c890652f2b2fb324410db0ca0acaacd326dc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "77c93945bf5f3eb6d0397c1753adf14d2915181a188b79527cf2f60009fe7377"
+    sha256 cellar: :any_skip_relocation, sonoma:            "9e8ec6266703cc3f481b8593416d0c044bd1b5b20a5286d5953dd2b4b9fdeb7f"
+    sha256 cellar: :any,                 arm64_linux:       "14f3457f4425cd0058af128dc69da51f976a5d29deadbdc10c2f3ffb42e31abe"
+    sha256 cellar: :any,                 x86_64_linux:      "759a33791896c5c45f6634aa4b15bbb9a5382eb2673cabe2567d1448ffe5541b"
   end
 
   depends_on "go" => :build
 
   on_linux do
     depends_on "qemu"
+  end
+
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
   end
 
   def install

@@ -1,8 +1,8 @@
 class Dolt < Formula
   desc "Git for Data"
   homepage "https://www.dolthub.com"
-  url "https://github.com/dolthub/dolt/archive/refs/tags/v2.1.8.tar.gz"
-  sha256 "7e0b1668427c53ce568d32ae274c4a38a027c2ddd6b49332a3fef69b8d83b75d"
+  url "https://github.com/dolthub/dolt/archive/refs/tags/v2.3.3.tar.gz"
+  sha256 "25977946bd39aaa94c63c3c7f081905994273da4d506036744caaea9d531183f"
   license "Apache-2.0"
   version_scheme 1
   head "https://github.com/dolthub/dolt.git", branch: "main"
@@ -13,21 +13,27 @@ class Dolt < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "bc77568b1875a0eb4bafe93c913e7cc42a20175347ac1a423fdb143c35d1f085"
-    sha256 cellar: :any, arm64_sequoia: "4f399753a8341f46ebb58ebc1d09bd47fcdfd33028d24a4347eb1a3df1108e6c"
-    sha256 cellar: :any, arm64_sonoma:  "94527733b1d23c2e81e84639b48215b53d5a594f6ea57f5a61caec94f3794edd"
-    sha256 cellar: :any, sonoma:        "feab76c81c26725006a8dbebaacf5e7acae4782776f90f14172529e904b7c15a"
-    sha256 cellar: :any, arm64_linux:   "6a8761876a829c6afd2b34a48c1837b58c9cabf3d1b65fb8ac394966f79b6349"
-    sha256 cellar: :any, x86_64_linux:  "94d0fc3e8dfe8887d3ec51996e08ad90cfa97bb3413e182beca72c812a11acd2"
+    sha256 cellar: :any, arm64_golden_gate: "5e34638dc0a65974e7e3a3a4af3f05eaa57fe272097448f63b3d822c318d5a13"
+    sha256 cellar: :any, arm64_tahoe:       "38c1ee3aa60c75ae1cccdbaf33a00d9a271fa8214823ef206bd8980756e0109c"
+    sha256 cellar: :any, arm64_sequoia:     "4580a771303f4d919fd815f2c6762c757956faa493c508f34e5cfadd7c8bef6d"
+    sha256 cellar: :any, arm64_sonoma:      "ffb925150d849a990488903af228810705d4e976d970c326615e1e27dddc0dad"
+    sha256 cellar: :any, arm64_linux:       "132080dd40dfeb9a142a3e84f44aaf570a6dfa32ed232b51f369b0c6dc91d613"
+    sha256 cellar: :any, x86_64_linux:      "932700b17f4daa652df6dc440c4f89473a8d177dc851140198ef36cc45d1e4a6"
   end
 
   depends_on "go" => :build
   depends_on "icu4c@78"
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download", "-C", "go"
+  end
+
   def install
     ENV["CGO_ENABLED"] = "1"
 
-    system "go", "build", "-C", "go", *std_go_args(ldflags: "-s -w"), "./cmd/dolt"
+    system "go", "build", "-C", "go", *std_go_args, "./cmd/dolt"
 
     (etc/"dolt").mkpath
     touch etc/"dolt/config.yaml"

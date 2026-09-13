@@ -1,9 +1,10 @@
 class Inko < Formula
   desc "Safe and concurrent object-oriented programming language"
   homepage "https://inko-lang.org/"
-  url "https://releases.inko-lang.org/0.20.0.tar.gz"
-  sha256 "14356c5fd0a024a0ea5efb62c68bc404cd97325cfa78f0daee5d7f61bbcf407a"
+  url "https://releases.inko-lang.org/0.21.1.tar.gz"
+  sha256 "f883b34b404fbc977775b6d38c2bcf89580fe7afe11f58f8391fa72188625cda"
   license "MPL-2.0"
+  revision 1
   head "https://github.com/inko-lang/inko.git", branch: "main"
 
   # The upstream website doesn't provide easily accessible version information
@@ -15,12 +16,13 @@ class Inko < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "de85bb77207af2a479666d3d74eedb2bb07829db0bcdd5c7b4198ebf983daafa"
-    sha256 cellar: :any,                 arm64_sequoia: "9792044d4821e5cb674df291fce3dcc78cc3d9902fe7ab6a05cecf3b91d4a203"
-    sha256 cellar: :any,                 arm64_sonoma:  "7df0aa33f7887f2a8276bd8a1f2a4f8b073f78e90838762e379865a894ab9e8c"
-    sha256 cellar: :any,                 sonoma:        "1c4d68f66ddd8123df0c405d6fd6fc7ddd8d3e651a13942a952ff7c866f2a2c1"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "48d02f0c7220f3588ba1de594b0fab258927a357d99b6eeee227e6ad324ebbdb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "52ff47e77cfddaf91e24b11b68948bff67517dc20a3a1bc396aa1333d5a6adca"
+    sha256 cellar: :any, arm64_golden_gate: "2e8c529596ab78b085543352215f19cf0630a393d7eade67e56e86f93dd94619"
+    sha256 cellar: :any, arm64_tahoe:       "d4be7624bff53913f827d02ced2806d64a2fde5cda782a7cee3bc029b37bccf5"
+    sha256 cellar: :any, arm64_sequoia:     "8dbdc956a1e421c368ba1cd2a627fd351f7ffcda4f584f11e92072b4a2819201"
+    sha256 cellar: :any, arm64_sonoma:      "c1ffd1948db727bcb73e50d0c39b243f3e1b8b77ee0ac041fbfb473c06c2aa71"
+    sha256 cellar: :any, sonoma:            "79886ec7db67b6980ed6b7172fe1ce5ed31cf9942c7539d781e63066600c9abd"
+    sha256 cellar: :any, arm64_linux:       "f94fdbc9a090c89840b926e64f10e709ab531f2ebce280e8b47f2b2266152c3d"
+    sha256 cellar: :any, x86_64_linux:      "f6d59b3312b7ccffd1ae2cef66f17502b4f5052581e3fd7d53b8861eff5789bb"
   end
 
   depends_on "rust" => :build

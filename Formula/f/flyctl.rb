@@ -2,8 +2,8 @@ class Flyctl < Formula
   desc "Command-line tools for fly.io services"
   homepage "https://fly.io"
   url "https://github.com/superfly/flyctl.git",
-      tag:      "v0.4.59",
-      revision: "d10482182142f259db338dcef34556a67702290c"
+      tag:      "v0.4.102",
+      revision: "45ebe187e223362d4ac1cc91caa82e0d75385c51"
   license "Apache-2.0"
   head "https://github.com/superfly/flyctl.git", branch: "master"
 
@@ -18,20 +18,25 @@ class Flyctl < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8b10adef80c49736e9ffd39097e255f3081fb01dd27ee6c0e9d8477b2a34d474"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8b10adef80c49736e9ffd39097e255f3081fb01dd27ee6c0e9d8477b2a34d474"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8b10adef80c49736e9ffd39097e255f3081fb01dd27ee6c0e9d8477b2a34d474"
-    sha256 cellar: :any_skip_relocation, sonoma:        "0e5ab4962d1bf62f629ced3da4b6f6e7cea96fc3b2c326d2ebfe8d755a1541b0"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d549708f690ca34829152fac0f613c29a12c8a4a3497935fd2b8a7dfd1543845"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "310ca5984c33604532a26482d8aca9904f1d6e037a3f69df051d0e22f0414850"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b8b70b40e3682210310b50d5a72626e944c0b4cd938635e83b52e27829c90962"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b8b70b40e3682210310b50d5a72626e944c0b4cd938635e83b52e27829c90962"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b8b70b40e3682210310b50d5a72626e944c0b4cd938635e83b52e27829c90962"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b8b70b40e3682210310b50d5a72626e944c0b4cd938635e83b52e27829c90962"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "aa5e93a7e0b609a5f05f4546e7945b9670538fc7b008cdc6b016901841f62fcd"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "357072cd86cfebd5940ed332c96851f5f4413fd28ad9e0235287141937b99213"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ENV["CGO_ENABLED"] = "0"
     ldflags = %W[
-      -s -w
       -X github.com/superfly/flyctl/internal/buildinfo.buildDate=#{time.iso8601}
       -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=#{version}
       -X github.com/superfly/flyctl/internal/buildinfo.commit=#{Utils.git_short_head}

@@ -1,18 +1,18 @@
 class Aoe < Formula
   desc "Terminal session manager for AI coding agents"
-  homepage "https://github.com/njbrake/agent-of-empires"
-  url "https://github.com/njbrake/agent-of-empires/archive/refs/tags/v1.11.1.tar.gz"
-  sha256 "19ef0112cd85ec2b598fe4957c80638ea6d7794881da4c437f5d272e6e81f549"
+  homepage "https://github.com/agent-of-empires/agent-of-empires"
+  url "https://github.com/agent-of-empires/agent-of-empires/archive/refs/tags/v1.16.0.tar.gz"
+  sha256 "160bc8e40e1a7d9d71fad2b555dea8b834a5bdcd94959b112d0f5a9efcfc3d8c"
   license "MIT"
-  head "https://github.com/njbrake/agent-of-empires.git", branch: "main"
+  head "https://github.com/agent-of-empires/agent-of-empires.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "6cc33e26270ad0bf55e6b0839312c4c80d52760140a0b4feb5ea8ba8b0c6fc91"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fbef642bcc100d8faa7894b4b521d9f9dfe0d8dd6d4b54bc7a6e560e87bca484"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2c258e0490712a767c30ba823958eec45853d549adef298906a1acf01dedc1e9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8ba862a618027f76fa15a81c631d22ef833303ab96446de85d3c59fd50a808a5"
-    sha256 cellar: :any,                 arm64_linux:   "c478676a264224f8b7d744259bfa94bd9a641c110c96bf2d6760be45a2d181db"
-    sha256 cellar: :any,                 x86_64_linux:  "5de2559e2bcd4ceb65982faa574f609f0fd5c6544e1d1d9aaa87fc0927affbf2"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ea73a5c53067cd80a20f46f4687e210ca6580f857e01fdd73d38f1f0794bfc23"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1a2c7b6939dd0928c272e9461c04375a83801ddb5c9bc3cda96dd9125c88ccb5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fea810bfebb694d18c0d51c07bf43eb56ec7fa9d26be39886deac5610f7d5eb5"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6048b7500588631d86163fb4bddd0dd766cc1aa1f20ea34dc9b97afdd63e33cd"
+    sha256 cellar: :any,                 arm64_linux:       "d42d43921349d01a87a522fbe91a50e9fbd6024f1a3717bf26972965a356674b"
+    sha256 cellar: :any,                 x86_64_linux:      "d643e0f187705be70f20e8be62a91f66243b628992c8ad0d1f8c5e82ade73c98"
   end
 
   depends_on "node" => :build

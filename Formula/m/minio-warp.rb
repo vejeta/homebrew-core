@@ -1,25 +1,24 @@
 class MinioWarp < Formula
   desc "S3 benchmarking tool"
   homepage "https://github.com/minio/warp"
-  url "https://github.com/minio/warp/archive/refs/tags/v1.5.0.tar.gz"
-  sha256 "cf1f16c612ca72af01b0de2b30a79486e7d03c4da7cfba49e142265eb550e0ba"
+  url "https://github.com/minio/warp/archive/refs/tags/v1.7.0.tar.gz"
+  sha256 "c99bdb158e46e96aca9092b7d5fd6483e3901093045b1c8e987094d1fec94f2d"
   license "AGPL-3.0-or-later"
   head "https://github.com/minio/warp.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1de21beb5507c561a4fcf56462cbe4a4b003eb1d7635ebb123fb29a9f217615e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "717d02e30f1f87a521b0131a7063dda96f4ca264d422ca2ccc0cfb5c0d7bc447"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f38a5096a886320866fe201b71d1a159398da0e7b38f5863abfba30e453d7369"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f9a02937872a206ffa7428bd254877769786fa06f4f57a32952ccdb946dac198"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "0a6f14ff723ac43caa6f4bcb281cad9cf9507eed32dde1ba128dfcad9a9dfb31"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "972b931ebd7e4fa010d029ed8a651046a61a4aa15e5e3c40a1ed75dfeba4f38d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9224153235f18d539966093127aa07bffd8b9cbf7b2ac97cdbad5e2e81097b9a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "54fbaa578d3bf067d7d84d6a1b1c027d7c6cddf888319d99f465d642b37fce29"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "075160b6193d1af54cadad2c8bbaabbd630e4cc1e0730ce88e27c149742b831c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b25a218f0100b4b3e682e668efb082f219fb6d13fbeb95a6568c8361fe70c10a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a6b63deca34c56435c0e812d29b8ce358ad6c888a21f8f76de403253f0e877b8"
+    sha256 cellar: :any,                 x86_64_linux:      "a339847bac2f4e36eea517e51cbee48330e5d0a1710f05bf64519c3ffd2090b4"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/minio/warp/pkg.ReleaseTag=v#{version}
       -X github.com/minio/warp/pkg.CommitID=#{tap.user}
       -X github.com/minio/warp/pkg.Version=#{version}

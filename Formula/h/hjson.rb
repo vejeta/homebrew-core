@@ -1,24 +1,24 @@
 class Hjson < Formula
   desc "Convert JSON to HJSON and vice versa"
   homepage "https://hjson.github.io/"
-  url "https://github.com/hjson/hjson-go/archive/refs/tags/v4.6.0.tar.gz"
-  sha256 "5ee5ab2b191f4464a9ac98c3047441d94bd9d5fdeb77f651f9d90f1dacd54f74"
+  url "https://github.com/hjson/hjson-go/archive/refs/tags/v4.7.1.tar.gz"
+  sha256 "2881c114bcd194860155885e3c3586b6e41832818ea5cbf9c661a6a7990a79b6"
   license "MIT"
   head "https://github.com/hjson/hjson-go.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cc9750fd1bca7e7cc3eaa64f7601818a33d663e2b65d7245b62fec5056ee6f6a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "cc9750fd1bca7e7cc3eaa64f7601818a33d663e2b65d7245b62fec5056ee6f6a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cc9750fd1bca7e7cc3eaa64f7601818a33d663e2b65d7245b62fec5056ee6f6a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "acd2ba791152d363026d562d6f35165950fc5fe18e85ed9187a55b6f2ffe10a4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "efafdf6aee5a9a12591cddb5087bd48434f36e93a13be831d70cd98e3a5ba260"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7ebe393b4febcf6fa2248cd911e5d547028e5b9c75877058d03a159dd0cebc2d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "4a33156f50c63285d3df45038349df02997e8f177138201d44d19b313a3a2ed7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4a33156f50c63285d3df45038349df02997e8f177138201d44d19b313a3a2ed7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "4a33156f50c63285d3df45038349df02997e8f177138201d44d19b313a3a2ed7"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4a33156f50c63285d3df45038349df02997e8f177138201d44d19b313a3a2ed7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "4aa5610d49cd7983041ac406238fc68c6726424ad23f9e2b762a64f8d4ce18e8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "51aa8911adf1968269810f0f25131e813490c97782536646ad3f76341481955d"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.Version=#{version}"), "./hjson-cli"
+    system "go", "build", *std_go_args(ldflags: "-X main.Version=#{version}"), "./hjson-cli"
   end
 
   test do

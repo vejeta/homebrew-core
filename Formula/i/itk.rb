@@ -1,8 +1,8 @@
 class Itk < Formula
   desc "Insight Toolkit is a toolkit for performing registration and segmentation"
   homepage "https://itk.org"
-  url "https://github.com/InsightSoftwareConsortium/ITK/releases/download/v5.4.6/InsightToolkit-5.4.6.tar.gz"
-  sha256 "1177567965a2522c53f7c77ed222afd619262f508caaf026646b21e275971e95"
+  url "https://github.com/InsightSoftwareConsortium/ITK/releases/download/v5.4.7/InsightToolkit-5.4.7.tar.gz"
+  sha256 "4907033e0e93fb04734df8556b88a670ba630b4f42b52e9f25ed4d084a7ab925"
   license "Apache-2.0"
   revision 1
   head "https://github.com/InsightSoftwareConsortium/ITK.git", branch: "main"
@@ -13,12 +13,13 @@ class Itk < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "bcce74d0894ccc3b4dcc6e0d92e264929f718fedca0a9219093c6b30b3eaea89"
-    sha256 arm64_sequoia: "59b0532ddde3c7e7b82d2869a19d3fd5ab08851a2c7bdbfcd14f4d0c32b31ea0"
-    sha256 arm64_sonoma:  "56095812a041dd41df3c0dba2062b7653f046adb76be83c886553b9a5cd9bf9e"
-    sha256 sonoma:        "79af92257afc03f640da8881a295d51edaa1c538dbc3c81cc59965b82cdb55f5"
-    sha256 arm64_linux:   "2c5059cb05b249b1df209451cb917e36539656c1a5831933763914d5b817120d"
-    sha256 x86_64_linux:  "cb2f54a21adfaf74b9155b79a5b6778de4531f9df13e061591607e4c314df257"
+    rebuild 1
+    sha256 arm64_golden_gate: "6b7530683d6c45f4f0a88135a67d834f09f2a17c16a6f586fcb7acb4a2da70a1"
+    sha256 arm64_tahoe:       "44a809e493cb4aedd21711c7c9adf70016a2d3fd29e8f7be3435fa6a6155a729"
+    sha256 arm64_sequoia:     "b7a74d583fc5ae57cd25120dd8ca2c8a8d0e613ac6004855cfd77b580f93952c"
+    sha256 arm64_sonoma:      "7ce1f34e9e19b9f8efe1652c7ec0581a0ad04703d6f1faa1996853af92a9f9bc"
+    sha256 arm64_linux:       "990b689e0df7bf101ae3d723322f517f9ff7ab9aadf6ae33418e8e5947fc0bb7"
+    sha256 x86_64_linux:      "1f32a7e76e02701e82cc14d72bc9c183c8c49a250a348150a97c8e2caf5963aa"
   end
 
   depends_on "cmake" => :build
@@ -32,7 +33,7 @@ class Itk < Formula
   depends_on "libtiff"
   depends_on "vtk"
 
-  uses_from_macos "expat"
+  uses_from_macos "expat", since: :sequoia
 
   on_macos do
     depends_on "freetype"
@@ -45,18 +46,7 @@ class Itk < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # Work around superenv to avoid mixing `expat` usage in libraries across dependency tree.
-  # Brew `expat` usage in Python has low impact as it isn't loaded unless pyexpat is used.
-  # TODO: Consider adding a DSL for this or change how we handle Python's `expat` dependency
-  def remove_brew_expat
-    env_vars = %w[CMAKE_PREFIX_PATH HOMEBREW_INCLUDE_PATHS HOMEBREW_LIBRARY_PATHS PATH PKG_CONFIG_PATH]
-    ENV.remove env_vars, /(^|:)#{Regexp.escape(Formula["expat"].opt_prefix)}[^:]*/
-    ENV.remove "HOMEBREW_DEPENDENCIES", "expat"
-  end
-
   def install
-    remove_brew_expat if OS.mac? && MacOS.version < :sequoia
-
     # Avoid CMake trying to find GoogleTest even though tests are disabled
     rm_r(buildpath/"Modules/ThirdParty/GoogleTest")
 

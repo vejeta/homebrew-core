@@ -3,8 +3,8 @@ class Hk < Formula
   homepage "https://hk.jdx.dev"
   # pull from git tag to get submodules
   url "https://github.com/jdx/hk.git",
-      tag:      "v1.48.0",
-      revision: "0b221a3e11b48aff266eee14b4b37abb7f0bb4a0"
+      tag:      "v2.0.0",
+      revision: "f4ad840548897eaffedc55a28ff262167dda96cf"
   license "MIT"
   head "https://github.com/jdx/hk.git", branch: "main"
 
@@ -14,18 +14,17 @@ class Hk < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9d5317f665b9ad5c561d9654432df9dd944010e69150caa5fe3529563101e04c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "26b22cbd0f9db4dae9090c9117282a7b55a26cde52f5f591164a0b2ea00fd7be"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "068785acf7dedda2ec1131c8856cd19770b4f89275b048dd4d6a5716d8f91fda"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2ef11c0bdcc69cf9646764656815e699dfe2ae5e4769276073476726c7e36d3f"
-    sha256 cellar: :any,                 arm64_linux:   "b1ee804ab869c56d0f4037b6450c62fe8f5c5694f7665f38c310a107ff3aeaf7"
-    sha256 cellar: :any,                 x86_64_linux:  "f67ece31bb75a8be1a4ff297665dbb18a429d1e61efad3b31e40ac3ca4f7c148"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a0cacaab6796a9c720aa6ba3d02828a5d5b3c0012f2265b3f3248c6bde25a697"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "3c90ad944a4e4745beed60cef49d77caf5442255b296713e4e5413a22c320896"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7aaf8467742d3ed4d04f22366f15ca4e151b1cd30c4eef693902c1518f0a172a"
+    sha256 cellar: :any,                 arm64_linux:       "114ffecd1171123573c4136657824117f4bcc17654db0b356609b76797ada37f"
+    sha256 cellar: :any,                 x86_64_linux:      "59e8f18981ef246d518f5706e718c4b33e4d5d142619c0ece929dc74a3ed5e17"
   end
 
+  depends_on "pkl" => :build
   depends_on "rust" => [:build, :test]
 
   depends_on "openssl@3"
-  depends_on "pkl"
   depends_on "usage"
 
   uses_from_macos "python" => :build
@@ -36,7 +35,7 @@ class Hk < Formula
 
   def install
     # Ensure the correct `openssl` will be picked up.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "cargo", "install", *std_cargo_args
 

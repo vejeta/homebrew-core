@@ -1,26 +1,32 @@
 class Lefthook < Formula
   desc "Fast and powerful Git hooks manager for any type of projects"
   homepage "https://github.com/evilmartians/lefthook"
-  url "https://github.com/evilmartians/lefthook/archive/refs/tags/v2.1.9.tar.gz"
-  sha256 "33dece7ea494fa723cd1a8488210dab807c1be9d3c92912a0eedbd6406299744"
+  url "https://github.com/evilmartians/lefthook/archive/refs/tags/v2.1.12.tar.gz"
+  sha256 "c2e79ff53d31aaeb5a5765d118552a7b6f6e2667647347200386615ee4e88acf"
   license "MIT"
   head "https://github.com/evilmartians/lefthook.git", branch: "master"
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d44f5734bf3524e0a02760ba51fa2f9d1ab373851be28aef0ea72c9c6177a790"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d44f5734bf3524e0a02760ba51fa2f9d1ab373851be28aef0ea72c9c6177a790"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d44f5734bf3524e0a02760ba51fa2f9d1ab373851be28aef0ea72c9c6177a790"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5d04ad3efff0046812879cf1d783b550ff95d2c9dbd112861e5cbebbd30f12f9"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c7bf3c10d85759c33789fcf46f5dad5527ca793fc9f260f99ae8850fb6e2e580"
-    sha256 cellar: :any,                 x86_64_linux:  "7530b5c20cf52ff892089401aa9f58e7f8ee8663f2857979b57704dba3cf3e26"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6c797de1a8613d8723791caa86f43c706c4c18cbb295b17bea285c9943bdeced"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4e0f57fb52b00ecd9f660b537e964fd45a1e588480e41bf8a5b5874a8ac75f8f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "4e0f57fb52b00ecd9f660b537e964fd45a1e588480e41bf8a5b5874a8ac75f8f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4e0f57fb52b00ecd9f660b537e964fd45a1e588480e41bf8a5b5874a8ac75f8f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f1efee6c6c3150997e3ecb9a8dc12b73acc3dcbfdae77a658dafea1177be4588"
+    sha256 cellar: :any,                 x86_64_linux:      "4f7d23938a325f7e615468daaa25b34fa7d64ab769f9df17ff8ec4ee0683074f"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w", tags: "no_self_update")
+    system "go", "build", *std_go_args(tags: "no_self_update")
 
     generate_completions_from_executable(bin/"lefthook", "completion")
   end

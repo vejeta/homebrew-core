@@ -2,8 +2,8 @@ class Docker < Formula
   desc "Pack, ship and run any application as a lightweight container"
   homepage "https://www.docker.com/"
   url "https://github.com/docker/cli.git",
-      tag:      "v29.6.0",
-      revision: "fb59821d450bc76c97e52617f66dde0c6035e332"
+      tag:      "v29.8.0",
+      revision: "88096ef00576baf72a9cb45caa45c0544c40e0a7"
   license "Apache-2.0"
   head "https://github.com/docker/cli.git", branch: "master"
 
@@ -13,18 +13,18 @@ class Docker < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a1ef6cff1bd0ec298a983063171548848c67f8826b4edd09e767b42f2e569bdf"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "451568b1bbfdf29b434e0a6a4d852c24483156a6a7772105ae3d45400f55f13b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "13ae6e6c17407f53a7919cd501c9d9e367bdef47a2144f76956a8aba3f58aa4e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "01d7ff56eac9eb081cc681f6623eaf9866378f33843e198269e93316799e0d8e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "48286e3d11ef718a0d457957c373b320f51a215fb3e22e3dfad5026ca78c86fa"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "875f66f0bfeba67032c6333dd2084e66ecf483eb6d62eb3e15126c5972987605"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "298d95a90da10c8eb08a21b177b08d0d52f09a41a1f366c23b66103f212c0c11"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "998293c4bd31551c89a433e216ae890e4e93c9835b5ac6a822455655367bef89"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6db57a093b88166c74cb71830bcad96d7ec616d082b329814d9619ea1c9289e2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "a599492a022fa9e9d4674f81bff0d1becff94a77485f8da617ce9df97cb35bc1"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d087926a9f15f9f1fdcdac3b5d23bb0eff5df1e9b85db27d823eec8bf8afc0d3"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "686024828902288b00eea79b6228b9c7c7c880c374a0b2f66d1185131a556d9c"
   end
 
   depends_on "go" => :build
   depends_on "go-md2man" => :build
 
-  conflicts_with cask: "docker-desktop"
+  deny_network_access!
 
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
@@ -34,7 +34,6 @@ class Docker < Formula
     (buildpath/"src/github.com/docker").install_symlink buildpath => "cli"
 
     ldflags = %W[
-      -s -w
       -X github.com/docker/cli/cli/version.BuildTime=#{time.iso8601}
       -X github.com/docker/cli/cli/version.GitCommit=#{Utils.git_short_head}
       -X github.com/docker/cli/cli/version.Version=#{version}

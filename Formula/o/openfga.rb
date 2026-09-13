@@ -1,25 +1,24 @@
 class Openfga < Formula
   desc "High performance and flexible authorization/permission engine"
   homepage "https://openfga.dev/"
-  url "https://github.com/openfga/openfga/archive/refs/tags/v1.18.0.tar.gz"
-  sha256 "d63f8ddd7b01546c14a35cbc18b9c75db41246ee6230f6f136c8950c72e77d97"
+  url "https://github.com/openfga/openfga/archive/refs/tags/v1.20.0.tar.gz"
+  sha256 "be1c5d55f5e995a5a3e583b79e2a8a1520685880ecac7c5803e315f6fb8eaba0"
   license "Apache-2.0"
   head "https://github.com/openfga/openfga.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1c2bda3b373a74a701c5943546817b4d778109d5293c1013eaf22c50317871aa"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3e1b9cfd2ebd3f2423b7d37cacb0adcb2e84dfb5109e2ff252a306af212991ab"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6763c02cb5c74c35f3683ed1e58792e23ce7329fb0e6e378110dac7c95bd43c0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "aef85f6200405db24f9b3bbcac31b49a25873560158939bce003aeaca814596b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "35771ce1569829d4e3f14f34b1593138b01b31b96b80d3f40ac9040e553c6d80"
-    sha256 cellar: :any,                 x86_64_linux:  "62f8dbd2eb83cbf86f7d69947080cc25240e202249cf4da717fc95e1aa7a0cc9"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f79c5e45353186c1826bc1cbd59f6663a5303bf5c24bb234e2b838657087160f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b8305162d066457ec745ed12bc870c421714d5b7a7b7b67d618b2942db4c08a2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "62cc86f923275e77fb363d2e1100f9d0944241acac79467fa6fdd075ef1b51b6"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6e696a1ed521a941ece240b2dd5497a24ec9f2390f8fbed094e3d9f25f19271c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "45268bb575c3dadb1eba4564ca98bcfcc3f833d62ec5548b3df8c9fa59a5871d"
+    sha256 cellar: :any,                 x86_64_linux:      "afe92d44c986eb30fcecac8bf3dc9c0f353635bcea764d56d49870595089c366"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/openfga/openfga/internal/build.Version=#{version}
       -X github.com/openfga/openfga/internal/build.Commit=#{tap.user}
       -X github.com/openfga/openfga/internal/build.Date=#{time.iso8601}

@@ -1,19 +1,19 @@
 class MathComp < Formula
   desc "Mathematical Components for the Coq proof assistant"
   homepage "https://math-comp.github.io/math-comp/"
-  url "https://github.com/math-comp/math-comp/archive/refs/tags/mathcomp-2.5.0.tar.gz"
-  sha256 "3db2f4b1b7f9f5a12d3d0c4ba4e325a26a77712074200319660c0e67e25679f1"
+  url "https://github.com/math-comp/math-comp/archive/refs/tags/mathcomp-2.6.0.tar.gz"
+  sha256 "b2e8c5c93fdc9bb5ed9b8a06d1c028aa0096a45b1f3ac6c6509d7a6500c72253"
   license "CECILL-B"
-  revision 5
+  revision 2
   head "https://github.com/math-comp/math-comp.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8357b67379784056d5606adcbb012c24a6972894967835beaeeb47e7aafc61fc"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5f16379606e97bd95354c8524afd7dbbff369f957fe0857b0a400f89f27cc70b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4d7ef69b46fd63e86fe447dfcbde421f840ed79d84a893c50637951ae6f187fc"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ba925b81bb93e4b12a4dcc293ba25c87fb7c186f250b17b7a9822f83aa1ce2f9"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b40dc7f611788a598d1e777b4cc4ca8f3928ffb5360fa7af39f03d8394700afd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7dbaf59ff86542eb7f377baac236ea3bec61cf86685714b99d4aee3facc86127"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "2a2c3ddf5e59144d3a497d3fd37ea2898f4c7472b4efe81f546c98f7e62140b6"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7e0005fddb1553f1b986c4ae8b89e6fe6c738ee66bd1f2e0d09c607244c871fa"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "392202fc132426734ac0a4d31d2d00a3324fc711949900a64b86bc754544a064"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "797751273b81b85417a36c0ab04a6b7261c11412abc84d5554e52f980674575b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "aecfb2d882f7969c7207d7962f007e143cf7f70eb0f566bffa821489e5e1ad32"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "16d314feafa7deab253b8b5fe96dda04186ce9c4dff8d7091a019b0f9d02587a"
   end
 
   depends_on "ocaml" => :build
@@ -21,13 +21,14 @@ class MathComp < Formula
   depends_on "hierarchy-builder"
   depends_on "rocq"
   depends_on "rocq-elpi"
+  depends_on "rocq-micromega-plugin"
 
   def install
-    ENV["OCAMLFIND_CONF"] = Formula["rocq-elpi"].libexec/"lib/findlib.conf"
-    (buildpath/"Makefile.coq.local").append_lines "COQLIB=#{lib}/ocaml/coq\n"
+    ENV["OCAMLFIND_CONF"] = formula_opt_libexec("rocq-elpi")/"lib/findlib.conf"
+    ENV.prepend_path "OCAMLPATH", formula_opt_lib("rocq-micromega-plugin")/"ocaml"
 
     system "make"
-    system "make", "install"
+    system "make", "install", "COQLIBINSTALL=#{lib}/ocaml/coq/user-contrib"
   end
 
   test do
@@ -41,7 +42,8 @@ class MathComp < Formula
       Check test.
     ROCQ
 
-    ENV["OCAMLFIND_CONF"] = Formula["rocq-elpi"].libexec/"lib/findlib.conf"
-    assert_match(/\Atest\s+: forall/, shell_output("#{Formula["rocq"].bin}/rocq compile testing.v"))
+    ENV["OCAMLFIND_CONF"] = formula_opt_libexec("rocq-elpi")/"lib/findlib.conf"
+    ENV.prepend_path "OCAMLPATH", formula_opt_lib("rocq-micromega-plugin")/"ocaml"
+    assert_match(/\Atest\s+: forall/, shell_output("#{formula_opt_bin("rocq")}/rocq compile testing.v"))
   end
 end

@@ -1,32 +1,32 @@
 class PerconaServer < Formula
   desc "Drop-in MySQL replacement"
   homepage "https://www.percona.com"
-  url "https://downloads.percona.com/downloads/Percona-Server-8.4/Percona-Server-8.4.8-8/source/tarball/percona-server-8.4.8-8.tar.gz"
-  sha256 "8ec19aa2fcb714d06ba6b0b6ed1edc3687c06664e3a922b6d54eb09fa4c48810"
+  url "https://downloads.percona.com/downloads/Percona-Server-8.4/Percona-Server-8.4.11-11/source/tarball/percona-server-8.4.11-11.tar.gz"
+  sha256 "2fb90e235c25183d73c972cba481a32ea2d90cefca0669fe0786defc2acdfa18"
   license "BSD-3-Clause"
   revision 2
 
   livecheck do
-    url "https://www.percona.com/products-api.php", post_form: {
-      version: "Percona-Server-#{version.major_minor}",
+    url "https://www.percona.com/wp-admin/admin-ajax.php", post_form: {
+      action:     "percona_downloads",
+      product_id: "Percona-Server-#{version.major_minor}",
     }
-    regex(/value=["']?[^"' >]*?v?(\d+(?:[.-]\d+)+)[|"' >]/i)
-    strategy :page_match do |page, regex|
-      page.scan(regex).map do |match|
+    regex(/^Percona-Server-v?(\d+(?:[.-]\d+)+)$/i)
+    strategy :json do |json, regex|
+      json.dig("data", "versions")&.filter_map do |version|
         # Convert a version like 1.2.3-4.0 to 1.2.3-4 (but leave a version like
         # 1.2.3-4.5 as-is).
-        match[0].sub(/(-\d+)\.0$/, '\1')
+        version[regex, 1]&.sub(/(-\d+)\.0$/, '\1')
       end
     end
   end
 
   bottle do
-    sha256 arm64_tahoe:   "6abe3e76276c3001285ed1662f58f016b5a2a3022eb991ef59bd14a84822700d"
-    sha256 arm64_sequoia: "bd74316193e2a61a3588b8f05435da4da09c1b1556f9cd2b42580a0e2ef827f1"
-    sha256 arm64_sonoma:  "ffee3025a2e669ffe7e064395aa81687de753d0440a89d76fcf4e2325a9d7b74"
-    sha256 sonoma:        "6290dc1342ddf4460888f3105b3a0e23749daf65617c00ca832805b3273b3c40"
-    sha256 arm64_linux:   "e78aacfa1feac948ad8c7351aa683fc8629551c2d3e4882041dc8abb0d6ae54e"
-    sha256 x86_64_linux:  "6aef9d81d7246598e8ee4066dcc7995c598b3fb8eed8ce54802cce7bf62d99c4"
+    sha256 arm64_tahoe:   "66e5ca2e518aa106e0dedeca34a2b25c5b01997590da13fcf0bf00836e2b3b90"
+    sha256 arm64_sequoia: "a653b5fd4b96e7247d18ecf25eb778e586033fdabfcc02a1fec9edd3b8556286"
+    sha256 arm64_sonoma:  "457871a19be2223bf66a5ee9a845e8b78f5b61463bab4c3564b49315c864f670"
+    sha256 arm64_linux:   "d9af7515e80e984ae044470d6ceb7ed56d076530a946c04e5e900e6ff007cd77"
+    sha256 x86_64_linux:  "d5665f3810565e3ba610953a261a9138953d667991bb4e394f984e26194d2a91"
   end
 
   depends_on "bison" => :build
@@ -73,7 +73,10 @@ class PerconaServer < Formula
     # Remove bundled libraries other than explicitly allowed below.
     # `boost` and `rapidjson` must use bundled copy due to patches.
     # `lz4` is still needed due to xxhash.c used by mysqlgcs
-    keep = %w[boost coredumper duktape libbacktrace libcno libkmip lz4 opensslpp rapidjson unordered_dense xxhash]
+    keep = %w[
+      boost coredumper duktape jwt-cpp libbacktrace libcno
+      libkmip lz4 opensslpp rapidjson unordered_dense xxhash
+    ]
     (buildpath/"extra").each_child { |dir| rm_r(dir) unless keep.include?(dir.basename.to_s) }
 
     # Find Homebrew OpenLDAP instead of the macOS framework
@@ -97,8 +100,8 @@ class PerconaServer < Formula
       -DINSTALL_PLUGINDIR=lib/percona-server/plugin
       -DMYSQL_DATADIR=#{datadir}
       -DSYSCONFDIR=#{etc}
-      -DBISON_EXECUTABLE=#{Formula["bison"].opt_bin}/bison
-      -DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}
+      -DBISON_EXECUTABLE=#{formula_opt_bin("bison")}/bison
+      -DOPENSSL_ROOT_DIR=#{formula_opt_prefix("openssl@3")}
       -DWITH_ICU=#{icu4c.opt_prefix}
       -DWITH_SYSTEM_LIBS=ON
       -DWITH_EDITLINE=system
@@ -157,25 +160,11 @@ class PerconaServer < Formula
     etc.install "my.cnf"
   end
 
-  def post_install
-    # Make sure the var/mysql directory exists
-    (var/"mysql").mkpath
-
-    if (my_cnf = ["/etc/my.cnf", "/etc/mysql/my.cnf"].find { |x| File.exist? x })
-      opoo <<~EOS
-        A "#{my_cnf}" from another install may interfere with a Homebrew-built
-        server starting up correctly.
-      EOS
+  post_install_steps do
+    if_path_exists "/etc/{my.cnf,mysql/my.cnf}" do
+      warn "A system my.cnf may interfere with a Homebrew-built server starting correctly."
     end
-
-    # Don't initialize database, it clashes when testing other MySQL-like implementations.
-    return if ENV["HOMEBREW_GITHUB_ACTIONS"]
-
-    unless (datadir/"mysql/general_log.CSM").exist?
-      ENV["TMPDIR"] = nil
-      system bin/"mysqld", "--initialize-insecure", "--user=#{ENV["USER"]}",
-                           "--basedir=#{prefix}", "--datadir=#{datadir}", "--tmpdir=/tmp"
-    end
+    init_data_dir "mysql", using: :mysql, base: :var
   end
 
   def caveats

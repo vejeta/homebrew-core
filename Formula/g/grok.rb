@@ -13,21 +13,24 @@ class Grok < Formula
     patch do
       url "https://github.com/jordansissel/grok/commit/f440e9b4ce29a8e803f09d39e37a5725724aba95.patch?full_index=1"
       sha256 "2f92f3b5956224c6d5674940d1d604c1aafa1c3387bda68a266e853c90d0fa86"
+      type :backport
+      resolves "https://github.com/jordansissel/grok/pull/14"
     end
   end
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:    "aae7022d4d10e22471c089584b5b02b44277647fa982c9491cf6f58648be6f3a"
-    sha256 cellar: :any,                 arm64_sequoia:  "b74690719200cd67624f98e63ed4df5bd400ddc82ab728da9ce152b2bb4f0250"
-    sha256 cellar: :any,                 arm64_sonoma:   "275855bc35b651480b009f1b186c12a7c031f0aa037d53180266fb319b0b49c5"
-    sha256 cellar: :any,                 arm64_ventura:  "37014a946e46e858efa3c43779aeb7f318196ef35cbe453b0d031bfe618f74fc"
-    sha256 cellar: :any,                 arm64_monterey: "a30ae8a010c4ac7de6163b2a6b685c9b5ad3149c12d24ab2b765e45d209cadfc"
-    sha256 cellar: :any,                 sonoma:         "ecf20a15227d672dbe7cb9756c95e24294715b80361bcda919c47f60edccc524"
-    sha256 cellar: :any,                 ventura:        "bc44900cc8642a13759e53187cbdb03495dbb951ece0ab2932127b3f7a08a02d"
-    sha256 cellar: :any,                 monterey:       "0e804b8990bd781e846ae402050cbe3119b45f224b43639db710c178eb6d24d4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:    "279f0ea66a716d0781273e5c3f89198c7a652f548eb074a99768a11597241bc9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "3b35c01acc0d3b0640c42c3b003e03bbedccc91bdd0d69294dbbe4ae71e29841"
+    sha256 cellar: :any,                 arm64_golden_gate: "b7dec41631a86291e55fffb01e984a1db0b72efb2390efddca76e20de7c98763"
+    sha256 cellar: :any,                 arm64_tahoe:       "aae7022d4d10e22471c089584b5b02b44277647fa982c9491cf6f58648be6f3a"
+    sha256 cellar: :any,                 arm64_sequoia:     "b74690719200cd67624f98e63ed4df5bd400ddc82ab728da9ce152b2bb4f0250"
+    sha256 cellar: :any,                 arm64_sonoma:      "275855bc35b651480b009f1b186c12a7c031f0aa037d53180266fb319b0b49c5"
+    sha256 cellar: :any,                 arm64_ventura:     "37014a946e46e858efa3c43779aeb7f318196ef35cbe453b0d031bfe618f74fc"
+    sha256 cellar: :any,                 arm64_monterey:    "a30ae8a010c4ac7de6163b2a6b685c9b5ad3149c12d24ab2b765e45d209cadfc"
+    sha256 cellar: :any,                 sonoma:            "ecf20a15227d672dbe7cb9756c95e24294715b80361bcda919c47f60edccc524"
+    sha256 cellar: :any,                 ventura:           "bc44900cc8642a13759e53187cbdb03495dbb951ece0ab2932127b3f7a08a02d"
+    sha256 cellar: :any,                 monterey:          "0e804b8990bd781e846ae402050cbe3119b45f224b43639db710c178eb6d24d4"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "279f0ea66a716d0781273e5c3f89198c7a652f548eb074a99768a11597241bc9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "3b35c01acc0d3b0640c42c3b003e03bbedccc91bdd0d69294dbbe4ae71e29841"
   end
 
   # Last release on 2011-10-28 and needs EOL `pcre`
@@ -56,9 +59,9 @@ class Grok < Formula
 
     if OS.linux?
       ENV.append "EXTRA_CFLAGS", "-fcommon"
-      ENV.append "EXTRA_CFLAGS", "-I#{Formula["libtirpc"].opt_include}/tirpc"
-      ENV.append "EXTRA_LDFLAGS", "-L#{Formula["libtirpc"].opt_lib} -ltirpc"
-      ENV["GPERF"] = Formula["gperf"].opt_bin/"gperf"
+      ENV.append "EXTRA_CFLAGS", "-I#{formula_opt_include("libtirpc")}/tirpc"
+      ENV.append "EXTRA_LDFLAGS", "-L#{formula_opt_lib("libtirpc")} -ltirpc"
+      ENV["GPERF"] = formula_opt_bin("gperf")/"gperf"
     end
 
     # Race condition in generating grok_capture_xdr.h

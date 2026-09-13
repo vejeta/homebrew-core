@@ -4,13 +4,13 @@ class Sby < Formula
 
   desc "Front-end for Yosys-based formal verification flows"
   homepage "https://symbiyosys.readthedocs.io/en/latest/"
-  url "https://github.com/YosysHQ/sby/archive/refs/tags/v0.66.tar.gz"
-  sha256 "d7d3e0a6476e748c9faf23b93b133ce9a79ce396fb37dbaeec855af2f85a0b8c"
+  url "https://github.com/YosysHQ/sby/archive/refs/tags/v0.69.tar.gz"
+  sha256 "65e1ee7610ade9297a1482a442d0aef79a79f5490229e7899b78747d3ca1ff8e"
   license "ISC"
   head "https://github.com/YosysHQ/sby.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "580cbddd36f6274d842bdb1c291310e456298303b8905a640a1a5d0bd84804ed"
+    sha256 cellar: :any_skip_relocation, all: "fa8934c8a308abb661d108a73fde38e039debfc48ceb7ad1058584e85616172e"
   end
 
   depends_on "yices2" => :test
@@ -18,7 +18,7 @@ class Sby < Formula
   depends_on "yosys"
 
   def install
-    venv = virtualenv_create(libexec, "python3.14")
+    venv = virtualenv_create(libexec, python3)
     venv.pip_install "click"
 
     system "make", "install", "PREFIX=#{prefix}"

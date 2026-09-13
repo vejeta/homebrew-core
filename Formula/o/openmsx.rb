@@ -13,6 +13,7 @@ class Openmsx < Formula
     patch do
       url "https://github.com/openMSX/openMSX/commit/bef559e0e2e1413ba8abbef882224a5919214c5a.patch?full_index=1"
       sha256 "3744a1693d43c86a678c416836f0e2fa900023f0b9176c63116080f009c5bbb9"
+      type :backport
     end
   end
 
@@ -28,12 +29,13 @@ class Openmsx < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "d119f746e37e9cc1f202e47bbeccd4a3a396164a451693b18e06bbbae098e0e4"
-    sha256 cellar: :any, arm64_sequoia: "f3f25f04f4eb84bc2a4a7b1b70d03a5fc3340e2374f1813d1f2593970ce029db"
-    sha256 cellar: :any, arm64_sonoma:  "3e1f9864913d165c6a61621c7b9b368dade12909e4e0d0e718bc4a20674e09f0"
-    sha256 cellar: :any, sonoma:        "3bc8f45c362611a6679e1d53af5ff55eb1e93da2873fa53358481a91f360bea7"
-    sha256               arm64_linux:   "cad529500c86d30ecc21ede35a5478e13e308701d45c2a863338ebe893228479"
-    sha256 cellar: :any, x86_64_linux:  "909ffc1a07e59c33dfa4c6619b6917c01698af379533293d0a208cbe4524bf39"
+    sha256 cellar: :any, arm64_golden_gate: "642238c4cd78c826c676cbe8757f9078b9b1cc46a90de3f7ddeeec616f832434"
+    sha256 cellar: :any, arm64_tahoe:       "d119f746e37e9cc1f202e47bbeccd4a3a396164a451693b18e06bbbae098e0e4"
+    sha256 cellar: :any, arm64_sequoia:     "f3f25f04f4eb84bc2a4a7b1b70d03a5fc3340e2374f1813d1f2593970ce029db"
+    sha256 cellar: :any, arm64_sonoma:      "3e1f9864913d165c6a61621c7b9b368dade12909e4e0d0e718bc4a20674e09f0"
+    sha256 cellar: :any, sonoma:            "3bc8f45c362611a6679e1d53af5ff55eb1e93da2873fa53358481a91f360bea7"
+    sha256               arm64_linux:       "cad529500c86d30ecc21ede35a5478e13e308701d45c2a863338ebe893228479"
+    sha256 cellar: :any, x86_64_linux:      "909ffc1a07e59c33dfa4c6619b6917c01698af379533293d0a208cbe4524bf39"
   end
 
   depends_on "freetype"
@@ -69,10 +71,10 @@ class Openmsx < Formula
 
   def install
     if OS.mac? && MacOS.version <= :ventura
-      ENV.prepend "LDFLAGS", "-L#{Formula["llvm"].opt_lib}/unwind -lunwind"
+      ENV.prepend "LDFLAGS", "-L#{formula_opt_lib("llvm")}/unwind -lunwind"
       # When using Homebrew's superenv shims, we need to use HOMEBREW_LIBRARY_PATHS
       # rather than LDFLAGS for libc++ in order to correctly link to LLVM's libc++.
-      ENV.prepend_path "HOMEBREW_LIBRARY_PATHS", Formula["llvm"].opt_lib/"c++"
+      ENV.prepend_path "HOMEBREW_LIBRARY_PATHS", formula_opt_lib("llvm")/"c++"
     end
 
     # Hardcode prefix
@@ -81,7 +83,7 @@ class Openmsx < Formula
     inreplace "build/probe.py", "/usr/local", HOMEBREW_PREFIX
 
     # Help finding Tcl (https://github.com/openMSX/openMSX/issues/1082)
-    ENV["TCL_CONFIG"] = Formula["tcl-tk"].opt_lib
+    ENV["TCL_CONFIG"] = formula_opt_lib("tcl-tk")
 
     system "./configure"
     system "make", "CXX=#{ENV.cxx}", "LDFLAGS=#{ENV.ldflags}"

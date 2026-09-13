@@ -12,12 +12,13 @@ class Sqliteodbc < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "ef7576d687d514cf3e6691537bee8e66eaca106ef598ad5cf07c4e20d520aecb"
-    sha256 cellar: :any,                 arm64_sequoia: "9bc67271da98897902daddd9417ae566a904f20d4b418472b482588a9fb77e17"
-    sha256 cellar: :any,                 arm64_sonoma:  "c26a1c42c2b747053113d927ae7c2e231163b4d9f8c695ecec1dc05bf3e041ac"
-    sha256 cellar: :any,                 sonoma:        "1a219550850f7e7aba34e7695ffd1768141bb8ee469a0ab81f19c66292c33fec"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3f2c84110c49b8b78f0c9cba7c38a4164f42e6d7ec370b8ac7deb83e70d978ce"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9c3e2942b9b3d486a777ca95d5303fc556ae08435e60a2fa0f099a21d3db473b"
+    sha256 cellar: :any,                 arm64_golden_gate: "88e24105292c6c32dc2350cb34eacacdde9bc8bc3230f33723417e4eff2f2d64"
+    sha256 cellar: :any,                 arm64_tahoe:       "ef7576d687d514cf3e6691537bee8e66eaca106ef598ad5cf07c4e20d520aecb"
+    sha256 cellar: :any,                 arm64_sequoia:     "9bc67271da98897902daddd9417ae566a904f20d4b418472b482588a9fb77e17"
+    sha256 cellar: :any,                 arm64_sonoma:      "c26a1c42c2b747053113d927ae7c2e231163b4d9f8c695ecec1dc05bf3e041ac"
+    sha256 cellar: :any,                 sonoma:            "1a219550850f7e7aba34e7695ffd1768141bb8ee469a0ab81f19c66292c33fec"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "3f2c84110c49b8b78f0c9cba7c38a4164f42e6d7ec370b8ac7deb83e70d978ce"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "9c3e2942b9b3d486a777ca95d5303fc556ae08435e60a2fa0f099a21d3db473b"
   end
 
   depends_on "sqlite"
@@ -36,8 +37,8 @@ class Sqliteodbc < Formula
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
+    file "Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
+    type :unofficial
   end
 
   def install
@@ -49,9 +50,9 @@ class Sqliteodbc < Formula
     end
 
     lib.mkdir
-    args = ["--with-odbc=#{Formula["unixodbc"].opt_prefix}",
-            "--with-sqlite3=#{Formula["sqlite"].opt_prefix}"]
-    args << "--with-libxml2=#{Formula["libxml2"].opt_prefix}" if OS.linux?
+    args = ["--with-odbc=#{formula_opt_prefix("unixodbc")}",
+            "--with-sqlite3=#{formula_opt_prefix("sqlite")}"]
+    args << "--with-libxml2=#{formula_opt_prefix("libxml2")}" if OS.linux?
 
     system "./configure", "--prefix=#{prefix}", *args
     system "make"
@@ -60,7 +61,7 @@ class Sqliteodbc < Formula
   end
 
   test do
-    output = shell_output("#{Formula["unixodbc"].opt_bin}/dltest #{lib}/libsqlite3odbc.so")
+    output = shell_output("#{formula_opt_bin("unixodbc")}/dltest #{lib}/libsqlite3odbc.so")
     assert_equal "SUCCESS: Loaded #{lib}/libsqlite3odbc.so\n", output
   end
 end

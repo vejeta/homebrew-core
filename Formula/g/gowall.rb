@@ -4,15 +4,17 @@ class Gowall < Formula
   url "https://github.com/Achno/gowall/archive/refs/tags/v0.2.4.tar.gz"
   sha256 "df19d8a7f4d138cfa233415ad71250c788aa1a3d310b4b19ca952fb0750c0c36"
   license "MIT"
+  revision 4
   head "https://github.com/Achno/gowall.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "5403ca5cf023b5555606ced24e28faf0ef8fa99b2d3ba4d5d497f041a1747751"
-    sha256 cellar: :any,                 arm64_sequoia: "b4ce509d4c8106042794f659623837f8730936d96c22ea2e1538c2eb536d4aeb"
-    sha256 cellar: :any,                 arm64_sonoma:  "407b60e4da340fda72f2204e5396e15fab23cffe46d53164798d0e0e8d92ecc0"
-    sha256 cellar: :any,                 sonoma:        "3e556619da7d217190c237cd7b9cffbfe95cb508d2cb3f87cdeec1d8d1ff5424"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9a0f193d9eb5602cb4d86d124fcc8719849ba24256fba5cbe505c1747a668cc8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a353d21c621447cbd989f9571412c9872947c5854ede194d5e20e5eccb0c6688"
+    sha256 cellar: :any, arm64_golden_gate: "69fb243e5cae7987e9028c5e524d0b7f9e6000592b7db0acec642a83c619587b"
+    sha256 cellar: :any, arm64_tahoe:       "3d73d189fb610bf5e83d35e9d051ad71b21b7e529794fbc1a187868590fcf970"
+    sha256 cellar: :any, arm64_sequoia:     "6530f9b977fed481217da0d99fe19b2a935050cc1eaf5221f29c707ddac124c7"
+    sha256 cellar: :any, arm64_sonoma:      "2e97d4dba6c2f0fe1de673d7af45943d6e6a93fa20271796d75f5eb94bf6b955"
+    sha256 cellar: :any, sonoma:            "585556bca09dfcf68913831a4b72119b31e1037280d10bfe83901347984e8e37"
+    sha256 cellar: :any, arm64_linux:       "8cb7ef0fffbb79053742bd46c602c6f98c656a7f49f3c37d525b3b4dfb4a6132"
+    sha256 cellar: :any, x86_64_linux:      "f88a655038809d219b842f383c868f29ebeb8fe34cdf872d12894a19fbefda68"
   end
 
   depends_on "go" => :build
@@ -40,7 +42,7 @@ class Gowall < Formula
       ENV.append "GOFLAGS", "-buildmode=pie"
     end
 
-    system "go", "build", *std_go_args(ldflags: "-s -w", tags: "extlib")
+    system "go", "build", *std_go_args(tags: "extlib")
 
     generate_completions_from_executable(bin/"gowall", shell_parameter_format: :cobra)
   end

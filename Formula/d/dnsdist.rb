@@ -3,8 +3,8 @@ class Dnsdist < Formula
 
   desc "Highly DNS-, DoS- and abuse-aware loadbalancer"
   homepage "https://www.dnsdist.org/"
-  url "https://downloads.powerdns.com/releases/dnsdist-2.0.6.tar.xz"
-  sha256 "b861d74abb0da59cff4e58760266198196eee7c10f2bfe86a3f5ccbd6768626b"
+  url "https://downloads.powerdns.com/releases/dnsdist-2.1.2.tar.xz"
+  sha256 "9fcb469d7a1b5116606f2563761343d1c595523c1fd67808835fa4edc03c24ce"
   license "GPL-2.0-only" # with OpenSSL Exception (non-SPDX)
 
   livecheck do
@@ -13,12 +13,12 @@ class Dnsdist < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "c474a338328ce3a3e6dfa1e3368e9f8847b28be3652b67330569f9662c6907a9"
-    sha256 arm64_sequoia: "df6310d7b0527638b952491ecbd47c71dc491729f1207e99f08e5a0659226130"
-    sha256 arm64_sonoma:  "c1f02099b3b93a832d9ac15f9952051dba5f744724e52f975c4700ceaa510b35"
-    sha256 sonoma:        "af027aaf15ff9d506080e2e794c1efb7d5d99e78781e154277790bc1fe9fd5c3"
-    sha256 arm64_linux:   "4e9fb0c0ebc70f49ca5b45eb6d9a24004ef81a0d748eb042797b2a9053facd72"
-    sha256 x86_64_linux:  "26a998e7a39cbad60707d951a36ad2360cf1cd127c1252702f3a3d3c63690906"
+    sha256 arm64_golden_gate: "861d859901bd974bf36c6961f6d2bc0e251486c02a0088d3e05caffdb64890e4"
+    sha256 arm64_tahoe:       "8e7e0efd34b3cbf364ceeb2654993eb1fc92faf3b5410f6fa4398e1950dfd7c2"
+    sha256 arm64_sequoia:     "47c2c15b1ab56025ba1dd96d891fc394c0ef301b98b7861bb6a74425efa17f55"
+    sha256 arm64_sonoma:      "3ecc7c05cea6293d15b443f366b9caac99fda43748435d69e7fcab17415228e0"
+    sha256 arm64_linux:       "deffdd8789b460e08a9d1ea6c88ea98fd70e176cf6fddafc6956eda81a96461d"
+    sha256 x86_64_linux:      "422c72613c57d0e6011a213e66fb00b7a09e7bf6f9a33699fcd94eda4fa0d640"
   end
 
   depends_on "boost" => :build
@@ -44,7 +44,7 @@ class Dnsdist < Formula
   end
 
   def install
-    venv = virtualenv_create(buildpath/"bootstrap", "python3.14")
+    venv = virtualenv_create(buildpath/"bootstrap", python3)
     venv.pip_install resources
     ENV.prepend_path "PATH", venv.root/"bin"
 
@@ -65,6 +65,6 @@ class Dnsdist < Formula
   test do
     (testpath/"dnsdist.conf").write "setLocal('127.0.0.1')"
     output = shell_output("#{bin}/dnsdist -C dnsdist.conf --check-config 2>&1")
-    assert_equal "Configuration 'dnsdist.conf' OK!", output.chomp
+    assert_match "Configuration OK", output
   end
 end

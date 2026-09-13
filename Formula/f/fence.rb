@@ -1,18 +1,18 @@
 class Fence < Formula
   desc "Lightweight sandbox for commands with network and filesystem restrictions"
-  homepage "https://github.com/Use-Tusk/fence"
-  url "https://github.com/Use-Tusk/fence/archive/refs/tags/v0.1.60.tar.gz"
-  sha256 "aa032b5b05a22561aab817eeca9313ab4adc25265cbce5aec5bb95c0ab55876a"
+  homepage "https://github.com/fencesandbox/fence"
+  url "https://github.com/fencesandbox/fence/archive/refs/tags/v0.1.67.tar.gz"
+  sha256 "f2e55bd108816d224f45b3115e0c8feba2cb1a92055f0ebf7839f82b87a84f35"
   license "Apache-2.0"
-  head "https://github.com/Use-Tusk/fence.git", branch: "main"
+  head "https://github.com/fencesandbox/fence.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c6ef696522b9ac0f91016e37a147043fc1238bfe01ba6c85dd167aff6586072f"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c6ef696522b9ac0f91016e37a147043fc1238bfe01ba6c85dd167aff6586072f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c6ef696522b9ac0f91016e37a147043fc1238bfe01ba6c85dd167aff6586072f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "52d9c47369f415fbf3cde95206c52ae7fcdcdf7c49ac99f60eaf1ba1548d35e6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f75e6ffa50aa9028f3ac9f8790cbc1b0b913f031ace180c717d3085bb23d9ecd"
-    sha256 cellar: :any,                 x86_64_linux:  "ad133b54a2d0122b1003955667a5056f9da65ab02a57e9ca199ad89f08a6814d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "21f1ad01228288ab353a3707e420f4b88957dc0152afa824b374594df2feed12"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "fcc5f914430baffa9c9bef9b586a833ef0792c985835bc69f0bf52614b633db9"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fcc5f914430baffa9c9bef9b586a833ef0792c985835bc69f0bf52614b633db9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "fcc5f914430baffa9c9bef9b586a833ef0792c985835bc69f0bf52614b633db9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "468be92c8e2f0351ce4af9ac725e0336fc168f4da8e4dd3021e24f8df3d4bd48"
+    sha256 cellar: :any,                 x86_64_linux:      "eb63ada8d821232a17d6a1b951d3bc272f7312115c1c40b8f1f7c4f8a165f73a"
   end
 
   depends_on "go" => :build
@@ -24,7 +24,6 @@ class Fence < Formula
 
   def install
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.buildTime=#{time.iso8601}
       -X main.gitCommit=#{tap.user}

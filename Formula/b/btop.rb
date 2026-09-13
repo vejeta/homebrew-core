@@ -8,12 +8,13 @@ class Btop < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "37a9d33566825cff7b0e3e0c4941b2f0a7718405c3c493fb71eaf7100049f429"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "00c8110d1d3714206e0dd238c1945e98509940507c8d692a01c5589853f2474f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "edc6d6e2c5919d8ccc0d921928091935fecf7ef6f6ecfca5af229e4c8a729817"
-    sha256                               sonoma:        "83b0b284cda00fe757da9d09946e0095a4992e450c5ca46607e4d714558170be"
-    sha256 cellar: :any,                 arm64_linux:   "83e59931ea0c68cc39c0cf48a3831756293d37bc1a1f42ad682210dc1f20d402"
-    sha256 cellar: :any,                 x86_64_linux:  "6c471b70902a92ca7820d4e6b1dcb28e45c3d041ccaeba5e7eeee2fdd78a48cd"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b14f472b1774ef0d958653376693ffb06e9928c29a04255b0e0ac7f2fcb64723"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "37a9d33566825cff7b0e3e0c4941b2f0a7718405c3c493fb71eaf7100049f429"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "00c8110d1d3714206e0dd238c1945e98509940507c8d692a01c5589853f2474f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "edc6d6e2c5919d8ccc0d921928091935fecf7ef6f6ecfca5af229e4c8a729817"
+    sha256                               sonoma:            "83b0b284cda00fe757da9d09946e0095a4992e450c5ca46607e4d714558170be"
+    sha256 cellar: :any,                 arm64_linux:       "83e59931ea0c68cc39c0cf48a3831756293d37bc1a1f42ad682210dc1f20d402"
+    sha256 cellar: :any,                 x86_64_linux:      "6c471b70902a92ca7820d4e6b1dcb28e45c3d041ccaeba5e7eeee2fdd78a48cd"
   end
 
   depends_on "lowdown" => :build
@@ -21,11 +22,6 @@ class Btop < Formula
   on_macos do
     depends_on "coreutils" => :build
     depends_on "llvm" => :build if DevelopmentTools.clang_build_version <= 1600
-  end
-
-  on_linux do
-    # Ubuntu 24.04 has GCC 14 libstdc++ so we can build with brew GCC 14 without impacting GLIBCXX
-    depends_on "gcc@14" => :build if DevelopmentTools.gcc_version < 14
   end
 
   fails_with :clang do
@@ -39,15 +35,6 @@ class Btop < Formula
   end
 
   def install
-    if OS.linux? && deps.map(&:name).any?("gcc@14")
-      # Since brew will prioritize newer GCC versions if installed, we force usage of gcc-14
-      ENV.method(:"gcc-14").call
-
-      # Avoid using the postinstalled specs file which automatically adds an RPATH to gcc@14 libraries
-      libgcc = Pathname.new(Utils.safe_popen_read(ENV.cc, "-print-libgcc-file-name")).parent
-      ENV.append "CXX", "-specs=#{libgcc}/specs.orig"
-    end
-
     system "make", "CXX=#{ENV.cxx}", "STRIP=true"
     system "make", "PREFIX=#{prefix}", "install"
   end

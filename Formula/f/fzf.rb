@@ -1,29 +1,33 @@
 class Fzf < Formula
   desc "Command-line fuzzy finder written in Go"
   homepage "https://junegunn.github.io/fzf/"
-  url "https://github.com/junegunn/fzf/archive/refs/tags/v0.73.1.tar.gz"
-  sha256 "ae4f49f8606a7d28498208fa1b93c5d3b890719eea97e02559e66160138b750c"
+  url "https://github.com/junegunn/fzf/archive/refs/tags/v0.74.4.tar.gz"
+  sha256 "1046857c337f5bd05f6fa482446b5a42a011615105743efbe4efee0970b24bb7"
   license "MIT"
   compatibility_version 1
   head "https://github.com/junegunn/fzf.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "3fa0b080ba98e6623c45fc44f149c7b10203f00c76df512ad6e7ef28996edaea"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3fa0b080ba98e6623c45fc44f149c7b10203f00c76df512ad6e7ef28996edaea"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3fa0b080ba98e6623c45fc44f149c7b10203f00c76df512ad6e7ef28996edaea"
-    sha256 cellar: :any_skip_relocation, sonoma:        "88bfd644209e526508b628142543a755008ca00a9d54116f4f679eea835d0c67"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "20c5aa7cf606cdb123a56ae08b67ad6fe3ef50f6eb2523e358357454f5a05a65"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "da9cc75073e76c383b51e28d7549be331ed670c681c588d9b8169e0e2536af7d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1094281c70e4304dd4e52bb5799dd0a15c8a229c1674ec1000de6238cc75e9fe"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1094281c70e4304dd4e52bb5799dd0a15c8a229c1674ec1000de6238cc75e9fe"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "1094281c70e4304dd4e52bb5799dd0a15c8a229c1674ec1000de6238cc75e9fe"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7104102c94beaf32c253a7f31dbdb961fd1c773ca81c3aac8455d81b97a09ded"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "93912e54112d0acbf7790250e3cbef36a7bbe30526a45379505249d652288121"
   end
 
   depends_on "go" => :build
 
   uses_from_macos "ncurses"
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.revision=#{tap.user}
     ]

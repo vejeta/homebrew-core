@@ -1,8 +1,8 @@
 class MenderArtifact < Formula
   desc "CLI tool for managing Mender artifact files"
   homepage "https://mender.io"
-  url "https://github.com/mendersoftware/mender-artifact/archive/refs/tags/4.4.0.tar.gz"
-  sha256 "b8eb3b3257e5ebf64ea9775ba475119330df8b66013fdbfc003d91dc4492d974"
+  url "https://github.com/mendersoftware/mender-artifact/archive/refs/tags/4.4.2.tar.gz"
+  sha256 "d8e9e18e48a2124e5e367ffafb3313a3dcba7a8a8a8b162b1dcb8791964c6385"
   license "Apache-2.0"
 
   # exclude tags like `3.4.0b1` and `internal-v2020.02`
@@ -12,12 +12,12 @@ class MenderArtifact < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "fab320846f550f1656c35899d2727faa68ccfddf99bece775aac993c089dbb93"
-    sha256 cellar: :any,                 arm64_sequoia: "780e955fe45744511e6800ebf0c759664c28bbd3f932b8e007b557349a93f079"
-    sha256 cellar: :any,                 arm64_sonoma:  "311862da0de84c407fc706e7f52fe91da506595431475c9e4928d6631ff92098"
-    sha256 cellar: :any,                 sonoma:        "aae1cbc9056459a8dd9a1cca9027adf283083e960811ae9630fab95c44205f2d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a112a4ab7d9b6d717f7bc2515cc7f7a6e8f8b98cfdf30f52bffed713427f3bc7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8ae819c2308d01379abfabb3099ffc7843b1a2b3e1257542e89767f404f256f6"
+    sha256 cellar: :any, arm64_golden_gate: "b209b7c78717019270f7a2382ee493746c1dcaf40b3dbd48642aab94c7cdbd30"
+    sha256 cellar: :any, arm64_tahoe:       "71f4de471c92087249e9c38eb2daee56696ecd2eb26e3f4f6373777a11933a6e"
+    sha256 cellar: :any, arm64_sequoia:     "4db17100096cc70d59d000e50ec020dc2db58861b4df6a1b9026e4802be611f1"
+    sha256 cellar: :any, arm64_sonoma:      "4839a66ed29d127d308c68c6ac2934c80e4c2de60556ff60639642540e702668"
+    sha256 cellar: :any, arm64_linux:       "c7756ab0e7d4f92519682d292dbb91c18de61c2d83ca6e8fe1a6e5edf3c0359e"
+    sha256 cellar: :any, x86_64_linux:      "0d991da6100285bade77edc383e40ee7fc3de273c9222c6fcdfcad1316afaaaf"
   end
 
   depends_on "go" => :build
@@ -35,7 +35,7 @@ class MenderArtifact < Formula
       ENV.append "GOFLAGS", "-buildmode=pie"
     end
 
-    ldflags = "-s -w -X github.com/mendersoftware/mender-artifact/cli.Version=#{version}"
+    ldflags = "-X github.com/mendersoftware/mender-artifact/cli.Version=#{version}"
     system "go", "build", *std_go_args(ldflags:)
 
     # mender-artifact doesn't support autocomplete generation so we have to

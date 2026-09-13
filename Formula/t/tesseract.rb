@@ -1,8 +1,8 @@
 class Tesseract < Formula
   desc "OCR (Optical Character Recognition) engine"
   homepage "https://tesseract-ocr.github.io/"
-  url "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.2.tar.gz"
-  sha256 "6235ea0dae45ea137f59c09320406f5888383741924d98855bd2ce0d16b54f21"
+  url "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.3.tar.gz"
+  sha256 "9218e62793116d42a9f6d14cd9348518b27f382096eea3d0f2d1a24616bb5884"
   license "Apache-2.0"
   compatibility_version 1
   head "https://github.com/tesseract-ocr/tesseract.git", branch: "main"
@@ -13,12 +13,12 @@ class Tesseract < Formula
   end
 
   bottle do
-    sha256               arm64_tahoe:   "5c573461bfef6b219120a51bff457cc7eca377c43b971cc5639c109517b1daf4"
-    sha256               arm64_sequoia: "2581ad24c87515f9dfb218ebbec5681bd36af0f4d6ec561dd91bf91cd412a61d"
-    sha256               arm64_sonoma:  "d30bb6d0c4f2675db059a902ea9a8d3a7a6469b5b256ee11f7128b0836df6a8e"
-    sha256 cellar: :any, sonoma:        "002f53df778424f6973071d5422061f2a07bd6da9294e05fbe5847a6763e4820"
-    sha256               arm64_linux:   "56c554781e18f586dc232a1a08ff4b866948cd32e8c99a58c1bfc41dc434b165"
-    sha256               x86_64_linux:  "89e359d2cb5283131f6d74c2bc4e26cbeb65ad36a3dad40eca500464eb5c5933"
+    rebuild 1
+    sha256 arm64_golden_gate: "0059a0945a6d5ac2ef57b084eb2bf87666df0040d22a2ba8cf0448a3fd6b06a9"
+    sha256 arm64_tahoe:       "5dc22e82f5c9fe0c466830671388866626a076032e7569bbe6ff6d27f1271599"
+    sha256 arm64_sequoia:     "200b865fec2696d87c27a6273aaf2f870fd0796586ad695ac7b138d9db667f17"
+    sha256 arm64_linux:       "9075db5e294c636408738b0e4e7d9b848ee74736a4bec61ce7eef9257d32815c"
+    sha256 x86_64_linux:      "0aab2fc2d381eb44264e2368359fe514aa27f1e1400bec4e8d0de8de4f9641f0"
   end
 
   depends_on "autoconf" => :build
@@ -49,11 +49,6 @@ class Tesseract < Formula
     sha256 "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
   end
 
-  resource "snum" do
-    url "https://github.com/USCDataScience/counterfeit-electronics-tesseract/raw/319a6eeacff181dad5c02f3e7a3aff804eaadeca/Training%20Tesseract/snum.traineddata"
-    sha256 "36f772980ff17c66a767f584a0d80bf2302a1afa585c01a226c1863afcea1392"
-  end
-
   def install
     # explicitly state leptonica header location, as the makefile defaults to /usr/local/include,
     # which doesn't work for non-default homebrew location
@@ -71,14 +66,13 @@ class Tesseract < Formula
     # make install in the local share folder to avoid permission errors
     system "make", "install", "training-install", "datarootdir=#{share}"
 
-    resource("snum").stage { mv "snum.traineddata", share/"tessdata" }
     resource("eng").stage { mv "eng.traineddata", share/"tessdata" }
     resource("osd").stage { mv "osd.traineddata", share/"tessdata" }
   end
 
   def caveats
     <<~EOS
-      This formula contains only the "eng", "osd", and "snum" language data files.
+      This formula contains only the "eng" and "osd" language data files.
       If you need any other supported languages, run `brew install tesseract-lang`.
     EOS
   end

@@ -1,18 +1,17 @@
 class Tabiew < Formula
   desc "TUI to view and query tabular files (CSV,TSV, Parquet, etc.)"
   homepage "https://github.com/shshemi/tabiew"
-  url "https://github.com/shshemi/tabiew/archive/refs/tags/v0.13.1.tar.gz"
-  sha256 "7f10c6d07ea84e28f2c3b8312ce7f65dc32236a61d9de441817e1a279b5437e7"
+  url "https://github.com/shshemi/tabiew/archive/refs/tags/v0.15.1.tar.gz"
+  sha256 "20d2c3e83b0f27fbe48c9ac0be95533361d29897bff1e3c5ce498ff46ae84580"
   license "MIT"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "5648ef89aa3cb551a9580302c74d779a260f68b7e833fad4f506efe693f088a6"
-    sha256 cellar: :any,                 arm64_sequoia: "f8a33c7ee147a4e4c0917b4a5ee6e526d3c4587269c6dccc7ef1472335802463"
-    sha256 cellar: :any,                 arm64_sonoma:  "98a958f0baf55e15443f9dba8e6b5e1df181784d59d3e10c008a195ce9c892b2"
-    sha256 cellar: :any,                 sonoma:        "6603d0ac91915d22c21ea9683019c4c0d8a17155b57944554deb017cddba666e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f0929ce152b00a8108eda93033d38b08973aa55cc6d3cb787088ee3221379d62"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "12d805a4b38057a66fd15f26dff9b006b8fce4c9f9bfb6b6aa2cd275224c3cc0"
+    sha256 cellar: :any, arm64_golden_gate: "8318867603e95b6d694a2c23f432055c5b37e7d1a9dfb8602d74883ccfda467e"
+    sha256 cellar: :any, arm64_tahoe:       "0b750691f1af2ccb2ddb26d1d5096ce1f80e3c57f0ce18102a2e41e981a5be2d"
+    sha256 cellar: :any, arm64_sequoia:     "9e1121b1b971845d23ed0f2c548d5f7dcd403c21c6f6a6b715a60476d71567a6"
+    sha256 cellar: :any, arm64_sonoma:      "35614cb655ce53f077141407b805d16d4a885d44fb902fcf69a43d368d1911a0"
+    sha256 cellar: :any, arm64_linux:       "73115dbe8153076859769ffa7d8602822273f69d2a67e8c5490d7ffdebf0819d"
+    sha256 cellar: :any, x86_64_linux:      "f44f27c5da942e36f718ef7aa9248abea9e537b8d769c6aed41732feae05a77b"
   end
 
   depends_on "pkgconf" => :build
@@ -22,7 +21,7 @@ class Tabiew < Formula
   conflicts_with "watcher", because: "both install `tw` binaries"
 
   def install
-    ENV["OPENSSL_DIR"] = Formula["openssl@4"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4")
     system "cargo", "install", *std_cargo_args
 
     man1.install "target/manual/tabiew.1" => "tw.1"
@@ -32,22 +31,34 @@ class Tabiew < Formula
   end
 
   test do
+    assert_match version.to_s, shell_output("#{bin}/tw --version")
+
     (testpath/"test.csv").write <<~CSV
       time,tide,wait
       1,42,"no man"
       7,11,"you think?"
     CSV
-    input, = Open3.popen2 "script -q output.txt"
-    input.puts "stty rows 80 cols 130"
-    input.puts bin/"tw test.csv"
-    input.puts ":F tide < 40"
-    input.puts ":goto 1"
-    sleep 1
-    input.puts ":q"
-    sleep 1
-    input.close
-    sleep 2
 
-    assert_match "you think?", (testpath/"output.txt").read
+    require "pty"
+    require "expect"
+    require "io/console"
+
+    PTY.spawn(bin/"tw", testpath/"test.csv") do |r, w, pid|
+      r.winsize = [80, 130]
+      r.set_encoding("UTF-8")
+      refute_nil r.expect(/\e\[6n/, 10), "expected cursor position query"
+      w.write "\e[1;1R"
+      refute_nil r.expect("you think?", 30), "expected the CSV to render"
+      w.write ":Query\r"
+      w.write "select wait from test where tide < 40\r"
+      refute_nil r.expect("you think?", 10), "expected the query result"
+      sleep 1
+      w.write ":Quit\r"
+      w.close
+      r.close
+    ensure
+      Process.kill "KILL", pid
+      Process.wait pid
+    end
   end
 end

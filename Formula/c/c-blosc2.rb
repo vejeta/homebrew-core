@@ -1,19 +1,18 @@
 class CBlosc2 < Formula
   desc "Fast, compressed, persistent binary data store library for C"
   homepage "https://www.blosc.org"
-  url "https://github.com/Blosc/c-blosc2/archive/refs/tags/v3.1.4.tar.gz"
-  sha256 "085a2f4e3ea66e7ca4ceae17873e1a5fa4af7f72cd0286d0dd175bb864278960"
+  url "https://github.com/Blosc/c-blosc2/archive/refs/tags/v3.3.4.tar.gz"
+  sha256 "db6ba3ee4f863a3c15794fbba99a4e5704d6a01017799628546152c8f4b06818"
   license "BSD-3-Clause"
   compatibility_version 1
   head "https://github.com/Blosc/c-blosc2.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "c5cbf3b57cfc4b862b8df3dbfffde5e0352b2c6a2d5af561b5e18bfa1a958595"
-    sha256 cellar: :any, arm64_sequoia: "3d2616c9f3e53214b4ef31cb4af1a67173104fc5e5be7d137b034a9aa61acbf8"
-    sha256 cellar: :any, arm64_sonoma:  "e7396aa5297737ad3f450048fd7f877c010539cf25337eb1fa2709f47ea3db18"
-    sha256 cellar: :any, sonoma:        "a7a0a2fa5de2e807a16534a4af057d8128ea348d663b4fb5b3a0a1c43df2e950"
-    sha256 cellar: :any, arm64_linux:   "53737b8dc35b59c33e073ac0cc0f3bf1a0b926aca1fbe6ec72f7b50930d636b2"
-    sha256 cellar: :any, x86_64_linux:  "080a72403907207db640bbfd16d652a5e9c957bb8d98e89e2beeedead90b0e70"
+    sha256 cellar: :any, arm64_golden_gate: "9f1716bcf80dc784c76d0ab126649f92a34ad7ad4d214f0aa769285799737945"
+    sha256 cellar: :any, arm64_tahoe:       "af2b8fc8734bbb2be1fd7f4946d9372ca3f9344d55e055a5902fda541427bbf9"
+    sha256 cellar: :any, arm64_sequoia:     "6141f3696fa403a767ae598b4745ea40bb48802ebb9edfc84345eb890cd3f3ab"
+    sha256 cellar: :any, arm64_linux:       "07676187feb9e434725dca0ae4feeb0c9b4df9b3240ef52d5a7c9c2eda1060cc"
+    sha256 cellar: :any, x86_64_linux:      "acbec52d743132d92107fb1045ed4eab6e82afb3f439f898e8745e4a3a1e1998"
   end
 
   depends_on "cmake" => :build

@@ -1,25 +1,24 @@
 class GoFeatureFlagRelayProxy < Formula
   desc "Stand alone server to run GO Feature Flag"
   homepage "https://gofeatureflag.org"
-  url "https://github.com/thomaspoignant/go-feature-flag/archive/refs/tags/v1.54.1.tar.gz"
-  sha256 "22a4bede011726ed80a3d5420b59353e228b01fea4f990281ec4f96c072350fd"
+  url "https://github.com/thomaspoignant/go-feature-flag/archive/refs/tags/v1.55.3.tar.gz"
+  sha256 "c043dbd781a3dbcdbf1ad71a0784d392b811031344f4de40026f99daec1f6852"
   license "MIT"
   head "https://github.com/thomaspoignant/go-feature-flag.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "452255e658dab29d1920cb176d254c5fcb287cb30b520e48ec3a44738a017bda"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8f0eac665902073721c790c6b590bd434bf8af299656aa0714aa33db832a4230"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e318f5ea2ed81390fa6ce29d0c7bdff03aa707850dfbbf089304e913a46012af"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8127d39ef2593171ec7ba110f32bace73f403e4746d7d65b4736df667a902e36"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6312a85917f6c34b406fe1b3e3efe7e4577201f3e6eef8d7a34081f60099077e"
-    sha256 cellar: :any,                 x86_64_linux:  "0b46eed2f53ad247a812cdf57b4dd85fe3a55435be07ccea98ef5a7b3a0f25e4"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9a9b2364eb624dadef4bc5466e32dd1a9f3bdb2136a358cbbf0bf666d58a019f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "29516093d21838e17e038d28cd2144a0f9479ab74ebda2b33f8041e6ff2ea60a"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e06c560ef3f5c0f8676bfc7e6292fa99135c03625bd431b32ad966369e25813b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "a8b7c7cd4f874156a9b22d47c18c7da0fd2fe003ede23f03352c870c01fce91c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0557accbab025d1fead09685ca58ebb010b8e1388b1cffb5731e0309eba694bd"
+    sha256 cellar: :any,                 x86_64_linux:      "d8c8f7ebb75d830d84661ac4a7e76bff45d2c0aab1586899293e133e6db53498"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.version=#{version}"
-    system "go", "build", *std_go_args(ldflags:), "./cmd/relayproxy"
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}"), "./cmd/relayproxy"
   end
 
   test do

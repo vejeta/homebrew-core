@@ -1,31 +1,35 @@
 class Tea < Formula
   desc "Command-line tool to interact with Gitea servers"
   homepage "https://gitea.com/gitea/tea"
-  url "https://gitea.com/gitea/tea/archive/v0.14.1.tar.gz"
-  sha256 "848b6b2fafa270fa77b4e278d521bfcc16d2f721c45ac90f08f5b16dc630c3f9"
+  url "https://gitea.com/gitea/tea/archive/v0.16.0.tar.gz"
+  sha256 "3c8523e551f576290c69fe6375208e0cb27d4fc1e48b29b13e02ca6ada851c05"
   license "MIT"
   head "https://gitea.com/gitea/tea.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8002beb5d9ee2061005984b90a21f7414292fe21d58b3e38ed4d6c3d35ef4304"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8002beb5d9ee2061005984b90a21f7414292fe21d58b3e38ed4d6c3d35ef4304"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8002beb5d9ee2061005984b90a21f7414292fe21d58b3e38ed4d6c3d35ef4304"
-    sha256 cellar: :any_skip_relocation, sonoma:        "343f8e211413ae14e71279aa52b91f1ab00c7001bb00e459ce2818e26ed136f8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "53d1a65bddb69f2f4e2d9a6a7f76f5df4db3533fadaef90416fbfd5e2ccafebf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5f1b2c7a307df6a8549827cfee645eaa43e23b07582baa412592119b4248f00d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "677a799772b1a4fbf7c2c226cdd42e7c9ab836b1cdeacdc32b266c15f44b70e5"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "677a799772b1a4fbf7c2c226cdd42e7c9ab836b1cdeacdc32b266c15f44b70e5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "677a799772b1a4fbf7c2c226cdd42e7c9ab836b1cdeacdc32b266c15f44b70e5"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "677a799772b1a4fbf7c2c226cdd42e7c9ab836b1cdeacdc32b266c15f44b70e5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "fcf3de9e67696dbcd4f9c2c4a51277e70bbc997c75d50c44faa0f507df1814fc"
+    sha256 cellar: :any,                 x86_64_linux:      "4c745d0d25e85a93f11252ec997fa4326c015813a678c4ddbb2ba81846f007d7"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     # get gittea sdk version
-    sdk = Utils.safe_popen_read("go", "list", "-f", "{{.Version}}", "-m", "code.gitea.io/sdk/gitea").to_s
+    sdk = Utils.safe_popen_read("go", "list", "-f", "{{.Version}}", "-m", "gitea.dev/sdk").to_s
 
     ldflags = %W[
-      -s -w
-      -X code.gitea.io/tea/modules/version.Version=#{version}
-      -X code.gitea.io/tea/modules/version.Tags=#{tap.user}
-      -X code.gitea.io/tea/modules/version.SDK=#{sdk}
+      -X gitea.dev/tea/modules/version.Version=#{version}
+      -X gitea.dev/tea/modules/version.SDK=#{sdk}
     ]
 
     system "go", "build", *std_go_args(ldflags:)

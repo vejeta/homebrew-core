@@ -1,10 +1,10 @@
 class Sbcl < Formula
   desc "Steel Bank Common Lisp system"
   homepage "https://www.sbcl.org/"
-  url "https://downloads.sourceforge.net/project/sbcl/sbcl/2.6.5/sbcl-2.6.5-source.tar.bz2"
-  sha256 "91ec75f647252ed6e6aeae9b1a13f47c7c6cfd9b68488dc69f1a6fea5accb440"
+  url "https://downloads.sourceforge.net/project/sbcl/sbcl/2.6.8/sbcl-2.6.8-source.tar.bz2"
+  sha256 "ad5126dfdfba5db27ee77bcc25893020fe522d0b7653d45b4c4795ade3ddc23d"
   license all_of: [:public_domain, "MIT", "Xerox", "BSD-3-Clause"]
-  compatibility_version 4
+  compatibility_version 7
   head "https://git.code.sf.net/p/sbcl/sbcl.git", branch: "master"
 
   livecheck do
@@ -12,17 +12,23 @@ class Sbcl < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "d83ae56bfe2a99778119834125191a6e44a76a6565f1c1d0be67fd6523c060c2"
-    sha256 cellar: :any, arm64_sequoia: "38c848a6886690ee54a5441f77a6b3580f881f3d0b02bb16b48ffca77011b773"
-    sha256 cellar: :any, arm64_sonoma:  "88f7b071b70fcd7af0818b015d75a5a30bc5726bfc912436ec10687c7f5faa59"
-    sha256 cellar: :any, sonoma:        "20cb98356f17afb98d69c9ea1f42cfc4e03a493c4c847ae42005d848944c0ead"
-    sha256 cellar: :any, arm64_linux:   "da6cb66f75e79943d27fa45fc55ff97aa65ee18362bf28b2c753049315b684d1"
-    sha256 cellar: :any, x86_64_linux:  "d92e42e8935af3d40c539195ca034a05fbf37f44e41332451809c29aabaa53a9"
+    sha256 cellar: :any, arm64_golden_gate: "b3b730cc0bd242bfe5010d510d843ec19d8db56a7b6fb722caa4607c1435ab9e"
+    sha256 cellar: :any, arm64_tahoe:       "0054638247d463759dd1dfc8694cf519c7ceb690f6cc5471f8d09bc54ef59a5c"
+    sha256 cellar: :any, arm64_sequoia:     "4f79a06ecba982c60ace2bf96d54630beab47782c661741d809fb2789a61d671"
+    sha256 cellar: :any, arm64_sonoma:      "4c84064407869d59632862316bc4a510235473e0151821c69938c166ad9b7c99"
+    sha256 cellar: :any, arm64_linux:       "6412eeed9d5da9a114d32a5b6bbde3f43651055ca954fe0c794551f2d12c1952"
+    sha256 cellar: :any, x86_64_linux:      "582df812e4fe1d8950bca523c041db3003d4aa85c1fb057e4558da48f01cf5de"
   end
 
   depends_on "ecl" => :build
   depends_on "zstd"
+
+  # Stop passing raw SAPs through the arm64 fixed-args convention, which miscompiles
+  # UTF-8 c-string reads and hangs multi-process dependents (e.g. acl2, fricas).
+  patch do
+    file "Patches/sbcl/revert-utf8-c-string-simd-regression.patch"
+    type :unofficial
+  end
 
   def install
     # Remove non-ASCII values from environment as they cause build failures

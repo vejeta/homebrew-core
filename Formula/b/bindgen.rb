@@ -1,19 +1,18 @@
 class Bindgen < Formula
   desc "Automatically generates Rust FFI bindings to C (and some C++) libraries"
   homepage "https://rust-lang.github.io/rust-bindgen/"
-  url "https://github.com/rust-lang/rust-bindgen/archive/refs/tags/v0.72.1.tar.gz"
-  sha256 "4ffb17061b2d71f19c5062d2e17e64107248f484f9775c0b7d30a16a8238dfd1"
+  url "https://github.com/rust-lang/rust-bindgen/archive/refs/tags/v0.73.2.tar.gz"
+  sha256 "5fc3277dd334e4bbbd7bdb8cad5d4fb87a667b2e95a2bae350a8d5424c280629"
   license "BSD-3-Clause"
   head "https://github.com/rust-lang/rust-bindgen.git", branch: "main"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c2f7d3db04e1d65571db3b16e177306ac4eb49b5822285f16f3fb10efb1ef4c7"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5b3a1d65a74fdc60b6baf24a69534ed17f9125be32c5d558259284422478d2cf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "84e886c463767c888ab70a4f433110146e55a3efd8e3b81bac60a49ed9bd9f31"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ed1122e2b31766476afb2d1a56408b1b290ef935e87fc4b5a2a1b4110aadad01"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "cd76fccd60a9833a65116705011cbe7357729c425e11634076c2aab36b84945e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7ea06f579a2e35648dd5127263947f8d654809ed968c26db40cf8e3884e7eb11"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "77f8994564dd9ebc3824f0654a04a809923a36c15070e799dc879a435bea4248"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9e1f6f5647fe9dadc55cc00f32464b20d8bd4548776160b9b28ca0b534d883b3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "0d2850c8cade82b54cafa57c83c9d34b9b4cf3bfcdec39ede2e240a6ce5bc72d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "7cbf162134163a763cd2c333edc33b17dc84f533c90e5e8ad26e4c826855afa6"
+    sha256 cellar: :any,                 arm64_linux:       "ac6f5fd16ed6091a9f6dcd81997c707a02ce88b5b89e026ba39520647646e4b3"
+    sha256 cellar: :any,                 x86_64_linux:      "5478da1b68e823bb3ec9993cda3771d30ab007cb89500bb55f95653074acb0d6"
   end
 
   depends_on "rust" => :build

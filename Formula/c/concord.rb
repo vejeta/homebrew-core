@@ -1,28 +1,34 @@
 class Concord < Formula
   desc "Terminal user interface client for Discord"
   homepage "https://github.com/chojs23/concord"
-  url "https://github.com/chojs23/concord/archive/refs/tags/v2.2.4.tar.gz"
-  sha256 "9ee4e215905c47ba6ff3434205d6a9f2c47fb3c7c7ee5a9d4b7ff1851268b2fe"
+  url "https://github.com/chojs23/concord/archive/refs/tags/v2.5.20.tar.gz"
+  sha256 "2a5f3b304c8fb42d6943d86612def8819a8a3724a79a64785e7197d563477d66"
   license "GPL-3.0-only"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f152a3438d1fb62420229698a1dd49b66c0962a7bac83ebed84c76a63ac1dcb8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6649e91f0ac191d129202b693e1c8977a53dea2950f2413dd0c9bfa6792b5c86"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "13166a6bc386cfc35291fcaca28eeb25b634c6708bc1c41ab7bded0d84c739ae"
-    sha256 cellar: :any_skip_relocation, sonoma:        "238cb0cb2d5ef03535161e2e3b5278f79630b29abcb41a210ac6af3a79b1d3e6"
-    sha256 cellar: :any,                 arm64_linux:   "a6df1cf8c03b4d9722f1684a1c1bdd18e3d60b70562451cbc0e4b5f2b5a6b35f"
-    sha256 cellar: :any,                 x86_64_linux:  "6741dd9de83bb1a4deb9fb08b0ff0a89a35f73ed1b04c1582402a53d9c3cdd5d"
+    sha256 cellar: :any, arm64_golden_gate: "7a5f6cb921a9fd57174fa588c2181f4577c93933585e3806283f62b947eb533c"
+    sha256 cellar: :any, arm64_tahoe:       "283ac18bf2112d102ef971040795f3d6467742813638e44edd8612048dd8854c"
+    sha256 cellar: :any, arm64_sequoia:     "4b2c8d179370b5935f48f3bb3582022abd02d1c0d7d4d0bb443ee0d0b94d5b1b"
+    sha256 cellar: :any, arm64_linux:       "0818d70ee9808a8f355b85ee5ba5adc3bb20e0c1f61964671109e59eef99b8d9"
+    sha256 cellar: :any, x86_64_linux:      "b98685f3008783ebc9511fd77b05097594a1d58899d6f64975908941f669c1b3"
   end
 
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "opus"
 
+  uses_from_macos "llvm" => :build # for libclang
+
   on_linux do
     depends_on "alsa-lib"
+    depends_on "libva"
+    depends_on "pipewire"
   end
 
   def install
+    # opusic-c bundles libopus and builds it with CMake by default
+    inreplace "Cargo.toml", 'package = "opusic-c" }', 'package = "opusic-c", default-features = false }'
+
     system "cargo", "install", *std_cargo_args
   end
 

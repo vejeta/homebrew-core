@@ -1,17 +1,17 @@
 class Libgr < Formula
   desc "GR framework: a graphics library for visualisation applications"
   homepage "https://gr-framework.org/"
-  url "https://github.com/sciapp/gr/archive/refs/tags/v0.73.26.tar.gz"
-  sha256 "6dfe5bbd0c321d0714f391ad2e65b983fc0c34f518df773f7c7fa18545fd0fb5"
+  url "https://github.com/sciapp/gr/archive/refs/tags/v0.73.27.tar.gz"
+  sha256 "970cec765c4ef655b428d8af563edfadf21b733aa0530cf7e90ed18b913ee7b0"
   license "MIT"
 
   bottle do
-    sha256 arm64_tahoe:   "07b476006d6586ec2ed7894d8164a51c5e825bd637437cf9bf47ee38a727e445"
-    sha256 arm64_sequoia: "f61b6cfb59fa3b3a8b6d4d867eaf4a097264276434412d1ced44b17330f97f1b"
-    sha256 arm64_sonoma:  "30425591dc9e79ad6b2c392e72aed74940f7f6f9de99fea86654e75a67f7d860"
-    sha256 sonoma:        "6931ebb56ae025f69a26769b2c97396e8f4d655bd3cf15c240f0f652cb117a71"
-    sha256 arm64_linux:   "d2a0cec1fb6405ebafd88d26cf93b63dc855a33e1c6500d97d9e1f3dcd511bbe"
-    sha256 x86_64_linux:  "afd5fc8b8e06a4407cf167ae23ac5901d899aa132ddf55bc3029ea15cd3861ec"
+    sha256 arm64_tahoe:   "8c0ac01aebbcae1f6b8060e753e1045cb29265e58d4455d32467f39fd39a9554"
+    sha256 arm64_sequoia: "7cdcbe82efa0bcec2651d1e3037ef6619747d921f04823831e90415fa643a72f"
+    sha256 arm64_sonoma:  "a0f2107330148a7999098e58b8c2d7adef934b9e8de2511edbe2f7592c6aafbc"
+    sha256 sonoma:        "86544e72a5ef6edd05cfa1da91fb8e7eabbc8c712d2f4979930cc9e76024832d"
+    sha256 arm64_linux:   "b9e9c85bde0859c553504ebb2798d7c5603265c98d648183dc195e8345365c2a"
+    sha256 x86_64_linux:  "acfae23f4f9fd49b358212855cd7ae4af44f5f4609665ec73524f8fc1f0fc9ae"
   end
 
   depends_on "cmake" => :build
@@ -35,7 +35,9 @@ class Libgr < Formula
   end
 
   def install
-    system "cmake", "-S", ".", "-B", "build", "-DGR_PREFER_XCODEBUILD=OFF", *std_cmake_args
+    system "cmake", "-S", ".", "-B", "build", "-DGR_PREFER_XCODEBUILD=OFF",
+                                              "-DCMAKE_INSTALL_RPATH=#{rpath}",
+                                              *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end

@@ -1,17 +1,16 @@
 class Ghex < Formula
   desc "GNOME hex editor"
   homepage "https://wiki.gnome.org/Apps/Ghex"
-  url "https://download.gnome.org/sources/ghex/50/ghex-50.2.tar.xz"
-  sha256 "4134d2318b2aaadc7ab3dd33e07d7e6dbf31663cef5bfd2d21ba90ded5f584ab"
+  url "https://download.gnome.org/sources/ghex/50/ghex-50.4.tar.xz"
+  sha256 "e2bcf62438edaf04ca961aef8dafd35a2d208aa45f00ee557000b37214c0972e"
   license "GPL-2.0-or-later"
 
   bottle do
-    sha256 arm64_tahoe:   "e351a1a6916c1a45dd8930072485a7986cc257ac791d9bbd6e950237b6f47d50"
-    sha256 arm64_sequoia: "1c4be21fabd4188bf6cb2b8d1397295bffc4886d30a20d82114b02c3489bd135"
-    sha256 arm64_sonoma:  "2832ca071805ff523f6358e354f653de87df8b27334bda79fbcddf7375e7a1fb"
-    sha256 sonoma:        "48a371b83b41e736bfd09427fc6dc76dd14c92f89a47b7b88713529718bf8fb0"
-    sha256 arm64_linux:   "449cd325ba6cb8f2dc37974110e07d34e3cc1a02f7b6d776332810504802f00d"
-    sha256 x86_64_linux:  "9a4a3c6e73cc8ed61bd8bd754ab021d972994519ffb9216fa930e271aa292628"
+    sha256 arm64_golden_gate: "344b6ea9969d228233571963347ddee13d8ecb5b8d3ae14441ff6429cd7a5470"
+    sha256 arm64_tahoe:       "e2037a9096186b0478c1b8b7f1456dd314be795510fb0114d5b0ce69cf9d0789"
+    sha256 arm64_sequoia:     "8f0fbe39e84ff1151871607a4a73864e4ec49b18eabb0a6b53d7c936fd16405c"
+    sha256 arm64_linux:       "5061a2df72bf3dd8ae4cc16f0df9b14118f1eb035d72a85ff0955a5ebbe75067"
+    sha256 x86_64_linux:      "17d5f4a247780b3dc91a5c483293cd267cea5263e0f67495cc2c06315879df53"
   end
 
   depends_on "desktop-file-utils" => :build
@@ -46,9 +45,9 @@ class Ghex < Formula
     system "meson", "install", "-C", "build"
   end
 
-  def post_install
-    system "#{Formula["glib"].opt_bin}/glib-compile-schemas", "#{HOMEBREW_PREFIX}/share/glib-2.0/schemas"
-    system "#{Formula["gtk4"].opt_bin}/gtk4-update-icon-cache", "-f", "-t", "#{HOMEBREW_PREFIX}/share/icons/hicolor"
+  post_install_steps do
+    compile_gsettings_schemas
+    update_gtk_icon_cache
   end
 
   test do

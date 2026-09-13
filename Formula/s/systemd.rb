@@ -3,8 +3,8 @@ class Systemd < Formula
 
   desc "System and service manager"
   homepage "https://systemd.io"
-  url "https://github.com/systemd/systemd/archive/refs/tags/v261.tar.gz"
-  sha256 "f1c2e6a0d19ea5cae946386eb288432de12f3c6b7730cdb0d2a06f8ab8e3f8dc"
+  url "https://github.com/systemd/systemd/archive/refs/tags/v261.3.tar.gz"
+  sha256 "3f8d3d3969af7214bda600930e14c6a24135eb3dce1ba7f1b980b74e6dc15b72"
   license all_of: [
     # Main license is LGPL-2.1-or-later while systemd-udevd is GPL-2.0-or-later
     "LGPL-2.1-or-later",
@@ -31,8 +31,8 @@ class Systemd < Formula
   head "https://github.com/systemd/systemd.git", branch: "main"
 
   bottle do
-    sha256 arm64_linux:  "d478259b0b8ffa8203d9d618c17b238ce189b4b7e61559acfc5f26f095e77f5f"
-    sha256 x86_64_linux: "f1e948ef800cbedaac592aa9a14017e57e0505519ec96a39ccfff983d4ecd96e"
+    sha256 arm64_linux:  "643e4e10ae816664b625f69d85706721b8a72cd326cd34354cc9108a11c8418e"
+    sha256 x86_64_linux: "4671122c97f9e9f207876b1eefc8c569d25a3dd3d0eb8676affca716c6bc5957"
   end
 
   keg_only "it will shadow system systemd if linked"
@@ -67,8 +67,8 @@ class Systemd < Formula
   end
 
   resource "lxml" do
-    url "https://files.pythonhosted.org/packages/05/3b/aab6728cae887456f409b4d75e8a01856e4f04bd510de38052a47768b680/lxml-6.1.1.tar.gz"
-    sha256 "ba96ae44888e0185281e937633a743ea90d5a196c6000f82565ebb0580012d40"
+    url "https://files.pythonhosted.org/packages/23/ad/28ecd7cb894d172f3c9c80a075eeeb2017ac62e3632cee05a5f9493547eb/lxml-6.1.3.tar.gz"
+    sha256 "45222d94ddd511536f3b2f7d9deae3b2339b4ce0f075f1ca25703b07cad9dd21"
   end
 
   resource "markupsafe" do
@@ -77,7 +77,7 @@ class Systemd < Formula
   end
 
   def install
-    venv = virtualenv_create(buildpath/"venv", "python3.14")
+    venv = virtualenv_create(buildpath/"venv", python3)
     venv.pip_install resources
     ENV.prepend_path "PATH", venv.root/"bin"
     ENV.append "LDFLAGS", "-Wl,-rpath,#{lib}/systemd"
@@ -107,6 +107,14 @@ class Systemd < Formula
       -Dp11kit=disabled
       -Dpam=disabled
       -Dshellprofiledir=no
+    ]
+
+    # D-Bus dirs default to the read-only dbus keg via pkg-config; use our own prefix
+    args += %W[
+      -Ddbuspolicydir=#{share}/dbus-1/system.d
+      -Ddbussessionservicedir=#{share}/dbus-1/services
+      -Ddbussystemservicedir=#{share}/dbus-1/system-services
+      -Ddbus-interfaces-dir=#{share}/dbus-1/interfaces
     ]
 
     system "meson", "setup", "build", *args, *std_meson_args

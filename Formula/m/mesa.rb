@@ -3,8 +3,8 @@ class Mesa < Formula
 
   desc "Graphics Library"
   homepage "https://www.mesa3d.org/"
-  url "https://archive.mesa3d.org/mesa-26.1.3.tar.xz"
-  sha256 "7725004e724b34c6d4fbaf5c48fc6c6223aa9f2741d6d7782c699b049356fc45"
+  url "https://archive.mesa3d.org/mesa-26.2.2.tar.xz"
+  sha256 "eeb29ca7e56cfaa8e8a79538dcf834e3b18e501c31bef5145e959ea437cc4216"
   license all_of: [
     "MIT",
     "Apache-2.0", # include/{EGL,GLES*,vk_video,vulkan}, src/egl/generate/egl.xml, src/mapi/glapi/registry/gl.xml
@@ -24,21 +24,23 @@ class Mesa < Formula
   head "https://gitlab.freedesktop.org/mesa/mesa.git", branch: "main"
 
   bottle do
-    sha256 arm64_tahoe:   "3b43f88ee41037f97ec73f2ddedc7bd445cfed7817d9ec8f6bd85750328d6168"
-    sha256 arm64_sequoia: "9076d1b936317bade3e20be2cde2f96cf2334eec2804f3b3066122016b981bbd"
-    sha256 arm64_sonoma:  "6a5eaf5a2490fd159fb1ee9987b6fdbf07aba424d43db93099b796577a801845"
-    sha256 sonoma:        "aa958fb7fb1dbc695bb0700501b371cc6b9d08c2fd7d8f7dc004c583101b858a"
-    sha256 arm64_linux:   "3abb8a88a9f541a11838f6200de4efbab666cd481537f481f18ad576f2df4e61"
-    sha256 x86_64_linux:  "0727cb9065c3794bbfc85b04daf40720e1ccfb48cd12c14d0deea35e02872349"
+    sha256 arm64_golden_gate: "d985fca00d3b8e83f9c2ffe16058bb3efc347ffc2dc0b0fd4f27da4b07a5dada"
+    sha256 arm64_tahoe:       "dbd98b3a630082cfd33e1dd45751af4eccfe610e5fedaea366aba4f711bd6523"
+    sha256 arm64_sequoia:     "b37dd89aed3f02acfb78201716dcce30317dd3c83a9d0cef8176d3bca1ead9f5"
+    sha256 arm64_sonoma:      "1d4005c486575de0d028932c054b59924fb2b2404347e4cafe222c2d7679ba8e"
+    sha256 arm64_linux:       "3a97eff9252820a20a9f199457ad9aabd25849d16bcb966faeb239c42c18fb99"
+    sha256 x86_64_linux:      "9a02d335dd8104816826c7d1cda415b13235dcf3e1e09dc5365c0ee63a25d095"
   end
 
   depends_on "bindgen" => :build
   depends_on "bison" => :build # can't use from macOS, needs '> 2.3'
+  depends_on "cmake" => :build # for mesa-libclc
   depends_on "glslang" => :build
   depends_on "libxrandr" => :build
   depends_on "libxrender" => :build
   depends_on "libxshmfence" => :build
   depends_on "libyaml" => :build
+  depends_on "llvm@22" => :build # FIXME: https://github.com/rust-lang/rust-bindgen/issues/3397
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => [:build, :test]
@@ -46,7 +48,6 @@ class Mesa < Formula
   depends_on "rust" => :build
   depends_on "xorgproto" => :build
 
-  depends_on "libclc" => :no_linkage # OpenCL support needs share/clc/*.bc files at runtime
   depends_on "libpng"
   depends_on "libx11"
   depends_on "libxcb"
@@ -63,13 +64,6 @@ class Mesa < Formula
 
   on_macos do
     depends_on "molten-vk"
-
-    # Apply MacPorts patch to revert change causing avoid infinite loop on macOS
-    # Issue ref: https://gitlab.freedesktop.org/mesa/mesa/-/work_items/15528
-    patch :p0 do
-      url "https://raw.githubusercontent.com/macports/macports-ports/1db035904139d7a3d0e0575f63ccd2371384956c/x11/mesa/files/patch-src-meson.diff"
-      sha256 "7390de495a94749eb3070d579aae5db79a75887d8aaa4d547b053559c1eb9aeb"
-    end
   end
 
   on_linux do
@@ -98,8 +92,8 @@ class Mesa < Formula
                 extra_packages: %w[mako packaging ply pyyaml]
 
   resource "mako" do
-    url "https://files.pythonhosted.org/packages/00/62/791b31e69ae182791ec67f04850f2f062716bbd205483d63a215f3e062d3/mako-1.3.12.tar.gz"
-    sha256 "9f778e93289bd410bb35daadeb4fc66d95a746f0b75777b942088b7fd7af550a"
+    url "https://files.pythonhosted.org/packages/2a/12/b5fa2353e2754cd67fb9f83793fa48ff42c213a5da7e719869d2301f6ab8/mako-1.4.1.tar.gz"
+    sha256 "d7904710b662996425a21627710c4777c45053146942cf8a7aebf757c92b8c27"
   end
 
   resource "markupsafe" do
@@ -108,8 +102,8 @@ class Mesa < Formula
   end
 
   resource "packaging" do
-    url "https://files.pythonhosted.org/packages/d7/f1/e7a6dd94a8d4a5626c03e4e99c87f241ba9e350cd9e6d75123f992427270/packaging-26.2.tar.gz"
-    sha256 "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"
+    url "https://files.pythonhosted.org/packages/7d/fa/3944b40b07da9ce895c0e6303a5ab7d53da063554f534556b134a54d6093/packaging-26.3.tar.gz"
+    sha256 "94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79"
   end
 
   resource "ply" do
@@ -122,22 +116,34 @@ class Mesa < Formula
     sha256 "d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"
   end
 
-  def python3
-    "python3.14"
+  # Mesa is not compatible with LLVM 23+ libclc as it no longer provides spirv64-mesa3d-.spv.
+  # Until Mesa updates to handle it, use mesa-libclc which Mesa applies fixes to:
+  # https://gitlab.freedesktop.org/mesa/mesa/-/commit/b8f6be5a51b0952e4b2fc2a71d42eedea884739e
+  resource "mesa-libclc" do
+    url "https://gitlab.freedesktop.org/karolherbst/mesa-libclc/-/archive/22.1.8.3/mesa-libclc-22.1.8.3.tar.bz2"
+    sha256 "ff6c01fb68c4b885e13400c50298ee6a8bfcf3ac5995cf3039565f6814095226"
+
+    livecheck do
+      url :url
+    end
   end
 
   def install
-    # Work around superenv to avoid mixing `expat` usage in libraries across dependency tree.
-    # Brew `expat` usage in Python has low impact as it isn't loaded unless pyexpat is used.
-    # TODO: Consider adding a DSL for this or change how we handle Python's `expat` dependency
-    if OS.mac? && MacOS.version < :sequoia
-      env_vars = %w[CMAKE_PREFIX_PATH HOMEBREW_INCLUDE_PATHS HOMEBREW_LIBRARY_PATHS PATH PKG_CONFIG_PATH]
-      ENV.remove env_vars, /(^|:)#{Regexp.escape(Formula["expat"].opt_prefix)}[^:]*/
-      ENV.remove "HOMEBREW_DEPENDENCIES", "expat"
+    resource("mesa-libclc").stage do
+      system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+      system "cmake", "--build", "build"
+      system "cmake", "--install", "build"
+      ENV.prepend_path "PKG_CONFIG_PATH", share/"pkgconfig"
     end
 
+    # TODO: Remove once bindgen issue is fixed: https://github.com/rust-lang/rust-bindgen/issues/3397
+    env_vars = %w[CMAKE_PREFIX_PATH HOMEBREW_INCLUDE_PATHS HOMEBREW_LIBRARY_PATHS PATH PKG_CONFIG_PATH]
+    ENV.remove env_vars, /(^|:)#{Regexp.escape(formula_opt_prefix("llvm@22"))}[^:]*/
+    ENV.remove "HOMEBREW_DEPENDENCIES", "llvm@22"
+    ENV["CLANG_PATH"] = formula_opt_bin("llvm@22")/"clang"
+
     venv = virtualenv_create(buildpath/"venv", python3)
-    venv.pip_install resources.reject { |r| OS.mac? && r.name == "ply" }
+    venv.pip_install resources.reject { |r| r.name == "mesa-libclc" || (OS.mac? && r.name == "ply") }
     ENV.prepend_path "PYTHONPATH", venv.site_packages
     ENV.prepend_path "PATH", venv.root/"bin"
     ENV.append "LDFLAGS", "-Wl,-rpath,#{rpath}" if OS.mac?
@@ -154,7 +160,8 @@ class Mesa < Formula
       # Work around .../rusticl_system_bindings.h:1:10: fatal error: 'stdio.h' file not found
       ENV["SDKROOT"] = MacOS.sdk_for_formula(self).path
 
-      vulkan_drivers = (MacOS.version >= :sequoia) ? "kosmickrisp,swrast" : "swrast"
+      # KosmicKrisp requires Metal 4 / macOS 26, see https://docs.mesa3d.org/drivers/kosmickrisp.html
+      vulkan_drivers = (MacOS.version >= :tahoe) ? "kosmickrisp,swrast" : "swrast"
 
       %W[
         -Dgallium-drivers=llvmpipe,zink
@@ -162,6 +169,7 @@ class Mesa < Formula
         -Dtools=etnaviv,glsl,nir,nouveau,dlclose-skip
         -Dvulkan-drivers=#{vulkan_drivers}
         -Dvulkan-layers=intel-nullhw,overlay,screenshot,vram-report-limit
+        --force-fallback-for=syn
       ]
     else
       # Not all supported drivers are being auto-enabled on x86 Linux.
@@ -198,7 +206,7 @@ class Mesa < Formula
       s.change_make_var! "dridriverdir", HOMEBREW_PREFIX/"lib/dri"
     end
 
-    # https://gitlab.freedesktop.org/mesa/mesa/-/issues/13119
+    # https://gitlab.freedesktop.org/mesa/mesa/-/work_items/13119
     if OS.mac?
       inreplace %W[
         #{prefix}/etc/OpenCL/vendors/rusticl.icd

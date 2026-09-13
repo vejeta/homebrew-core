@@ -6,9 +6,8 @@ class Agda < Formula
   license all_of: ["MIT", "BSD-3-Clause"]
 
   stable do
-    url "https://github.com/agda/agda/archive/refs/tags/v2.8.0-r3.tar.gz"
-    sha256 "6ccdfbb52046f3372de4a6fc41ee7dfe905f50a8180c6dbeb777cfd71d91ed9e"
-    version "2.8.0-r3"
+    url "https://github.com/agda/agda/archive/refs/tags/v2.8.0.2.tar.gz"
+    sha256 "c29ee2c06a7feb812fcb7f0543a2ddf800a9f806d09cc7813cee9c733a169b6d"
 
     resource "stdlib" do
       url "https://github.com/agda/agda-stdlib/archive/refs/tags/v2.4.tar.gz"
@@ -34,6 +33,8 @@ class Agda < Formula
       patch do
         url "https://github.com/agda/cubical/commit/294e7960eeb03a3a5f9041e49980b061e4a4a51b.patch?full_index=1"
         sha256 "d845f5e7cfc17a7324d883a20e701e69fe2a3036c6da9b3837c0c6558136e138"
+        type :backport
+        resolves "https://github.com/agda/cubical/pull/1241"
       end
     end
 
@@ -63,12 +64,11 @@ class Agda < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "e76a4f7a8ba9e8829b0d27e280adaac7ce226472810c1bf448063dba22fea175"
-    sha256 arm64_sequoia: "b5b3d5617652d93b6f02dd6235240f22972cd61b88490dd8a5b1e91e4fe61018"
-    sha256 arm64_sonoma:  "cb828a31dd44533fd5999cbaf4e273e743309e389dc2885963c7157cd285cb12"
-    sha256 sonoma:        "7cb790378cea3375ca67c2f198e256336c74703d34aea1946895ec6581f2fdfc"
-    sha256 arm64_linux:   "b84ad81efd4b48c85c70dedc16a70b37ff6195681326f22536c613650301f478"
-    sha256 x86_64_linux:  "7a52fa9fcd6868a876b1393c71362934330b1a01dae773f63f12eeb2ed1c7058"
+    sha256 arm64_golden_gate: "e16d5b9a4c960d2410be2b441b1d9d1b5bfd4f162749e98e0ab32f197de511f0"
+    sha256 arm64_tahoe:       "cd835f9c78b6422aca35c4252b94f5ec33ebafff3b0dce3ca7e057312e3a49eb"
+    sha256 arm64_sequoia:     "ccb6e7ec57a78f9058d763e849bc8eddad8e1efcfb10322d07349f54e42f6ffe"
+    sha256 arm64_linux:       "a090b9c540c6866b94c43b681b3f8b54529107e706713a0ee114bb39941ba44e"
+    sha256 x86_64_linux:      "3f7760c14bbd35475dacb6caed38f3a65e511760263712f2128f563136e1585c"
   end
 
   head do
@@ -106,9 +106,7 @@ class Agda < Formula
   depends_on "cabal-install" => :build
   depends_on "emacs" => :build
   depends_on "pkgconf" => :build
-  # TODO: switch to the latest GHC in the next release
-  # https://github.com/agda/agda/pull/8303
-  depends_on "ghc@9.12"
+  depends_on "ghc"
   depends_on "gmp"
   depends_on "icu4c@78"
 
@@ -143,8 +141,21 @@ class Agda < Formula
     mkdir_p agdaprim
     ENV["Agda_datadir"] = agdaprim.to_s
 
-    (buildpath/"cabal.project.local").write <<~HASKELL
-      packages: . #{agda2hs_build} #{als}
+    # Make the language server build tolerate point releases
+    inreplace als/"package.yaml", "Agda == 2.8.0", "Agda >= 2.8.0 && < 2.9.0"
+    inreplace als/"agda-language-server.cabal", "Agda ==2.8.0", "Agda >= 2.8.0 && < 2.9.0"
+
+    # Make agda2hs build compatible with GHC 9.14
+    inreplace agda2hs_build/"agda2hs.cabal",
+      "base                 >= 4.13    && < 4.22",
+      "base                 >= 4.13    && < 4.23"
+
+    # Make the Agda Emacs mode compatible with Emacs >= 31.1
+    inreplace buildpath/"src/data/emacs-mode/agda2-highlight.el", " font-lock-", " 'font-lock-"
+
+    # Relative package paths keep Cabal file monitoring inside the build directory.
+    (buildpath/"cabal.project").write <<~HASKELL
+      packages: . agda2hs agda-language-server
       package Agda
         flags: +optimise-heavily +enable-cluster-counting
       package agda-language-server
@@ -264,7 +275,7 @@ class Agda < Formula
   end
 
   test do
-    ENV.prepend_path "PATH", Formula["ghc@9.12"].opt_bin
+    ENV.prepend_path "PATH", formula_opt_bin("ghc")
 
     Pathname("#{Dir.home}/.config/agda").install_symlink opt_pkgshare/"example-libraries" => "libraries"
     Pathname("#{Dir.home}/.config/agda").install_symlink opt_pkgshare/"example-defaults" => "defaults"

@@ -1,27 +1,23 @@
 class GiteaRunner < Formula
   desc "Official Actions runner for Gitea"
   homepage "https://gitea.com/gitea/runner"
-  url "https://gitea.com/gitea/runner/archive/v1.0.8.tar.gz"
-  sha256 "9d5b1c79149ecbf8f985f36295e766487cb2e22b0a43f778e276286e0b4cf95a"
+  url "https://gitea.com/gitea/runner/archive/v3.4.2.tar.gz"
+  sha256 "427afc0b54a4f1f80c9b9732ffd687a83ff69554e233bf5051827ae0f06f608b"
   license "MIT"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f08c33e64e94c385154207e3f931667420d124392c13dd29589ad58b3ed1a7c3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a6786fc030ca8fc7e95c8f0268840863fa7cd7d9976e5ec50fb7ed2d06f829e5"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "aeaa464da219a87b5ccbd6001a31383a7f6ee851a4a770a9c7dc1c1753cfd90e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b978f156ecfe7cb6948feefbd4f619f4d3a3fdd88564de6a569038b10fd514e4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "393f98826e795d8f92992c5c67423d81e0ddf8c7e357ae744a06b530523a13c9"
-    sha256 cellar: :any,                 x86_64_linux:  "2649b7b58b59be0e0814a492f36b0894b2839ee5b14affe5691d7fd75008c3b9"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "27fb8687dfa24da9158dcf232f7eab7a139a45af8f35cfe334907a4f76238aaa"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "355b777881796917b5188a6463a9af373ee277db70f560329948bd051168f05f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ca929f105eff0c771182a65f837ebac76b9172236f52bca56db0cccecfc141a1"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "261e9478077d49a9cf2394809b60be8ca63c8330ef24012c6c36d6a081684841"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "1e7cfa382823ffa83773a8f7e9b936022c13f24663a8bb800f1d85855ad5eaf3"
+    sha256 cellar: :any,                 x86_64_linux:      "b728b4b1e3178734b7beae329557db317237e3f9bb6690b42289d3ab28c791d0"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = %W[
-      -s -w
-      -X gitea.com/gitea/runner/internal/pkg/ver.version=v#{version}
-    ]
+    ldflags = %W[-X gitea.com/gitea/runner/internal/pkg/ver.version=v#{version}]
     system "go", "build", *std_go_args(ldflags:)
     generate_completions_from_executable(bin/"gitea-runner", shell_parameter_format: :cobra)
 
@@ -52,6 +48,6 @@ class GiteaRunner < Formula
       --token INVALID_TOKEN
     ]
     output = shell_output("#{bin}/gitea-runner register #{args.join(" ")} 2>&1", 1)
-    assert_match "Error: Failed to register runner", output
+    assert_match "Error: failed to register runner", output
   end
 end

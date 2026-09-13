@@ -11,7 +11,7 @@
   "open-mpi",
   "pypy",
   "pypy3.10",
-  "pypy3.9",
+  "pypy3.11",
   "soapysdr",
   "tcl-tk@8",
   "uhd"

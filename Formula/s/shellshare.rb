@@ -1,18 +1,19 @@
 class Shellshare < Formula
   desc "Live Terminal Broadcast"
   homepage "https://shellshare.net"
-  url "https://github.com/vitorbaptista/shellshare/archive/refs/tags/v3.6.1.tar.gz"
-  sha256 "7a6aeed3c4ebb22476c3319ecb3d825d40fad73dd7166f35c898ea8e2fc28dbd"
+  url "https://github.com/vitorbaptista/shellshare/archive/refs/tags/v3.12.0.tar.gz"
+  sha256 "f1619e4d7c604ffe6a2eac5b65529fecf063bfa10d592a23d556067a24a69acd"
   license "Apache-2.0"
   head "https://github.com/vitorbaptista/shellshare.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e5d004c3dfb51f2e52fdb605bc29ba7de91d03c71c0d8fbc0f7af105b4335c51"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ac36b89e705984a640795ab0672141720fbc09982718127490569020911ee1cf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "40ab02930d2a39f06a8d9b5faf64a99f10a6989063a83a2e940f5f719fbeb42f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ae5cfefe2c414bd611e00bdee454bdbe00e2588f37bb17454cc9e922cc4a0173"
-    sha256 cellar: :any,                 arm64_linux:   "9289f704af969326dc873eb2287425f9614f909f670c38db20ff4935677ef15a"
-    sha256 cellar: :any,                 x86_64_linux:  "5ae61f7c7f82a439504d487360d66bd212638687a4c6bf7b40aec61daf49aa2f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1d912694d2a977d299cee1fc083b0d875280fbbb2bb9f6912788f591e2f27e1a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7155cee155b3b2ea60dd2d7e2331c60b34796fb009b3f26a0bc9aa7bcb712bad"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "561a2d1a3f283a2cd6adc9025632bed740f776e504daffd382b3e719a2954b7f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "99078ec0e5f1a2cc217ce7e57ccdd9ed5fa11809757cac9ed60a01892a758509"
+    sha256 cellar: :any_skip_relocation, sonoma:            "92aa641f95b14da2457dd3a1b458eb6f608a9476a8bdd457fa9208f481a0af20"
+    sha256 cellar: :any,                 arm64_linux:       "c7eea874817cf5493d12d70da03177474d6819faab906f35992ef7f984b61917"
+    sha256 cellar: :any,                 x86_64_linux:      "5bdc2920ecd358acf9f1b77542e4844b0a9e003b5585612b9276c2621330fba8"
   end
 
   depends_on "rust" => :build

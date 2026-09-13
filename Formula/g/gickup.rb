@@ -1,25 +1,23 @@
 class Gickup < Formula
   desc "Backup all your repositories with Ease"
   homepage "https://cooperspencer.github.io/gickup-documentation/"
-  url "https://github.com/cooperspencer/gickup/archive/refs/tags/v0.10.44.tar.gz"
-  sha256 "07aeec9ea820595fd6beba7bdf76cd746988b0d64ae84275ab2b61edc7eedf6f"
+  url "https://github.com/cooperspencer/gickup/archive/refs/tags/v0.10.47.tar.gz"
+  sha256 "ad7ef9de7c55e6f3822326120cb7a823a69bb966489c105bfc4e2ece673a412c"
   license "Apache-2.0"
   head "https://github.com/cooperspencer/gickup.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "55376e634d07e7373fd4f77822537cfa25e46676bf6e81b2c0a10e72ff9c173e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "56f6bc182eb495b4e9fae7d53d3fed03f1b31dbdbb057beba472557b994baa1c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "75f4fb204fc72cfa8799977a3eb584f0d0acced40145120ad84ec5420224d102"
-    sha256 cellar: :any_skip_relocation, sonoma:        "14783329f9822943c2bec7422aed72eec4423566c3690c368150b5fb04775fad"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "faa480161224d2c65641451e5358adaafea739f6e1684f7e19a65d452a50b31c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a3361a6bfa882bf1a94de357e37e9c96cab87b82527f2903bd93270684449d33"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "26533b07a5f0731f1a9542fc9ea6489862702fb78d494c57d79718f215075f5f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a26b5ebbc8e5fd22d8df790621d088e441459e97bf4a0c2559e9fad4369158f2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d4f225e258233adcd7ad10a9a1d3843a5e4aa1d7770303e2e43aef2cc345669b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0b69368a81a54a72a51d999220e5270d529f7b7d2b2932c67956aef23cac2948"
+    sha256 cellar: :any,                 x86_64_linux:      "23eec013ca1b789639483466ba17217a2912ce776ef8a024d50f651a9c974b01"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.version=#{version}"
-    system "go", "build", *std_go_args(ldflags:)
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}")
   end
 
   test do

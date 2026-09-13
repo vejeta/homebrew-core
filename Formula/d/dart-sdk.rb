@@ -1,18 +1,18 @@
 class DartSdk < Formula
   desc "Dart Language SDK, including the VM, dart2js, core libraries, and more"
   homepage "https://dart.dev"
-  url "https://github.com/dart-lang/sdk/archive/refs/tags/3.12.2.tar.gz"
-  sha256 "e84861c0a725990b6efbec1ec3be7cbf38352983871f8e74c3d42bc259a0a0d8"
+  url "https://github.com/dart-lang/sdk/archive/refs/tags/3.13.3.tar.gz"
+  sha256 "9320d014e0be89d486f383575d2efcf61d6c948f91338b1da7faf79680a1a3b0"
   license "BSD-3-Clause"
-  compatibility_version 2
+  compatibility_version 3
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d98d388dfe2b2af3b1888fa5fd4ec4f722b4e8fc09dd6fb5df45fc5e338f7795"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "577e003e50e2735ca3cde53b2a1b51938b26c01098f6e82b2c57293f0d4e7c44"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a922f73ab00ffea950699afabaa91673fb0e88c9831123680a963138c6e24584"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e2d9edd7488c0659e4b39d45f09e450bac870cea68204cac2c90c7645a6e4aa7"
-    sha256 cellar: :any,                 arm64_linux:   "391cd9ba088a5b24372ec0613b7dde2785bf125a2b60b48f12b026720a1a4fb6"
-    sha256 cellar: :any,                 x86_64_linux:  "8393459aa9cada1b4a07cd5b12e0f4faa53ed358e84b02f5dac621e885bab05a"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "2365c809941d6109515a57e159bb04e87731b2cfa66f8df63e9be8ab89d97fcb"
+    sha256 cellar: :any, arm64_tahoe:       "7cd76ba93860224ab2123ce4a9dfae1f3a3316200b13b7dc7ce632ecd3a76a76"
+    sha256 cellar: :any, arm64_sequoia:     "eb5e1ca53d61f6658686481ceac5ff268188412e7aeb9e689bc7e3a980c6f1f8"
+    sha256 cellar: :any, arm64_linux:       "ba5908e47e7df690fc51b9060e01974b3a3493498b9833a29ff7d54512c2a398"
+    sha256 cellar: :any, x86_64_linux:      "fbcb4ca31cd1bbcbd65b816becb4bcee41bdd8d5ecc4c58e28ed1653a33630d0"
   end
 
   depends_on "ninja" => :build
@@ -25,8 +25,8 @@ class DartSdk < Formula
   # always pull the latest commit from https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main
   resource "depot-tools" do
     url "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
-        revision: "b9d2b54daea64fa757df5ba737e611b691dc6201"
-    version "b9d2b54daea64fa757df5ba737e611b691dc6201"
+        revision: "cb70c994a656601dc6a0d423f49ff57503bd70bc"
+    version "cb70c994a656601dc6a0d423f49ff57503bd70bc"
 
     livecheck do
       url "https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main?format=JSON"
@@ -40,18 +40,18 @@ class DartSdk < Formula
     ENV["DEPOT_TOOLS_UPDATE"] = "0"
     ENV.append_path "PATH", "#{buildpath}/depot-tools"
 
-    system "gclient", "config", "--name", "sdk", "https://dart.googlesource.com/sdk.git@#{version}"
+    # Roll clang to include lld support for arm64e.x1 targets in the macOS 27 SDK (llvm/llvm-project#222721)
+    # TODO: Remove when upstream rolls clang past that commit, see https://github.com/dart-lang/sdk/issues/64264
+    system "gclient", "config", "--name", "sdk",
+           "--custom-var", 'clang_version="git_revision:07d67299a15ce03b053736e2d31a668ee0576987"',
+           "https://dart.googlesource.com/sdk.git@#{version}"
     system "gclient", "sync", "--no-history"
 
-    # Workaround for dependants audit failure: Libraries were compiled with a flat namespace.
-    # Issue ref: https://github.com/dart-lang/sdk/issues/63115
-    # PR ref: https://github.com/dart-lang/sdk/pull/63116
-    inreplace "sdk/runtime/platform/mach_o.h",
-              "MH_NO_REEXPORTED_DYLIBS = 0x100000;",
-              "\\0\nstatic constexpr uint32_t MH_TWOLEVEL = 0x80;"
-    inreplace "sdk/runtime/vm/mach_o.cc", "MH_NO_REEXPORTED_DYLIBS", "\\0 | mach_o::MH_TWOLEVEL"
-
     chdir "sdk" do
+      # The newer clang flags an unused variable in binaryen, which is built with -Werror
+      inreplace "third_party/binaryen/BUILD.gn", '"-Wno-unused-private-field",',
+                                                   "\\0\n        \"-Wno-unused-variable\","
+
       arch = Hardware::CPU.arm? ? "arm64" : "x64"
       system "./tools/build.py", "--mode=release", "--arch=#{arch}", "create_sdk"
       out = OS.linux? ? "out" : "xcodebuild"

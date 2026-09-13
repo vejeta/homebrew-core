@@ -20,17 +20,24 @@ class Jxrlib < Formula
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:    "c4b636123bafc19b44451cfc90eecbf7ab7488527508c40a102594517d60c889"
-    sha256 cellar: :any,                 arm64_sequoia:  "e7aae93b96e812a888ab0a4da737a40fef17bb389a7e3bcc5106ff81c33a7841"
-    sha256 cellar: :any,                 arm64_sonoma:   "437e4ba50db36d58d3c043f6a3a1e34939f0e80f1318160d9d142da27f222e47"
-    sha256 cellar: :any,                 arm64_ventura:  "a81a86a6bc199eac66b8c9ae3b40a942c2acd8986b2c901e165f2ebb99e466f1"
-    sha256 cellar: :any,                 arm64_monterey: "2faf5cbf70c5f9fc6d93dd9449b53db9304bbfcb73a48bf58e935f5cee6f9939"
-    sha256 cellar: :any,                 sonoma:         "212c5e081a76c9e8e669e025a09bc57a2ca86454eb18dc902809af560a0530fc"
-    sha256 cellar: :any,                 ventura:        "449029d8100d5ed878755410d3c23b3044f4033afb5a384886fd2db2b0994434"
-    sha256 cellar: :any,                 monterey:       "1b98aa039650e79119c061342a8ccf2e6ef8d0872893ad12c1bfefac67a8d88d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:    "0db591f53b1290c104b0f916fc03d356174efe49822436a3548a0aadb4110b43"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "a8b4edc2fe9b2af8b4ac16fc72f1ac97c7c2bd61186250e2edb55c2cd632527d"
+    sha256 cellar: :any,                 arm64_golden_gate: "3a554545de1df9470b93fc967a4dd5d6594b8572b757e1d3426d13250a8cc665"
+    sha256 cellar: :any,                 arm64_tahoe:       "c4b636123bafc19b44451cfc90eecbf7ab7488527508c40a102594517d60c889"
+    sha256 cellar: :any,                 arm64_sequoia:     "e7aae93b96e812a888ab0a4da737a40fef17bb389a7e3bcc5106ff81c33a7841"
+    sha256 cellar: :any,                 arm64_sonoma:      "437e4ba50db36d58d3c043f6a3a1e34939f0e80f1318160d9d142da27f222e47"
+    sha256 cellar: :any,                 arm64_ventura:     "a81a86a6bc199eac66b8c9ae3b40a942c2acd8986b2c901e165f2ebb99e466f1"
+    sha256 cellar: :any,                 arm64_monterey:    "2faf5cbf70c5f9fc6d93dd9449b53db9304bbfcb73a48bf58e935f5cee6f9939"
+    sha256 cellar: :any,                 sonoma:            "212c5e081a76c9e8e669e025a09bc57a2ca86454eb18dc902809af560a0530fc"
+    sha256 cellar: :any,                 ventura:           "449029d8100d5ed878755410d3c23b3044f4033afb5a384886fd2db2b0994434"
+    sha256 cellar: :any,                 monterey:          "1b98aa039650e79119c061342a8ccf2e6ef8d0872893ad12c1bfefac67a8d88d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0db591f53b1290c104b0f916fc03d356174efe49822436a3548a0aadb4110b43"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "a8b4edc2fe9b2af8b4ac16fc72f1ac97c7c2bd61186250e2edb55c2cd632527d"
   end
+
+  # Original upstream is dead while Debian is only patching last git commit, which we don't track.
+  # Arch Linux did switch to a fork https://github.com/mircomir/jxrlib but does not meet
+  # https://docs.brew.sh/Package-Acceptance-Policy#forks-that-replace-an-existing-project
+  deprecate! date: "2026-08-23", because: :unmaintained
+  disable! date: "2027-02-23", because: :unmaintained
 
   depends_on "cmake" => :build
 
@@ -38,6 +45,7 @@ class Jxrlib < Formula
   patch do
     url "https://raw.githubusercontent.com/Gcenx/macports-wine/1b310a17497f9a49cc82789cc5afa2d22bb67c0c/graphics/jxrlib/files/0001-Add-ability-to-build-using-cmake.patch"
     sha256 "beebe13d40bc5b0ce645db26b3c8f8409952d88495bbab8bc3bebc954bdecffe"
+    type :unofficial
   end
 
   def install

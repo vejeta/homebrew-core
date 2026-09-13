@@ -1,38 +1,32 @@
 class Hawkeye < Formula
   desc "Simple license header checker and formatter, in multiple distribution forms"
   homepage "https://github.com/korandoru/hawkeye"
-  url "https://github.com/korandoru/hawkeye/archive/refs/tags/v6.5.1.tar.gz"
-  sha256 "ae7f7a5e16642c769c8fdb1f071e3677e01d7307b69ec745a242699c867f8a9e"
+  url "https://github.com/korandoru/hawkeye/archive/refs/tags/v7.2.0.tar.gz"
+  sha256 "d85bc32c3813040a83c72555998f74ca1e7218b6908faf1106d29af279e61e51"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e856c08894188d6726f27fe6233bd2b4ba756e647e8bf9859b021bde14264a55"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "47f533656f8746d714b19db9f392226653014f7db212c7e20027de857249b7b7"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a8f3833c2a22ae3f3c91ff662c144b221805f51031cba46787cc58188886d5f4"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a2cf98250f379d33bcb002cb105e0fbd1d6f2ce40bbf8e8834f11c6fcc009b82"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "da76de8a0df8a47154a77701d1d7204656a2ed4d6869bac9219086d392528c9c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "07f3953d9340e1d7c3dcd5d1f86b584824b9bafdd0cbe8fe282a0ddd425d7f92"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "64d411b53ff9dbea47a4418d2792900a9c8ce9ebecd40f81013f9af6f4f96bec"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f35049b19fca8f4c05e5d54c19a8ac5dd8608eb2de8e110182f57aae1d59c553"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f3ac027aab9d5f62cdecd6f2ff20e000209510b19fade04cc6e74b9522feb008"
+    sha256 cellar: :any,                 arm64_linux:       "27dc778ccf0baf028e214065c1231a363daf79bc7c58d7e06fa9df1b76ca3c6a"
+    sha256 cellar: :any,                 x86_64_linux:      "492ae481e8f6ef412702b91030778f5cafd90dea8116a90aafe5e47a473eb799"
   end
 
   depends_on "rust" => :build
 
   def install
-    system "cargo", "install", *std_cargo_args(path: "cli")
+    system "cargo", "install", *std_cargo_args(path: "hawkeye")
   end
 
   test do
-    assert_includes shell_output("#{bin}/hawkeye --version"), "hawkeye \nversion: #{version}\n"
+    assert_match version.to_s, shell_output("#{bin}/hawkeye --version")
 
     configfile = testpath/"licenserc.toml"
-    configfile.write <<~EOS
-      inlineHeader = """
-      Copyright © 1970
-      """
-
+    configfile.write <<~TOML
       includes = ["licenserc.toml"]
-    EOS
+    TOML
 
-    shell_output("#{bin}/hawkeye format", 1)
-    assert File.read("licenserc.toml").start_with?("# Copyright © 1970")
+    assert_match "unknown field `includes`", shell_output("#{bin}/hawkeye format 2>&1", 2)
   end
 end

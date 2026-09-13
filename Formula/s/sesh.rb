@@ -1,25 +1,30 @@
 class Sesh < Formula
   desc "Smart session manager for the terminal"
   homepage "https://github.com/joshmedeski/sesh"
-  url "https://github.com/joshmedeski/sesh/archive/refs/tags/v2.26.2.tar.gz"
-  sha256 "f6bbfd1513332bd5abd4dc5e0b135b8aeac375abb8601f2d7bb9ffe25174f006"
+  url "https://github.com/joshmedeski/sesh/archive/refs/tags/v2.30.1.tar.gz"
+  sha256 "d0818bb3c8d0b38706d1c8916f1e5d1995e0be79b4b6fd646112ac037fea0fb8"
   license "MIT"
   head "https://github.com/joshmedeski/sesh.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c5fb21c1b8c73fe8c5292c00257511469b134ca0b6783523ca20ebf261787bcb"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c5fb21c1b8c73fe8c5292c00257511469b134ca0b6783523ca20ebf261787bcb"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c5fb21c1b8c73fe8c5292c00257511469b134ca0b6783523ca20ebf261787bcb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "624f9a1df204c6fcb47ebe0fb048ee1fb6e96e9932435fb55366135bbe343a69"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "cb0923a26ebc45b7e3a987a7f0dec62583ac02695f98715b7ca93dc539005612"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ac4bd03ef75a2f3f64bf7b08fb7795c091bf76b7301d407033530ad29c3f524a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cc1bdf76edb8e35363e2d65ee74cf64b6c91739be25f8787173b11fd1fcb124d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "cc1bdf76edb8e35363e2d65ee74cf64b6c91739be25f8787173b11fd1fcb124d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "cc1bdf76edb8e35363e2d65ee74cf64b6c91739be25f8787173b11fd1fcb124d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "cc1bdf76edb8e35363e2d65ee74cf64b6c91739be25f8787173b11fd1fcb124d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "014bb6b16bc2165b662b5e4c4ce549343e6a50e576660e8c188f28ea6196b819"
+    sha256 cellar: :any,                 x86_64_linux:      "cd4d6a60ce620149dabe2d93c82694ba3ff0455b8621d613b71a24f34492af5b"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version}"
-    system "go", "build", *std_go_args(ldflags:)
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}")
     generate_completions_from_executable(bin/"sesh", shell_parameter_format: :cobra)
   end
 

@@ -1,8 +1,8 @@
 class Libphonenumber < Formula
   desc "C++ Phone Number library by Google"
   homepage "https://github.com/google/libphonenumber"
-  url "https://github.com/google/libphonenumber/archive/refs/tags/v9.0.32.tar.gz"
-  sha256 "fef1a587ff4793d02cf10dc87d083e7a230e0caf56e8dfdf0da6a15f78420ed8"
+  url "https://github.com/google/libphonenumber/archive/refs/tags/v9.0.39.tar.gz"
+  sha256 "e30c2aea5b66f53821d1eb971f81b9be1350e4b04a4577c8283803a1c8c5210b"
   license "Apache-2.0"
 
   livecheck do
@@ -11,12 +11,12 @@ class Libphonenumber < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "26a3e1a50bc78deffd6ae7e97e9fe195af0bd2a0d0da4c821e5ab2414e303265"
-    sha256 cellar: :any, arm64_sequoia: "b9013547ce78cf0df8159692bed99314a92e6404ac56a8244a9593873dc7e54c"
-    sha256 cellar: :any, arm64_sonoma:  "11cfa540e9a135d886ef938669265841dfdcbc6088251fcd8634a8a623fc9a44"
-    sha256 cellar: :any, sonoma:        "1448c35a7997aa9aa3e9a5be8c0e611ffb412e95da2ff1add76ceb404f4a0f57"
-    sha256 cellar: :any, arm64_linux:   "1a3c3f77c06ecc20acc4f0381ce62a9b0c56497d205b98f7bc169db05a8cbbea"
-    sha256 cellar: :any, x86_64_linux:  "637d5fc2ad82d150b435ec8e671a84e1d32e6ba40f97a07f41848d5df15a065a"
+    sha256 cellar: :any, arm64_golden_gate: "59dc37c58baba1b0c986c4d1b8f85ce993c910e92d3550ba0bd02fa285047e1e"
+    sha256 cellar: :any, arm64_tahoe:       "902aba3547af072622830512b2ddce8dd83710a3cff3d15f1cb76dfb545c6dcc"
+    sha256 cellar: :any, arm64_sequoia:     "018d58fa9568cfb8f86f52612baa8d2bd17623769fb3eb1895c38009e3ee9f50"
+    sha256 cellar: :any, arm64_sonoma:      "3ddb46e93504dbc05fcad70cf5b11d43d888d890672ffb0ffc3725096d20b653"
+    sha256 cellar: :any, arm64_linux:       "c79fb369bf5e577fb1378685661c13a8925a2574f667148e4c9095cf3e130c16"
+    sha256 cellar: :any, x86_64_linux:      "c9366a1dbfcf6d1e51b685a2d6bed50cb8eb10974e668ab82de1edae5c6e819b"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -26,10 +26,12 @@ class Libphonenumber < Formula
   depends_on "icu4c@78"
   depends_on "protobuf"
 
-  # Fix build with Boost 1.89.0, pr ref: https://github.com/google/libphonenumber/pull/3903
+  # Fix build with Boost 1.89.0
   patch do
     url "https://github.com/google/libphonenumber/commit/72c1023fbf00fc48866acab05f6ccebcae7f3213.patch?full_index=1"
     sha256 "6bce9d77b45f35a84ef39831bf2cca793b11aa7b92bd6d71000397d3176f0345"
+    type :unofficial
+    resolves "https://github.com/google/libphonenumber/pull/3903"
   end
 
   def install

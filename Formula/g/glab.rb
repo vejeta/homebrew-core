@@ -2,23 +2,30 @@ class Glab < Formula
   desc "Open-source GitLab command-line tool"
   homepage "https://gitlab.com/gitlab-org/cli"
   url "https://gitlab.com/gitlab-org/cli.git",
-    tag:      "v1.103.0",
-    revision: "c724bea5fca299c989b0b27b2b24cd1cbe7136af"
+    tag:      "v1.117.0",
+    revision: "44790937bcbf6120698250cc41c9b4fb811c2a03"
   license "MIT"
   head "https://gitlab.com/gitlab-org/cli.git", branch: "main"
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "536211ae0f9658da51109aceff164487bc851d4f7300db950b118b964c92bb78"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "536211ae0f9658da51109aceff164487bc851d4f7300db950b118b964c92bb78"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "536211ae0f9658da51109aceff164487bc851d4f7300db950b118b964c92bb78"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e330fe12ebfcf18c6ab6c42d46102491a5766b423699e2956558d8221e028c53"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a7f57639610d565b05f4a01e15a4c6709a3e8a970da841987fab7c8ae009eafb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0d82f2477271ae27c2adcb0e5df1403f50b9c77513013ca1ace93411da2424a6"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ea84252f1ba9171855e816c25f185faecad58cb7dc0fd67f55462047315bc5ea"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ea84252f1ba9171855e816c25f185faecad58cb7dc0fd67f55462047315bc5ea"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ea84252f1ba9171855e816c25f185faecad58cb7dc0fd67f55462047315bc5ea"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ea84252f1ba9171855e816c25f185faecad58cb7dc0fd67f55462047315bc5ea"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "64a6b359e9496c65758e8fa8533bd571c215105deb6a3cb668bcd27c31ec2c53"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "7cc504e29a2cdb6980174fbde9a14d7cf074372c77386fc4d44a9b2265a393e3"
   end
 
   depends_on "go" => :build
+
+  # `test do` block queries the GitLab API
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     ENV["CGO_ENABLED"] = "1" if OS.mac?

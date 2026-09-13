@@ -1,33 +1,26 @@
 class Ahoy < Formula
   desc "Creates self documenting CLI programs from commands in YAML files"
-  homepage "https://github.com/ahoy-cli/ahoy/"
-  url "https://github.com/ahoy-cli/ahoy/archive/refs/tags/v2.5.0.tar.gz"
-  sha256 "e57f908df16c29d5e1b5e814496d0f9eb9e11a871ed68e1fd93aa286c557c540"
+  homepage "https://ahoy-cli.github.io/"
+  url "https://github.com/ahoy-cli/ahoy/archive/refs/tags/v3.0.1.tar.gz"
+  sha256 "ed4d3b48784668dc48b81243125dbdeabecaab784b5e1c20f1608cacf83dc4ce"
   license "MIT"
   head "https://github.com/ahoy-cli/ahoy.git", branch: "master"
 
-  livecheck do
-    url :url
-    strategy :github_latest
-  end
-
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a1d4f45c4c570160683c363f45827d0e8632297f68794018f8686ca1e88f02ee"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "39cc43e109a7f06f80f5bbea045f5877292645bebdc4e8dda3dcc60699bef370"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "39cc43e109a7f06f80f5bbea045f5877292645bebdc4e8dda3dcc60699bef370"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "39cc43e109a7f06f80f5bbea045f5877292645bebdc4e8dda3dcc60699bef370"
-    sha256 cellar: :any_skip_relocation, sonoma:        "fde6ef7692a9bf8513258596831c349e349b49beea85ff7ba06c0046305e3156"
-    sha256 cellar: :any_skip_relocation, ventura:       "fde6ef7692a9bf8513258596831c349e349b49beea85ff7ba06c0046305e3156"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6d628f6bd4c2687f8b9736b8b365e311472af4b81dfe798014816b436e08d8fc"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "689b92185a351f9b622340c9fc7c1234df8a33e6bea026075bb79f52e2de13c5"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cfec4320a87043cb68e06c916110ae8d5da264259cf6c9f950c8afb0e1790644"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "cfec4320a87043cb68e06c916110ae8d5da264259cf6c9f950c8afb0e1790644"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "cfec4320a87043cb68e06c916110ae8d5da264259cf6c9f950c8afb0e1790644"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "cfec4320a87043cb68e06c916110ae8d5da264259cf6c9f950c8afb0e1790644"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "74e509a00183d99a75a3495a7d18497bf6d8c8781d8e15c599bc33f6ec91e512"
+    sha256 cellar: :any,                 x86_64_linux:      "2be13b1292133e38d8d21ab8f29484399bb1ebcf61145ea23d17b9f5e3cad862"
   end
 
   depends_on "go" => :build
 
+  deny_network_access! [:postinstall, :test]
+
   def install
-    cd "v2" do
-      system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}-homebrew")
-    end
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}-homebrew")
   end
 
   test do

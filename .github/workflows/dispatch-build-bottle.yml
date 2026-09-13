@@ -57,85 +57,25 @@ jobs:
     container:
       image: ghcr.io/homebrew/brew:main
     outputs:
-      runners: ${{steps.runner-matrix.outputs.result}}
+      runners: ${{steps.runner-matrix.outputs.runners}}
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
-
-      - name: Prepare runner matrix
-        id: runner-matrix
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            const macOSRegex = /^(\d+(?:\.\d+)?)(?:-(arm64|x86_64))?$/;
-            const linuxRegex = /^(?:ubuntu-|linux-self-hosted-)/;
-            return context.payload.inputs.runner.split(",")
-                                                .map(s => s.trim())
-                                                .filter(Boolean)
-                                                .map(s => {
-              const macOSMatch = macOSRegex.exec(s);
-              if (macOSMatch && s != "11-arm64") // Ephemeral runners
-                return {runner: `${macOSMatch[1]}-${macOSMatch[2] ?? "x86_64"}-${context.runId}-dispatch`, cleanup: false};
-              else if (linuxRegex.test(s))
-                return {
-                  runner:    s,
-                  container: {
-                    image:   "ghcr.io/homebrew/brew:main",
-                    options: "--user=linuxbrew -e GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED"
-                  },
-                  workdir:   "/github/home",
-                  cleanup:   false
-                };
-              else
-                return {runner: s, cleanup: true};
-            });
 
       - name: Ensure homebrew/core is up-to-date
         if: endsWith(github.ref, 'main') || endsWith(github.ref, 'master')
         run: brew update
 
-      - name: Check for existing bottle
-        shell: brew ruby {0}
-        env:
-          HOMEBREW_RUNNER_MATRIX: ${{ steps.runner-matrix.outputs.result }}
-          HOMEBREW_DISPATCHED_FORMULA: ${{ inputs.formula }}
-        run: |
-          matrix = JSON.parse(ENV.fetch("HOMEBREW_RUNNER_MATRIX"))
-          formula_name = ENV.fetch("HOMEBREW_DISPATCHED_FORMULA")
-          formula = Formulary.factory(formula_name)
-          exit_code = 0
-
-          matrix.each do |entry|
-            runner = entry.fetch("runner")
-
-            bottle_tag = if runner.start_with?("ubuntu-") && runner.end_with?("-arm")
-              Utils::Bottles.tag(:arm64_linux)
-            elsif runner.start_with?("ubuntu") || runner.start_with?("linux")
-              Utils::Bottles.tag(:x86_64_linux)
-            elsif runner.match?(/^\d+-/)
-              os_version, arch, _ = *runner.split("-")
-              system = MacOSVersion.new(os_version).to_sym
-              arch = arch.to_sym
-
-              Utils::Bottles::Tag.new(system:, arch:)
-            end
-            next if bottle_tag.blank?
-
-            bottled_on_current_runner = formula.bottle_specification.tag?(bottle_tag, no_older_versions: true)
-            next unless bottled_on_current_runner
-
-            exit_code = 1
-            puts GitHub::Actions::Annotation.new(
-              :error,
-              "#{formula_name} already has a bottle for #{bottle_tag}!",
-            )
-          end
-
-          exit exit_code
+      - name: Prepare runner matrix
+        id: runner-matrix
+        run: >-
+          brew generate-bottle-ci-matrix
+          --runners="$DISPATCH_BUILD_BOTTLE_RUNNER"
+          "$DISPATCH_BUILD_BOTTLE_FORMULA"
 
   bottle:
     needs: prepare
@@ -167,7 +107,7 @@ jobs:
           echo upload="${DISPATCH_BUILD_BOTTLE_UPLOAD}"
 
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@main
+        uses: Homebrew/actions/pre-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ matrix.cleanup }}
@@ -184,7 +124,7 @@ jobs:
 
       - name: Post-build steps
         if: always()
-        uses: Homebrew/actions/post-build@main
+        uses: Homebrew/actions/post-build@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           runner: ${{ matrix.runner }}
           cleanup: ${{ matrix.cleanup }}
@@ -213,7 +153,7 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           core: true
           cask: false
@@ -227,39 +167,42 @@ jobs:
 
       - name: Configure Git user
         id: git-user-config
-        uses: Homebrew/actions/git-user-config@main
+        uses: Homebrew/actions/git-user-config@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           username: ${{ (github.actor != 'github-actions[bot]' && github.actor) || 'BrewTestBot' }}
 
       - name: Set up commit signing
-        uses: Homebrew/actions/setup-commit-signing@main
+        uses: Homebrew/actions/setup-commit-signing@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           signing_key: ${{ secrets.BREWTESTBOT_SSH_SIGNING_KEY }}
 
       - name: Generate build provenance
-        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: ${{ env.BOTTLES_DIR }}/*.tar.gz
 
       - name: Checkout branch for bottle commit
         working-directory: ${{steps.set-up-homebrew.outputs.repository-path}}
-        run: git checkout -b "$BOTTLE_BRANCH" origin/HEAD
+        run: |
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          git checkout -b "$BOTTLE_BRANCH" origin/HEAD
 
       - name: Upload bottles to GitHub Packages
         id: upload
         env:
           HOMEBREW_GITHUB_PACKAGES_USER: brewtestbot
           HOMEBREW_GITHUB_PACKAGES_TOKEN: ${{secrets.HOMEBREW_CORE_GITHUB_PACKAGES_TOKEN}}
-          BREWTESTBOT_NAME_EMAIL: "BrewTestBot <1589480+BrewTestBot@users.noreply.github.com>"
+          HOMEBREW_GIT_COMMITTER_NAME: BrewTestBot
+          HOMEBREW_GIT_COMMITTER_EMAIL: 1589480+BrewTestBot@users.noreply.github.com
           HOMEBREW_CORE_PATH: ${{steps.set-up-homebrew.outputs.repository-path}}
         working-directory: ${{ env.BOTTLES_DIR }}
         run: |
-          brew pr-upload --verbose --keep-old --committer="$BREWTESTBOT_NAME_EMAIL" --root-url="https://ghcr.io/v2/homebrew/core"
+          brew pr-upload --verbose --keep-old --root-url="https://ghcr.io/v2/homebrew/core"
           echo "title=$(git -C "$HOMEBREW_CORE_PATH" log -1 --format='%s' "$BOTTLE_BRANCH")" >> "$GITHUB_OUTPUT"
           echo "head_sha=$(git -C "$HOMEBREW_CORE_PATH" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Push commits
-        uses: Homebrew/actions/git-try-push@main
+        uses: Homebrew/actions/git-try-push@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           token: ${{secrets.HOMEBREW_GITHUB_PUBLIC_REPO_TOKEN}}
           directory: ${{steps.set-up-homebrew.outputs.repository-path}}
@@ -270,7 +213,7 @@ jobs:
 
       - name: Open PR with bottle commit
         id: create-pr
-        uses: Homebrew/actions/create-pull-request@main
+        uses: Homebrew/actions/create-pull-request@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           token: ${{secrets.HOMEBREW_GITHUB_PUBLIC_REPO_TOKEN}}
           base: ${{github.ref}}
@@ -348,7 +291,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: Post comment on failure
-        uses: Homebrew/actions/post-comment@main
+        uses: Homebrew/actions/post-comment@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
           token: ${{secrets.GITHUB_TOKEN}}
           issue: ${{inputs.issue}}

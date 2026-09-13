@@ -3,10 +3,10 @@ class Nginx < Formula
   homepage "https://nginx.org/"
   # Use "mainline" releases only (odd minor version number), not "stable"
   # See https://www.nginx.com/blog/nginx-1-12-1-13-released/ for why
-  url "https://nginx.org/download/nginx-1.31.2.tar.gz"
-  sha256 "af2a957c41da636ddc4f883e4523c6d140b4784dbce42000c364ae5092aa473c"
+  url "https://nginx.org/download/nginx-1.31.5.tar.gz"
+  sha256 "e951607d534836624bd36b6b45a71dbfb055237deae3738da6bbf3270dada279"
   license "BSD-2-Clause"
-  compatibility_version 7
+  compatibility_version 10
   head "https://github.com/nginx/nginx.git", branch: "master"
 
   livecheck do
@@ -15,12 +15,12 @@ class Nginx < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "067c2846d8862ea87888a0775f6a06c08b1f3160bfc1cd71de858f852d3a4b3a"
-    sha256 arm64_sequoia: "1fb9246e0fae01f5757c98796a8386f1af998f442e723ee09ff969b6659c61a8"
-    sha256 arm64_sonoma:  "317105d5a6d66e3cde0f08c6a3a436127d9537cc0f2e51aa0a93e0f849502263"
-    sha256 sonoma:        "10390be6ea5662cb7517fab30c1f189e5ed7d6e08add1e033141b335ffd29d17"
-    sha256 arm64_linux:   "3b9f2f667c96cfa69ef524fd91ae9d5bb93da0f51249ab0d86e747290d2cf898"
-    sha256 x86_64_linux:  "fafeb43d57ef35fe44cd0e995a173512efbcc46c21b29e1701e12400e26056f6"
+    sha256 arm64_golden_gate: "eb6b4cb0ca2fea40f687dc9d8e45c4e698a92d4ee3338c07b4da6c091f1c4668"
+    sha256 arm64_tahoe:       "2285e889a085372c5165266cd9f364dee9219593b1903783498b763b8973f93b"
+    sha256 arm64_sequoia:     "9a7a468f0702b6e2dc423af5bc95b4b0ac6768d16e42cb9fcfba6634c48e409b"
+    sha256 arm64_sonoma:      "a41fc855d10b32a7b630e17bd408d1f62ebf1037585bbe564cfb70b6e641a283"
+    sha256 arm64_linux:       "0637837a24ae15f8bc955f592dfcf41ea22868bcdf790717003135a6e971d89d"
+    sha256 x86_64_linux:      "2dbdb48babfc0854407447bd878645694d12b2c166a12f3852904c1c05f51c75"
   end
 
   depends_on "openssl@3"
@@ -33,6 +33,9 @@ class Nginx < Formula
     depends_on "zlib-ng-compat"
   end
 
+  # Allow broken symlink to be created by post install
+  skip_clean "html"
+
   def install
     # keep clean copy of source for compiling dynamic modules e.g. passenger
     (pkgshare/"src").mkpath
@@ -44,11 +47,8 @@ class Nginx < Formula
       s.gsub! "    #}\n\n}", "    #}\n    include servers/*;\n}"
     end
 
-    openssl = Formula["openssl@3"]
-    pcre = Formula["pcre2"]
-
-    cc_opt = "-I#{pcre.opt_include} -I#{openssl.opt_include}"
-    ld_opt = "-L#{pcre.opt_lib} -L#{openssl.opt_lib}"
+    cc_opt = "-I#{formula_opt_include("pcre2")} -I#{formula_opt_include("openssl@3")}"
+    ld_opt = "-L#{formula_opt_lib("pcre2")} -L#{formula_opt_lib("openssl@3")}"
 
     args = %W[
       --prefix=#{prefix}
@@ -109,33 +109,21 @@ class Nginx < Formula
     else
       man8.install "man/nginx.8"
     end
-  end
 
-  def post_install
-    (etc/"nginx/servers").mkpath
+    touch (etc/"nginx/servers").mkpath/".keepme"
     (var/"run/nginx").mkpath
 
     # nginx's docroot is #{prefix}/html, this isn't useful, so we symlink it
     # to #{HOMEBREW_PREFIX}/var/www. The reason we symlink instead of patching
     # is so the user can redirect it easily to something else if they choose.
-    html = prefix/"html"
-    dst = var/"www"
+    libexec.install prefix/"html"
+    prefix.install_symlink var/"www" => "html"
+  end
 
-    if dst.exist?
-      rm_r(html)
-      dst.mkpath
-    else
-      dst.dirname.mkpath
-      html.rename(dst)
+  post_install_steps do
+    unless_path_exists "{{var}}/www" do
+      move "{{libexec}}/html", "{{var}}/www"
     end
-
-    prefix.install_symlink dst => "html"
-
-    # for most of this formula's life the binary has been placed in sbin
-    # and Homebrew used to suggest the user copy the plist for nginx to their
-    # ~/Library/LaunchAgents directory. So we need to have a symlink there
-    # for such cases
-    sbin.install_symlink bin/"nginx" if rack.subdirs.any? { |d| d.join("sbin").directory? }
   end
 
   def caveats

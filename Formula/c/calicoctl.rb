@@ -2,8 +2,8 @@ class Calicoctl < Formula
   desc "Calico CLI tool"
   homepage "https://www.tigera.io/project-calico/"
   url "https://github.com/projectcalico/calico.git",
-      tag:      "v3.32.0",
-      revision: "eb1cf57823a1dd8d25c48b82fd023ea9e3e17996"
+      tag:      "v3.32.2",
+      revision: "db255c554b929afd73552fd3ac81d691107a1607"
   license "Apache-2.0"
   head "https://github.com/projectcalico/calico.git", branch: "master"
 
@@ -14,19 +14,18 @@ class Calicoctl < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1f126d674e05fd4e32f30b300d3183b46f2fcdf71502d268913a6a454807cf15"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "19f1ba5bc429e320f7082b76c05dfcce212dbd598fb37c009ed91b5fde785956"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ddd59d61b7a8eade2bfca9818770affcfc368ee4f2d6eb5e2472864fa2838b80"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2ee190f9437f4c75dec66ee9363510882ec49e29792e05ce93237f10efe37f90"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "da185d8ff1752d45d5140ebab3d989a6ef142e72fcd008920d2348a104abb610"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "46a455aff24e4124e1a1b9034595d284eb48778a034cb1139ee665312e5ba6eb"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "31f781a4824169ab003818e55f420bb2e78f17db5ce98292a3bb92a85f09e7d7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "28516ca98a0c5d105bf08e87103527d89293aed9860f245fa1625b37b7e64e2b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "75d3b0f237ab9afbb9846ce96c366fdef07083193f74a7cf2d55c3ad6fbf3bbc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "0a29376d8f1b4009bda390b5542a647fb53139eababff658b572e5a05fdf6b16"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "00baa44614aefe1ba6b9abb106e3d61ca1c20821c92edcbdeb016cb58ece210a"
+    sha256 cellar: :any,                 x86_64_linux:      "93c7420a0ee3e63a84a2eec89d7f87f17c2cbfacf431d05fc216eadea7017087"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/projectcalico/calico/pkg/buildinfo.Version=#{version}
       -X github.com/projectcalico/calico/pkg/buildinfo.GitRevision=#{Utils.git_short_head}
       -X github.com/projectcalico/calico/pkg/buildinfo.BuildDate=#{time.iso8601}

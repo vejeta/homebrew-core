@@ -1,34 +1,33 @@
 class Sh4d0wup < Formula
   desc "Signing-key abuse and update exploitation framework"
   homepage "https://github.com/kpcyrd/sh4d0wup"
-  url "https://github.com/kpcyrd/sh4d0wup/archive/refs/tags/v0.11.0.tar.gz"
-  sha256 "cfc1c38f89d35de6a1822469679a73e5bcb7d5b9f6f8519bee1c3f2948c227f3"
+  url "https://github.com/kpcyrd/sh4d0wup/archive/refs/tags/v0.11.1.tar.gz"
+  sha256 "92c88eed86e7f6453807db2e5b154859a5952d3ff6be8a2a685879a838f3438f"
   license "GPL-3.0-or-later"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "099af7350fa6b8abe3e0cdede86d930f195e06484082345a511ca64eea219b40"
-    sha256 cellar: :any,                 arm64_sequoia: "61e657e991b147d09961e7a31cb8519a0a7d5da5c7549381cc093e6c0f09b865"
-    sha256 cellar: :any,                 arm64_sonoma:  "c6a718415c847755a24e462bdbfcbbfbad1c0c4c5d5346917121bb7b2b817192"
-    sha256 cellar: :any,                 arm64_ventura: "4ad860189d7456e964cb5bf9ca83d58fa42826749fe687f3b7a188df76a84cec"
-    sha256 cellar: :any,                 sonoma:        "5f916dd0b4809e160f6d44f5536d4eec43f75d4dade3b3023dc0667062b73254"
-    sha256 cellar: :any,                 ventura:       "88c8352a703fe178771071b45781127a76a84476104afc1ef1f7042dd0ce9ac4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "37e09448fc27e25b451c296e0849affe15ee491ebbbaf080756818da61bb6085"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "12ed1c91190821ba799e038cb7723ce0af1ef207b45b74fcc732e8adb233d017"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:   "a6279e7eeb190a0a04ab8a9f90a101f84438c54e6c6cd61ed39d40edb6caf236"
+    sha256 cellar: :any, arm64_sequoia: "314a2bc7d776e0cf034a665cec3f9036b2a3fd24812c9e96f2444a2fdd1deede"
+    sha256 cellar: :any, arm64_sonoma:  "a9080458a5d207b84902f2b5bd29b30907536a2e09f3d58a7544c56e2116d498"
+    sha256 cellar: :any, arm64_linux:   "fbe8a62b11f71851f3a5fa620c7c1691aafd9d3bce41414475fc648c3de8f4e0"
+    sha256 cellar: :any, x86_64_linux:  "5a7deebaadb04cd1e385afe305a7d366a71e4cb8dc2fe9be5de3a6daae38e45e"
   end
 
-  depends_on "llvm" => :build
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "pgpdump" => :test
 
-  depends_on "openssl@3"
-  depends_on "pcsc-lite"
+  depends_on "openssl@4"
   depends_on "xz"
   depends_on "zstd"
 
+  uses_from_macos "llvm" => :build
+  uses_from_macos "pcsc-lite"
+
   def install
     # Ensure that the `openssl` crate picks up the intended library.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4")
 
     system "cargo", "install", *std_cargo_args
 
@@ -51,8 +50,8 @@ class Sh4d0wup < Formula
     assert_match("ASN1 OID: secp256k1", output)
 
     [
-      Formula["openssl@3"].opt_lib/shared_library("libssl"),
-      Formula["openssl@3"].opt_lib/shared_library("libcrypto"),
+      formula_opt_lib("openssl@4")/shared_library("libssl"),
+      formula_opt_lib("openssl@4")/shared_library("libcrypto"),
     ].each do |library|
       assert Utils.binary_linked_to_library?(bin/"sh4d0wup", library),
              "No linkage with #{library.basename}! Cargo is likely using a vendored version."

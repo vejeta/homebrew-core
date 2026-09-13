@@ -16,12 +16,13 @@ class Nwchem < Formula
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256                               arm64_tahoe:   "33fc3d51309ae901d070e2380d5a0552ff0e2a2da355c94fbc36afaa7dd46eba"
-    sha256                               arm64_sequoia: "416b29913eb2e227ffb4c98bf6f62c9c8a8670db34f06fd9d8578a373d75296b"
-    sha256                               arm64_sonoma:  "b45508056077a395b0deb84d4f923602fab5337d67644952d1c3b1f7140f337f"
-    sha256 cellar: :any,                 sonoma:        "c037408994a20f9552262a4e1005da9639f7e23fbb7fa8f3fd2e4c211d709680"
-    sha256                               arm64_linux:   "788f61cfc30939a21bdbc11cfac058565bd0a51d63ffd65d82faa75e13e2b981"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "daa6ff90b5ea14633f27c3f1853cbfe019c80d5e66996a5abf76d1dfbf26f8e7"
+    sha256                               arm64_golden_gate: "57cf05b47b4a08231eac60bda036bd6d1ddc274c36be7d77ba353192dde8872e"
+    sha256                               arm64_tahoe:       "33fc3d51309ae901d070e2380d5a0552ff0e2a2da355c94fbc36afaa7dd46eba"
+    sha256                               arm64_sequoia:     "416b29913eb2e227ffb4c98bf6f62c9c8a8670db34f06fd9d8578a373d75296b"
+    sha256                               arm64_sonoma:      "b45508056077a395b0deb84d4f923602fab5337d67644952d1c3b1f7140f337f"
+    sha256 cellar: :any,                 sonoma:            "c037408994a20f9552262a4e1005da9639f7e23fbb7fa8f3fd2e4c211d709680"
+    sha256                               arm64_linux:       "788f61cfc30939a21bdbc11cfac058565bd0a51d63ffd65d82faa75e13e2b981"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "daa6ff90b5ea14633f27c3f1853cbfe019c80d5e66996a5abf76d1dfbf26f8e7"
   end
 
   depends_on "gcc" # for gfortran
@@ -63,17 +64,17 @@ class Nwchem < Formula
       inreplace "util/util_nwchemrc.F", "/etc/nwchemrc", etc/"nwchemrc"
 
       # needed to use python 3.X to skip using default python2
-      ENV["PYTHONVERSION"] = Language::Python.major_minor_version "python3.14"
-      ENV["BLASOPT"] = "-L#{Formula["openblas"].opt_lib} -lopenblas"
-      ENV["LAPACK_LIB"] = "-L#{Formula["openblas"].opt_lib} -lopenblas"
+      ENV["PYTHONVERSION"] = Language::Python.major_minor_version python3
+      ENV["BLASOPT"] = "-L#{formula_opt_lib("openblas")} -lopenblas"
+      ENV["LAPACK_LIB"] = "-L#{formula_opt_lib("openblas")} -lopenblas"
       ENV["BLAS_SIZE"] = "4"
-      ENV["SCALAPACK"] = "-L#{Formula["scalapack"].opt_prefix}/lib -lscalapack"
+      ENV["SCALAPACK"] = "-L#{formula_opt_prefix("scalapack")}/lib -lscalapack"
       ENV["SCALAPACK_SIZE"] = "4"
       ENV["USE_64TO32"] = "y"
       ENV["USE_HWOPT"] = "n"
       ENV["OPENBLAS_USES_OPENMP"] = "y"
-      ENV["LIBXC_LIB"] = Formula["libxc"].opt_lib.to_s
-      ENV["LIBXC_INCLUDE"] = Formula["libxc"].opt_include.to_s
+      ENV["LIBXC_LIB"] = formula_opt_lib("libxc").to_s
+      ENV["LIBXC_INCLUDE"] = formula_opt_include("libxc").to_s
       os = OS.mac? ? "MACX64" : "LINUX64"
       system "make", "nwchem_config", "NWCHEM_MODULES=all python gwmol bsemol", "USE_MPI=Y"
       system "make", "NWCHEM_TARGET=#{os}", "USE_MPI=Y"
@@ -88,7 +89,7 @@ class Nwchem < Formula
   test do
     if OS.mac?
       require "utils/linkage"
-      libgomp = Formula["gcc"].opt_lib/"gcc/current/libgomp.dylib"
+      libgomp = formula_opt_lib("gcc")/"gcc/current/libgomp.dylib"
       refute Utils.binary_linked_to_library?(bin/"nwchem", libgomp), "Unwanted linkage to libgomp!"
     end
 

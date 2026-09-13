@@ -3,33 +3,39 @@ class Awscli < Formula
 
   desc "Official Amazon AWS command-line interface"
   homepage "https://aws.amazon.com/cli/"
-  url "https://github.com/aws/aws-cli/archive/refs/tags/2.35.8.tar.gz"
-  sha256 "fb83d7efcef9ea88442ea6f0501af9e9a2dafde44b7c0cff9561d4250d710d81"
+  url "https://github.com/aws/aws-cli/archive/refs/tags/2.36.44.tar.gz"
+  sha256 "dc640e376cc7bb5e39deea68add63d8060873c5fa8512cbcbebbf5fbe12ed190"
   license "Apache-2.0"
+  revision 1
   compatibility_version 1
   head "https://github.com/aws/aws-cli.git", branch: "v2"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "472bc62693c04f83e35b60000cb16e01cc52f5bd85b9cce9e086de54679c72d3"
-    sha256 cellar: :any, arm64_sequoia: "52e8679d538a289452721549d3b43054f83e36b2a227c7b1b2a0e44c16c66710"
-    sha256 cellar: :any, arm64_sonoma:  "da4a4ba36edb216f7ba109818e89a3943308b610ed81f2d228b7ae42cb9ae857"
-    sha256 cellar: :any, sonoma:        "c8cd5c8ca56531059bf797b0bf9f9accc305312be946449d761617bb1f7406d8"
-    sha256 cellar: :any, arm64_linux:   "d9d0c9ce53008834b59556691dd24f8bd55e754a438f137c452cdd11b7af177f"
-    sha256 cellar: :any, x86_64_linux:  "ff7ed6e114f61497f4aba6ff1ef52953c5e96f5fce561876111c123a860f6f8f"
+    sha256 cellar: :any, arm64_golden_gate: "056298d754267703509b7595c65505bbce3d612b456047b241ddbfaba3f11641"
+    sha256 cellar: :any, arm64_tahoe:       "a98f97b21cfe5f41a46c108b2251c4adf8271df34acdacf157631508bf979049"
+    sha256 cellar: :any, arm64_sequoia:     "ee085925e2e71d54ca4947b6934980bc83cb490764f7f381aad9d2894513240d"
+    sha256 cellar: :any, arm64_linux:       "f51bdaf5928ceedd88ef31042bb95df3a77727c07944e3b59efc95f61c24aafd"
+    sha256 cellar: :any, x86_64_linux:      "92525ad38a765d774e9fbe1f5322544d07c59ee02b96ffa11b1bc93d5c1832aa"
   end
 
-  depends_on "cmake" => :build
-  depends_on "openssl@3"
+  depends_on "aws-c-auth"
+  depends_on "aws-c-cal"
+  depends_on "aws-c-common"
+  depends_on "aws-c-event-stream"
+  depends_on "aws-c-http"
+  depends_on "aws-c-io"
+  depends_on "aws-c-mqtt"
+  depends_on "aws-c-s3"
+  depends_on "aws-checksums"
   depends_on "python@3.14"
 
-  uses_from_macos "libffi"
   uses_from_macos "mandoc"
 
   pypi_packages extra_packages: "flit-core"
 
   resource "awscrt" do
-    url "https://files.pythonhosted.org/packages/92/cb/980fe60c4209af71d036276217f8b9f372f958e290c15d2849a3de4dcd23/awscrt-0.32.2.tar.gz"
-    sha256 "a4f48805e8a66237923f03b7b692d213994cff42d1ff08125d1d60c74fcaf872"
+    url "https://files.pythonhosted.org/packages/fd/d5/7bb52ee6dfcb36abfc787d5512c8d11fb231f1a7caac7c52479d98ed8dd6/awscrt-0.36.2.tar.gz"
+    sha256 "6a6ad171cc3bb2763fb006c9c5c1c3df85d9c1d30b2ca0908ce539e5ee694629"
   end
 
   resource "colorama" do
@@ -48,8 +54,8 @@ class Awscli < Formula
   end
 
   resource "flit-core" do
-    url "https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b/flit_core-3.12.0.tar.gz"
-    sha256 "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2"
+    url "https://files.pythonhosted.org/packages/46/ef/34533186e76c526d9ec17a1ad9a10c7354cbfb20f51583cc36dfe4bdccd0/flit_core-4.0.2.tar.gz"
+    sha256 "b6929defd93884b584d7c87829e0e7b5c26ed6be17b0b873979019314aa841c8"
   end
 
   resource "jmespath" do
@@ -92,22 +98,17 @@ class Awscli < Formula
     sha256 "4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605"
   end
 
-  def python3
-    which("python3.14")
-  end
+  # downloads wheels during build
+  allow_network_access! :build
 
   def install
     ENV["AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO"] = "1"
-
-    # Work around ruamel.yaml.clib not building on Xcode 15.3, remove after a new release
-    # has resolved: https://sourceforge.net/p/ruamel-yaml-clib/tickets/32/
-    ENV.append_to_cflags "-Wno-incompatible-function-pointer-types" if DevelopmentTools.clang_build_version >= 1500
+    ENV["AWS_CRT_BUILD_USE_SYSTEM_LIBS"] = "1"
+    # Avoid overlinking to aws-c-* indirect dependencies
+    ENV.append "LDFLAGS", "-Wl,-dead_strip_dylibs" if OS.mac?
 
     venv = virtualenv_create(libexec, python3, system_site_packages: false)
-    venv.pip_install resources.reject { |r| r.name == "awscrt" }
-    # CPU detection is available in AWS C libraries
-    ENV.runtime_cpu_detection
-    venv.pip_install resource("awscrt")
+    venv.pip_install resources
     venv.pip_install_and_link buildpath, build_isolation: false
 
     pkgshare.install "awscli/examples"

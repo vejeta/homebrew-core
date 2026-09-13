@@ -1,8 +1,8 @@
 class Goenv < Formula
   desc "Go version management"
   homepage "https://github.com/go-nv/goenv"
-  url "https://github.com/go-nv/goenv/archive/refs/tags/3.1.4.tar.gz"
-  sha256 "a13e7686438f30a7fd6f29205768d68eed6db28fc227346ebdc941582eb3699d"
+  url "https://github.com/go-nv/goenv/archive/refs/tags/3.2.0.tar.gz"
+  sha256 "329c9430bba95df90d360e9588d2ad4258d9918b62bba72480113cbae5875fee"
   license "MIT"
   version_scheme 1
   # TODO: Uncomment when default branch is changed from 'master' to 'main'
@@ -14,19 +14,24 @@ class Goenv < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "87fc705a39945ba20439bd9a8df79394fe3188e79dbccee689375a5b7b2c2f15"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "87fc705a39945ba20439bd9a8df79394fe3188e79dbccee689375a5b7b2c2f15"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "87fc705a39945ba20439bd9a8df79394fe3188e79dbccee689375a5b7b2c2f15"
-    sha256 cellar: :any_skip_relocation, sonoma:        "48f4e314e23b886b0a95d92c56729b3f378ba76ad6253c951ea4075eb4e4cf54"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a987a55c19053288c9cb2cbd69706407259b110c9224dcf285eaaf38e23b2c0c"
-    sha256 cellar: :any,                 x86_64_linux:  "ebd1c07f8c49e8a225cdee7d32964311d6713b8a15f2bf310f22e70e7f256af4"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "fa06efca46dc559e8bcde9cbbf958a1ff6f0c0f38cd4bdb11b1adaef7ebbaa16"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "fa06efca46dc559e8bcde9cbbf958a1ff6f0c0f38cd4bdb11b1adaef7ebbaa16"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fa06efca46dc559e8bcde9cbbf958a1ff6f0c0f38cd4bdb11b1adaef7ebbaa16"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "fa06efca46dc559e8bcde9cbbf958a1ff6f0c0f38cd4bdb11b1adaef7ebbaa16"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "50ad137f779ebfacc4840ed4ea595d69f5278f93f7eb36c6da39edce078dc763"
+    sha256 cellar: :any,                 x86_64_linux:      "7dbe0c4a8a8ad8a525c778a928e79c95ff1b3c27ad165ccb3acddc81f0d0dc03"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.commit=#{tap&.user || "homebrew"}
       -X main.buildTime=#{time.iso8601}

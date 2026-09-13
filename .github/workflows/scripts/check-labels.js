@@ -26,15 +26,11 @@ module.exports = async ({github, context, core}, formulae_detect, dependent_test
       return
     }
 
-    var linux_runner = 'ubuntu-latest'
-    if (label_names.includes(`CI-linux-self-hosted${deps_suffix}`)) {
-      linux_runner = 'linux-self-hosted-1'
-    } else if (label_names.includes(`CI-linux-large-runner${deps_suffix}`)) {
-      linux_runner = 'homebrew-large-bottle-build'
-    }
-    core.setOutput('linux-runner', linux_runner)
+    core.setOutput('linux-self-hosted', label_names.includes(`CI-linux-self-hosted${deps_suffix}`))
 
-    if (label_names.includes(`CI-no-fail-fast${deps_suffix}`)) {
+    if (dependent_testing) {
+      core.setOutput('fail-fast', false)
+    } else if (label_names.includes(`CI-no-fail-fast${deps_suffix}`)) {
       console.log(`CI-no-fail-fast${deps_suffix} label found. Continuing tests despite failing matrix builds.`)
       core.setOutput('fail-fast', false)
     } else {
@@ -90,26 +86,11 @@ module.exports = async ({github, context, core}, formulae_detect, dependent_test
       core.setOutput('download-concurrency', 'auto')
     }
 
-    if (label_names.includes(`CI-test-bot-fail-fast${deps_suffix}`)) {
-      console.log(`CI-test-bot-fail-fast${deps_suffix} label found. Passing --fail-fast to brew test-bot.`)
-      test_bot_formulae_args.push('--fail-fast')
-      test_bot_dependents_args.push('--fail-fast')
-    } else {
-      console.log(`No CI-test-bot-fail-fast${deps_suffix} label found. Not passing --fail-fast to brew test-bot.`)
-    }
-
     if (label_names.includes('CI-build-dependents-from-source')) {
       console.log('CI-build-dependents-from-source label found. Passing --build-dependents-from-source to brew test-bot.')
       test_bot_dependents_args.push('--build-dependents-from-source')
     } else {
       console.log('No CI-build-dependents-from-source label found. Not passing --build-dependents-from-source to brew test-bot.')
-    }
-
-    if (label_names.includes('CI-skip-recursive-dependents')) {
-      console.log('CI-skip-recursive-dependents label found. Passing --skip-recursive-dependents to brew test-bot.')
-      test_bot_dependents_args.push('--skip-recursive-dependents')
-    } else {
-      console.log('No CI-skip-recursive-dependents label found. Not passing --skip-recursive-dependents to brew test-bot.')
     }
 
     if (label_names.includes('CI-skip-livecheck')) {

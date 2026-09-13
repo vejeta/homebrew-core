@@ -3,10 +3,10 @@ require File.expand_path("../../Abstract/portable-formula", __dir__)
 class PortableRuby < PortableFormula
   desc "Powerful, clean, object-oriented scripting language"
   homepage "https://www.ruby-lang.org/"
-  url "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.5.tar.gz"
-  sha256 "7d6149079a63f8ae1d326c9fa65c6019ba2dc3155eae7b39159817911c88958e"
+  url "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.6.tar.gz"
+  sha256 "837d299e8f7ddf2be31a229a7a7e019d354979825117989acb3b32b1a9be262a"
   license "Ruby"
-  revision 1
+  revision 2
 
   # This regex restricts matching to versions other than X.Y.0.
   livecheck do
@@ -15,10 +15,10 @@ class PortableRuby < PortableFormula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "4ba8d535df01e4bf97e6661c3815796fd77364ea2552606e891659133a76f0e1"
-    sha256 cellar: :any_skip_relocation, catalina:      "a731026301924336a5ee2051689788cd91ab09c2d42cb7b51c280e8fdcd85c7d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ca348cde9326562ed43c90f58886ee15c0a4e2c0dfd489686f56f059f9e77ca8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2627985aa990199b93efb66d8e6752e8234c4901fa3a365fa13875ba45a4059e"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "1643bb83d705f0c5e34445af151bb064bdf984081eff18a9646466b8fdd104db"
+    sha256 cellar: :any_skip_relocation, big_sur:       "33e2f1e2877739c45e4b4b4f5e13d46826b5933fc2bf80966263eb43f1ad2af8"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "6f13756b7972c87c21917aec5319453c17400e4818a22552999429ecc48db932"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "01c1adce6394bcb5b1daa0921e5b0b5c64ec90641abd4678681ea7df7445791a"
   end
 
   depends_on "pkgconf" => :build
@@ -32,8 +32,8 @@ class PortableRuby < PortableFormula
   end
 
   resource "msgpack" do
-    url "https://rubygems.org/downloads/msgpack-1.8.0.gem"
-    sha256 "e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732"
+    url "https://rubygems.org/downloads/msgpack-1.8.4.gem"
+    sha256 "4411c22d350dd1c20250f7eada3cca2695438c2f769cf0782f0cd065d90a3e7b"
 
     livecheck do
       url "https://rubygems.org/api/v1/versions/msgpack.json"
@@ -44,8 +44,8 @@ class PortableRuby < PortableFormula
   end
 
   resource "bootsnap" do
-    url "https://rubygems.org/downloads/bootsnap-1.24.5.gem"
-    sha256 "36b677448524d279b470469aabd5dff4a980e3fa4931a0df68da4a500eb1b6c4"
+    url "https://rubygems.org/downloads/bootsnap-1.26.0.gem"
+    sha256 "ca96237015e6cd74a02963d5821cf00ac5ea134653b323e8cd6d702a7718bf1b"
 
     livecheck do
       url "https://rubygems.org/api/v1/versions/bootsnap.json"
@@ -159,12 +159,7 @@ class PortableRuby < PortableFormula
     abi_arch = `#{bin}/ruby -rrbconfig -e 'print RbConfig::CONFIG["arch"]'`
 
     if OS.linux?
-      # Don't restrict to a specific GCC compiler binary we used (e.g. gcc-5).
       inreplace lib/"ruby/#{abi_version}/#{abi_arch}/rbconfig.rb" do |s|
-        s.gsub! ENV.cxx, "c++"
-        s.gsub! ENV.cc, "cc"
-        # Change e.g. `CONFIG["AR"] = "gcc-ar-11"` to `CONFIG["AR"] = "ar"`
-        s.gsub!(/(CONFIG\[".+"\] = )"gcc-(.*)-\d+"/, '\\1"\\2"')
         # C++ compiler might have been disabled because we break it with glibc@* builds
         s.sub!(/(CONFIG\["CXX"\] = )"false"/, '\\1"c++"')
       end

@@ -1,17 +1,17 @@
 class Fvm < Formula
   desc "Manage Flutter SDK versions per project"
   homepage "https://fvm.app"
-  url "https://github.com/leoafarias/fvm/archive/refs/tags/4.1.1.tar.gz"
-  sha256 "59a76d6d6da2fb174e063de2cafb424984b26b481f6106a0cece416bcbca3f04"
+  url "https://github.com/leoafarias/fvm/archive/refs/tags/4.3.1.tar.gz"
+  sha256 "08eeac980533f959582996a2f79b1093a61e0edf8a0975fba8414768e092db6e"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "7a276aac9e7b7283fa4e733b678fc5e3948a39cb6ccb95294f77bd554b79af4e"
-    sha256 cellar: :any,                 arm64_sequoia: "17f448c6652b96233e15b91cdbdd38b428480306d084e2773f10f41c7cb460f8"
-    sha256 cellar: :any,                 arm64_sonoma:  "caf01921615195ebcfd339437f274393b8c0cace4e93704fce6e36e10bdf98fe"
-    sha256 cellar: :any,                 sonoma:        "528ef42c34a597c03a5deb2e1b02d11dcf4c556efaca53d99bed9ac6b1734ebf"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e08fe9f2975f2d9e4e9bbf62a8ac8bada79fc1178978043367cfa2cefe0ba0c8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9df4739a9b179d6e9e416b23212b810e1ff2f8bebfe278adaf5356415209f964"
+    sha256 cellar: :any,                 arm64_golden_gate: "1b8330a876cabbb9fb3a7e6f69fa042ec42873f01255433b64c4ba6318d90c2e"
+    sha256 cellar: :any,                 arm64_tahoe:       "ea97fc5863682025710d0876b2ff9f2cc3397c624ecc20d1e2ee07511df50f64"
+    sha256 cellar: :any,                 arm64_sequoia:     "6aef819a301bbaa689f480ad98984bde01711730ee0873039bf1de973d751d15"
+    sha256 cellar: :any,                 arm64_sonoma:      "19ade28ea75331a562bb2f2006295b6b7359b9019a05d14c3e15c6e096b24f5c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b9e7ac1ebe9549a17e99db8b75d29eceaf5f1b5cbce681b7f4b1f34c36230dc7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "7c38f41e38edb138574d084604aa6f8ec93691fbc9fb9a46dd601ce703efd645"
   end
 
   depends_on "dart-sdk" => :build
@@ -27,7 +27,7 @@ class Fvm < Formula
 
     (bin/"fvm").write <<~BASH
       #!/bin/bash
-      exec "#{Formula["dartaotruntime"].opt_bin}/dartaotruntime" "#{libexec}/fvm.aot" "$@"
+      exec "#{formula_opt_bin("dartaotruntime")}/dartaotruntime" "#{libexec}/fvm.aot" "$@"
     BASH
   end
 

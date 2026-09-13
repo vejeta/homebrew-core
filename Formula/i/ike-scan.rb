@@ -12,6 +12,8 @@ class IkeScan < Formula
     patch do
       url "https://github.com/royhills/ike-scan/commit/9949ce4bdf9f4bcb616b2a5d273708a7ea9ee93d.patch?full_index=1"
       sha256 "99e46df8b50e26982f0462d633cf3638f9b3ff2f65b7b4588241f17628e0f9d7"
+      type :backport
+      resolves "https://github.com/royhills/ike-scan/pull/39"
     end
   end
 
@@ -27,7 +29,6 @@ class IkeScan < Formula
     sha256 ventura:        "d75a804e64246fb47fa55b2b96cfe9ad00659b29f11c35b14eb182dd0dd0a298"
     sha256 monterey:       "a75856c7333e0bdfd2668348ed6abfbee95361f1e3645998c7730f84eecf45a1"
     sha256 big_sur:        "43fb51d3ef205224920eee1e85861d8957159684d86d3de76c925b3e14b22c87"
-    sha256 catalina:       "a158c41e25fa99aaca6bf29573b4b6e77775be3402973bd016ee3ef4f9d6c8cc"
     sha256 arm64_linux:    "f64aff3a995ef7e1742735b56834e1558567f4bc6605fd1740cc1a3c23445462"
     sha256 x86_64_linux:   "2b7b0f9ab06373c381c2133befa3d9524bcdb27c6ccd0f44acdc52d5497cee24"
   end
@@ -38,9 +39,11 @@ class IkeScan < Formula
   depends_on "openssl@3"
 
   def install
+    # The bundled `getopt.h` declares `getopt()` without a prototype, which C23 reads as taking no arguments
+    ENV["ac_cv_prog_cc_c23"] = "no"
     system "autoreconf", "--force", "--install", "--verbose"
     system "./configure", "--mandir=#{man}",
-                          "--with-openssl=#{Formula["openssl@3"].opt_prefix}",
+                          "--with-openssl=#{formula_opt_prefix("openssl@3")}",
                           *std_configure_args
     system "make", "install"
   end

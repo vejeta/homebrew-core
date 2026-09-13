@@ -1,18 +1,17 @@
 class Sdns < Formula
   desc "Privacy important, fast, recursive dns resolver server with dnssec support"
   homepage "https://sdns.dev/"
-  url "https://github.com/semihalev/sdns/archive/refs/tags/v1.7.0.tar.gz"
-  sha256 "e67c8944998ffd6c7ab443cc11be1aff69256696bbab2be74169b0f8210392e7"
+  url "https://github.com/semihalev/sdns/archive/refs/tags/v1.8.2.tar.gz"
+  sha256 "26885f54c6fc725bbf55a34f9f1b68f105d536029b0d9cb50c997a3758067248"
   license "MIT"
   head "https://github.com/semihalev/sdns.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "afa7e57d55198261d50806e0a162bb9c8385891af28bd16a52ca59c4687a704d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a2b9de36873821561d15754a1bc863f68f83df2c324604829701e0c8544b5842"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c7afa0aaad066c6df313838e0aac87466f155311c2d116ff0bfb7825cdb0488a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a0567f409f28223687cdbb9be830baeb359f3b13f48e5681bed0b0ede93509e8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8f1671041ee6fd4146a058f94361af86089cf7e0c3168f5a2d3838f09d5968b3"
-    sha256 cellar: :any,                 x86_64_linux:  "b64c14e652e62e40690afaf7da88fe737c986c3b3bb1af2148d42dc8ebf9e85a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cc0181eb8458055aaf241473a6abce91538e40406127a7a34ee323ad3791f7a6"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b1f530cb6776ad1c1ba79e1f29c15eab68424247fcc765fe094fe10bccf120bf"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "90bcebbe2792262a1cc6a708f91c17580af97e8522fa90e9af39c4638047dd9b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "2655dc9022fe83d753596df57725d4649233bfadd709e09f36ddc6ef05e099b4"
+    sha256 cellar: :any,                 x86_64_linux:  "9511462bcab80c71009e3f1acfa86638e23c51230c1c4b268cd2b88c0c9971e0"
   end
 
   depends_on "go" => :build
@@ -32,8 +31,9 @@ class Sdns < Formula
   end
 
   test do
-    spawn bin/"sdns", "--config", testpath/"sdns.conf"
-    sleep 2
+    require "open3"
+    stdout, = Open3.capture3(bin/"sdns", "--config", testpath/"sdns.conf", "--test")
+    assert_match "Default config file generated", stdout
     assert_path_exists testpath/"sdns.conf"
   end
 end

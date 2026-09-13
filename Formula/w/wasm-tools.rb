@@ -1,9 +1,13 @@
 class WasmTools < Formula
   desc "Low level tooling for WebAssembly in Rust"
   homepage "https://github.com/bytecodealliance/wasm-tools"
-  url "https://github.com/bytecodealliance/wasm-tools/archive/refs/tags/v1.252.0.tar.gz"
-  sha256 "1589a4379632b5b44d7b5fca2a3bfcb4c6e39be5de722229cc28328342da6b48"
-  license "Apache-2.0" => { with: "LLVM-exception" }
+  url "https://github.com/bytecodealliance/wasm-tools/archive/refs/tags/v1.259.0.tar.gz"
+  sha256 "c3ee7f0757d1220bd4b46260c4fad4549ceea211f91d706649c1ba24ca7fdc17"
+  license any_of: [
+    { "Apache-2.0" => { with: "LLVM-exception" } },
+    "Apache-2.0",
+    "MIT",
+  ]
   head "https://github.com/bytecodealliance/wasm-tools.git", branch: "main"
 
   livecheck do
@@ -12,15 +16,21 @@ class WasmTools < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "27488c88a5fed3553b22d398a816b497da82df3d4a59e5c71e68a48799173ba2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "41a47923d3b6a2e0a9e9ddd2a180c14a197176fb1ef514ad2ab92e915513e4d3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "358ed1bac350b26e29e1dbcf6e89214778f12780fb503f70f1fd2883747626b5"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e85b0a2e11192a9539cc238ebe0f520297d756e130e4e2bf0c63a37a5fdaac22"
-    sha256 cellar: :any,                 arm64_linux:   "d0cb5e63c88192cf191f9174036bb35382660428157ce7bf9379c0d9f67e0c61"
-    sha256 cellar: :any,                 x86_64_linux:  "027177bd969b8a9bc583d9806131505d7ed4280293bf11e70d93be22062a2901"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6568a78ca72b9c983973250bf249714da22d886e5b78910919c7c75f12d4a9bf"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "793aa16b013417465a4e463054fdaa810050b477c6b3e23bfc4158359c3f3028"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "a0b52727a58c491fc116ecee8c3d3feb2904fdd3b309bac7641c8d79d3729ec9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f30e43f626c4feb07c91da6458d82adaad3bc3700c1fc1b543628872a387c86a"
+    sha256 cellar: :any,                 arm64_linux:       "c7dc84f1ed3db946f4ae1ef9d2a799e08a3040278aab9c4dc0842cdc0e4d6ec0"
+    sha256 cellar: :any,                 x86_64_linux:      "21575b67bed36f24015f5fa28ba65c1cfba4294c49206b79f3f4baf7ab1889f4"
   end
 
   depends_on "rust" => :build
+
+  deny_network_access!
+
+  def fetch
+    system "cargo", "fetch", "--locked", "--target", "host-tuple"
+  end
 
   def install
     system "cargo", "install", *std_cargo_args

@@ -1,18 +1,17 @@
 class CargoShowAsm < Formula
   desc "Show assembly, LLVM-IR, MIR, and WASM generated for Rust code"
   homepage "https://github.com/pacak/cargo-show-asm"
-  url "https://github.com/pacak/cargo-show-asm/archive/refs/tags/0.2.61.tar.gz"
-  sha256 "caa5d9fa7b7b67a42d23a67d8312dfee5aa7a7e89735a3ac229ad2ea1bb7c62b"
+  url "https://github.com/pacak/cargo-show-asm/archive/refs/tags/0.2.63.tar.gz"
+  sha256 "d391fdea08cfd4e4638299ecfb86b56ef910b3f79f72462485b6e0713adefa29"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/pacak/cargo-show-asm.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "acabbcfbf101fb872e4d25231f6a40b8c71ce3106fe28ff194929737d59d4ab2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b68d7b7a2b8a658a41eaaa706f0281fdbe3267dbfdf388454ea9cf04a084fb75"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "df31a81279f3364a73cd4b87a34142505f204ee6bc6b203f66d346fad6dcce05"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d00698e175be894c9f2a50d75e1996252ecafbd4ebdca014aeb8a67bcc963997"
-    sha256 cellar: :any,                 arm64_linux:   "325815a7c39baa0cf4e5ba9c7d3a146409129a71f4587d5d329746b8325b7f96"
-    sha256 cellar: :any,                 x86_64_linux:  "7d3a6761b5cac90744931fe4da327d2a0afe369142ce4a49b027f8480e4ca94d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "62d1339293830e40826742aa961f25da51316690f4f393b147c4dd0ebc01e289"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "876d25d0ee6e786ba1b34016d2c465a7ac2352cc15ff0e613199294280088429"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3bcfe7354fa1b4c6baef9970b3b9651940d6d8a33bb8994808d01275722910a8"
+    sha256 cellar: :any,                 arm64_linux:       "c6efeee2dc0cb788f03d5cbc64cc5ada4d524d6416f34fff9a2fba0c687ec9e9"
+    sha256 cellar: :any,                 x86_64_linux:      "30e2169a7e25ebc19cb128fb6bd074f2b8a739bf51f2ab19a6b227e3caf2ce91"
   end
 
   depends_on "rust" => :build
@@ -23,7 +22,7 @@ class CargoShowAsm < Formula
   end
 
   test do
-    ENV.prepend_path "PATH", Formula["rustup"].bin
+    ENV.prepend_path "PATH", formula_opt_bin("rustup")
     system "rustup", "set", "profile", "minimal"
     system "rustup", "default", "stable"
     system "cargo", "new", "test_asm", "--lib"

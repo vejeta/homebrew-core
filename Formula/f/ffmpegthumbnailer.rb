@@ -1,18 +1,18 @@
 class Ffmpegthumbnailer < Formula
   desc "Create thumbnails for your video files"
   homepage "https://github.com/dirkvdb/ffmpegthumbnailer"
-  url "https://github.com/dirkvdb/ffmpegthumbnailer/archive/refs/tags/v2.3.0.tar.gz"
-  sha256 "ddf561e294385f07d0bd5a28d0aab9de79b8dbaed29b576f206d58f3df79b508"
+  url "https://github.com/dirkvdb/ffmpegthumbnailer/archive/refs/tags/v2.3.1.tar.gz"
+  sha256 "0691647dc054179c358794c643a0968f796d23c015d02283e6ce2cf4173d2e0a"
   license "GPL-2.0-or-later"
   head "https://github.com/dirkvdb/ffmpegthumbnailer.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "08e319540e8ddc4a09246ef099e1103dc4e8dccb95752448704cabc96d10a886"
-    sha256 cellar: :any,                 arm64_sequoia: "e60072f9d2a5d3a697135153f25d75c77da03073bb0125454c9c06deab863165"
-    sha256 cellar: :any,                 arm64_sonoma:  "824bbba3645c7d772878b50f0f1c13be27cfb76efbdd208756df8b940e816554"
-    sha256 cellar: :any,                 sonoma:        "f1fb9f35f2f829e86f25324b42c4a609433429cc64dfe43d2fcee4ebb099d78e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "71eccfa399cddb86492a70bb48cb2c85b7263fa39d640d01a77976a0b8ca8529"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2326808fbabc3ae36f25299da82e352d7bae86b629b72de6ca22c4fcbf03d15a"
+    sha256 cellar: :any, arm64_golden_gate: "0193c77a95f943dabbcbe867380b61c248cb8329eb3a87bff1eee1e42b7ac63e"
+    sha256 cellar: :any, arm64_tahoe:       "6fdc3033c32654fb6a6bd59bd206f4c965644e3671d09accd03890426f87dc2d"
+    sha256 cellar: :any, arm64_sequoia:     "d14eb0c87ec7de12c91f47ff64ab5bc2173543352e25e8c165b7d7dc0320ce0d"
+    sha256 cellar: :any, arm64_sonoma:      "735269f986f912b1f1758fc291289b507edf07f36e5b99beb75e5b63acf2b32e"
+    sha256 cellar: :any, arm64_linux:       "b0825d8022c19995b9fe98e7b465b55dcefa11441de1b57b9d6c9171eb3040d7"
+    sha256 cellar: :any, x86_64_linux:      "ca28956efd0d6b2bc39f247417f3ee99a12c2be34055360afd28a552a0eed6b4"
   end
 
   depends_on "cmake" => :build
@@ -33,7 +33,7 @@ class Ffmpegthumbnailer < Formula
   end
 
   test do
-    ffmpeg = Formula["ffmpeg"].opt_bin/"ffmpeg"
+    ffmpeg = formula_opt_bin("ffmpeg")/"ffmpeg"
     png = test_fixtures("test.png")
     system ffmpeg.to_s, "-loop", "1", "-i", png.to_s, "-c:v", "libx264", "-t", "30",
                         "-pix_fmt", "yuv420p", "v.mp4"

@@ -1,9 +1,9 @@
 class Vtcode < Formula
   desc "CLI Semantic Coding Agent"
   homepage "https://vinhnx.github.io"
-  url "https://static.crates.io/crates/vtcode/vtcode-0.128.0.crate"
-  sha256 "528289749895379fe73a6820d3083e1b0a94b66aeb4ce0160e50c9104eac946f"
-  license "MIT"
+  url "https://static.crates.io/crates/vtcode/vtcode-0.161.0.crate"
+  sha256 "e4a636e995f220980e5e6ed2bc1be896928062c93e3d437828ba8f76003188be"
+  license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/vinhnx/vtcode.git", branch: "main"
 
   livecheck do
@@ -11,12 +11,11 @@ class Vtcode < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "eb078714ed8044d0a676669e37d0ad84546a0f71159372129b436be80fa1eb52"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6851adc9b444533ab289771616df145b0737a4cb17e3bf8573928e571215d099"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "46add31a86c3b942d5b20c19f97d22eb79b113bbbd08b720a18634d29a8913a9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "fb6b286ea7ca36588c2217699ed474448c4ab7568a035e2cb0e9cdcfe498c839"
-    sha256 cellar: :any,                 arm64_linux:   "7a7ec5a4b0a35e96ad0408d6105dd3933348a2b2abe0ca1e9b9ef0f1e5c0b94b"
-    sha256 cellar: :any,                 x86_64_linux:  "490e24b7a47ea8c75885b8f62663199922b39bee94c8ac2133d66f167539a38f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8fd5d3bb3cecf5ceb073192725ff0055c702150b0c58e5100af9bcb04bdef8c6"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "cf4ec00d6be0720dcef32b76087fd78a9b118e9594afeb9f2c538a9a92a56d31"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7654372a938cb6c807f4d1b0bf75d39d1f71c48d6b806ac86d242934decde2e9"
+    sha256 cellar: :any,                 arm64_linux:       "ad10f965696dc7c5883d0a6b896d5329d00256f4324c157deef38df6a573f893"
+    sha256 cellar: :any,                 x86_64_linux:      "11a152c81379390b63825b0abc053ebeef0af9c27d1af5fab2e05f7cd988292e"
   end
 
   depends_on "pkgconf" => :build
@@ -28,7 +27,7 @@ class Vtcode < Formula
   end
 
   def install
-    ENV["OPENSSL_DIR"] = Formula["openssl@4"].opt_prefix if OS.linux?
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4") if OS.linux?
     system "cargo", "install", *std_cargo_args
   end
 

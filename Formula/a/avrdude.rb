@@ -1,20 +1,17 @@
 class Avrdude < Formula
   desc "Atmel AVR MCU programmer"
   homepage "https://www.nongnu.org/avrdude/"
-  url "https://github.com/avrdudes/avrdude/archive/refs/tags/v8.1.tar.gz"
-  sha256 "2d3016edd5281ea09627c20b865e605d4f5354fe98f269ce20522a5b910ab399"
+  url "https://github.com/avrdudes/avrdude/archive/refs/tags/v8.3.tar.gz"
+  sha256 "6c6fe3606f2ef331e502fb9c1d418ba09eb9705e811efbe18259025a9787ee3d"
   license "GPL-2.0-or-later"
   head "https://github.com/avrdudes/avrdude.git", branch: "main"
 
   bottle do
-    sha256 arm64_tahoe:   "3a29b8596cded5c9243cf835257352942d4bd1a1466be0423377d3a405940da6"
-    sha256 arm64_sequoia: "99d020ca9145a289d74a52ff001e499e76d26a8afed895d8f39d7d92f7327a8e"
-    sha256 arm64_sonoma:  "dfb5e436dd7a172c43e4e2929451ca851ff748843276525799736e8605884343"
-    sha256 arm64_ventura: "29b9741bb4b29391facdc339173f61273073fbed528d3ca3dadaf804f5a51805"
-    sha256 sonoma:        "ace8f271d4765b29bc8717d5ea758fd097e5baf31570b88b84c8d4c35e4984ca"
-    sha256 ventura:       "a50ea68b75610e2bd9125cd753edbaeb76447bdbe4b205063fba4843571eabb7"
-    sha256 arm64_linux:   "8ccf60c11997fbf0ceaebd78f29516467186ca20a85cf720c815d8e3fd8d7972"
-    sha256 x86_64_linux:  "84b6fbe6bd4f0a34e03c159910960f5c3d6f2e82c58ed6bad2c1eb42ae38e342"
+    sha256 arm64_golden_gate: "0ba01d7b32c136a2281e74ae06185066579fea5aad59903eef3def364132182b"
+    sha256 arm64_tahoe:       "f2f74daf7772910b888c482b0d3ee6f92506ed9c1518c67cc41ee2bd43ecbf35"
+    sha256 arm64_sequoia:     "b52edab65d14b4e34784484b1cf2917486acf4c6258741e72321d88c85f3640d"
+    sha256 arm64_linux:       "3a5a2c28b97bce411b218f43096cfeb46e7e7a76af9502ec2d6a883ae0bcaa7c"
+    sha256 x86_64_linux:      "13aa443020c8f4a95d45893e3eeaf32bb275bd5eada590bfd5f45c688d468e6e"
   end
 
   depends_on "cmake" => :build

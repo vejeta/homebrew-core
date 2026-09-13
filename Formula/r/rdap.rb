@@ -1,21 +1,18 @@
 class Rdap < Formula
   desc "Command-line client for the Registration Data Access Protocol"
   homepage "https://www.openrdap.org"
-  url "https://github.com/openrdap/rdap/archive/refs/tags/v0.9.1.tar.gz"
-  sha256 "06a330a9e7d87d89274a0bcedc5852b9f6a4df81baec438fdb6156f49068996d"
+  url "https://github.com/openrdap/rdap/archive/refs/tags/v0.10.2.tar.gz"
+  sha256 "90c8ad29468cfb774c166a371b164c1e2a37de088e52328f4b9d5c80c0e23d98"
   license "MIT"
-  head "https://github.com/openrdap/rdap.git", branch: "master"
+  head "https://github.com/openrdap/rdap.git", branch: "main"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "82be0fc5e32749b77743087bf6b5b6a62a61454b1891316e419242bcfaf9e6dc"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4a73abdb1f73b15293ec718621dc35982af08454db08a899d6ddcf2f279eac55"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4a73abdb1f73b15293ec718621dc35982af08454db08a899d6ddcf2f279eac55"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "4a73abdb1f73b15293ec718621dc35982af08454db08a899d6ddcf2f279eac55"
-    sha256 cellar: :any_skip_relocation, sonoma:        "6941798ba46a5391886ce266bfb1c4b5bfeb9db8eb9cf11c33741256f0405784"
-    sha256 cellar: :any_skip_relocation, ventura:       "6941798ba46a5391886ce266bfb1c4b5bfeb9db8eb9cf11c33741256f0405784"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1b7d525df05bcaa24b18f462587052208ff5456170bc1d45f405f0b0667649a6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d791f01848f4e8c654a1174e55a1118d8f0ac743962bba87ec7350c81e027f58"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7b05cd27d41d07fad35309ea77f9968beff9872ab9e9ce51b062576a86b6dbef"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7b05cd27d41d07fad35309ea77f9968beff9872ab9e9ce51b062576a86b6dbef"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7b05cd27d41d07fad35309ea77f9968beff9872ab9e9ce51b062576a86b6dbef"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "7b05cd27d41d07fad35309ea77f9968beff9872ab9e9ce51b062576a86b6dbef"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f7976c13f79ddec0bca17b6ebb9e9d81cb6fb97f56c34df8b46856cb78a4131a"
+    sha256 cellar: :any,                 x86_64_linux:      "1bb9c61f13ddc3b56a677241c7307edc3b1aa317f6f8e74a9d6e58afd21f5dcf"
   end
 
   depends_on "go" => :build
@@ -23,12 +20,13 @@ class Rdap < Formula
   conflicts_with "icann-rdap", because: "icann-rdap also ships a rdap binary"
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w"), "./cmd/rdap"
+    ldflags = %W[-X github.com/openrdap/rdap.releaseVersion=#{version}]
+    system "go", "build", *std_go_args(ldflags:), "./cmd/rdap"
   end
 
   test do
     # check version
-    assert_match "OpenRDAP v#{version}", shell_output("#{bin}/rdap --help 2>&1", 1)
+    assert_match version.to_s, shell_output("#{bin}/rdap --help 2>&1", 1)
 
     # no localhost rdap server
     assert_match "No RDAP servers found for", shell_output("#{bin}/rdap -t ip 127.0.0.1 2>&1", 1)

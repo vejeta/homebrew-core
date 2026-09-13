@@ -1,17 +1,18 @@
 class Heroku < Formula
   desc "CLI for Heroku"
   homepage "https://www.npmjs.com/package/heroku/"
-  url "https://registry.npmjs.org/heroku/-/heroku-11.6.0.tgz"
-  sha256 "a008537a5a172f777c18279d4b517483438f4e6e3e16917afb7416f181002029"
+  url "https://registry.npmjs.org/heroku/-/heroku-11.10.0.tgz"
+  sha256 "2cd32031bb2dd1963ee3d5c7e6970a038d25823eb58c8df6f6ae1491751d7e04"
   license "ISC"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "67c6b174737dbc0d827f1ec5b57e1a909950f0eaab95be0e261e1f4a7e9e375a"
-    sha256 cellar: :any, arm64_sequoia: "f7c3832091e8f717653125712c403fa6aaec79b040ab877c17440714c58d4a83"
-    sha256 cellar: :any, arm64_sonoma:  "f7c3832091e8f717653125712c403fa6aaec79b040ab877c17440714c58d4a83"
-    sha256 cellar: :any, sonoma:        "74a5c259380eb6fff718956165906b717d605ca14c1d6c5d56ccab55a9faa83b"
-    sha256 cellar: :any, arm64_linux:   "e94b5a7b5d1ad822cb6675b7d09f24c6b6fbb85fa2aa076dd4fe7fca81e7bcb4"
-    sha256 cellar: :any, x86_64_linux:  "fba2fc70537efe4ddc6dc72590453e5f2004bfabc7a8b2b921bba841e20c4b5b"
+    sha256 cellar: :any, arm64_golden_gate: "5d899858b77c6598801886ee5b85989774b9f64ca94462605ae0deb14e34f990"
+    sha256 cellar: :any, arm64_tahoe:       "d813b15fb5f9bb674b2b9378be2a09ab2360af39906cd58e7293564caf94f76a"
+    sha256 cellar: :any, arm64_sequoia:     "d813b15fb5f9bb674b2b9378be2a09ab2360af39906cd58e7293564caf94f76a"
+    sha256 cellar: :any, arm64_sonoma:      "d813b15fb5f9bb674b2b9378be2a09ab2360af39906cd58e7293564caf94f76a"
+    sha256 cellar: :any, sonoma:            "fbff6239485dc4cddf0e903e8e21bf6c9d6d586fa7603ab3967614d9a7f757c8"
+    sha256 cellar: :any, arm64_linux:       "289a859174ac2c5efafc5b240bf80eabbc50f6e5da365ef39ab951e2291d5c0e"
+    sha256 cellar: :any, x86_64_linux:      "e3c989090696106a70048c0430ac47733a96672cd1419ae8cf3e73c89a9d404e"
   end
 
   depends_on "node"
@@ -25,23 +26,11 @@ class Heroku < Formula
     bin.install_symlink libexec.glob("bin/*")
 
     node_modules = libexec/"lib/node_modules/heroku/node_modules"
-    # Remove vendored pre-built binary `terminal-notifier`
-    node_notifier_vendor_dir = node_modules/"node-notifier/vendor"
-    rm_r(node_notifier_vendor_dir) # remove vendored pre-built binaries
 
     os = OS.kernel_name.downcase
     arch = Hardware::CPU.intel? ? "x64" : Hardware::CPU.arch.to_s
-    node_modules.glob("{bare-fs,bare-os,bare-url}/prebuilds/*")
+    node_modules.glob("{bare-fs,bare-path,bare-os,bare-url}/prebuilds/*")
                 .each { |dir| rm_r(dir) if dir.basename.to_s != "#{os}-#{arch}" }
-
-    if OS.mac?
-      terminal_notifier_dir = node_notifier_vendor_dir/"mac.noindex"
-      terminal_notifier_dir.mkpath
-
-      # replace vendored `terminal-notifier` with our own
-      terminal_notifier_app = Formula["terminal-notifier"].opt_prefix/"terminal-notifier.app"
-      ln_sf terminal_notifier_app.relative_path_from(terminal_notifier_dir), terminal_notifier_dir
-    end
 
     # Replace universal binaries with their native slices.
     deuniversalize_machos

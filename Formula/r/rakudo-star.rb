@@ -1,8 +1,8 @@
 class RakudoStar < Formula
   desc "Rakudo compiler and commonly used packages"
   homepage "https://rakudo.org/"
-  url "https://github.com/rakudo/star/releases/download/2026.05/rakudo-star-2026.05.tar.gz"
-  sha256 "d9fe36089a4915c3b3118b4fe7236bbc8226320d843c7814975a2b6677a46bce"
+  url "https://github.com/rakudo/star/releases/download/2026.08/rakudo-star-2026.08.tar.gz"
+  sha256 "a7b6fcfc7b6b7b6bc8bc5d347650736c01ff99de71c06157fc7440677b7a6ab3"
   license "Artistic-2.0"
 
   livecheck do
@@ -11,12 +11,12 @@ class RakudoStar < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "4ffe3877a9364546cfdbd9868efdfa851c9d82947d74451f7b159704c5ec56d3"
-    sha256 arm64_sequoia: "d1f2eecb001a96a846dfd4237e4fdf9c7b2a17713fe0d2e941a17d9138850c20"
-    sha256 arm64_sonoma:  "904ce902f0af04a72d6aae489d98f310cb8b6ab8dac637b4e80ba1d2f6b5bbd5"
-    sha256 sonoma:        "a024faad8ee3bba073eec3ffab5fb80ba054af0ffda1211a6ddd76caef035efe"
-    sha256 arm64_linux:   "21777449ba04c8138fc3eb2ee9131e2dc3907e489c8a7a72ff73b8cbddcc8475"
-    sha256 x86_64_linux:  "7c8e8c4d84d64196d51c340d354bccaa7d83cb4fe701a84e5ebc0cc4c51d3123"
+    sha256 arm64_golden_gate: "473efa05604dcaa8a3611ca7029790db134c18e1c7886850b7d97d415d1efe31"
+    sha256 arm64_tahoe:       "a0f35795cdecb9d192e21f92b3a9077376bf7884bfc77cbcafd88c9c91c2b72e"
+    sha256 arm64_sequoia:     "98cbeadfee3a1d6632b0d771e87e129581b2938d3e92ca2811353ef389880ea8"
+    sha256 arm64_sonoma:      "afe6741d66a5060648473f5844a782631e9b0e887d8bc33c03660cf9257b6c98"
+    sha256 arm64_linux:       "4bcca2415f098f3bf26518bb0eb3e270476a7fd70ee0bf125ef0e60484782e2f"
+    sha256 x86_64_linux:      "eb0dab208bc44869f6f2e547f5128b2313731b2616b10c8efb89dc466747bda8"
   end
 
   depends_on "pkgconf" => :build
@@ -55,7 +55,7 @@ class RakudoStar < Formula
       --has-libffi
       --has-libtommath
       --has-mimalloc
-      --pkgconfig=#{Formula["pkgconf"].opt_bin}/pkgconf
+      --pkgconfig=#{formula_opt_bin("pkgconf")}/pkgconf
     ]
     # FIXME: brew `libuv` causes runtime failures on Linux, e.g.
     # "Cannot find method 'made' on object of type NQPMu"
@@ -68,7 +68,7 @@ class RakudoStar < Formula
     # Help Readline module find brew `readline` on Linux
     inreplace "src/rakudo-star-modules/Readline/lib/Readline.pm",
               %r{\((\n *)('/lib/x86_64-linux-gnu',)},
-              "(\\1'#{Formula["readline"].opt_lib}',\\1\\2"
+              "(\\1'#{formula_opt_lib("readline")}',\\1\\2"
 
     ENV.deparallelize # An intermittent race condition causes random build failures.
 
@@ -77,13 +77,14 @@ class RakudoStar < Formula
     ENV["NO_NETWORK_TESTING"] = "1"
 
     # Help DBIish module find sqlite shared library
-    ENV["DBIISH_SQLITE_LIB"] = Formula["sqlite"].opt_lib/shared_library("libsqlite3")
+    ENV["DBIISH_SQLITE_LIB"] = formula_opt_lib("sqlite")/shared_library("libsqlite3")
 
     # openssl module's brew --prefix openssl probe fails so set value here
-    ENV["OPENSSL_PREFIX"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_PREFIX"] = formula_opt_prefix("openssl@3")
 
     rm buildpath.glob("src/rakudo-star-modules/**/*.o")
-    system "bin/rstar", "install", "-p", prefix.to_s
+    # Skip module tests probe for optional DB/client libraries and rely on the test block instead
+    system "bin/rstar", "install", "-T", "-p", prefix.to_s
 
     #  Installed scripts are now in share/perl/{site|vendor}/bin, so we need to symlink it too.
     bin.install_symlink (share/"perl6/vendor/bin").children.select(&:executable?)

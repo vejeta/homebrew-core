@@ -1,27 +1,24 @@
 class BackplaneCli < Formula
   desc "CLI for interacting with the OpenShift Backplane API"
   homepage "https://github.com/openshift/backplane-cli"
-  url "https://github.com/openshift/backplane-cli/archive/refs/tags/v0.10.1.tar.gz"
-  sha256 "ebcf652ef7f67877c262e15ecf74c60cd46a1bd1c71745204e4b0a12b317dba8"
+  url "https://github.com/openshift/backplane-cli/archive/refs/tags/v0.12.1.tar.gz"
+  sha256 "8c97efdbc41f99cb280c2549f1502a26b8b8183c1a7e4d93ae85b4f9e2e0a83f"
   license "Apache-2.0"
   head "https://github.com/openshift/backplane-cli.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "36ae85c5ea76c2f78af557a2b83014bf17b65560b797a02c2882bc86abd78d32"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7c5402de3ecadb2f623c76da31081c1befd868cb0eea68d41f5957eacf58e6e0"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6b62845ce418ab45687081fbc8beb50b2aa6a9825335b5fb46d5d044afb762e8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2a17b85336d89147cd2e75be65e7e7b034b5ce33d14b85bf6bc98bd5d2fe0479"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "147a959230e7422707a565e5a4057ab10c630b9615db221b290e0afb602c52f1"
-    sha256 cellar: :any,                 x86_64_linux:  "ce2e91118cbc45f984397735cf577d2c549e123a567e2e89d7d84522b16bbf98"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "dafaf178b34e0393bef1b0101b7f9acf4bd0187d6e2a4a874b38a9c04894f27b"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e4ced5e58129de6064ddfda53b25e8f072f0d652848acab55dd824ee7f52d505"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "626c1533dda34c3fc15e9d49c94c76520f222335b1bcac809f17261a4fc05557"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2a0759915b56fd9dca487999ec65ea018b662b97d4987d33225e6f28a8e08f1a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "98c25bff5f5fa447f14afe58bc0dabaf3a892d20bd1f622e6c408347acc5694d"
+    sha256 cellar: :any,                 x86_64_linux:      "45b4a83837e9300ead60a8c61c5de9c2a289cf7ef5476e15b5998abf01bea591"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = %W[
-      -s -w
-      -X github.com/openshift/backplane-cli/pkg/info.Version=#{version}
-    ]
+    ldflags = %W[-X github.com/openshift/backplane-cli/pkg/info.Version=#{version}]
     system "go", "build", *std_go_args(ldflags:, output: bin/"ocm-backplane"), "./cmd/ocm-backplane"
     generate_completions_from_executable(bin/"ocm-backplane", shell_parameter_format: :cobra)
   end

@@ -16,6 +16,7 @@ class Xsane < Formula
     patch do
       url "https://gitlab.com/sane-project/frontend/xsane/-/commit/c2b5b530347af80cb192b30a4bd6039e7714a4fb.diff"
       sha256 "9a94caf7fee69e047eca8d947c4f275473a2fa6d1ee2f0fb116bc2efdd9ea7e8"
+      type :backport
     end
   end
 
@@ -41,6 +42,11 @@ class Xsane < Formula
     depends_on "automake" => :build
     depends_on "gtk+3"
   end
+
+  # Can be undeprecated if xsane 1.0.0 is released
+  # https://gitlab.com/sane-project/frontend/xsane/-/milestones/1#tab-issues
+  deprecate! date: "2026-08-28", because: "needs EOL `gtk+`"
+  disable! date: "2027-08-28", because: "needs EOL `gtk+`"
 
   depends_on "pkgconf" => :build
   depends_on "glib"
@@ -82,7 +88,21 @@ class Xsane < Formula
 
   test do
     cmd = "#{bin}/xsane --version"
-    cmd = "#{Formula["xorg-server"].bin}/xvfb-run #{cmd}" if OS.linux? && ENV.exclude?("DISPLAY")
+
+    pid = nil
+    if OS.linux?
+      IO.pipe do |read_io, write_io|
+        pid = spawn(Formula["xorg-server"].bin/"Xvfb", "-displayfd", write_io.fileno.to_s, write_io => write_io)
+        write_io.close
+        ENV["DISPLAY"] = ":#{read_io.read.strip}"
+      end
+    end
+
     assert_match version.to_s, shell_output(cmd)
+  ensure
+    if pid
+      Process.kill "TERM", pid
+      Process.wait pid
+    end
   end
 end

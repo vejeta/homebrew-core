@@ -28,7 +28,7 @@ class GhcAT98 < Formula
   keg_only :versioned_formula
 
   deprecate! date: "2026-06-08", because: :versioned_formula
-  disable! date: "2027-06-08", because: :versioned_formula
+  disable! date: "2026-12-08", because: :versioned_formula
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
@@ -39,9 +39,8 @@ class GhcAT98 < Formula
   uses_from_macos "m4" => :build
   uses_from_macos "ncurses"
 
-  # Build uses sed -r option, which is not available in Catalina shipped sed.
-  on_catalina :or_older do
-    depends_on "gnu-sed" => :build
+  on_macos do
+    depends_on maximum_macos: [:tahoe, :build] # needs -ld_classic
   end
 
   on_linux do
@@ -99,6 +98,7 @@ class GhcAT98 < Formula
   patch do
     url "https://gitlab.haskell.org/ghc/ghc/-/commit/c9731d6d3cad01fccb88c99c4f26070a44680389.diff"
     sha256 "f7e921f7096c97bd4e63ac488186a132eb0cc508d04f0c5a99e9ded51bf16b25"
+    type :backport
   end
 
   def install
@@ -112,7 +112,7 @@ class GhcAT98 < Formula
     ENV["CC"] = ENV["ac_cv_path_CC"] = OS.linux? ? "cc" : ENV.cc
     ENV["CXX"] = ENV["ac_cv_path_CXX"] = OS.linux? ? "c++" : ENV.cxx
     ENV["LD"] = "ld"
-    ENV["PYTHON"] = which("python3.14")
+    ENV["PYTHON"] = python3
 
     # Workaround for https://gitlab.haskell.org/ghc/ghc/-/issues/26166
     if DevelopmentTools.ld64_version >= "1221.4"
@@ -123,8 +123,8 @@ class GhcAT98 < Formula
     resource("binary").stage do
       binary_args = []
       if OS.linux?
-        binary_args << "--with-gmp-includes=#{Formula["gmp"].opt_include}"
-        binary_args << "--with-gmp-libraries=#{Formula["gmp"].opt_lib}"
+        binary_args << "--with-gmp-includes=#{formula_opt_include("gmp")}"
+        binary_args << "--with-gmp-libraries=#{formula_opt_lib("gmp")}"
       end
 
       system "./configure", "--prefix=#{binary}", *binary_args
@@ -132,9 +132,6 @@ class GhcAT98 < Formula
     end
 
     ENV.prepend_path "PATH", binary/"bin"
-    # Build uses sed -r option, which is not available in Catalina shipped sed.
-    ENV.prepend_path "PATH", Formula["gnu-sed"].libexec/"gnubin" if OS.mac? && MacOS.version <= :catalina
-
     resource("cabal-install").stage { (binary/"bin").install "cabal" }
     system "cabal", "v2-update"
 
@@ -170,8 +167,8 @@ class GhcAT98 < Formula
     (lib/"ghc-#{version}/lib/package.conf.d/package.cache.lock").unlink
   end
 
-  def post_install
-    system bin/"ghc-pkg", "recache"
+  post_install_steps do
+    run "ghc-pkg", args: ["recache"], base: :bin
   end
 
   test do

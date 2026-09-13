@@ -1,7 +1,7 @@
 class Kawa < Formula
   desc "Programming language for Java (implementation of Scheme)"
   homepage "https://www.gnu.org/software/kawa/"
-  url "https://ftpmirror.gnu.org/gnu/kawa/kawa-3.1.1.zip"
+  url "https://ftpmirror.gnu.org/kawa/kawa-3.1.1.zip"
   mirror "https://ftp.gnu.org/gnu/kawa/kawa-3.1.1.zip"
   sha256 "dab1f41da968191fc68be856f133e3d02ce65d2dbd577a27e0490f18ca00fa22"
   license "MIT"
@@ -24,7 +24,7 @@ class Kawa < Formula
     inreplace "bin/kawa", "thisfile=`command -v $0`",
                           "thisfile=#{libexec}/bin/kawa"
     libexec.install "bin", "lib"
-    (bin/"kawa").write_env_script libexec/"bin/kawa", JAVA_HOME: Formula["openjdk"].opt_prefix
+    (bin/"kawa").write_env_script libexec/"bin/kawa", JAVA_HOME: formula_opt_prefix("openjdk")
     doc.install Dir["doc/*"]
   end
 

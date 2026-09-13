@@ -10,8 +10,8 @@ class SpeedtestCli < Formula
   head "https://github.com/sivel/speedtest-cli.git", branch: "master"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, all: "93487be757c9b3763deeb1b1415ee8ad10c5a80fcc9ebaeacbb8fbac3e9b9474"
+    rebuild 2
+    sha256 cellar: :any_skip_relocation, all: "05cb29e6dbee567f527c226f4ea42e2f2abed22f0ec68558fe153db254dc774e"
   end
 
   # see issue in https://github.com/sivel/speedtest-cli/pull/796
@@ -20,19 +20,23 @@ class SpeedtestCli < Formula
 
   depends_on "python@3.14"
 
+  conflicts_with "speedtest-go", because: "both install `speedtest` binaries"
+
   # Support Python 3.10, remove on next release
   patch do
     url "https://github.com/sivel/speedtest-cli/commit/22210ca35228f0bbcef75a7c14587c4ecb875ab4.patch?full_index=1"
     sha256 "d0456eb9fded20fb1580dbc6e3bc451a10c3fbcd3441efea66035aa848440c09"
+    type :backport
   end
 
   # Replace deprecated `datetime.datetime.utcnow()` function with supported
   # `datetime.datetime.now(datetime.UTC)`
   #
-  # https://github.com/sivel/speedtest-cli/pull/808
   patch do
     url "https://github.com/sivel/speedtest-cli/commit/305dce9bd28e797d32b6b7e4a9239a669ab35322.patch?full_index=1"
     sha256 "468f7205cedcef51eb95eb565db56d08743c5663b1641be62d9d1247d0845f3b"
+    type :unofficial
+    resolves "https://github.com/sivel/speedtest-cli/pull/808"
   end
 
   def install

@@ -4,15 +4,14 @@ class Fastnetmon < Formula
   url "https://github.com/pavel-odintsov/fastnetmon/archive/refs/tags/v1.2.9.tar.gz"
   sha256 "5ecc10791af04fc1fd720a9a113060668426aa798d5b6c3921364213a31a5e9b"
   license "GPL-2.0-only"
-  revision 1
+  revision 11
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "f2642762ac503b254d7f637d62a70b5d73f3f53369ea0b2e28f74d92508a1116"
-    sha256 cellar: :any, arm64_sequoia: "f6336c98664920903549b7e944bf1e830f2c5cba374bf0dda5b917877c5b3815"
-    sha256 cellar: :any, arm64_sonoma:  "5ce59e08dcc6f362e9f7c174c8c2c9a04a9db0c73939e75928379f40f66af63c"
-    sha256 cellar: :any, sonoma:        "b4837534b9043ef1f6f44727502dca1000e224b6b72be16a66bc1370ca800139"
-    sha256               arm64_linux:   "97737ca8ce01a5ca190a99178ce5e66911cac2af18492f2caacd4820e7d24158"
-    sha256               x86_64_linux:  "d3857ab931b431424687d6b1b56cd6351c84e00116c92b90debb6fa4a30947b6"
+    sha256 cellar: :any, arm64_golden_gate: "766ee178e8d8ec59f009252e4fff87ef73cd84b1c7db9ca98b15aef7bc4410c2"
+    sha256 cellar: :any, arm64_tahoe:       "b94b5fe0c4f08c427b96d8aa03018e2b811067938c7dbc85fcddc559ea21d256"
+    sha256 cellar: :any, arm64_sequoia:     "70924ae8fc2248692a3dc1f03a965a1a3bcaf54f80c189078fd89029d1e7d3eb"
+    sha256               arm64_linux:       "d525fd2ffcae35c522292c0ae6ede4b4a31bfa7a2bb0a3db52d1ccebdb5b12bc"
+    sha256               x86_64_linux:      "8b411294fd5532fb93ef41fcc85c3613f1c1419970bc5141e6997535f1dad401"
   end
 
   depends_on "cmake" => :build
@@ -70,7 +69,6 @@ class Fastnetmon < Formula
 
     pid = spawn opt_sbin/"fastnetmon", "--configuration_file", testpath/"fastnetmon.conf", "--log_to_console"
     sleep 60
-    sleep 40 if OS.mac? && Hardware::CPU.intel?
 
     assert_path_exists testpath/"fastnetmon.dat"
     assert_path_exists testpath/"fastnetmon_ipv6.dat"

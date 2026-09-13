@@ -7,28 +7,20 @@ class Resticprofile < Formula
   head "https://github.com/creativeprojects/resticprofile.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f986d017c8ce9414c2f1ad6b1b0c16287decbcd5f923e8bf82d36a9f098cbeb2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "08755807092ca3abb8bef66adb739364686facc2bf82884a9e0d657d7467be7b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "253287995bf155d81c1a21df23eff213f46dce7fdbeb593253f0ed5d5924d42f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a48b32ea01fff0fb9d80f038b201b96ee36b99c43feffc831d4a39b943a22f4b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c7e2912941204582a3c1f6229dda13ab9b5e3d9e7878f78f8b09862f1a454727"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "867d857a556e6e0fc36fcf1aa7eae9257dd70a097248762130787fcfe0647ae7"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9af0b5dc4f3fca7d8d9f9bae373ab7a5652daf9af7e67577b6fe6ae6a03f80d1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f986d017c8ce9414c2f1ad6b1b0c16287decbcd5f923e8bf82d36a9f098cbeb2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "08755807092ca3abb8bef66adb739364686facc2bf82884a9e0d657d7467be7b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "253287995bf155d81c1a21df23eff213f46dce7fdbeb593253f0ed5d5924d42f"
+    sha256 cellar: :any_skip_relocation, sonoma:            "a48b32ea01fff0fb9d80f038b201b96ee36b99c43feffc831d4a39b943a22f4b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c7e2912941204582a3c1f6229dda13ab9b5e3d9e7878f78f8b09862f1a454727"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "867d857a556e6e0fc36fcf1aa7eae9257dd70a097248762130787fcfe0647ae7"
   end
 
   depends_on "go" => :build
   depends_on "restic"
 
   def install
-    commit = build.head? ? Utils.git_short_head : tap.user
-    ldflags = %W[
-      -s -w
-      -X 'main.version=#{version}'
-      -X 'main.commit=#{commit}'
-      -X 'main.date=#{time.iso8601}'
-      -X 'main.builtBy=#{tap.user}'
-    ]
-
-    system "go", "build", *std_go_args(ldflags:, tags: "no_self_update")
+    system "go", "build", *std_go_args(ldflags: :goreleaser, tags: "no_self_update")
 
     bash_completion.install "contrib/completion/bash-completion.sh" => "resticprofile"
     fish_completion.install "contrib/completion/fish-completion.fish" => "resticprofile.fish"

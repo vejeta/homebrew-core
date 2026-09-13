@@ -1,8 +1,8 @@
 class Libsidplayfp < Formula
   desc "Library to play Commodore 64 music"
   homepage "https://github.com/libsidplayfp/libsidplayfp"
-  url "https://github.com/libsidplayfp/libsidplayfp/releases/download/v3.0.1/libsidplayfp-3.0.1.tar.gz"
-  sha256 "6b8ffedc2f631a4ca53258e60468eab3e6a2dc4e1369b2e59e3a5955f99a2143"
+  url "https://github.com/libsidplayfp/libsidplayfp/releases/download/v3.1.1/libsidplayfp-3.1.1.tar.gz"
+  sha256 "12b79190593bf480b2d11481b5c2de62bac07f344437a66cd8d887329875c626"
   license "GPL-2.0-or-later"
 
   livecheck do
@@ -11,12 +11,12 @@ class Libsidplayfp < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "69c4987324a6eaa1065f86f163ffec361c69ce68a96c34feed4312ea4b4cd128"
-    sha256 cellar: :any,                 arm64_sequoia: "25229d51be5e28a3c2158025c7fd5da6baa7ba35a8f559f9e4fb1302ededed9d"
-    sha256 cellar: :any,                 arm64_sonoma:  "dd06a02193b11356d6986e7c7f8358ca4e8cc21343329e8ed4606027d7c44f25"
-    sha256 cellar: :any,                 sonoma:        "de7a17072056d0ee80c192b6d9c54f69ac68d0dd705a422a785560015d0dba69"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ac464c1c9e7b3f970a76e954311ab604faca3fba1cb8580edf2f98fc8ac696e5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e14acb29bdb264ff2b1d8b89cf469196b004d95d940051dbe8ae2361a63350f3"
+    sha256 cellar: :any, arm64_golden_gate: "79d38e35f7b5052c5a00bbd9e746cfddafe19610f3540227b8edc49a670d5cf7"
+    sha256 cellar: :any, arm64_tahoe:       "7e28827526f55a6b86db4ab3f6ec73d8444f0d0c70c1b2c1144928b19d8ce0dc"
+    sha256 cellar: :any, arm64_sequoia:     "39d7143aceb9cde1239627dc1df9bd12e28573f8d8c9f13fc110b4b74ebd5ec0"
+    sha256 cellar: :any, arm64_sonoma:      "e96a6cc0b430e12ba54dbe05ae9724699cff7f06506d8381ceaa12f19ed7f4f6"
+    sha256 cellar: :any, arm64_linux:       "e74e18a0eb0568246bb616aac2110af63e1f50138e52e234c9bb703c4fe03cc9"
+    sha256 cellar: :any, x86_64_linux:      "4d69b454dad108db93d41bb4ae086a3c22b187da4d495b0ba83ed2c5c4605161"
   end
 
   head do

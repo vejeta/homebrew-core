@@ -2,25 +2,26 @@ class Pc6001vx < Formula
   desc "PC-6001 emulator"
   # http://eighttails.seesaa.net/ gives 405 error
   homepage "https://github.com/eighttails/PC6001VX"
-  url "https://eighttails.up.seesaa.net/bin/PC6001VX_4.3.0_src.tar.gz"
-  sha256 "a5536f7bd4931b2efcbdcd85707a9c6fa82a6b169773e6d13d74cea8107ee9cc"
+  url "https://eighttails.up.seesaa.net/bin/PC6001VX_4.5.0_src.tar.gz"
+  sha256 "ed2599b0418a5d5a13a23546812c44168fb7bc222e2dc7e02d35b46f63e64087"
   license "LGPL-2.1-or-later"
-  revision 1
   head "https://github.com/eighttails/PC6001VX.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "0da9f1919b004524e9677255d6829e1e5fb9a472a04405db822cf38b0bb5ea37"
-    sha256 cellar: :any,                 arm64_sequoia: "6bcf86f65d128104f01b83e6969a1d0f6938ec0f52a8aeb856667f3e15a171cf"
-    sha256 cellar: :any,                 arm64_sonoma:  "efcd02e0c65882c3effcbf79b4c0825c78ac9b43873277fc87f5fa21ae67a746"
-    sha256 cellar: :any,                 sonoma:        "6642ccbb7526d4b08a5cd3fbae82119eec81c19634232d7fbb63d70d61cab34d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5e8afac0eb25d8086990982f1aa2e0bf2ea916e267beb9fc8a84661a30885bb2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0b90e9cc7da63eabbd08dec431bb01db9522c7529d7b02dca1bd7b44ea2c3ea4"
+    sha256 cellar: :any, arm64_golden_gate: "fc9502a41d16f991df3c9620047661add39a2440ca55811efef9fa078b776c20"
+    sha256 cellar: :any, arm64_tahoe:       "7484b1c6da6702570861a93057d07c9f54c3e1f42f1e2ea9606a07d30efca5ca"
+    sha256 cellar: :any, arm64_sequoia:     "b7fe9332e751381c3f13921bd0a9519c068a3770af219bb66f4f71ba6694b6a2"
+    sha256 cellar: :any, arm64_sonoma:      "f88e1cd99e8f43b781778f784fbf76fdf5657269e844302e5b36242a17f96881"
+    sha256 cellar: :any, arm64_linux:       "c8d3fe21b698208f5ebd1a0599cb65dcfde99efb2e054af706aefd311552cd8f"
+    sha256 cellar: :any, x86_64_linux:      "86804ae656cffca115b4ae13ffdf976d2a1bdc4dfea3a7c4d798b7579b3dcf2c"
   end
 
+  depends_on "cmake" => :build
   depends_on "pkgconf" => :build
   depends_on "qttools" => :build
   depends_on "ffmpeg"
   depends_on "qtbase"
+  depends_on "qtdeclarative"
   depends_on "qtmultimedia"
   depends_on "sdl2-compat"
 
@@ -33,20 +34,19 @@ class Pc6001vx < Formula
   end
 
   def install
-    mkdir "build" do
-      system "qmake", "PREFIX=#{prefix}",
-                      "QMAKE_CXXFLAGS=#{ENV.cxxflags}",
-                      "CONFIG+=no_include_pwd",
-                      ".."
-      system "make"
+    # Upstream only guards the X11 probe against Android, but Qt exposes no
+    # `QX11Application` on macOS, where the screensaver code is a no-op anyway
+    inreplace "CMakeLists.txt", "if(X11_FOUND)", "if(X11_FOUND AND NOT APPLE)"
 
-      if OS.mac?
-        prefix.install "PC6001VX.app"
-        bin.write_exec_script prefix/"PC6001VX.app/Contents/MacOS/PC6001VX"
-      else
-        bin.install "PC6001VX"
-      end
-    end
+    # The CMake port only links `intl` for Windows, but the old qmake build
+    # linked it on macOS too, where `gettext` is not part of libc
+    ENV.append "LDFLAGS", "-lintl" if OS.mac?
+
+    system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+    system "cmake", "--build", "build"
+
+    # Upstream ships no `install` rules and names the binary after the version
+    bin.install "build/PC6001VX-#{version}" => "PC6001VX"
   end
 
   test do
@@ -56,17 +56,20 @@ class Pc6001vx < Formula
     # locales aren't set correctly within the testing environment
     ENV["LC_ALL"] = "en_US.UTF-8"
 
+    assert_match version.to_s, shell_output("#{bin}/PC6001VX --version")
+
     user_config_dir = testpath/".pc6001vx4"
     user_config_dir.mkpath
     pid = spawn bin/"PC6001VX"
-    sleep 30
-    sleep 45 if OS.mac? && Hardware::CPU.intel?
+    # the config tree is written on startup; Intel Macs need well over a minute,
+    # so allow plenty of time but stop waiting as soon as it appears
+    120.times do
+      break if (user_config_dir/"rom").exist?
+
+      sleep 1
+    end
     assert_path_exists user_config_dir/"rom", "User config directory should exist"
   ensure
-    # the first SIGTERM signal closes a window which spawns another immediately
-    # after 5 seconds, send a second SIGTERM signal to ensure the process is fully stopped
-    Process.kill("TERM", pid)
-    sleep 5
     Process.kill("TERM", pid)
     Process.wait(pid)
   end

@@ -1,10 +1,10 @@
 class Wxwidgets < Formula
   desc "Cross-platform C++ GUI toolkit"
   homepage "https://www.wxwidgets.org"
-  url "https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2"
-  sha256 "50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2"
+  url "https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.3/wxWidgets-3.3.3.tar.bz2"
+  sha256 "81b09d6dd9f1ed9301f8c55a968a488d0491f264dc2bab19a7e407ac67009482"
   license "LGPL-2.0-or-later" => { with: "WxWindows-exception-3.1" }
-  compatibility_version 1
+  compatibility_version 2
   head "https://github.com/wxWidgets/wxWidgets.git", branch: "master"
 
   livecheck do
@@ -13,12 +13,13 @@ class Wxwidgets < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "57fc5a8e36c0f9879f9b6608634e05f0f77ef55c603c68d6903ee12cd21c0e94"
-    sha256 cellar: :any,                 arm64_sequoia: "f0b376c029fd8adc673a4a5f12d4f1f1b5e9ac4bf5b5407de28e8c1747da3b50"
-    sha256 cellar: :any,                 arm64_sonoma:  "1ec0180edded719bc653245ba3d6194bc23ad9abe19027b63e26b501d218f8dc"
-    sha256 cellar: :any,                 sonoma:        "4d0a457ec48b7a690b6f17b6a2801e057f0bd2bd8972aa72cab5f2086f947dd6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "18e76da797b260a9609c6a9198e7ba0738f8f56cc355b07f747ecbd9b4fea483"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b3185f508424b321f99d8c003c9f9971d4a8519e4617267f537a3316c85bf80e"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "a2198377ecf2fd43016cd085d8b9b33634f46aa065a3e06d8d24ae650658dac2"
+    sha256 cellar: :any, arm64_tahoe:       "909e4774c9fef932d748395df974a1699501269e45edd0ff4a0bd35dd4ccf53c"
+    sha256 cellar: :any, arm64_sequoia:     "87adb1625022395551fe1b18c3212b781b2f3334382ff62fccbf45a73ba3f8e1"
+    sha256 cellar: :any, arm64_sonoma:      "f713a430fa37bb1297324dfad2429d25a8b2b5fdabd647fcc1b6a612c035366f"
+    sha256 cellar: :any, arm64_linux:       "00883dec5886b990d41989178a1b5416e3e0abb753766c85aafb3255106e8b24"
+    sha256 cellar: :any, x86_64_linux:      "7cf1e5058bfdd523e070a11395e79009e31684044a780cd793352195069faf1a"
   end
 
   depends_on "pkgconf" => :build

@@ -4,7 +4,7 @@ class Visp < Formula
   url "https://visp-doc.inria.fr/download/releases/visp-3.7.0.tar.gz"
   sha256 "997f247f3702c83f0a8a6dc2f72ff98cfe3a5dcbd82f7c9f01d37ccd3b8ea97a"
   license "GPL-2.0-or-later"
-  revision 6
+  revision 10
 
   livecheck do
     url "https://visp.inria.fr/download/"
@@ -12,13 +12,11 @@ class Visp < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "28e77916e6bc1c9b039c2fc46cd5bf7ee081412d50dbf0a35fe6d41c2edb17c3"
-    sha256 cellar: :any, arm64_sequoia: "29a90e75efe00547d0bb7f110eca782e1a65c9a072a1980bc015b37f3f90e9d5"
-    sha256 cellar: :any, arm64_sonoma:  "d24f9d3cef7a4f66375344e15ec850ce1db683c862850af870935734293e246a"
-    sha256 cellar: :any, sonoma:        "7194d3147b58d2497b3831c6cac447999d0fc4b4a465c0e36ad27232c9f1bd17"
-    sha256 cellar: :any, arm64_linux:   "ddf422033881aac689f9710051ec0156637f7b9e3e5e31a6af1be2dcaa3f75fc"
-    sha256 cellar: :any, x86_64_linux:  "8ba9683179e77c4c5da4c1716ce3634b981ce2c3483ba8393fe5421f02f41538"
+    sha256 cellar: :any, arm64_tahoe:   "1559bc62aa1b16b8dba2d20be397fb9ec1a27c7f8e10d271bbb481fbfaf6542f"
+    sha256 cellar: :any, arm64_sequoia: "9bcf92433184379d1e56ca09593048e98b2ef725b9008768523628fdf932e6d5"
+    sha256 cellar: :any, arm64_sonoma:  "ad14bf57d717262a4cd7ccd1d9cf3c2fb24c8d34214b0bd5a523c8819f2920cb"
+    sha256 cellar: :any, arm64_linux:   "0ff80c3241e3027b8b10f3d5f40ee602108922a96d297b8189ff81fca20266d4"
+    sha256 cellar: :any, x86_64_linux:  "674ee005d83034f27b58a41218283e7bf3fc93947087373d594ddd1a0026460d"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -53,8 +51,40 @@ class Visp < Formula
     depends_on "zlib-ng-compat"
   end
 
+  # Link OpenCV 5's relocated geometry/features modules.
+  patch do
+    url "https://github.com/lagadic/visp/commit/d57def89b50849ca191355a5d2f624e61f5d4e00.patch?full_index=1"
+    sha256 "93b53b9d44f239bc92f448b212ff14d9301773ca6acfa78dee038c1398f8a207"
+    type :backport
+    resolves "https://github.com/lagadic/visp/pull/1975"
+  end
+
+  # Include OpenCV 5's relocated method headers.
+  patch do
+    url "https://github.com/lagadic/visp/commit/0c170eaeefcf5a49c631f8298997cddfd6f28fd7.patch?full_index=1"
+    sha256 "ca0893a0af556127fd18d630847b606a348ee53d21d6173b2fe4621952eef6de"
+    type :backport
+    resolves "https://github.com/lagadic/visp/pull/1962"
+  end
+
   def install
     ENV.cxx11
+
+    # OpenCV 5.0.0 renamed the `3d` module to `geometry`.
+    # PR ref: https://github.com/lagadic/visp/pull/1962
+    inreplace %w[
+      modules/core/include/visp3/core/vpMeterPixelConversion.h
+      modules/core/include/visp3/core/vpPixelMeterConversion.h
+      modules/core/src/camera/vpMeterPixelConversion.cpp
+      modules/core/src/camera/vpPixelMeterConversion.cpp
+      modules/vision/include/visp3/vision/vpKeyPoint.h
+      modules/vision/src/key-point/vpKeyPoint.cpp
+    ], "HAVE_OPENCV_3D", "HAVE_OPENCV_GEOMETRY"
+    inreplace %w[
+      modules/core/src/camera/vpMeterPixelConversion.cpp
+      modules/core/src/camera/vpPixelMeterConversion.cpp
+      modules/vision/src/key-point/vpKeyPoint.cpp
+    ], "<opencv2/3d.hpp>", "<opencv2/geometry.hpp>"
 
     # Avoid superenv shim references
     inreplace "CMakeLists.txt" do |s|
@@ -66,31 +96,32 @@ class Visp < Formula
              "C Compiler:                  #{ENV.cc}\"")
     end
 
-    system "cmake", ".", "-DBUILD_DEMOS=OFF",
+    system "cmake", "-S", ".", "-B", "build", "-DBUILD_APPS=OFF",
+                         "-DBUILD_DEMOS=OFF",
                          "-DBUILD_EXAMPLES=OFF",
                          "-DBUILD_TESTS=OFF",
                          "-DBUILD_TUTORIALS=OFF",
                          "-DUSE_DC1394=ON",
-                         "-DDC1394_INCLUDE_DIR=#{Formula["libdc1394"].opt_include}",
-                         "-DDC1394_LIBRARY=#{Formula["libdc1394"].opt_lib/shared_library("libdc1394")}",
+                         "-DDC1394_INCLUDE_DIR=#{formula_opt_include("libdc1394")}",
+                         "-DDC1394_LIBRARY=#{formula_opt_lib("libdc1394")/shared_library("libdc1394")}",
                          "-DUSE_EIGEN3=ON",
                          "-DEigen3_DIR=#{Formula["eigen"].opt_share}/eigen3/cmake",
-                         "-DEIGEN3_INCLUDE_DIR=#{Formula["eigen"].opt_include}/eigen3",
+                         "-DEIGEN3_INCLUDE_DIR=#{formula_opt_include("eigen")}/eigen3",
                          "-DUSE_GSL=ON",
-                         "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}",
-                         "-DGSL_cblas_LIBRARY=#{Formula["gsl"].opt_lib/shared_library("libgslcblas")}",
-                         "-DGSL_gsl_LIBRARY=#{Formula["gsl"].opt_lib/shared_library("libgsl")}",
+                         "-DGSL_INCLUDE_DIR=#{formula_opt_include("gsl")}",
+                         "-DGSL_cblas_LIBRARY=#{formula_opt_lib("gsl")/shared_library("libgslcblas")}",
+                         "-DGSL_gsl_LIBRARY=#{formula_opt_lib("gsl")/shared_library("libgsl")}",
                          "-DUSE_JPEG=ON",
-                         "-DJPEG_INCLUDE_DIR=#{Formula["jpeg-turbo"].opt_include}",
-                         "-DJPEG_LIBRARY=#{Formula["jpeg-turbo"].opt_lib/shared_library("libjpeg")}",
+                         "-DJPEG_INCLUDE_DIR=#{formula_opt_include("jpeg-turbo")}",
+                         "-DJPEG_LIBRARY=#{formula_opt_lib("jpeg-turbo")/shared_library("libjpeg")}",
                          "-DUSE_LAPACK=ON",
                          "-DUSE_LIBUSB_1=OFF",
                          "-DUSE_OPENCV=ON",
                          "-DOpenCV_DIR=#{Formula["opencv"].opt_share}/OpenCV",
                          "-DUSE_PCL=ON",
                          "-DUSE_PNG=ON",
-                         "-DPNG_PNG_INCLUDE_DIR=#{Formula["libpng"].opt_include}",
-                         "-DPNG_LIBRARY_RELEASE=#{Formula["libpng"].opt_lib/shared_library("libpng")}",
+                         "-DPNG_PNG_INCLUDE_DIR=#{formula_opt_include("libpng")}",
+                         "-DPNG_LIBRARY_RELEASE=#{formula_opt_lib("libpng")/shared_library("libpng")}",
                          "-DUSE_PTHREAD=ON",
                          "-DUSE_PYLON=OFF",
                          "-DUSE_REALSENSE=OFF",
@@ -98,8 +129,8 @@ class Visp < Formula
                          "-DUSE_X11=OFF",
                          "-DUSE_XML2=ON",
                          "-DUSE_ZBAR=ON",
-                         "-DZBAR_INCLUDE_DIRS=#{Formula["zbar"].opt_include}",
-                         "-DZBAR_LIBRARIES=#{Formula["zbar"].opt_lib/shared_library("libzbar")}",
+                         "-DZBAR_INCLUDE_DIRS=#{formula_opt_include("zbar")}",
+                         "-DZBAR_LIBRARIES=#{formula_opt_lib("zbar")/shared_library("libzbar")}",
                          "-DUSE_ZLIB=ON",
                          "-DUSE_MAVSDK=OFF",
                          *std_cmake_args
@@ -107,41 +138,41 @@ class Visp < Formula
     # Replace generated references to OpenCV's Cellar path
     opencv = Formula["opencv"]
     opencv_references = Dir[
-      "CMakeCache.txt",
-      "CMakeFiles/Export/lib/cmake/visp/VISPModules.cmake",
-      "VISPConfig.cmake",
-      "VISPGenerateConfigScript.info.cmake",
-      "VISPModules.cmake",
-      "modules/**/flags.make",
-      "unix-install/VISPConfig.cmake",
+      "build/CMakeCache.txt",
+      "build/CMakeFiles/Export/lib/cmake/visp/VISPModules.cmake",
+      "build/VISPConfig.cmake",
+      "build/VISPGenerateConfigScript.info.cmake",
+      "build/VISPModules.cmake",
+      "build/modules/**/flags.make",
+      "build/unix-install/VISPConfig.cmake",
     ]
     inreplace opencv_references, opencv.prefix.realpath, opencv.opt_prefix
-    system "cmake", "--build", "."
-    system "cmake", "--install", "."
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
 
     # Make sure software built against visp don't reference opencv's cellar path either
     inreplace [lib/"pkgconfig/visp.pc", lib/"cmake/visp/VISPConfig.cmake"],
               opencv.prefix.realpath, opencv.opt_prefix
+
+    (libexec/"post-install").write <<~SH
+      #!/bin/sh
+      set -e
+      sdk_path="$(xcrun --sdk macosx --show-sdk-path)"
+      for file in "#{opt_lib}/cmake/visp/VISPConfig.cmake" \
+                  "#{opt_lib}/cmake/visp/VISPModules.cmake" \
+                  "#{opt_lib}/pkgconfig/visp.pc"; do
+        sed -E -i.bak \
+          's#/(Applications/Xcode[^[:space:];]*/SDKs|Library/Developer/CommandLineTools/SDKs)/MacOSX[^[:space:];]*\\.sdk#'"$sdk_path"'#g' \
+          "$file"
+        rm -f "$file.bak"
+      done
+    SH
+    chmod 0755, libexec/"post-install"
   end
 
-  def post_install
-    # Replace SDK paths in bottle when pouring on different OS version than bottle OS.
-    # This avoids error like https://github.com/orgs/Homebrew/discussions/5853
-    # TODO: Consider handling this in brew, e.g. as part of keg cleaner or bottle relocation
-    if OS.mac? && (tab = Tab.for_formula(self)).poured_from_bottle
-      bottle_os = bottle&.tag&.to_macos_version
-      if bottle_os.nil? && (os_version = tab.built_on.fetch("os_version", "")[/\d+(?:\.\d+)*$/])
-        bottle_os = MacOSVersion.new(os_version).strip_patch
-      end
-      return if bottle_os.nil? || MacOS.version == bottle_os
-
-      sdk_path_files = [
-        lib/"cmake/visp/VISPConfig.cmake",
-        lib/"cmake/visp/VISPModules.cmake",
-        lib/"pkgconfig/visp.pc",
-      ]
-      bottle_sdk_path = MacOS.sdk_for_formula(self, bottle_os).path
-      inreplace sdk_path_files, bottle_sdk_path, MacOS.sdk_for_formula(self).path, audit_result: false
+  post_install_steps do
+    on_macos do
+      run "post-install", base: :libexec
     end
   end
 

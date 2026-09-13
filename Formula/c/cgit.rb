@@ -11,12 +11,13 @@ class Cgit < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "c89e460548f705e949484c9b1440fe1269314b6fcc809ca4f0533de2f12d096b"
-    sha256 arm64_sequoia: "8f18ed5941bb5b0efad997723f474a7c3ff04b481ac04e7f82fa25ec9cdb792c"
-    sha256 arm64_sonoma:  "3c081f70e07173cc4ebc5fd905bea2f5145e59ea034c3ab25679fa30daf784c1"
-    sha256 sonoma:        "1c3e21618c398df48955d3b0b7a8808f38386d4611d2c4c962424029b0e7a8ae"
-    sha256 arm64_linux:   "f684c0282a8f001fd230bf3fc44fc5dc5e26da88babcc32be77ebd23cbd79180"
-    sha256 x86_64_linux:  "3fc23bca0e145c1fa28489965871c6ad3f6f6c991c76bca4e7b99d68c1954fc1"
+    sha256 arm64_golden_gate: "606c596e02fe6ed8940051bc9d7f4857908f2d93a5fd0f357302677df5b17512"
+    sha256 arm64_tahoe:       "c89e460548f705e949484c9b1440fe1269314b6fcc809ca4f0533de2f12d096b"
+    sha256 arm64_sequoia:     "8f18ed5941bb5b0efad997723f474a7c3ff04b481ac04e7f82fa25ec9cdb792c"
+    sha256 arm64_sonoma:      "3c081f70e07173cc4ebc5fd905bea2f5145e59ea034c3ab25679fa30daf784c1"
+    sha256 sonoma:            "1c3e21618c398df48955d3b0b7a8808f38386d4611d2c4c962424029b0e7a8ae"
+    sha256 arm64_linux:       "f684c0282a8f001fd230bf3fc44fc5dc5e26da88babcc32be77ebd23cbd79180"
+    sha256 x86_64_linux:      "3fc23bca0e145c1fa28489965871c6ad3f6f6c991c76bca4e7b99d68c1954fc1"
   end
 
   on_macos do
@@ -38,8 +39,7 @@ class Cgit < Formula
   # cgit 1.2.2+ needs memrchr, for which macOS provides no implementation
   # https://lists.zx2c4.com/pipermail/cgit/2020-August/004510.html
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/aa5fc862/Patches/cgit/memrchr-impl.patch"
-    sha256 "eceb5be34261046e4588b15650da406af2385e2ba5e84e469c968433749c3ebf"
+    file "Patches/cgit/memrchr-impl.patch"
   end
 
   def install

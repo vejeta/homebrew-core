@@ -1,19 +1,18 @@
 class Libnfs < Formula
   desc "C client library for NFS"
   homepage "https://github.com/sahlberg/libnfs"
-  url "https://github.com/sahlberg/libnfs/archive/refs/tags/libnfs-6.0.2.tar.gz"
-  sha256 "4e5459cc3e0242447879004e9ad28286d4d27daa42cbdcde423248fad911e747"
+  url "https://github.com/sahlberg/libnfs/archive/refs/tags/libnfs-7.0.2.tar.gz"
+  sha256 "188a8a5de2ad2099a2e97e42f34721bfc4c16c8d33808de0f7484f99d714a3df"
   license "LGPL-2.1-or-later"
+  compatibility_version 4
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "49434cf4624dd2870f29010e9732abf65b3fac22346ebdc1fab0fc6c76b89a59"
-    sha256 cellar: :any,                 arm64_sequoia: "2e9065bfd3abd3ffe1d38f5637551210ee628b9512eedeb4d30ec5889c2cd346"
-    sha256 cellar: :any,                 arm64_sonoma:  "146e3c3bff06a7f0235889cc38a392f4fa2a0371a03523f697a764b2c59ee770"
-    sha256 cellar: :any,                 arm64_ventura: "d7e4428a240be4fd0c4fec619de6b93846305156b054b8e813917a2a70a17a26"
-    sha256 cellar: :any,                 sonoma:        "4509c2de7ad0dc7583d3d4ad6f17719eaf306adf33dcc5e8b272a69c153aa276"
-    sha256 cellar: :any,                 ventura:       "15287f2942eb74117211df3c6b6bdb9bda26755f4d725c6e355bde38e162e7ba"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d4e709afbb129aa4d910765a61d1c6ad522a793d864d2fc23b42300573a933cf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0477428f6b57eb2ebc18e86a9c62951d42623dfb516b6f8e6b409625f943a233"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "795251cbeab10dafae19cbd02104df2580aa30ab7ac03ca14fd2fbc6202bb0d3"
+    sha256 cellar: :any, arm64_tahoe:       "9fd081f0367a73c582d30468286129807103158d8aa4c5ba02b7e94c236c4aa4"
+    sha256 cellar: :any, arm64_sequoia:     "acc65a0b36fbbafbc99285bb30e719a9a5ebea20450cd9d1afdfd77a45e51605"
+    sha256 cellar: :any, arm64_linux:       "bb3a47b0514d8f6558ffe5eda455e573689c1db992ebe138b4095bffff5ec14e"
+    sha256 cellar: :any, x86_64_linux:      "bf4735873e9f72953d1d10a038feeabe72725a3f2cca1bca008b3360672cc619"
   end
 
   depends_on "cmake" => :build

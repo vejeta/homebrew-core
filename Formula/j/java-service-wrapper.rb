@@ -1,8 +1,8 @@
 class JavaServiceWrapper < Formula
   desc "Simplify the deployment, launch and monitoring of Java applications"
   homepage "https://wrapper.tanukisoftware.com/"
-  url "https://download.tanukisoftware.com/wrapper/3.6.5/wrapper_3.6.5_src.tar.gz"
-  sha256 "e1368eff719f7e1e358d5a3cb4749759cbdbdc455515eebf45ade646be1f82c0"
+  url "https://download.tanukisoftware.com/wrapper/3.7.3/wrapper_3.7.3_src.tar.gz"
+  sha256 "6e99f0ba7fcaea582ad5922a773c1b243a1dd4fe143c0fc4639e4cb18535d851"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only"]
 
   livecheck do
@@ -11,12 +11,12 @@ class JavaServiceWrapper < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "02d66dd4cb0b7c091065fe9a4ca074a9f1cde335a118fd78649ab83f2ef6b8a4"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e5e79a5972a4e23d6a78762f16f5542044a507ff6bfae7f64b82a68ee9b8913b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a6706caef4cbceeb709a644463443c0d30d7648b2bf13205864a3bed6d71ccc4"
-    sha256 cellar: :any_skip_relocation, sonoma:        "78dfa3dd0a4ddfa5a47e120eb72ba8b7fb3f64d7f5fe466aecf1237d60e39eac"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9fa2df42bef313633426f63cf7967f4871d9b18f1cf5ed5c4428b7206ba6618a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e1884526297eddb52a7b9b445049fb5d58cdadb03fe6890690893a39011d011a"
+    sha256 cellar: :any, arm64_golden_gate: "7b9742909e007a1ed79c6dfbd3a69b9568a93a7bb736dcd5fbf191dc8ed23f39"
+    sha256 cellar: :any, arm64_tahoe:       "df75eb05ed823887a661f3a2609339a20024b9389d362bf5163dbe3fff8bb1ac"
+    sha256 cellar: :any, arm64_sequoia:     "07ac280c30fc8c0fad446b0d09a446cfac7afb9d864393f5c9adc2e36b328730"
+    sha256 cellar: :any, arm64_sonoma:      "962c928c16efd2af779ce09af168b5536c37c7af8fd629beb8c34be199dbf227"
+    sha256 cellar: :any, arm64_linux:       "776e7bc61a4311cb52da862351756852b958e75b3b753a05b20b0e7717276912"
+    sha256 cellar: :any, x86_64_linux:      "561e4e053959f56fbd41755155f32e690e0799bd23385a77919d79d78c9818c5"
   end
 
   depends_on "ant" => :build
@@ -26,21 +26,19 @@ class JavaServiceWrapper < Formula
     depends_on "cunit" => :build
   end
 
+  deny_network_access!
+
   def install
     ENV["JAVA_HOME"] = Language::Java.java_home
 
-    # Default javac target version is 1.4, use 1.8 which is the minimum available on newer openjdk
-    system "ant", "-Dbits=64", "-Djavac.target.version=1.8"
+    # Default javac target version is 1.4, use 8 which is the minimum available on newer openjdk.
+    # Build only the targets we install without test modules
+    system "ant", "jar", "compile-c", "bin", "conf", "-Dbits=64", "-Djavac.target.version=8"
 
     libexec.install "lib", "bin", "src/bin" => "scripts"
 
-    if OS.mac?
-      if Hardware::CPU.arm?
-        ln_s "libwrapper.dylib", libexec/"lib/libwrapper.jnilib"
-      else
-        ln_s "libwrapper.jnilib", libexec/"lib/libwrapper.dylib"
-      end
-    end
+    # Both arches now build libwrapper.dylib; provide the .jnilib name Java expects on macOS
+    ln_s "libwrapper.dylib", libexec/"lib/libwrapper.jnilib" if OS.mac?
   end
 
   test do

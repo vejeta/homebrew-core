@@ -8,12 +8,13 @@ class Libint < Formula
   compatibility_version 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "4b03a7d26170b597d8420de0020de22fca8622a1a5990f6139b11df4727722df"
-    sha256 cellar: :any,                 arm64_sequoia: "a46b2a128693e96482d182bd7ba1a28c146e5aaa591c264fca7bcdd0b8c7ae79"
-    sha256 cellar: :any,                 arm64_sonoma:  "69d323511bf9d7556ed922c1b623a7777dc7bdebecd77fb4d85cae61af2e0e17"
-    sha256 cellar: :any,                 sonoma:        "8f26efba8c16c3e353832d6b9a070cf68a005a853fe473feacad779aaf5f65a7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "963b6d12f7047ea666a2b5f18f021bde6578bdcebc25f5007a49137b157d023e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "34def8f50947bcdf2d36667e9bbb9bed785d9b52f62a7ebfef7020dd02f52b5b"
+    sha256 cellar: :any,                 arm64_golden_gate: "01fa33c66fb9272687ab65ec0c9c1207a664c255067408313d003589d84eb912"
+    sha256 cellar: :any,                 arm64_tahoe:       "4b03a7d26170b597d8420de0020de22fca8622a1a5990f6139b11df4727722df"
+    sha256 cellar: :any,                 arm64_sequoia:     "a46b2a128693e96482d182bd7ba1a28c146e5aaa591c264fca7bcdd0b8c7ae79"
+    sha256 cellar: :any,                 arm64_sonoma:      "69d323511bf9d7556ed922c1b623a7777dc7bdebecd77fb4d85cae61af2e0e17"
+    sha256 cellar: :any,                 sonoma:            "8f26efba8c16c3e353832d6b9a070cf68a005a853fe473feacad779aaf5f65a7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "963b6d12f7047ea666a2b5f18f021bde6578bdcebc25f5007a49137b157d023e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "34def8f50947bcdf2d36667e9bbb9bed785d9b52f62a7ebfef7020dd02f52b5b"
   end
 
   depends_on "cmake" => :build
@@ -45,7 +46,7 @@ class Libint < Formula
 
   test do
     system ENV.cxx, "-std=c++14", pkgshare/"hartree-fock.cc", "-o", "hartree-fock",
-                    "-I#{Formula["eigen"].opt_include}/eigen3", "-L#{lib}", "-lint2"
+                    "-I#{formula_opt_include("eigen")}/eigen3", "-L#{lib}", "-lint2"
     system "./hartree-fock", pkgshare/"h2o.xyz"
   end
 end

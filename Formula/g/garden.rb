@@ -1,18 +1,18 @@
 class Garden < Formula
   desc "Grow and cultivate collections of Git trees"
   homepage "https://garden-rs.gitlab.io"
-  url "https://github.com/garden-rs/garden/archive/refs/tags/v2.6.0.tar.gz"
-  sha256 "86134b51c5adba8688e5e06f5437234694ee7950bbd3e7219501edf9a0199afe"
+  url "https://github.com/garden-rs/garden/archive/refs/tags/v2.7.0.tar.gz"
+  sha256 "40f7df483e784583664e258c6d27873050107d6a2a80f971ea64264baf89f0b5"
   license "MIT"
   head "https://github.com/garden-rs/garden.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e347f01f66eaa9e582bc6af516498c6af3a923359e35ea713ebd4ba4e44d77b3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "46ce400ace29a7079e5196c1ffc90117ed8fbb3ac4478d301dcfb0b0e6acdd04"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8590dee00e58ae8d9e4e108e7451f59df55cfae95500deb4d5bf62e24f15469a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "81e6dfed5c8130b506350fcede2fe6f6c0d8b46c1fb5c93562b94679348d37b4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1709360b691104459b7226b416d2cacf671a52b43fc04bb6cac94fb226d6fca0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e217e78e48287a716d8f43befddd2e1e4b0395070ec0f9ba293a682ee7326533"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "bcf9f03d59448c0dffe48e55bb0b565220e6a7a47abc5eef10c4646bd61c85c4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "02ca0b134297c502d53e7a2e78cc251a9c12d0e22c690c2a2efbe382d9315c7b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6c89f4e44b6b4520c1fa7094aaabcc913d381a44a800af5f006d935498264529"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "68620c1ae9726b2d6f3ca1429326e934f843fa9fc45460b2606b3566ecb8fb2d"
+    sha256 cellar: :any,                 arm64_linux:       "30c787ab704fe617a640cd2e86beb4c03c2b214edf8b26f346ab7e4c1f90c117"
+    sha256 cellar: :any,                 x86_64_linux:      "2edfdda9ee1a547957b085e031de75a8f9205b97cad67ea13458745b08dd8ed4"
   end
 
   depends_on "rust" => :build

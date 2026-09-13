@@ -1,17 +1,17 @@
 class Jjui < Formula
   desc "TUI for interacting with the Jujutsu version control system"
   homepage "https://idursun.github.io/jjui/"
-  url "https://github.com/idursun/jjui/archive/refs/tags/v0.10.6.tar.gz"
-  sha256 "8d5d8f73958b6bc0493ebfbbbf5dbb6035eb72d4ee1e84488b34d51f9c3a372e"
+  url "https://github.com/idursun/jjui/archive/refs/tags/v0.10.10.tar.gz"
+  sha256 "1f1af67b7b4f91743abb48b06a68f65cb1ca4d546f95a7d259a963c2e8b32511"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d88a877e106a18dbc2a3824817e8e4b76d84683c9712d12895b53b9e4c58706d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d88a877e106a18dbc2a3824817e8e4b76d84683c9712d12895b53b9e4c58706d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d88a877e106a18dbc2a3824817e8e4b76d84683c9712d12895b53b9e4c58706d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5daa287d44c5570cfa24dd39e2ff794aeff5884cbf9b7b192f808b3065b84ed4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "772395cd22af145cd517f231b55fa217574fb7a24fc701b5707dc07d3954f4d2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b4e7889e48660e48df1049302653fc35322ca9a005b809daa8b54f7fc330736a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "28611127c024dd6b50511ae221227e80cdf52987bf6481d9200775030e553628"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "28611127c024dd6b50511ae221227e80cdf52987bf6481d9200775030e553628"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "28611127c024dd6b50511ae221227e80cdf52987bf6481d9200775030e553628"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "28611127c024dd6b50511ae221227e80cdf52987bf6481d9200775030e553628"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a507cb18ba43ae70b2e0b27b8cfa1e01aec45833e4c989db1344e18cc1ac5f60"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "fffd385d250b5fe0c2cf12295453fb39dc470a617955cb321fa96ab9cb70032d"
   end
 
   depends_on "go" => :build
@@ -19,7 +19,7 @@ class Jjui < Formula
 
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.Version=#{version}"), "./cmd/jjui"
+    system "go", "build", *std_go_args(ldflags: "-X main.Version=#{version}"), "./cmd/jjui"
   end
 
   test do

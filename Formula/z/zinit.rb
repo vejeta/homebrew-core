@@ -1,17 +1,18 @@
 class Zinit < Formula
   desc "Flexible and fast Zsh plugin manager"
   homepage "https://zdharma-continuum.github.io/zinit/wiki/"
-  url "https://github.com/zdharma-continuum/zinit/archive/refs/tags/v3.14.0.tar.gz"
-  sha256 "4707baaad983d2ea911b4c2fddde9e7876593b3dc969a5efd9d387c9e3d03bb3"
+  url "https://github.com/zdharma-continuum/zinit/archive/refs/tags/v3.17.0.tar.gz"
+  sha256 "91ddc05b7ade4d47a4a700d8086bf79bd91329141801117d8d7b1ba11ed689db"
   license "MIT"
   head "https://github.com/zdharma-continuum/zinit.git", branch: "main"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, all: "9f9174dded2850c1d15edeca007e47336e44cff977a7aeb62470ffa29598914a"
+    sha256 cellar: :any_skip_relocation, all: "15c20fc4d72db62ec0d7c5219a4e3576ad6c9460e32a64f2dfeb0e71449b1a57"
   end
 
   uses_from_macos "zsh"
+
+  allow_network_access! :test
 
   def install
     prefix.install Dir["*"]

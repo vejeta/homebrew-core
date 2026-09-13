@@ -1,18 +1,18 @@
 class AwsChecksums < Formula
   desc "Cross-Platform HW accelerated CRC32c and CRC32 with fallback"
   homepage "https://github.com/awslabs/aws-checksums"
-  url "https://github.com/awslabs/aws-checksums/archive/refs/tags/v0.2.10.tar.gz"
-  sha256 "cb6509f75e42ee25c372a6d379e8582ce5179e5335183842e808f7d8abb0c314"
+  url "https://github.com/awslabs/aws-checksums/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "6c058812f5b537ce58eac1e529f441ff387a652ea62cbe9b844f9188339221b1"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "6d445735de28c8a10112acf0aef35604333dd1e116178049cb14fac250cc2a8e"
-    sha256 cellar: :any,                 arm64_sequoia: "51f9c37d851867716d37defe9144f5835fb6278ca1f35907e911a1d586bb0072"
-    sha256 cellar: :any,                 arm64_sonoma:  "e24b9a1b71244f86bd5fa10251200429c07d8a059c0457f07adecab8ddb7f1ee"
-    sha256 cellar: :any,                 sonoma:        "a61857ac1b1680a507dc293eafaec707cb2d9f3b39f4aa8526cf802f22d53b28"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c915444ca9fc28a35b3b45d8af248c85af9e23b55d0f40e3dead889bd7f500e5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "36f9b3e8cbcd098bf0ef110583df824360ad86e71dd9265904203872f59c763f"
+    sha256 cellar: :any, arm64_golden_gate: "ce7b44604d62aaddd66eb329fe763795e7ebc7d2038da936cd51e0939bdcb005"
+    sha256 cellar: :any, arm64_tahoe:       "93cd0e5e990300033e5bc17facaf0594d9c2340d03848b3a0ad902737ff30e3d"
+    sha256 cellar: :any, arm64_sequoia:     "8047f945f26b39339e1e42cf913b316841acc8aa8b8de4d2b6ff0a0387094c4d"
+    sha256 cellar: :any, arm64_sonoma:      "fc90f1d09f6059255be7eab027ccc62779c28c5ecfda9b5453bbcc44fd12d4f6"
+    sha256 cellar: :any, arm64_linux:       "3bc35f4ed2476aa9557d0f846ce78a1277253b1946568f3af585b2fcba37e31a"
+    sha256 cellar: :any, x86_64_linux:      "f616469e31ccb7a85775295452d68cc8d8d9e286dd00eec602371f189aa93789"
   end
 
   depends_on "cmake" => :build
@@ -45,7 +45,7 @@ class AwsChecksums < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-checksums",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

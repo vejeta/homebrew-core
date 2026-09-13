@@ -1,19 +1,19 @@
 class Passenger < Formula
   desc "Server for Ruby, Python, and Node.js apps via Apache/NGINX"
   homepage "https://www.phusionpassenger.com/"
-  url "https://github.com/phusion/passenger/releases/download/release-6.1.5/passenger-6.1.5.tar.gz"
-  sha256 "f5e7ba5f811dcc7dcf9d06c29a580db6f991f51275debf233b6302d283d28cab"
+  url "https://github.com/phusion/passenger/releases/download/release-6.2.0/passenger-6.2.0.tar.gz"
+  sha256 "bd0e14538fa4a9f479a3ce60805a201bf10757d6051d23087759b1abbc811529"
   license "MIT"
-  revision 1
-  head "https://github.com/phusion/passenger.git", branch: "stable-6.1"
+  revision 2
+  head "https://github.com/phusion/passenger.git", branch: "stable-6.2"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "c74ff5a8d89871305a18fd19847215cb2f1ffc49b38c2163dd040c75a0f21f13"
-    sha256 cellar: :any, arm64_sequoia: "7b65f90e32fc2cf8fb02068251cd25d86fecec7ac446e80d8d4d72a8f6ca88f8"
-    sha256 cellar: :any, arm64_sonoma:  "83203a030fbf8e539de0436353d9284ba8ef78a9a4eb70d8709b78ecebd7eb67"
-    sha256 cellar: :any, sonoma:        "6afa5d191b3686006461e66a765130f29c53da50ec02f0f732d902b88ede8d21"
-    sha256 cellar: :any, arm64_linux:   "22259050e7fded30ffcfc74334d60558be1f95fb2080ad7de4780f0e7bbb4809"
-    sha256 cellar: :any, x86_64_linux:  "cd344e81d5b5ec5c6e02bbc98004233c51fb34ad1e680863e5f15c1f85374301"
+    sha256 cellar: :any, arm64_golden_gate: "039f6d8a7b1dff670dd0038a0fa079a7e0033bea1e764a2cbad3ff13c64663c2"
+    sha256 cellar: :any, arm64_tahoe:       "6a969134f291b22d0eb1c07a00a4a07917290e34428bfaf7072cfcfd7d559537"
+    sha256 cellar: :any, arm64_sequoia:     "9d367221a854da9b24d324bd7a2ae20aa71451655ee477b61210ad9617475968"
+    sha256 cellar: :any, arm64_sonoma:      "471aa3bf7fbdb7566feb4faf8dfedf885cb9e5107bd515728d6ac1f158bdd11a"
+    sha256 cellar: :any, arm64_linux:       "6d4839e3ebb4c12732a4bd147a10dd3d98d99a67260aec35a27b44f81e3047b5"
+    sha256 cellar: :any, x86_64_linux:      "71689ea6fca22c62926206435ccf9d04dc61c219b4faf0842a980b962584e607"
   end
 
   depends_on "httpd" => :build # to build the apache2 module
@@ -40,8 +40,8 @@ class Passenger < Formula
     end
 
     inreplace "src/ruby_supportlib/phusion_passenger/platform_info/openssl.rb" do |s|
-      s.gsub! "-I/usr/local/opt/openssl/include", "-I#{Formula["openssl@3"].opt_include}"
-      s.gsub! "-L/usr/local/opt/openssl/lib", "-L#{Formula["openssl@3"].opt_lib}"
+      s.gsub! "-I/usr/local/opt/openssl/include", "-I#{formula_opt_include("openssl@3")}"
+      s.gsub! "-L/usr/local/opt/openssl/lib", "-L#{formula_opt_lib("openssl@3")}"
     end
 
     system "rake", "apache2"
@@ -156,6 +156,6 @@ class Passenger < Formula
         }
       }
     CONF
-    system "#{Formula["nginx"].opt_bin}/nginx", "-t", "-c", testpath/"nginx.conf"
+    system "#{formula_opt_bin("nginx")}/nginx", "-t", "-c", testpath/"nginx.conf"
   end
 end

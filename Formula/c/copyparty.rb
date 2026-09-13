@@ -3,17 +3,17 @@ class Copyparty < Formula
 
   desc "Portable file server"
   homepage "https://github.com/9001/copyparty"
-  url "https://files.pythonhosted.org/packages/52/7f/1c2183316defdc7d8532502554cf2486f3378e0a0d5eb594223e8f617292/copyparty-1.20.16.tar.gz"
-  sha256 "47751fb83659c50571d3852ea34a4af9cc4682ae7b51b459e8bb0279e89075e5"
+  url "https://files.pythonhosted.org/packages/50/c3/b71defbae7475c7576f7c7c04eeaa1f0354e393e06fd66335c355a7e55a8/copyparty-1.20.23.tar.gz"
+  sha256 "999d9a2ca323dccb260974d2f4264958d9e0f5b2634dab9803214ecc9cb12625"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "5f19725a574ccc8346aa532d72cc04e42337bc808c6f3d66f43c60110ac41834"
-    sha256 cellar: :any,                 arm64_sequoia: "8ad0946c8d4fecebf741fe2fc70fc86ff14bca56aa68b08044891caf94b4a0ae"
-    sha256 cellar: :any,                 arm64_sonoma:  "c88af665cbd851fccbd27e610a9e115f1eecc273f0af40f54001d17790fc0551"
-    sha256 cellar: :any,                 sonoma:        "4c2136dbff0ad7009a68f0de272a60f395711a9297fea0d9038a6b011449d26f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c333de07484e8a5ccb945a5d7635fe4dcc2242b0086b3f377b8a4cd32d4ff6c6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4496252efea8f3d004e6ddc68b9215fb932e2029c0dbe7b5743bfc1639ce6b08"
+    sha256 cellar: :any, arm64_golden_gate: "5b148e8b91ee202ae3546e5e57182cc120ee310b7e85aa4a6cadf4fd88d8ecff"
+    sha256 cellar: :any, arm64_tahoe:       "20ab36794e3b034f05d655dc78c9bf72546bdef305bb7d13a5bd6623feeec204"
+    sha256 cellar: :any, arm64_sequoia:     "6b42e51504ec6a9af94033dbbfc3d03e383296f5d9904b5f7421d8a9484e4867"
+    sha256 cellar: :any, arm64_sonoma:      "e45e5d4d946bd5ccc5840dbd02d6df9f113c9bd128bcdfe6fdb7aeb026e955ae"
+    sha256 cellar: :any, arm64_linux:       "1d06ddae0f1d97a8e282227db0d8e87a96b21cbea705eae1610ab941243a997b"
+    sha256 cellar: :any, x86_64_linux:      "aae9acaeca822f32ff8f629aee345629b5c5eaeaac556952a974df1a529c5047"
   end
 
   # `pkgconf` and `rust` are for bcrypt
@@ -42,8 +42,8 @@ class Copyparty < Formula
   end
 
   resource "argon2-cffi-bindings" do
-    url "https://files.pythonhosted.org/packages/5c/2d/db8af0df73c1cf454f71b2bbe5e356b8c1f8041c979f505b3d3186e520a9/argon2_cffi_bindings-25.1.0.tar.gz"
-    sha256 "b957f3e6ea4d55d820e40ff76f450952807013d361a65d7f28acc0acbf29229d"
+    url "https://files.pythonhosted.org/packages/0b/43/bb8b6e8708d49a5ab36781333af092d9f483b198a2710d01281204640055/argon2_cffi_bindings-26.1.0.tar.gz"
+    sha256 "63505c71542a44b68b1e38060450fb006404170da375feb31af153e7f9c6205d"
   end
 
   resource "bcrypt" do
@@ -97,13 +97,13 @@ class Copyparty < Formula
   end
 
   resource "pyopenssl" do
-    url "https://files.pythonhosted.org/packages/1a/51/27a5ad5f939d08f690a326ef9582cda7140555180db71695f6fb747d6a36/pyopenssl-26.2.0.tar.gz"
-    sha256 "8c6fcecd1183a7fc897548dfe388b0cdb7f37e018200d8409cf33959dbe35387"
+    url "https://files.pythonhosted.org/packages/3f/e8/7325d258199b159eb2c03fe32107533e2832e70e63f4fb88a6aa00023201/pyopenssl-26.4.0.tar.gz"
+    sha256 "28dfcce0162b9211413e26dfbfdf1d24317fbeba18fc93c12400a1856b2a0bc7"
   end
 
   resource "pyzmq" do
-    url "https://files.pythonhosted.org/packages/04/0b/3c9baedbdf613ecaa7aa07027780b8867f57b6293b6ee50de316c9f3222b/pyzmq-27.1.0.tar.gz"
-    sha256 "ac0765e3d44455adb6ddbf4417dcce460fc40a05978c08efdf2948072f6db540"
+    url "https://files.pythonhosted.org/packages/e7/8d/5b3d5631c2f4b4b8862f64cd0c9eb777b5710eeb5125b4be8dd0a200a4c0/pyzmq-27.2.0.tar.gz"
+    sha256 "54d4259d1bfae24ecdb5ca79f7acc2eac6c286a02d6a0ae617797cb45f0726d3"
   end
 
   def install

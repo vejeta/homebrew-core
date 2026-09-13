@@ -1,28 +1,24 @@
 class Convco < Formula
   desc "Conventional commits, changelog, versioning, validation"
   homepage "https://convco.github.io"
-  url "https://github.com/convco/convco/archive/refs/tags/v0.6.4.tar.gz"
-  sha256 "907a7db94f0f49c2ee547c0aebfff50500a9d886a7e575bc0288d6937101972b"
+  url "https://github.com/convco/convco/archive/refs/tags/v0.7.2.tar.gz"
+  sha256 "b73c702e93e9e29f9b57faf497e812a94edb773e2f7d67d7b0481b03464f1b24"
   license "MIT"
   head "https://github.com/convco/convco.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "f4a0969e3b60c01c5fcc1dceefa0b7544f80d73c2374bba526b5953e7360069c"
-    sha256 cellar: :any,                 arm64_sequoia: "08a739ef2b32e8dd522246aa3ecd6b293cbde33cc82ddded91262c9a9670560f"
-    sha256 cellar: :any,                 arm64_sonoma:  "cb8eb3d9475713310a35b1602ae42a89021e11c6f0bf6e77334887d08c13cfe2"
-    sha256 cellar: :any,                 sonoma:        "6ff6540112f11725e5607b1dedeb254ead9001bbf43708468ee87c75edb995e9"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5e8aeb9afaeee368d3dd271b6e60abd205568586f6d134d9f0a9f5c75f70fd61"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "685ab707d227454b95c081fa542636997400a46160af144019e411fafc15cc36"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7620550c3113cb0825b945965a70749640f5693e47a6224fc1970e2e341d5cb4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "c26b3c89fd7ab7c9c495176fbe53c0b3fa92c6f8d5d739dcc9a630be0864007e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "03bb0a433e09cbe63071b66a53b2b640c4896a389becb90bc5c27c7feba1519c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "d43c7d84ef671adfab02117702b56613d9ee7b41f8dab7f199e4b5addc0c56f0"
+    sha256 cellar: :any,                 arm64_linux:       "64d6be756227a554d791bf52d8dd5899eace60472841dab6377257781894c529"
+    sha256 cellar: :any,                 x86_64_linux:      "beea1ce49b7c7c843c5893e276dbd1eda58bc12f4a37ec3a79498bffd333edd4"
   end
 
-  depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  depends_on "libgit2"
 
   def install
-    ENV["LIBGIT2_NO_VENDOR"] = "1"
-
-    system "cargo", "install", "--no-default-features", *std_cargo_args
+    system "cargo", "install", "--no-default-features", *std_cargo_args(features: "gix")
 
     bash_completion.install "target/completions/convco.bash" => "convco"
     zsh_completion.install  "target/completions/_convco" => "_convco"
@@ -34,11 +30,5 @@ class Convco < Formula
     system "git", "commit", "--allow-empty", "-m", "invalid"
     assert_match(/FAIL  \w+  first line doesn't match `<type>\[optional scope\]: <description>`  invalid\n/,
       shell_output("#{bin}/convco check", 1).lines.first)
-
-    # Verify that we are using the libgit2 library
-    require "utils/linkage"
-    library = Formula["libgit2"].opt_lib/shared_library("libgit2")
-    assert Utils.binary_linked_to_library?(bin/"convco", library),
-           "No linkage with #{library.basename}! Cargo is likely using a vendored version."
   end
 end

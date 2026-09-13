@@ -7,15 +7,18 @@ class BigqueryEmulator < Formula
   head "https://github.com/goccy/bigquery-emulator.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f37f93ed098640539dfe797b8af9f8426ec20a0a8bb4d55cfa1e860bec5633f7"
-    sha256 cellar: :any,                 arm64_linux:   "e471034a6d450e9500fd3042723b98b87e337d2f8fb6c9e5531bb05139002fd5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ff25d427abf1af93767169775f4259745bebc4ec7a23085dc0a1b3bc49bf407f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9f981a28ec826694ca25a27d38cb3125a6eb8cc4d7fb106d4437185aeaa8e756"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "a397c8bc93742701c7799ee2ecddabfec3df714726796fcb4e8e6d61f14d1497"
+    sha256 cellar: :any_skip_relocation, sonoma:            "f37f93ed098640539dfe797b8af9f8426ec20a0a8bb4d55cfa1e860bec5633f7"
+    sha256 cellar: :any,                 arm64_linux:       "e471034a6d450e9500fd3042723b98b87e337d2f8fb6c9e5531bb05139002fd5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "ff25d427abf1af93767169775f4259745bebc4ec7a23085dc0a1b3bc49bf407f"
   end
 
-  depends_on "go" => :build
+  # TODO: unpin go@1.26 when bigquery-emulator supports go 1.27
+  # ref: https://github.com/goccy/bigquery-emulator/pull/497
+  depends_on "go@1.26" => :build
 
   uses_from_macos "llvm" => :build
 
@@ -30,7 +33,7 @@ class BigqueryEmulator < Formula
       ENV.append "GOFLAGS", "-buildmode=pie"
     end
 
-    ldflags = "-s -w -X main.version=#{version} -X main.revision=#{tap.user}"
+    ldflags = "-X main.version=#{version} -X main.revision=#{tap.user}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/bigquery-emulator"
   end
 
@@ -66,7 +69,6 @@ class BigqueryEmulator < Formula
                                          "--port=#{port}",
                                          "--grpc-port=#{grpc_port}"
     sleep 10
-    sleep 10 if OS.mac? && Hardware::CPU.intel?
 
     query = '{"query": "SELECT name FROM dataset1.table_a WHERE id = 2"}'
     query_url = "http://localhost:#{port}/bigquery/v2/projects/test/queries"

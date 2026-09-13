@@ -2,8 +2,8 @@ class Solarus < Formula
   desc "Action-RPG game engine"
   homepage "https://www.solarus-games.org/"
   url "https://gitlab.com/solarus-games/solarus.git",
-      tag:      "v2.0.4",
-      revision: "b942f8ce5c0562610a93079dcacf53a51fa88540"
+      tag:      "v2.1.4",
+      revision: "29437e8a98263b1c9c2b742c39894a8eb6a2c200"
   license "GPL-3.0-or-later"
   compatibility_version 1
 
@@ -13,12 +13,12 @@ class Solarus < Formula
   end
 
   bottle do
-    sha256                               arm64_tahoe:   "b76a690587b54d9f03967cc96f2efc195eb394ebbf7daf8b6a8c04ae1136d156"
-    sha256                               arm64_sequoia: "3b0e4aa0a5d17436c5401c49aa8ba45c362e46843eb4366f9ac4fbdd8ffad067"
-    sha256                               arm64_sonoma:  "e0cea3781cca840a5a2028bba7bc54faceb3ce2f646428627e32a42463afb740"
-    sha256                               sonoma:        "6fc0fd0b677a699281b508289b6d3ead8d76ae7209b3f3cf5ed81acac0beec48"
-    sha256                               arm64_linux:   "2fbcca3c7cf963a0d7e09fdea04e9ea170429750ec8661cb44b8fece0ba255e5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1ad431b0d53d648f4d1f8e71322b2d2f9b40ead2fbae3721f52392be551b2352"
+    sha256               arm64_golden_gate: "e12c6b7fee97bb3cf9d461cff5b8640d4ff2f5fca027730b01a78f1dbae232cc"
+    sha256               arm64_tahoe:       "1e8bd6f576c087d18c85dcd04a55423fa95d3dfa846b6d9311331b05f09d2983"
+    sha256               arm64_sequoia:     "599a192269446b6ce0e392b90ff05017d8fb0a403e0fc9ce0f09075e29d25007"
+    sha256               arm64_sonoma:      "904bd50a929085bdb11ebfcd7cb805a9f43be43cfb8875107b75925989943c69"
+    sha256               arm64_linux:       "c4badd41b0328f4737f7e20fc3c74f946d58e8d663301f40956c60c57e29c89c"
+    sha256 cellar: :any, x86_64_linux:      "94e23528ca5a411cdeb47695c23b74b1db8a9b39def7c3a5b1f47b3dc3982d60"
   end
 
   depends_on "cmake" => :build
@@ -45,10 +45,10 @@ class Solarus < Formula
                     "-DSOLARUS_ARCH=#{Hardware::CPU.arch}",
                     "-DSOLARUS_GUI=OFF",
                     "-DSOLARUS_TESTS=OFF",
-                    "-DVORBISFILE_INCLUDE_DIR=#{Formula["libvorbis"].opt_include}",
-                    "-DOGG_INCLUDE_DIR=#{Formula["libogg"].opt_include}",
-                    "-DGLM_INCLUDE_DIR=#{Formula["glm"].opt_include}",
-                    "-DPHYSFS_INCLUDE_DIR=#{Formula["physfs"].opt_include}",
+                    "-DVORBISFILE_INCLUDE_DIR=#{formula_opt_include("libvorbis")}",
+                    "-DOGG_INCLUDE_DIR=#{formula_opt_include("libogg")}",
+                    "-DGLM_INCLUDE_DIR=#{formula_opt_include("glm")}",
+                    "-DPHYSFS_INCLUDE_DIR=#{formula_opt_include("physfs")}",
                     *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"

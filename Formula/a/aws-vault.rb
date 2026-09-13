@@ -1,8 +1,8 @@
 class AwsVault < Formula
   desc "Securely store and access AWS credentials in development environments"
   homepage "https://github.com/ByteNess/aws-vault"
-  url "https://github.com/ByteNess/aws-vault/archive/refs/tags/v7.12.3.tar.gz"
-  sha256 "4ac9d32ff5b68e7ef13b008d8789c31f4b3e80c5a736d03c5739880c859d804f"
+  url "https://github.com/ByteNess/aws-vault/archive/refs/tags/v7.14.0.tar.gz"
+  sha256 "17c13c6d3335510cbd1d0603df67764b63c467eb46781307d12d2dc84bf5e82e"
   license "MIT"
   head "https://github.com/ByteNess/aws-vault.git", branch: "main"
 
@@ -12,12 +12,11 @@ class AwsVault < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "48cd98315ab404538808bafb0e2dcf1baf26d93c022d7c8ce1b5b1af86514a3e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5fc425ea9e4f814bcbb8d762ad1b20c58d9ced18e9d7e79548961743dd5b8d41"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "57be5007a641416043e7fd0f081948db2699ab65e9384d7cf3ed6e1f604d6526"
-    sha256 cellar: :any_skip_relocation, sonoma:        "4f4aa9f011c1a3656902867e6e2b99177563e51f1b41d25d9991a488b94cb930"
-    sha256 cellar: :any,                 arm64_linux:   "566e81fabf4fbbe06095ef3c17b7b7e49ebb547bcc0706772fa48807b73ffd59"
-    sha256 cellar: :any,                 x86_64_linux:  "067967d1818dbcfd55b5526b09166beb0cd7185a5eb68b0033edc12247a85340"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ddbb736da2c23df495c23d2bacd546f19b1e12da7618555797868a6ab005659a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "8098046aa91fc0af8aa88b9dc07a8fc2fa1ab3f95d0e11d933bfe582be48191f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "0d1fe307a457eb32408568dbeed4b5556515abd61973645d4673e1699ebbb353"
+    sha256 cellar: :any,                 arm64_linux:       "5f36318bf91e484a9c78d23c64a97dd85eec1421f945bf15b5f645199b26d85b"
+    sha256 cellar: :any,                 x86_64_linux:      "5c661f30fe1276714bb01a2eebe4e9f96aa280aa7e6720d20f8f7cf7bbbbe618"
   end
 
   depends_on "go" => :build
@@ -25,8 +24,7 @@ class AwsVault < Formula
   def install
     ENV["CGO_ENABLED"] = "1" if OS.linux? && Hardware::CPU.arm?
 
-    ldflags = "-s -w -X main.Version=#{version}-#{tap.user}"
-    system "go", "build", *std_go_args(ldflags:), "."
+    system "go", "build", *std_go_args(ldflags: "-X main.Version=#{version}-#{tap.user}")
 
     zsh_completion.install "contrib/completions/zsh/aws-vault.zsh" => "_aws-vault"
     bash_completion.install "contrib/completions/bash/aws-vault.bash" => "aws-vault"

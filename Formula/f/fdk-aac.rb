@@ -26,6 +26,9 @@ class FdkAac < Formula
     depends_on "libtool" => :build
   end
 
+  deprecate! date: "2026-09-13", because: "does not meet the license policy"
+  disable! date: "2026-09-13", because: "does not meet the license policy"
+
   def install
     system "./autogen.sh" if build.head?
     system "./configure", "--disable-dependency-tracking",

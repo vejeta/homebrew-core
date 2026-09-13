@@ -1,19 +1,19 @@
 class Uv < Formula
   desc "Extremely fast Python package installer and resolver, written in Rust"
   homepage "https://docs.astral.sh/uv/"
-  url "https://github.com/astral-sh/uv/archive/refs/tags/0.11.23.tar.gz"
-  sha256 "8bbb236ae5ab7fc72261d600f79f8efd0e306acb130669371d7c11db5eb6747b"
+  url "https://github.com/astral-sh/uv/archive/refs/tags/0.12.13.tar.gz"
+  sha256 "6fed06d051682d521335fb26cd422bc652e5e15b87ea87ab13353b89d865fe40"
   license any_of: ["Apache-2.0", "MIT"]
   compatibility_version 1
   head "https://github.com/astral-sh/uv.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "3c61915e90034bad0d37b3f572038d35778d660ad8a6fbaedabc29eaf232d736"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "732504d43bc21ce301ed3559e69c94c0772374c93a9817dd3feeaab0ff2ac17f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "983910a48d1dce08e41be0fb4eff0bb5f8391028f4bda6a83577bafc7dcbf03d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d2dbf30d492e031c0d0583c64b8020b20e1ae097fb5f34ab47b180a4979b94ee"
-    sha256 cellar: :any,                 arm64_linux:   "eba50be9857fb3996880df7e6eb15fdb32a698da2016a6bf97adaff484b8e543"
-    sha256 cellar: :any,                 x86_64_linux:  "e9775bf0fab5f3be8d7b2bde4ca8b8318b0538a8a7ccb2a428f4fbfab2904bae"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d22bb886a7c1d7778d6ce6b066cd6bb72e3c9db4f5e945d4eba65a51a894ad66"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "6759c56c621f1a035a7a01bd71dfb316c9c147cf6e96aff64afaf5382c460bcd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e8aa8f69a031448e05a227fe24ca7c2a5e89342046fe12079041dbd143ddc546"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "1919592d10fc12fb466401d4a0828a3b6e65747c50e0e691dd992089d5da09d0"
+    sha256 cellar: :any,                 arm64_linux:       "a00b23636cacac2f9a440392d096efdab6ba3789fcda72e3172a508e392156e6"
+    sha256 cellar: :any,                 x86_64_linux:      "41b3b6e493abc0db2832e09dde141abed5414f2f5f7d244d6239282dff567583"
   end
 
   depends_on "pkgconf" => :build
@@ -22,6 +22,13 @@ class Uv < Formula
   uses_from_macos "python" => :test
   uses_from_macos "bzip2"
   uses_from_macos "xz"
+
+  # downloads wheels in test
+  allow_network_access! :test
+
+  def fetch
+    system "cargo", "fetch", "--locked", "--target", "host-tuple"
+  end
 
   def install
     ENV["UV_COMMIT_HASH"] = ENV["UV_COMMIT_SHORT_HASH"] = tap.user

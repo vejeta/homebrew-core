@@ -1,8 +1,8 @@
 class HapiFhirCli < Formula
   desc "Command-line interface for the HAPI FHIR library"
   homepage "https://hapifhir.io/"
-  url "https://github.com/hapifhir/hapi-fhir/releases/download/v8.10.0/hapi-fhir-8.10.0-cli.zip"
-  sha256 "66a0308a7babbb59a73d1b9a1dddbd357ac5bfeb62251c3a08d5abbba87f948a"
+  url "https://github.com/hapifhir/hapi-fhir/releases/download/v8.12.0/hapi-fhir-8.12.0-cli.zip"
+  sha256 "80cad32b7680a81303329f2c65c56eb3f5989379193b67054ac8fce49a7891b9"
   license "Apache-2.0"
 
   # The "latest" release on GitHub is sometimes for an older major/minor, so we
@@ -16,7 +16,7 @@ class HapiFhirCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "0b0ecd3868eaec3179e828242e0622847e7d557f426897bb68185f7783b73b00"
+    sha256 cellar: :any_skip_relocation, all: "9502233d13107397c7cb55061426a2dd8fa46ceea17cea0cb75560583b9b9728"
   end
 
   depends_on "openjdk"
@@ -25,7 +25,7 @@ class HapiFhirCli < Formula
     inreplace "hapi-fhir-cli", /SCRIPTDIR=(.*)/, "SCRIPTDIR=#{libexec}"
     libexec.install "hapi-fhir-cli.jar"
     bin.install "hapi-fhir-cli"
-    bin.env_script_all_files libexec/"bin", JAVA_HOME: Formula["openjdk"].opt_prefix
+    bin.env_script_all_files libexec/"bin", JAVA_HOME: formula_opt_prefix("openjdk")
   end
 
   test do

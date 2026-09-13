@@ -7,12 +7,13 @@ class FlowTools < Formula
 
   bottle do
     rebuild 2
-    sha256 arm64_tahoe:   "c6ac8dfec95def2a25acdf33db6ddd896f473f64c402e415753a316d0eef78b1"
-    sha256 arm64_sequoia: "7e2efd253c92894d3d2a423bc535eb5fea7a8507b677e1346e14cd6cc925aef9"
-    sha256 arm64_sonoma:  "9e5dafcea86e53dc7e880dd4f4a978563e4e5abb7ab226386fca7f1afd40203d"
-    sha256 sonoma:        "9d5da70fb239297657612492fd4448ec29ebd54612fc2e3fc77db0d0802fece5"
-    sha256 arm64_linux:   "86b056849f21682bd1cb1c180e5df2e62790f79717c27f2cc2bd4d09ef3019be"
-    sha256 x86_64_linux:  "6ea0a8b997faf61a95f480149b697f9ee4446674e12bf5deaf34c132a1e314e8"
+    sha256 arm64_golden_gate: "02f9410f5e51f89d34bae9d26b11fff87890c45003f33114d044e513011aa520"
+    sha256 arm64_tahoe:       "c6ac8dfec95def2a25acdf33db6ddd896f473f64c402e415753a316d0eef78b1"
+    sha256 arm64_sequoia:     "7e2efd253c92894d3d2a423bc535eb5fea7a8507b677e1346e14cd6cc925aef9"
+    sha256 arm64_sonoma:      "9e5dafcea86e53dc7e880dd4f4a978563e4e5abb7ab226386fca7f1afd40203d"
+    sha256 sonoma:            "9d5da70fb239297657612492fd4448ec29ebd54612fc2e3fc77db0d0802fece5"
+    sha256 arm64_linux:       "86b056849f21682bd1cb1c180e5df2e62790f79717c27f2cc2bd4d09ef3019be"
+    sha256 x86_64_linux:      "6ea0a8b997faf61a95f480149b697f9ee4446674e12bf5deaf34c132a1e314e8"
   end
 
   uses_from_macos "bison" => :build
@@ -24,18 +25,19 @@ class FlowTools < Formula
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
+    file "Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
   end
 
   # Apply Fedora patch to fix implicit function declarations and multiple definitions
   patch do
     url "https://src.fedoraproject.org/rpms/flow-tools/raw/5590477b99c33b61a4d18436453a29e398be01aa/f/flow-tools-c99.patch"
     sha256 "ce1693d53c1dab3a91486a8005ea35ce35a794d6b42dad2a4e05513c40ee9495"
+    type :unofficial
   end
   patch do
     url "https://src.fedoraproject.org/rpms/flow-tools/raw/61ed33ab67251599c26a2e2636f1926b0448ab8a/f/flow-tools-extern.patch"
     sha256 "3b0937004edfabc53d966e035ad2a2c3239bcfccdc1bacef2f54612fccd84290"
+    type :unofficial
   end
 
   def install

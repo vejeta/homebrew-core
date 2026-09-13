@@ -2,37 +2,40 @@ class Dartaotruntime < Formula
   desc "Command-line tool for running AOT-compiled snapshots of Dart code"
   homepage "https://dart.dev/tools/dartaotruntime"
   # NOTE: Using a placeholder file because the build source is fetched by gclient
-  url "https://raw.githubusercontent.com/dart-lang/sdk/refs/tags/3.12.2/README.md"
+  url "https://raw.githubusercontent.com/dart-lang/sdk/refs/tags/3.13.3/README.md"
   sha256 "ff4301ec8e5c1259c5778c4abc947e303308cd31af30acd55575f5ca7ed6f405"
   license "BSD-3-Clause"
-  compatibility_version 2
+  compatibility_version 3
 
   livecheck do
     formula "dart-sdk"
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e669e98842c8f645835ae1efe428fcebb49b912b5f5adbdc680f995bd85cce04"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b30143d30f2e21e7f7ef4db123ef1af58b3867fbedca242d71ed01c0eb4bf3f6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9171b78a8a9a9f0fd9b6c00767b0a4cf5fa479820a304fe812ab5e2655f3ccbf"
-    sha256 cellar: :any_skip_relocation, sonoma:        "aa258e768473403a6ed77448830b5405722c054ae9e76a1478008907ae620477"
-    sha256 cellar: :any,                 arm64_linux:   "392c146fd6ece31992b92847d6f6cc4cb466b171af0945295f7ccb727e580990"
-    sha256 cellar: :any,                 x86_64_linux:  "257b274af739934c2cfedcb5a62c882a1fe9c3715c708e943b69f141dfa1bfd3"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "84cd16acf230ae245e9e8ceeba1db15964a8f0cdd65b4ab76ad23eb3f0d1d461"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "874eebf42fd268371e55411baa47b420e57e6722e8ad98a7f598db8ae5f78a92"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "57265a76550b5a1dd6e8cc5003410d4d533eb0a01aa71812f06fd4ec1663da4d"
+    sha256 cellar: :any,                 arm64_linux:       "9b0ca40301c174d20635d33f3a7e319cc38a24ffbbc749602afe3ce435f1a5c1"
+    sha256 cellar: :any,                 x86_64_linux:      "371cc589cc8fbd3689cfef83bb4971d1d1547f35a8d4d4ece255ab4f91aa2681"
   end
 
   depends_on "ninja" => :build
-  depends_on xcode: :build # for xcodebuild
   depends_on "dart-sdk" => :test
 
   uses_from_macos "curl" => :build
   uses_from_macos "python" => :build
   uses_from_macos "xz" => :build
 
+  on_macos do
+    depends_on xcode: :build # for xcodebuild
+  end
+
   # always pull the latest commit from https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main
   resource "depot-tools" do
     url "https://chromium.googlesource.com/chromium/tools/depot_tools.git",
-        revision: "b9d2b54daea64fa757df5ba737e611b691dc6201"
-    version "b9d2b54daea64fa757df5ba737e611b691dc6201"
+        revision: "cb70c994a656601dc6a0d423f49ff57503bd70bc"
+    version "cb70c994a656601dc6a0d423f49ff57503bd70bc"
 
     livecheck do
       url "https://chromium.googlesource.com/chromium/tools/depot_tools.git/+/refs/heads/main?format=JSON"
@@ -45,15 +48,12 @@ class Dartaotruntime < Formula
     ENV["DEPOT_TOOLS_UPDATE"] = "0"
     ENV.append_path "PATH", buildpath/"depot-tools"
 
-    system "gclient", "config", "--name", "sdk", "https://dart.googlesource.com/sdk.git@#{version}"
+    # Roll clang to include lld support for arm64e.x1 targets in the macOS 27 SDK (llvm/llvm-project#222721)
+    # TODO: Remove when upstream rolls clang past that commit, see https://github.com/dart-lang/sdk/issues/64264
+    system "gclient", "config", "--name", "sdk",
+           "--custom-var", 'clang_version="git_revision:07d67299a15ce03b053736e2d31a668ee0576987"',
+           "https://dart.googlesource.com/sdk.git@#{version}"
     system "gclient", "sync", "--no-history"
-
-    # FIXME: Workaround for https://github.com/dart-lang/sdk/issues/63089
-    if OS.mac? && MacOS::Xcode.version >= "26.4"
-      inreplace "sdk/build/config/compiler/BUILD.gn",
-                "\"-Wno-tautological-constant-compare\",",
-                "\"-Wno-tautological-constant-compare\", \"-Wno-deprecated-declarations\","
-    end
 
     cd "sdk" do
       arch = Hardware::CPU.intel? ? "x64" : Hardware::CPU.arch.to_s

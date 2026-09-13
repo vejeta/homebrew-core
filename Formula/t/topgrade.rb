@@ -1,8 +1,8 @@
 class Topgrade < Formula
   desc "Upgrade all the things"
   homepage "https://github.com/topgrade-rs/topgrade"
-  url "https://github.com/topgrade-rs/topgrade/archive/refs/tags/v17.6.1.tar.gz"
-  sha256 "c25274461f61b8fa469c1645a892bb5b52236bb64dc448152c6f485f9ec1cb1d"
+  url "https://github.com/topgrade-rs/topgrade/archive/refs/tags/v17.11.0.tar.gz"
+  sha256 "d93647cb5978e1d7e0100e2fcca5fdf0186b7aa742267ac34ebc384550518b33"
   license "GPL-3.0-or-later"
   head "https://github.com/topgrade-rs/topgrade.git", branch: "main"
 
@@ -14,12 +14,11 @@ class Topgrade < Formula
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "36eb775ad2b6cb2f30a1ea4f05634e5df8a2a7881d938d2473fc699f62d93682"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c075e343a0305ed449069ff3e8927aea06c80e05fe5be253abf00d075066fee3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "fe85fcc548030aa358c29e81618b6ce12131c56e9423aa83a2e66d8acfc1ea6e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "74271afd987a3b6f0a4ad2aadf7117af6eb0eff5384ec69ec2e029f5ed1ddbe9"
-    sha256 cellar: :any,                 arm64_linux:   "5f1467716629f5d32d2e1386ee380fb41705ee8ca13f2281b87c83e4969c53de"
-    sha256 cellar: :any,                 x86_64_linux:  "3f259917c8c18f3f840d6b1bdc16010ca5f7d2cd40942f9211df69090f27202d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "590ad28907dd2932b432471bafd179017d2e5368588309385ffac01b9a5310d9"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "20e337020b9903f0c02f5e2b813b6ee317e3f1385e1bcad3bc6a91846c735c7a"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b3015b06e5166fbdd6acf8451e11bb382ad27ce9acab8f8dea805732a8eee58b"
+    sha256 cellar: :any,                 arm64_linux:       "708708d4312f28acd497bd29dc92bb1c1b824c353a5909b3d2748bb7a7f77f2f"
+    sha256 cellar: :any,                 x86_64_linux:      "48a090d6272744a9fc1bcfe24794e1fb32379feddf9f08331a73d40c787b4a17"
   end
 
   depends_on "rust" => :build

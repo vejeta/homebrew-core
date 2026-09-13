@@ -1,10 +1,9 @@
 class Lgogdownloader < Formula
   desc "Unofficial downloader for GOG.com games"
   homepage "https://sites.google.com/site/gogdownloader/"
-  url "https://github.com/Sude-/lgogdownloader/releases/download/v3.18/lgogdownloader-3.18.tar.gz"
-  sha256 "1974f09cb0e0cdfed536937335488548addd92e5c654f4229ac22594a22f8ae0"
+  url "https://github.com/Sude-/lgogdownloader/releases/download/v3.19/lgogdownloader-3.19.tar.gz"
+  sha256 "0fd3622f1cee4627048aafbbebd17dc38fd3ddb220c979e4a118eeab2cc665d4"
   license "WTFPL"
-  revision 2
   head "https://github.com/Sude-/lgogdownloader.git", branch: "master"
 
   livecheck do
@@ -13,12 +12,11 @@ class Lgogdownloader < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "3fe96a9615c0a202089916f23840e7f42a470bb4cefd2fc8f7f479efb07a2f42"
-    sha256 cellar: :any,                 arm64_sequoia: "767059314331b099bb3e36828786cfbb70111f554fd98211276dbb58f0e87a39"
-    sha256 cellar: :any,                 arm64_sonoma:  "206ba19cf3a71d379a02612c6022c760c1e4f146056de4957bc751a996b8842c"
-    sha256 cellar: :any,                 sonoma:        "b254dc0f83eb097b2b217afd548ea468d15aef35843fceb97d69c2add5165481"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8e1a01aa5ec328d12d2fd5313530727b17331cc9e185fdb960a5c57b81e984ff"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "771b4f2db2f1f6fedab5297c4b7fdb4778bf21bd48ef97f1da73346f7fd4f92c"
+    sha256 cellar: :any, arm64_golden_gate: "47028108297724eb3289612cc4a51b1e435fa1dd85053a5f7a20fbd47bfac21b"
+    sha256 cellar: :any, arm64_tahoe:       "d51953f9f373e941a492932d0cc107f9714bd234335ae5dd8384ed177e4b96fa"
+    sha256 cellar: :any, arm64_sequoia:     "2049eaa34dbbabeb299453b901f8675b1ea3261e29d20d6a8a60977de7e678a7"
+    sha256 cellar: :any, arm64_linux:       "018aacdff45c62d39da2c28cefed81145ecae59ed1a1eff25f0b1ec92be2e1d4"
+    sha256 cellar: :any, x86_64_linux:      "f5e45b068e0b6d73c87c02afa51ab8c06df0e802eec9e26fdfef9060e70766df"
   end
 
   depends_on "cmake" => :build
@@ -35,8 +33,8 @@ class Lgogdownloader < Formula
 
   def install
     args = %W[
-      -DJSONCPP_INCLUDE_DIR=#{Formula["jsoncpp"].opt_include}
-      -DBoost_INCLUDE_DIR=#{Formula["boost"].opt_include}
+      -DJSONCPP_INCLUDE_DIR=#{formula_opt_include("jsoncpp")}
+      -DBoost_INCLUDE_DIR=#{formula_opt_include("boost")}
     ]
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args

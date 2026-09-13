@@ -1,19 +1,19 @@
 class Onnx < Formula
   desc "Open standard for machine learning interoperability"
   homepage "https://onnx.ai/"
-  url "https://github.com/onnx/onnx/archive/refs/tags/v1.21.0.tar.gz"
-  sha256 "42ffedcd8c9b6363694300c6ffec1ada77f9620176465719acb27b13a4d6f2de"
+  url "https://github.com/onnx/onnx/archive/refs/tags/v1.22.0.tar.gz"
+  sha256 "70bb8b25cf31ea9b1d9f94baacfdc8c4fa27a760f9a10f5d93881bc9eede5fbc"
   license "Apache-2.0"
-  revision 1
+  revision 4
   compatibility_version 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "318261d4f65731b8a9cde765378d5198a4b9968cab222dbf770460ac6c0d1b1e"
-    sha256 cellar: :any,                 arm64_sequoia: "11d8ee06f7e47432afc477c391a53a5ee6328e45053df06189f20351ac05e5fd"
-    sha256 cellar: :any,                 arm64_sonoma:  "0b34c5443e41ba3a11c4f494548e2de5a28b84aad5c815c5b2767ab9bc4995d3"
-    sha256 cellar: :any,                 sonoma:        "866c95d071c8f417bf786af5640d128bd8f3ab4a94a8e0e3461c999d8fcd73cb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "2832dfc30dac6dea46476082aecebac40a35656215f3f1afae7683bcc128a6b4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "625b13ef9238957bc1313269772eaccc889b494414fbadf783d2a0ee1b6a6f5d"
+    sha256 cellar: :any, arm64_golden_gate: "1b5e3b1e63efebfc4652a2e499fbd9120e73160f036b7fced9f24588e7a48298"
+    sha256 cellar: :any, arm64_tahoe:       "a7f62703c646599e69bbd6060325770ffd8c8d6560eb4021620c1801fb59c4e1"
+    sha256 cellar: :any, arm64_sequoia:     "dc2bff2f3571b8f5a31f307e5aa01009b586eb006e86b911d13cfe43f5b4b49a"
+    sha256 cellar: :any, arm64_sonoma:      "20d8e860c551b86ca826da0d9c1e2ab4474129f609f6aca5802a7bc2b27d1241"
+    sha256 cellar: :any, arm64_linux:       "26ad61f746c593109048c77a9ed3ce7a3a8f31936f7c5a40a84c9c6b3927f0cc"
+    sha256 cellar: :any, x86_64_linux:      "68b1196df239958ad559ac0fe85647498bc7528556dcdf80267b188da3937aad"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -30,9 +30,15 @@ class Onnx < Formula
   patch do
     url "https://src.fedoraproject.org/rpms/onnx/raw/4de8a450afd87b1ba1931f50d841e9c50b63d8a0/f/0004-Add-fixes-for-use-with-onnxruntime.patch"
     sha256 "d9ddb735c065fd5dae11ab79371e62bdcca157a6d2a7705cc83ee612abeaaa98"
+    type :unofficial
+    resolves "https://github.com/microsoft/onnxruntime/issues/8556"
   end
 
   def install
+    # FIXME: From v1.22+, onnx internals are hidden by default, which breaks
+    # onnxruntime's usage of onnx as a dependency. We need to make them visible again.
+    inreplace "CMakeLists.txt", "CXX_VISIBILITY_PRESET hidden", "CXX_VISIBILITY_PRESET default"
+
     args = %W[
       -DBUILD_SHARED_LIBS=ON
       -DCMAKE_INSTALL_RPATH=#{rpath}

@@ -3,10 +3,10 @@ class Qtwebengine < Formula
 
   desc "Provides functionality for rendering regions of dynamic web content"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.11/6.11.1/submodules/qtwebengine-everywhere-src-6.11.1.tar.xz"
-  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.1/submodules/qtwebengine-everywhere-src-6.11.1.tar.xz"
-  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.1/submodules/qtwebengine-everywhere-src-6.11.1.tar.xz"
-  sha256 "679c66ccc6c158fc215e9c58ef160331ecd29974232e345c05161889f8667083"
+  url "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtwebengine-everywhere-src-6.11.2.tar.xz"
+  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.2/submodules/qtwebengine-everywhere-src-6.11.2.tar.xz"
+  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.2/submodules/qtwebengine-everywhere-src-6.11.2.tar.xz"
+  sha256 "6101c1aa00ff933d1b65ee5d167f76e8d71b9ac5b378b0111277723ebda7c163"
   license all_of: [
     { any_of: ["LGPL-3.0-only", "GPL-2.0-only", "GPL-3.0-only"] },
     { "GPL-3.0-only" => { with: "Qt-GPL-exception-1.0" } }, # qwebengine_convert_dict; QtWebEngineProcess
@@ -35,11 +35,12 @@ class Qtwebengine < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "27c941594e21c1030944063ae89e809e15a51feee81147704ed904c1cb749974"
-    sha256 cellar: :any,                 arm64_sequoia: "17ad5d170ab118eff4c1c1f0e6a525f4a927ee999ff2a66a198068ce1d0f25ae"
-    sha256 cellar: :any,                 arm64_sonoma:  "d17a47708aaf9478ad498c1dede4dab9b55917235c6132ab92ca1810db03c996"
-    sha256 cellar: :any,                 sonoma:        "507e1ad30d3cfbcd7328f6800d341ee75d9bfdb81841bd98b00a3d0cb83978e7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d6c7431ce6506af0c2012da0dbdb4588b7a73360b393342486cea5aa97c52b8c"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "74d960d3b747aefd749377f9e00379e78a3cbdaef87a359308376e4e1b655573"
+    sha256 cellar: :any, arm64_tahoe:       "31bd84bb70e3c56c10f6a6bd21b6ff1d67a26d19da7b64fedfd4b792ae0eb7af"
+    sha256 cellar: :any, arm64_sequoia:     "8a8d83d82bfc59e54d93ace64dccf7001cad67919043bd593113d0bacdca8fde"
+    sha256 cellar: :any, arm64_linux:       "850e31426a870599e4092f6975f460e28ebaae3fba38ee9b649ac7025a267f14"
+    sha256 cellar: :any, x86_64_linux:      "b1da138e3f32273bbce7d1c9872b1014921beb16fab49e3c9bdd269f71db0a3f"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -48,9 +49,6 @@ class Qtwebengine < Formula
   depends_on "pkgconf" => [:build, :test]
   depends_on "python@3.14" => :build
   depends_on "qttools" => :build
-  # Chromium needs Xcode 15.3+ and using LLVM Clang is not supported on macOS
-  # See https://bugreports.qt.io/browse/QTBUG-130922
-  depends_on xcode: ["15.3", :build] # for metal and xcodebuild
 
   depends_on "libpng"
   depends_on "qtbase"
@@ -65,6 +63,9 @@ class Qtwebengine < Formula
   uses_from_macos "krb5" # dlopen-ed in http_auth_gssapi_posix.cc
 
   on_macos do
+    # Chromium needs Xcode 15.3+ and using LLVM Clang is not supported on macOS
+    # See https://bugreports.qt.io/browse/QTBUG-130922
+    depends_on xcode: ["15.3", :build] # for metal and xcodebuild
     depends_on "qttools"
   end
 
@@ -120,18 +121,20 @@ class Qtwebengine < Formula
     sha256 "b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f"
 
     # Apply Fedora's upstreamed patch to support Python 3.14+
-    # Ref: https://github.com/html5lib/html5lib-python/pull/583
     # Ref: https://src.fedoraproject.org/rpms/python-html5lib/blob/rawhide/f/583.patch
     patch do
       url "https://github.com/html5lib/html5lib-python/commit/379f9476c2a5ee370cd7ec856ee9092cace88499.patch?full_index=1"
       sha256 "97ae2474704eedf72dc5d5c46ad86e2144c10022ea950cb1c42a9ad894705014"
+      type :unofficial
+      resolves "https://github.com/html5lib/html5lib-python/pull/583"
     end
 
     # Python 3.14 with setuptools 81+ compatibility (`pkg_resources` removal)
-    # upstream pr ref, https://github.com/html5lib/html5lib-python/pull/592
     patch do
       url "https://github.com/html5lib/html5lib-python/commit/1dbc19cd6db72cb919885827bc4883423e0cb647.patch?full_index=1"
       sha256 "5951b823f353dd70806ad6e163ab8f46899496c1e8bb53970c99abe8d1df1a78"
+      type :unofficial
+      resolves "https://github.com/html5lib/html5lib-python/pull/592"
     end
   end
 
@@ -141,19 +144,23 @@ class Qtwebengine < Formula
   end
 
   resource "webencodings" do
-    url "https://files.pythonhosted.org/packages/0b/02/ae6ceac1baeda530866a85075641cec12989bd8d31af6d5ab4a3e8c92f47/webencodings-0.5.1.tar.gz"
-    sha256 "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"
+    url "https://files.pythonhosted.org/packages/d5/a0/8fd707bcb776a7be556bad06a2ea5fb9bd519df78ef8e26f70ccf0f38bff/webencodings-0.6.1.tar.gz"
+    sha256 "565f9ad031c702dae404e27a099e3e09186a3ab1b9520f06d215502b651fd910"
+  end
+
+  # Fix build with the macOS 27 SDK until Qt updates its bundled Chromium.
+  # https://qt-project.atlassian.net/browse/QTBUG-150276
+  patch do
+    on_macos do
+      url "https://github.com/chromium/chromium/commit/6c0a651f9cf91d07c87be8feba854a38a311aba6.patch?full_index=1"
+      sha256 "5ed76e8bf00380d5baac097391f43c5c6f6fe438ab04efc647a8aa5511a19ce7"
+      directory "src/3rdparty/chromium"
+      type :backport
+      resolves "https://qt-project.atlassian.net/browse/QTBUG-150276"
+    end
   end
 
   def install
-    # Kill run early to avoid timing out and skipping dependent tests for Qt version bumps
-    # FIXME: Remove when we add a self-hosted runner and automatically handle via labels
-    github_arm64_linux = OS.linux? && Hardware::CPU.arm? &&
-                         ENV["HOMEBREW_GITHUB_ACTIONS"].present? &&
-                         ENV["GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED"].blank?
-    odie "Unable to build on GitHub-hosted arm64 Linux runner!" if github_arm64_linux
-
-    python3 = "python3.14"
     venv = virtualenv_create(buildpath/"venv", python3)
     venv.pip_install resources
     ENV.prepend_path "PYTHONPATH", venv.site_packages
@@ -258,7 +265,7 @@ class Qtwebengine < Formula
     CPP
 
     ENV["LC_ALL"] = "en_US.UTF-8"
-    ENV["QT_QPA_PLATFORM"] = "minimal" if OS.linux? && ENV["HOMEBREW_GITHUB_ACTIONS"]
+    ENV["QT_QPA_PLATFORM"] = "minimal"
     ENV.delete "CPATH" if OS.mac?
 
     system "cmake", "-S", ".", "-B", "cmake"
@@ -266,7 +273,7 @@ class Qtwebengine < Formula
     system "./cmake/test"
 
     mkdir "qmake" do
-      system Formula["qtbase"].bin/"qmake", testpath/"test.pro"
+      system formula_opt_bin("qtbase")/"qmake", testpath/"test.pro"
       system "make"
       system "./test"
     end

@@ -1,31 +1,29 @@
 class Vacuum < Formula
   desc "World's fastest OpenAPI & Swagger linter"
   homepage "https://quobix.com/vacuum/"
-  url "https://github.com/daveshanley/vacuum/archive/refs/tags/v0.29.4.tar.gz"
-  sha256 "f17bca1cd74d14eee9fd80444eee8088a0e1ccb53b2b7359efb4906af3830b68"
+  url "https://github.com/daveshanley/vacuum/archive/refs/tags/v0.30.5.tar.gz"
+  sha256 "1d760fc17cdda585560eabef1be58476a29767bac0a1e27d22eb3e1c16a3359e"
   license "MIT"
   head "https://github.com/daveshanley/vacuum.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c77e26e0fa7abe37bdb7e3541551ef09cd88bbbc2b0da56abaee602791962f8a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4ca3f3bb856f9cd2e9c7eb306f2d29244227501a4c9102b2f20b67c8ed570e59"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ee2e6fb247b7d68c9d5e8cccc7da9414597b219ba93fbd28f2f82d9431bd83bc"
-    sha256 cellar: :any_skip_relocation, sonoma:        "220fedc94d5ee44855e5398248e53988c72a656899b9bcc40c0a2f66a02f5886"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6638c1c4bf0c5b3b5af272f5094bd338d0f0fdeeb27aba3d92ac56ac98406ef0"
-    sha256 cellar: :any,                 x86_64_linux:  "7bc80bba6b6d21d7362035dceb44edb7decd69c2bda8ed3bd93ce7363e4bfce1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "e4f326ae3cd84c124d7a88b0023b6d76c947a80a6d8457dfb01039c5550303c6"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b47ce3bd2dcda314cf79e2279694bfa5ad8cb72b3332af6975ad79e30a8d7579"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b1ac96be51c6884a03d2a183bb8e94e7b0c14f417ebed01295364817f71342ac"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "fa3942b4fc7e735944a863f0df03eac5fa1f630936299eea37cb9a45d7cee199"
+    sha256 cellar: :any,                 x86_64_linux:      "ee927a52866e80435090ac821efaf7c18e0ed744996de53c6a214f0fcdff8339"
   end
 
   depends_on "go" => :build
   depends_on "node" => :build
-  depends_on "yarn" => :build
 
   def install
     cd "html-report/ui" do
-      system "yarn", "install", "--frozen-lockfile"
-      system "yarn", "build"
+      system "npm", "install", *std_npm_args(prefix: false)
+      system "npm", "run", "build"
     end
 
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
+    ldflags = "-X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
     system "go", "build", *std_go_args(ldflags:, tags: "html_report_ui")
 
     generate_completions_from_executable(bin/"vacuum", shell_parameter_format: :cobra)

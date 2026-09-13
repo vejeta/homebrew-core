@@ -15,12 +15,14 @@ class Ghc < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "3aa7ca72a5dba98f0f1f0ed5273f7465dfb14d5a54d8d08ec33bbe2a388fe3bf"
-    sha256 cellar: :any, arm64_sequoia: "d3afc8f7d175aae4d4087eb760b981ffed1a47bcc7fed0d094d25d9926d251fc"
-    sha256 cellar: :any, arm64_sonoma:  "74f1eda05d5796e81eba49f0598e9dbed4d7757362bdd380dc3e690245353394"
-    sha256 cellar: :any, sonoma:        "ed24dd4a13fe0bf6eb58d72d2c0ea32644989cbaa47cc3e674345e06d2d012ce"
-    sha256               arm64_linux:   "f4d2e86164d8462309958ceaf78f10c0707ee9899653c7cf315af9ccdf8588a3"
-    sha256               x86_64_linux:  "ab8e3190b14771a1ab62d0fd003965a31efd6ae5ca42e3a02ebceb63e302c4fb"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "7d73833d6670f99dd90255042318d2d109d7a1a7b138cc825253ef7246b95451"
+    sha256 cellar: :any, arm64_tahoe:       "69ab0221afe0fa73b2819d8e288a60e5ce6e00bcdf6c933c9ec4cc306cabd448"
+    sha256 cellar: :any, arm64_sequoia:     "a129e3570a5e3e094260dd7a8a50f479b6039144bce68b9dc7926e9a051208ec"
+    sha256 cellar: :any, arm64_sonoma:      "b0a5f9c9f48feb6eb68343278546b186d360e9a0d4bcc6aa88ad261356b400a9"
+    sha256 cellar: :any, sonoma:            "bae28c63fc0fc65b667bf86b1fa87554ac0c83101c4f7e0bbec51e31c2106666"
+    sha256               arm64_linux:       "d6bf3ff37a93a44eafb83b7f52cf392ddf820d793a02135261e46a94edf764ff"
+    sha256               x86_64_linux:      "03fbc89d0320781df97cb5745a397cda9207576b1f950342bb7c8a38197dc4c6"
   end
 
   depends_on "autoconf" => :build
@@ -33,11 +35,6 @@ class Ghc < Formula
   uses_from_macos "m4" => :build
   uses_from_macos "libffi"
   uses_from_macos "ncurses"
-
-  # Build uses sed -r option, which is not available in Catalina shipped sed.
-  on_catalina :or_older do
-    depends_on "gnu-sed" => :build
-  end
 
   on_linux do
     on_arm do
@@ -110,12 +107,12 @@ class Ghc < Formula
     ENV["CC"] = ENV["ac_cv_path_CC"] = OS.linux? ? "cc" : ENV.cc
     ENV["CXX"] = ENV["ac_cv_path_CXX"] = OS.linux? ? "c++" : ENV.cxx
     ENV["LD"] = ENV["MergeObjsCmd"] = "ld"
-    ENV["PYTHON"] = which("python3.14")
+    ENV["PYTHON"] = python3
 
     binary = buildpath/"binary"
     args = %W[
-      --with-gmp-includes=#{Formula["gmp"].opt_include}
-      --with-gmp-libraries=#{Formula["gmp"].opt_lib}
+      --with-gmp-includes=#{formula_opt_include("gmp")}
+      --with-gmp-libraries=#{formula_opt_lib("gmp")}
     ]
     resource("binary").stage do
       system "./configure", "--prefix=#{binary}", *args
@@ -123,14 +120,10 @@ class Ghc < Formula
     end
 
     ENV.prepend_path "PATH", binary/"bin"
-    # Build uses sed -r option, which is not available in Catalina shipped sed.
-    ENV.prepend_path "PATH", Formula["gnu-sed"].libexec/"gnubin" if OS.mac? && MacOS.version <= :catalina
-
     resource("cabal-install").stage { (binary/"bin").install "cabal" }
     system "cabal", "v2-update"
     if build.head?
-      cabal_args = std_cabal_v2_args.reject { |s| s["installdir"] }
-      system "cabal", "v2-install", "alex", "happy", *cabal_args, "--installdir=#{binary}/bin"
+      system "cabal", "v2-install", "alex", "happy", *std_cabal_v2_args(installdir: binary/"bin")
       system "./boot"
     end
 
@@ -149,6 +142,10 @@ class Ghc < Formula
       --docs=no-sphinx-html
       --docs=no-sphinx-pdfs
     ]
+    # Build PIC so static libraries can be used to build PIE in dependents. This is the default on ARM:
+    # https://gitlab.haskell.org/ghc/ghc/-/blob/ghc-9.14.1-release/compiler/GHC/Driver/DynFlags.hs#L1275-1300
+    hadrian_args << "*.*.ghc.*.opts += -fPIC -fexternal-dynamic-refs" if OS.linux? && !Hardware::CPU.arm?
+
     # Let hadrian handle its own parallelization
     ENV.deparallelize { system "hadrian/build", "install", *hadrian_args }
 
@@ -158,8 +155,8 @@ class Ghc < Formula
     (ghc_libdir/"lib/package.conf.d/package.cache.lock").unlink
   end
 
-  def post_install
-    system bin/"ghc-pkg", "recache"
+  post_install_steps do
+    run "ghc-pkg", args: ["recache"], base: :bin
   end
 
   test do

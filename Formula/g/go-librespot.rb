@@ -1,18 +1,18 @@
 class GoLibrespot < Formula
   desc "Spotify client"
   homepage "https://github.com/devgianlu/go-librespot"
-  url "https://github.com/devgianlu/go-librespot/archive/refs/tags/v0.7.4.tar.gz"
-  sha256 "9bf982c9afb8ec04bceb12a084addf5dd35ed601225bf3bfb6382a67e086b9c7"
+  url "https://github.com/devgianlu/go-librespot/archive/refs/tags/v0.9.1.tar.gz"
+  sha256 "f3c16d87728089778e48f9f16104c046bf77e855e4347f308b03ba38698314ed"
   license "GPL-3.0-only"
   head "https://github.com/devgianlu/go-librespot.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "d80e9261c323bb58fdc94e2faae286ceca63cd799ab1804d86af867cb8ed34eb"
-    sha256 cellar: :any, arm64_sequoia: "abc36412283e507055823c5c62e63f472e5bb9be39012eba31a7ee23f375cfc1"
-    sha256 cellar: :any, arm64_sonoma:  "366e4f6623a0ae80571219afed309e04fef9a1aa8dca580fb64a52238bcd4968"
-    sha256 cellar: :any, sonoma:        "8da678d54b2d2e11327bfff24e1d92b81b9252552b7260d55f3f20a04250f7c0"
-    sha256 cellar: :any, arm64_linux:   "f70cfce7f6a273c264987cd6a5ce05f98f0449ef4006df0d9f61026920668577"
-    sha256 cellar: :any, x86_64_linux:  "6e2b28efbfe6f620db8c66ce2a6f4bfdc38c2f3aed5cb0c85977a6a5b137014d"
+    sha256 cellar: :any, arm64_golden_gate: "9b008549dec579778f33357f431ab7ad179d97972713853c115e4063afd8461a"
+    sha256 cellar: :any, arm64_tahoe:       "1b8074469d1b5b005fb8dd4d72b2587db60225daf0b7812d231900c89840970d"
+    sha256 cellar: :any, arm64_sequoia:     "96f1c2f6d84c79f2b2917795bc68862079bd75679e4eff623167fc6b61f67d18"
+    sha256 cellar: :any, arm64_sonoma:      "a9311a01b9c8c38cf78e3793056ffca0b7c6893d2ca58066f032906ed02372f3"
+    sha256 cellar: :any, arm64_linux:       "150a226d2108711d2df6f270e8bc90a15a2a528bd589dabf7049480f4f5520cf"
+    sha256 cellar: :any, x86_64_linux:      "322d01205eb7bcad63e794585d0eb0511eea705f499ce5531ecce42379a82f17"
   end
 
   depends_on "go" => :build
@@ -20,6 +20,7 @@ class GoLibrespot < Formula
   depends_on "flac"
   depends_on "libogg"
   depends_on "libvorbis"
+  depends_on "mpg123"
 
   on_linux do
     depends_on "alsa-lib"
@@ -28,10 +29,7 @@ class GoLibrespot < Formula
   def install
     ENV["CGO_ENABLED"] = "1" if OS.linux? && Hardware::CPU.arm?
 
-    ldflags = %W[
-      -s -w
-      -X github.com/devgianlu/go-librespot.version=#{version}
-    ]
+    ldflags = %W[-X github.com/devgianlu/go-librespot.version=#{version}]
     ldflags << "-X github.com/devgianlu/go-librespot.commit=#{Utils.git_short_head(length: 8)}" if build.head?
 
     system "go", "build", *std_go_args(output: bin/"go-librespot", ldflags:), "./cmd/daemon"

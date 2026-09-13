@@ -3,8 +3,8 @@ class Torchvision < Formula
 
   desc "Datasets, transforms, and models for computer vision"
   homepage "https://pytorch.org/vision/stable/index.html"
-  url "https://github.com/pytorch/vision/archive/refs/tags/v0.27.1.tar.gz"
-  sha256 "705d5ab7d01af9ece3bfbb1486eed3c23a2f68414fcc9c9a88910fb3c018c3db"
+  url "https://github.com/pytorch/vision/archive/refs/tags/v0.29.0.tar.gz"
+  sha256 "24be57d922927d8a2ac2e8f076f07c3447ddf8f1d25ddbb7b65578f36c9ab8e3"
   license "BSD-3-Clause"
 
   livecheck do
@@ -13,12 +13,12 @@ class Torchvision < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "6cdbcce923d100be24139f1cf2a2bd822aaddf0067c4ff190949e02f14680bc0"
-    sha256 cellar: :any, arm64_sequoia: "a4b4d02b357636c81f56a1471359752e7b97cfe947817e420bbdb0c43d0e7f63"
-    sha256 cellar: :any, arm64_sonoma:  "440e9ff1c720965c4088c6a1abbf207362a5a2755bf559d0e2d89ce17966709c"
-    sha256 cellar: :any, sonoma:        "9b64a307d4247d60a3230f3b0af35d0f677257e95e869ddf0a8e36134b47e456"
-    sha256 cellar: :any, arm64_linux:   "9af8f4f10fbd0c39efdf83c417e06ec950e1baaeec32901fba07406e10f9a402"
-    sha256 cellar: :any, x86_64_linux:  "f0a737e66a54198a72ca17f13c2027394584639fe9f0d251c7bf2712d22e8031"
+    sha256 cellar: :any, arm64_golden_gate: "e43a94c9660ee8f1e523754aa41346c63ce0eb02f6d60e27280ae12b011db449"
+    sha256 cellar: :any, arm64_tahoe:       "fbbec9dc9306b6a63492746cda0893c6367757dbda19760d5fc4bca7fac85386"
+    sha256 cellar: :any, arm64_sequoia:     "4a55da1e9081e733360b38589132ab79bb3a20ffe6c8c518d11c964d00610c1f"
+    sha256 cellar: :any, arm64_sonoma:      "0a359c4c86de8f9e2e4eb0789d8f9e853a9783468a2691c773c713822a2b0786"
+    sha256 cellar: :any, arm64_linux:       "aafdb2835f690982a3fc4c3e1115bd94c2a426aca4a88bc731fcba8428b5ae9d"
+    sha256 cellar: :any, x86_64_linux:      "5357fb84c5f2c4034b8f021e8002f9ed03bf10217d34dd1aa9bb127802d7328b"
   end
 
   depends_on "cmake" => :build
@@ -46,7 +46,6 @@ class Torchvision < Formula
       'jpeg_found, jpeg_include_dir, jpeg_library_dir = find_library(header="jpeglib.h")',
       "jpeg_found, jpeg_include_dir, jpeg_library_dir = True, '#{jpeg.include}', '#{jpeg.lib}'"
 
-    python3 = "python3.14"
     venv = virtualenv_create(libexec, python3)
     venv.pip_install resources
 
@@ -54,7 +53,7 @@ class Torchvision < Formula
     # This needs to happen _before_ we try to install torchvision.
     # NOTE: This is an exception to our usual policy as building `pytorch` is complicated
     site_packages = Language::Python.site_packages(venv.root/"bin/python3")
-    pth_contents = "import site; site.addsitedir('#{Formula["pytorch"].opt_libexec/site_packages}')\n"
+    pth_contents = "import site; site.addsitedir('#{formula_opt_libexec("pytorch")/site_packages}')\n"
     (venv.site_packages/"homebrew-pytorch.pth").write pth_contents
 
     venv.pip_install_and_link(buildpath, build_isolation: false)
@@ -88,7 +87,7 @@ class Torchvision < Formula
     else
       %w[-fopenmp]
     end
-    system ENV.cxx, "-std=c++17", "test.cpp", "-o", "test", *openmp_flags,
+    system ENV.cxx, "-std=c++20", "test.cpp", "-o", "test", *openmp_flags,
                     "-I#{pytorch.opt_include}",
                     "-I#{pytorch.opt_include}/torch/csrc/api/include",
                     "-L#{pytorch.opt_lib}", "-ltorch", "-ltorch_cpu", "-lc10",

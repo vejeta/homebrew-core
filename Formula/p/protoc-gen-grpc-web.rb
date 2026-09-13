@@ -1,10 +1,10 @@
 class ProtocGenGrpcWeb < Formula
   desc "Protoc plugin that generates code for gRPC-Web clients"
   homepage "https://grpc.io"
-  url "https://github.com/grpc/grpc-web/archive/refs/tags/2.0.2.tar.gz"
-  sha256 "0f0c8c0c1104306d67dad678be7c14efe52a698795a58b2b72ab67a8bb100c15"
+  url "https://github.com/grpc/grpc-web/archive/refs/tags/2.1.1.tar.gz"
+  sha256 "7766763275c6bf99115c9b535aaa3c507566847d47ea72a1f70da7fe427a98d3"
   license "Apache-2.0"
-  revision 5
+  revision 1
 
   livecheck do
     url :stable
@@ -12,12 +12,12 @@ class ProtocGenGrpcWeb < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "eca3efd24cbd6bbd502e6e85ad606fb34b6b4db00f9cc8648bdd3b28440e5abc"
-    sha256 cellar: :any,                 arm64_sequoia: "4d017bbf599ddf51e85fe2d2ecee539300e19e94c7dcf6547d90aeccc6363dc8"
-    sha256 cellar: :any,                 arm64_sonoma:  "72aab74e8cb9e4aac2e2ff3bd84010473e7f87d0e2b6a602e7472c0649263aeb"
-    sha256 cellar: :any,                 sonoma:        "a9269a12cdbb61272be1be21b8085ee356b3c27898eca1b8a518ddc1a0924843"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "12f2a1a5eb3605977bd2df8ae13e711369b78773a745e18473c09329a2e7c992"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8aee26e9c6442e2f46c7d2ed955fd7f477db739b2c0bc019738ed3f0dc465241"
+    sha256 cellar: :any, arm64_golden_gate: "321781d66615660d90f6d7629f432191dcd0e2045269e7191da7a2d84b1832e1"
+    sha256 cellar: :any, arm64_tahoe:       "c45eba99a26599c4047c46769e2e2077d389e7be3415a4430670d5429021c8a9"
+    sha256 cellar: :any, arm64_sequoia:     "f68bdd7172d6c06313043b28fd03dc87d7ea6b641950abff7db3fd325c628e1d"
+    sha256 cellar: :any, arm64_sonoma:      "0c77b82d2e3b4b549e29e57e188574381cf5d4a1759d0d4ad5039cfd64fcaf35"
+    sha256 cellar: :any, arm64_linux:       "1733e5737dd4c074d913e3aa5778be7f6a2c04e0880cfb4f17cfdcfb4ca46b9f"
+    sha256 cellar: :any, x86_64_linux:      "bfacf103e7d09dede55804df05f05dea6c169f7704e3d271f8644c387c69f44a"
   end
 
   depends_on "cmake" => :build
@@ -28,10 +28,11 @@ class ProtocGenGrpcWeb < Formula
   depends_on "protobuf"
   depends_on "protoc-gen-js"
 
-  # Workaround to build with Protobuf 30+. Issue ref: https://github.com/grpc/grpc-web/issues/1522
+  # Workaround to build with Protobuf 30+.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/d0b7cf85a11a9acfa1a422305948dff6621bbda9/Patches/protoc-gen-grpc-web/protobuf-30.diff"
-    sha256 "9c7e0ddf5ba68c179e7b8edc2c48de5b9b9d4801a6c8fd93ee199e27291aeebd"
+    file "Patches/protoc-gen-grpc-web/protobuf-30.diff"
+    type :unofficial
+    resolves "https://github.com/grpc/grpc-web/issues/1522"
   end
 
   def install

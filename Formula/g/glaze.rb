@@ -1,16 +1,15 @@
 class Glaze < Formula
   desc "Extremely fast, in-memory JSON and interface library for modern C++"
   homepage "https://stephenberry.github.io/glaze/"
-  url "https://github.com/stephenberry/glaze/archive/refs/tags/v7.8.2.tar.gz"
-  sha256 "a315bdc20bbdf23b0baae6c844818283aaab7c8ff0f88987f248bec51494d259"
+  url "https://github.com/stephenberry/glaze/archive/refs/tags/v8.3.0.tar.gz"
+  sha256 "6a8f97f5cdb8df5c87f1b32710679585f3f1a577b67bb66150f2516072e00317"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "4fabf503b4992c4ae4c04cbc42eb59c8cf99527b38dac331108b8af48a71b98c"
+    sha256 cellar: :any_skip_relocation, all: "e9443287fed21191aeb4cd188fb8983f28763064fb17e83aac069ad3362cc57d"
   end
 
   depends_on "cmake" => [:build, :test]
-  depends_on "llvm" => :test
 
   def install
     args = %w[
@@ -23,7 +22,7 @@ class Glaze < Formula
 
   test do
     (testpath/"CMakeLists.txt").write <<~CMAKE
-      cmake_minimum_required(VERSION 3.16)
+      cmake_minimum_required(VERSION 4.0)
       project(GlazeTest LANGUAGES CXX)
 
       set(CMAKE_CXX_STANDARD 20)
@@ -48,7 +47,6 @@ class Glaze < Formula
       }
     CPP
 
-    ENV.append_to_cflags "-DGLZ_USE_STD_FORMAT_FLOAT=0" if OS.linux?
     system "cmake", "-S", ".", "-B", "build", "-Dglaze_DIR=#{share}/glaze"
     system "cmake", "--build", "build"
     system "./build/glaze_test"

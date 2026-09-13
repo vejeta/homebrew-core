@@ -1,19 +1,19 @@
 class Ggml < Formula
   desc "Tensor library for machine learning"
   homepage "https://github.com/ggml-org/ggml"
-  url "https://github.com/ggml-org/ggml/archive/refs/tags/v0.15.2.tar.gz"
-  sha256 "298e958817a126c44bb8e97c97d5d53d00bd15eca22bebf805f278223fe29e07"
+  url "https://github.com/ggml-org/ggml/archive/refs/tags/v0.23.0.tar.gz"
+  sha256 "ae3f37f599acc16e8213d728f66528c7ba7a9ff2d7cac09181ba1ab19adb445c"
   license "MIT"
   compatibility_version 1
   head "https://github.com/ggml-org/ggml.git", branch: "master"
 
   bottle do
-    sha256 arm64_tahoe:   "1edd059a303f9f3bdfdc744597a7e1b317b40c702e3ea6f12c5bc193555e8ab8"
-    sha256 arm64_sequoia: "dde84f55a6b9fc497578f67e20e12a2e15ce4bc4039feaaf285b347480696f4d"
-    sha256 arm64_sonoma:  "ead65b2224ef334201c15a23be5bb615cd904257d68317894b4bac7d0b6597ff"
-    sha256 sonoma:        "dd393c7a890d649742ca177b8ef68c3d4366d4af5c0019975b7ba83eef36380c"
-    sha256 arm64_linux:   "d5e7c051500746275175aafaacd85616e06cdb84b1347f1adc4221fdd2481d43"
-    sha256 x86_64_linux:  "11b281ca73a4967470107d17dba8c789fe4be87620123d67649ed1c0ee5df514"
+    sha256 arm64_golden_gate: "427b8c052b4be3f7fa5e13771e4e9c27af8f18d0f5d1e1f063fb69d9018612f8"
+    sha256 arm64_tahoe:       "d7e8b0617c0722d9b2e5f81d3597df2bcae2a866ce63a3d22e4b5b7d8a8d9f7a"
+    sha256 arm64_sequoia:     "e9db3752c2cb508d9f1535f57bf388281db25b323570cfaf494bb4ec3f8c85ab"
+    sha256 arm64_sonoma:      "efcf1777bd679f6bb0b90a7d6d48041d4bdae725bcaeebb0cd781e09d80bfa36"
+    sha256 arm64_linux:       "69c278705bc836969a6309b5611c49f8bec2fa3b74df67f8f28debebd0db5ce7"
+    sha256 x86_64_linux:      "d368d1cac4bcc908782bf68456c41a1fd9781d55d545c2eec7e546b64ecad7cb"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -31,12 +31,6 @@ class Ggml < Formula
   end
 
   on_arm do
-    on_linux do
-      # Ubuntu 24.04 has GCC 14 libstdc++ so we can build with brew GCC 14 without impacting GLIBCXX.
-      # We don't use LLVM Clang as it defaults to linking to libomp rather than libgomp
-      depends_on "gcc@14" => :build if DevelopmentTools.gcc_version < 14
-    end
-
     fails_with :gcc do
       version "13"
       cause "error: invalid feature modifier 'sme' in '-march=armv9.2-a+dotprod+i8mm+nosve+sme'"
@@ -48,8 +42,8 @@ class Ggml < Formula
 
   # Lengthy test so not worth installing. Shorter examples/tests haven't been ported to new DL backend
   resource "test-backend-ops.cpp" do
-    url "https://raw.githubusercontent.com/ggml-org/ggml/refs/tags/v0.15.2/tests/test-backend-ops.cpp"
-    sha256 "8088bebadb9e66d8a9603081476e1f69b154456259afa2b6a1e57b3173e95d53"
+    url "https://raw.githubusercontent.com/ggml-org/ggml/refs/tags/v0.23.0/tests/test-backend-ops.cpp"
+    sha256 "3d59bee564acf41c748280bf9fa8e3f3626d1666884bc5fd342153cf3eec24a1"
 
     livecheck do
       formula :parent
@@ -60,9 +54,9 @@ class Ggml < Formula
     # CPU detection is needed to build multiple backends, particularly on ARM (e.g. `-march=armv8.x-a+...`)
     ENV.runtime_cpu_detection
 
-    # Workaround as brew will prioritize unversioned GCC versions which increases GLIBCXX
+    # Build bottle with Ubuntu GCC 14 rather than indirect brew GCC as latter can impact C++ ABI used
     # TODO: Remove once CI defaults to GCC 14+
-    ENV.method(:"gcc-14").call if OS.linux? && deps.map(&:name).any?("gcc@14")
+    ENV.method(:"gcc-14").call if OS.linux? && Hardware::CPU.arm? && ENV["HOMEBREW_GITHUB_ACTIONS"]
 
     args = %W[
       -DBUILD_SHARED_LIBS=ON

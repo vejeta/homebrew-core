@@ -1,32 +1,29 @@
 class Cozypkg < Formula
   desc "CLI for managing Cozystack packages"
   homepage "https://cozystack.io"
-  url "https://github.com/cozystack/cozystack/archive/refs/tags/v1.4.4.tar.gz"
-  sha256 "892d2e500ebc5837aaa5a643ad7d2e6f70a82fa7c4988555a320d1e99e331334"
+  url "https://github.com/cozystack/cozystack/archive/refs/tags/v1.6.3.tar.gz"
+  sha256 "0325fad3a856a52937a397befc7f5fbe32076db991f19cdc8cd656367728cc1c"
   license "Apache-2.0"
   head "https://github.com/cozystack/cozystack.git", branch: "main"
 
   livecheck do
     url :stable
-    regex(/^v?(\d+(?:\.\d+)+)$/i)
+    strategy :github_latest
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "35a3164b46bf1feb96f6c8e3b6c082730846cd86c436a5e31efa2a6450f4e127"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "257f21a302a1e59aa85e92a06642464ceb593dd84876f8e5681f4994ced0254c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "35045f851ac398f02cedc21a9bcd4ad682c9f704ee71bc3b1060a32d8f0c26b4"
-    sha256 cellar: :any_skip_relocation, sonoma:        "acf1f6de60a9c38434937dd3dcc18dd4141a976e0663ecebb62aa67fbefa49f0"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "33820e875a9a3447b8efa24fe1f5fc0704e99bc1ada500a40e36fbda3c04d959"
-    sha256 cellar: :any,                 x86_64_linux:  "a34340962c27e38377090ec4e2a707c0fb171d4caf9b2669c0fdc75e499af8e5"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "3b43c7b81c3311092060e5790ebd206b4ab0a1dd22302cd9d970f08895aa6c75"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9f61129d70cd9b7d12437ec9d54d0a896eb399f219992ac1974e16f7a2dccb6c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "743590b7871d991c487734a9259e1eae794683e29c4b26adf50c5359735f7385"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3c41d7e630d3d34720f8a114b36c84abf2dce833050a60afa65de88398dddc3c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7c61f1da1a9b9978c9ff351cf0ae89e60fd4739949371a737b6b4c5d8b3367a8"
+    sha256 cellar: :any,                 x86_64_linux:      "e5a1d41f9950c6be51f3be3b4cdef0b9f252874e18199f7ee658957ccf426f4e"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = %W[
-      -s -w
-      -X github.com/cozystack/cozystack/cmd/cozypkg/cmd.Version=#{version}
-    ]
+    ldflags = %W[-X github.com/cozystack/cozystack/cmd/cozypkg/cmd.Version=#{version}]
     system "go", "build", *std_go_args(ldflags:), "./cmd/cozypkg"
     generate_completions_from_executable(bin/"cozypkg", "completion")
   end

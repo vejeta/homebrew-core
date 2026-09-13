@@ -1,25 +1,30 @@
 class Resterm < Formula
   desc "Terminal client for .http/.rest files with HTTP, GraphQL, and gRPC support"
   homepage "https://github.com/unkn0wn-root/resterm"
-  url "https://github.com/unkn0wn-root/resterm/archive/refs/tags/v0.42.1.tar.gz"
-  sha256 "6c45f0667e1213aac041f32acf226b8a4b6b27e8fa29e7d22281c5e44b972be3"
+  url "https://github.com/unkn0wn-root/resterm/archive/refs/tags/v1.7.2.tar.gz"
+  sha256 "3c72153ae58d15d137330fc23ca2878a796f3e7ff9eb8c4505603906540594b4"
   license "Apache-2.0"
   head "https://github.com/unkn0wn-root/resterm.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "155e8532732c6e0f19296861e6a43e045b2e07cfc6e164bfe936d4b8f360df4e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "155e8532732c6e0f19296861e6a43e045b2e07cfc6e164bfe936d4b8f360df4e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "155e8532732c6e0f19296861e6a43e045b2e07cfc6e164bfe936d4b8f360df4e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a102492e8c08d11a30d36c4351073e570df2153d2f4b1cbd5f7e6831d79a1520"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "528565d44102a57025c5e9f60bd2a96675b53491822f1c9ee1cf7ba8a9cb70bc"
-    sha256 cellar: :any,                 x86_64_linux:  "4724e369c276cff7b5df5836b7eb3a972f41a237912410c0beac7ad943b28e31"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b5cc5268d0ffc5cd0db4d23b77b107ba7453ef2fd2dd47baebe75ac0ff9ffbfe"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b5cc5268d0ffc5cd0db4d23b77b107ba7453ef2fd2dd47baebe75ac0ff9ffbfe"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b5cc5268d0ffc5cd0db4d23b77b107ba7453ef2fd2dd47baebe75ac0ff9ffbfe"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b5cc5268d0ffc5cd0db4d23b77b107ba7453ef2fd2dd47baebe75ac0ff9ffbfe"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c942dac76983d530e0aaf5150f0a277ffdcfbce62ac4ef31b6d1139d148ea445"
+    sha256 cellar: :any,                 x86_64_linux:      "9c5d4a6da31003a8bc6329bde0701d5431d71406de79427959f1aae1b3324035"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
-    system "go", "build", *std_go_args(ldflags:), "./cmd/resterm"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/resterm"
   end
 
   test do

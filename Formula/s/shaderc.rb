@@ -4,14 +4,14 @@ class Shaderc < Formula
   license "Apache-2.0"
 
   stable do
-    url "https://github.com/google/shaderc/archive/refs/tags/v2026.2.tar.gz"
-    sha256 "f924178e75e3293082481b25ed64d5e48a795b479dac3bd3c83d23070855df42"
+    url "https://github.com/google/shaderc/archive/refs/tags/v2026.4.tar.gz"
+    sha256 "f06ce5bcca94e5df7f34e115743597d0ad2e13c5fe9213c67dc8c76031241947"
 
     resource "glslang" do
       # https://github.com/google/shaderc/blob/DEPS
       url "https://github.com/KhronosGroup/glslang.git",
-          revision: "f0bd0257c308b9a26562c1a30c4748a0219cc951"
-      version "f0bd0257c308b9a26562c1a30c4748a0219cc951"
+          revision: "e1b562a8bed273a02f30b59b66a5d499793cede5"
+      version "e1b562a8bed273a02f30b59b66a5d499793cede5"
 
       livecheck do
         url "https://raw.githubusercontent.com/google/shaderc/refs/tags/v#{LATEST_VERSION}/DEPS"
@@ -22,8 +22,8 @@ class Shaderc < Formula
     resource "spirv-headers" do
       # https://github.com/google/shaderc/blob/DEPS
       url "https://github.com/KhronosGroup/SPIRV-Headers.git",
-          revision: "04f10f650d514df88b76d25e83db360142c7b174"
-      version "04f10f650d514df88b76d25e83db360142c7b174"
+          revision: "04fd3caa1e8267e4d95c806cad901181728e1006"
+      version "04fd3caa1e8267e4d95c806cad901181728e1006"
 
       livecheck do
         url "https://raw.githubusercontent.com/google/shaderc/refs/tags/v#{LATEST_VERSION}/DEPS"
@@ -34,8 +34,8 @@ class Shaderc < Formula
     resource "spirv-tools" do
       # https://github.com/google/shaderc/blob/DEPS
       url "https://github.com/KhronosGroup/SPIRV-Tools.git",
-          revision: "fbe4f3ad913c44fe8700545f8ffe35d1382b7093"
-      version "fbe4f3ad913c44fe8700545f8ffe35d1382b7093"
+          revision: "ef96ed763b43b59b33b31b362f09a02b729fa1c9"
+      version "ef96ed763b43b59b33b31b362f09a02b729fa1c9"
 
       livecheck do
         url "https://raw.githubusercontent.com/google/shaderc/refs/tags/v#{LATEST_VERSION}/DEPS"
@@ -45,12 +45,11 @@ class Shaderc < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "58c46665bd5ca59061486e1a79320a0d2d210be57171717adcc582176ba4078b"
-    sha256 cellar: :any,                 arm64_sequoia: "fd12de6d9d6737f8dceaa09626a4371dbfcacfc2babde0dfc3ec83ae2c133f88"
-    sha256 cellar: :any,                 arm64_sonoma:  "99858aa675ccd198590e2db7049623ee1f5e01c67c78cf8897f682e731030b58"
-    sha256 cellar: :any,                 sonoma:        "cee5a5fce9e3a1aa9f437f347ad7199b0b3dc264b98ce88fd090060c4810ff60"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "bdc97b4b126ffdc619e1f52023477a2ad76115766941dc96e775f65d7ff45431"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "69fb73faf29219169359889183db1a19ed18610d549752c91cb0b5526ee86f6c"
+    sha256 cellar: :any, arm64_golden_gate: "463549d39c59ba245f05379667d89e83f223f1b035226926534fc28ede01455e"
+    sha256 cellar: :any, arm64_tahoe:       "12ba0c59a98fb8f671f9473573002b2a812f26d2e60ea4f577f0c8c750c9838a"
+    sha256 cellar: :any, arm64_sequoia:     "1313ffbae9ac1559f7160cc89657ecd5fc324895ff46e15a4bd198ec3bbebec0"
+    sha256 cellar: :any, arm64_linux:       "9ffed598e151f5e279f58a041bd3cea982d2bad8d9f04a7b47abda96f2cdaa14"
+    sha256 cellar: :any, x86_64_linux:      "65e6b619e6cf08aefe36198634c19443f3abde8e1db49ab25dc937884e9f9f80"
   end
 
   head do
@@ -73,10 +72,6 @@ class Shaderc < Formula
 
   uses_from_macos "python" => :build
 
-  # patch to fix `target "SPIRV-Tools-opt" that is not in any export set`
-  # upstream bug report, https://github.com/google/shaderc/issues/1413
-  patch :DATA
-
   def install
     resources.each do |res|
       res.stage(buildpath/"third_party"/res.name)
@@ -84,6 +79,11 @@ class Shaderc < Formula
 
     # Avoid installing packages that conflict with other formulae.
     inreplace "third_party/CMakeLists.txt", "${SHADERC_SKIP_INSTALL}", "ON"
+    # patch to fix `target "SPIRV-Tools-opt" that is not in any export set`
+    # upstream bug report, https://github.com/google/shaderc/issues/1413
+    inreplace "third_party/CMakeLists.txt",
+              "set(GLSLANG_ENABLE_INSTALL $<NOT:${SKIP_GLSLANG_INSTALL}>)", ""
+
     system "cmake", "-S", ".", "-B", "build",
                     "-DSHADERC_SKIP_TESTS=ON",
                     "-DSKIP_GLSLANG_INSTALL=ON",
@@ -110,17 +110,3 @@ class Shaderc < Formula
     system "./test"
   end
 end
-
-__END__
-diff --git a/third_party/CMakeLists.txt b/third_party/CMakeLists.txt
-index d44f62a..dffac6a 100644
---- a/third_party/CMakeLists.txt
-+++ b/third_party/CMakeLists.txt
-@@ -87,7 +87,6 @@ if (NOT TARGET glslang)
-       # Glslang tests are off by default. Turn them on if testing Shaderc.
-       set(GLSLANG_TESTS ON)
-     endif()
--    set(GLSLANG_ENABLE_INSTALL $<NOT:${SKIP_GLSLANG_INSTALL}>)
-     add_subdirectory(${SHADERC_GLSLANG_DIR} glslang)
-   endif()
-   if (NOT TARGET glslang)

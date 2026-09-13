@@ -1,23 +1,23 @@
 class Pkcs11Tools < Formula
   desc "Tools to manage objects on PKCS#11 crypotographic tokens"
   homepage "https://github.com/Mastercard/pkcs11-tools"
-  url "https://github.com/Mastercard/pkcs11-tools/releases/download/v2.6.0/pkcs11-tools-2.6.0.tar.gz"
-  sha256 "5fcda842ed009dacef5d935f5d46bda81bdc26795737af525aa904655a640ba0"
+  url "https://github.com/Mastercard/pkcs11-tools/releases/download/v3.1.0/pkcs11-tools-3.1.0.tar.gz"
+  sha256 "ef6d07b5527214cf8dcbed4f017569146f74dd6eb6aa9d5e7297418299b7947d"
   license "Apache-2.0"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:    "99d3a5104235020c9ba34054b886dff32a538917592f9b9a7d4535c26513b072"
-    sha256 cellar: :any,                 arm64_sequoia:  "22183ecdec16099e7c38d97f5499deb1fbcb9236a9d4deb2c08fa22fd7007358"
-    sha256 cellar: :any,                 arm64_sonoma:   "41dd63eb44f9015459c816515202120069605a31875d536a920ec87ede6c1990"
-    sha256 cellar: :any,                 arm64_ventura:  "c1babe9a656e43094e4c1e824ae76eaf60111376d57a77e31c6e3c9186fed553"
-    sha256 cellar: :any,                 arm64_monterey: "861b3b73c9e30599ddbb2fed03b89a6a648f74106d834551500971cdacbae820"
-    sha256 cellar: :any,                 arm64_big_sur:  "a2f9db1cff53bf73aaaadd1117dd72f8aac42d38e7ef40b59b56be535e4067c1"
-    sha256 cellar: :any,                 sonoma:         "2086010d622865bce37c477946bda04a16d7f488f7a9d7cee6ba94bad3708f80"
-    sha256 cellar: :any,                 ventura:        "f98f64e004a340203e91c268d37751fec2426b8a1b6a3a4d910f7834176b8b3f"
-    sha256 cellar: :any,                 monterey:       "d54d48ba1f3f92918c56441059b1da04a2231779e9f3a6ed67c036303d68499a"
-    sha256 cellar: :any,                 big_sur:        "27d568c817878042985a01e7cdb1ee74da2904c8bd42c87f9eaf72496c0e7c68"
-    sha256 cellar: :any_skip_relocation, arm64_linux:    "4de234bc0e7f615fe95f3ab3604d8d5915d2bfa2948f778fb10921b92c83dc2c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "204de485eee7fdc9c63d60924bf2a2559bcddb2b13badbd60f97c8fcbd6ab4c3"
+    sha256 cellar: :any, arm64_golden_gate: "9a25cf895785bd56430b810a55905e175228cbc2844807c78654c4dda218b9fa"
+    sha256 cellar: :any, arm64_tahoe:       "5b02e59c3f8c22113c8b018ff174c8161114bb71d6fda388d15a5909742f4b27"
+    sha256 cellar: :any, arm64_sequoia:     "9d27731ea76ada1931c7640bdd28941d96be8b3530606ddd2fdd75a6f38c8e67"
+    sha256 cellar: :any, arm64_sonoma:      "dadb18faf7a87e2533761708ba4544c0f5888827e1c7825beb7e4e29db500baf"
+    sha256 cellar: :any, sonoma:            "29de8f4a0e24abc961812265ca1d38fcf80492b6852bc2370a655311c00e7ef3"
+    sha256 cellar: :any, arm64_linux:       "1bdf74894a71fb209115f44c7d31d3f6b764d7c9253a9a093a302867645e0a97"
+    sha256 cellar: :any, x86_64_linux:      "21fd610270f0466e7874a83f473ce0f0c3f37f8a182366e2b37457f81c4f8978"
   end
 
   depends_on "pkgconf" => :build
@@ -34,6 +34,8 @@ class Pkcs11Tools < Formula
     on_linux do
       url "https://git.savannah.gnu.org/cgit/gnulib.git/patch/lib?id=cc91160a1ea5e18fcb2ccadb32e857d365581f53"
       directory "gl"
+      type :backport
+      resolves "https://github.com/Mastercard/pkcs11-tools/issues/37"
     end
   end
 

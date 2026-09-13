@@ -2,8 +2,8 @@ class Argocd < Formula
   desc "GitOps Continuous Delivery for Kubernetes"
   homepage "https://argoproj.github.io/cd/"
   url "https://github.com/argoproj/argo-cd.git",
-      tag:      "v3.4.4",
-      revision: "443415b5527ac55366e0760c93ef0e1abd0cf273"
+      tag:      "v3.5.2",
+      revision: "e258ee23c3e52266d407572f4bcdfe7d9ed36cb5"
   license "Apache-2.0"
 
   # There can be a notable gap between when a version is tagged and a
@@ -18,25 +18,38 @@ class Argocd < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2f9a1c7a9b5bdb46b0ff3f49999c62639da6e97f894f8c999df28bcc3f487e4c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5242f49fa2fb585bf358e65f9505ea9b7fa74e1a1612a584f022b2ea68f36957"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6a5cfb12bc4084d2b6c40d9284e675ff2e8ed6e04a4abacde9b9ead51cb1221d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "06263c0e2b4adbcbad3a13e4c9098dadc7bb5a670722ef233eb7ea2ec1aa3d65"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "92e397311dbd71be060a9362adf07bda9860179c065ebe79f18d74351672c36b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "430ae4e4056c7125b96f77aaa353604c28c935e6102b4891d78564388cd8416e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "c463fcca6ea3b5ed4b8d698ca6a523e20d8de524f4cc810abc1961afbe22eb1d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "abadcabbc73e8ea325c315a0dceaf1d2d4b852b51b621e5a7b05857f4f8f98e0"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7a7c1a62432c644b864f2a1f8889ed910ec1832c86eb302fdaa0789accce9cbb"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "92e20e94a623a4be88351fdf0c1d036b1faf2e8e6ea09b73ea55a4b010111831"
+    sha256 cellar: :any_skip_relocation, sonoma:            "293f3fb2db435cdd0bca86cb62219f18401bd6123afbcaf07f727028155fcfe6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "98ac8084728f63831eb16abd15f1a2e70c78994cb1d46b3d05cca4b75dcd929f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "58ef74768ab40c503ab9a702798732772fcd3e4e86b58894e41e8260d359266e"
   end
 
+  depends_on "corepack" => :build # requires newer `yarn`
   depends_on "go" => :build
   depends_on "node" => :build
-  depends_on "yarn" => :build
+
+  deny_network_access!
+
+  def fetch
+    ENV["COREPACK_ENABLE_DOWNLOAD_PROMPT"] = "0"
+
+    system "go", "mod", "download"
+    cd "ui" do
+      system "pnpm", "install", "--frozen-lockfile"
+    end
+  end
 
   def install
-    system "make", "dep-ui-local"
     with_env(
       NODE_ENV:        "production",
       NODE_ONLINE_ENV: "online",
     ) do
-      system "yarn", "--cwd", "ui", "build"
+      cd "ui" do
+        system "pnpm", "run", "build"
+      end
     end
     system "make", "cli-local", "GIT_TAG=v#{version}"
     bin.install "dist/argocd"
@@ -45,7 +58,7 @@ class Argocd < Formula
   end
 
   test do
-    assert_match "argocd controls a Argo CD server",
+    assert_match "argocd controls an Argo CD server",
       shell_output("#{bin}/argocd --help")
 
     # Providing argocd with an empty config file returns the contexts table header

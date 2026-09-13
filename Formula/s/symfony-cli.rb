@@ -1,17 +1,17 @@
 class SymfonyCli < Formula
   desc "Build, run, and manage Symfony applications"
   homepage "https://symfony.com/download"
-  url "https://github.com/symfony-cli/symfony-cli/archive/refs/tags/v5.17.1.tar.gz"
-  sha256 "879782e8b8c6d6263e4d2a72f2283879f1c645c5f87db5cdd8a4bd8182e2ee37"
+  url "https://github.com/symfony-cli/symfony-cli/archive/refs/tags/v5.20.0.tar.gz"
+  sha256 "07e528495409a1ba147a7a3905086f50c629762c60d186547d5483148e7a2cc2"
   license "AGPL-3.0-or-later"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e7b85716efe3c8176c084b717f0fd191ba216a5788cdd32012eaff976790ee7b"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "dc975b34c6b9e42bf7550cee20976b94dc33788b85205d4c944878a27705d6b1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "141ed733c1c0388af03cffc26e1cb4d66e63d1953f7ff94fcdefb27036587e4d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "aa62a4550a52785a8503126ce21b32859faecc5279092c098000a96e6230795d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4ccbc01de83b5163a30095e43ff76a2ef2408255b3eeb13203b372e8daca4fc6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0a67fc8eef94c1f0fdfd0bc950190a8a72f6d63961a096663afe222e44008416"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d658560d40f3930ad574474093cf00e2950f527a24a0e40acead26c8fd183d97"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4a6ea35d3bab3d4e19d2c5c5b63f7cd2c2eee406443b334bd02b84b1cbfe37b8"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5d54c29c835761895c4dfada3b62d7c275416c625791bd28787cf2a87e2ba1e7"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "423e0ab008485c6c4c699f3290ce45b97b2ed510534053f89034ddf1b5f894e1"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "54df7c542a8ffcae55de7196e04ff741dc5a3f83e0653ec0813a79b7307534c9"
+    sha256 cellar: :any,                 x86_64_linux:      "158e4fae43aac84cf45592e575f0e6277eb551b3ffa5f09bc7ce2845d2dd2b46"
   end
 
   depends_on "go" => :build
@@ -19,7 +19,6 @@ class SymfonyCli < Formula
 
   def install
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.buildDate=#{time.iso8601}
       -X main.channel=stable

@@ -1,14 +1,14 @@
 class Btfs < Formula
   desc "BitTorrent filesystem based on FUSE"
   homepage "https://github.com/johang/btfs"
-  url "https://github.com/johang/btfs/archive/refs/tags/v3.1.tar.gz"
-  sha256 "c363f04149f97baf1c5e10ac90677b8309724f2042ab045a45041cfb7b44649b"
+  url "https://github.com/johang/btfs/archive/refs/tags/v3.3.tar.gz"
+  sha256 "9658625244a88e836bfbed53928c104907fc46bdfffb91225284ea8b6947f5a6"
   license "GPL-3.0-only"
   head "https://github.com/johang/btfs.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_linux:  "cb3c4a3351015895e992b3c059b012aa24410edfa4795decafdbe7a850b9201c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "de0d62491fcf2a7793531a3b1e3900f10cca457b2a2f67d04f19588f9f1c0b62"
+    sha256 cellar: :any, arm64_linux:  "eb948a0bf2357f0e472063f8d92dd06541c129c111420276db81c700d4045101"
+    sha256 cellar: :any, x86_64_linux: "6b2a70164a0ebbd38b1f8b5fcff95d70d1428077eccaa91c0aa040265776930c"
   end
 
   depends_on "autoconf" => :build
@@ -21,7 +21,6 @@ class Btfs < Formula
   depends_on "openssl@3"
 
   def install
-    ENV.cxx11
     system "autoreconf", "--force", "--install", "--verbose"
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install"

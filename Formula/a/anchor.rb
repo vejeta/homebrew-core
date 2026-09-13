@@ -1,26 +1,35 @@
 class Anchor < Formula
   desc "Solana Program Framework"
   homepage "https://anchor-lang.com"
-  url "https://github.com/solana-foundation/anchor/archive/refs/tags/v1.0.2.tar.gz"
-  sha256 "e07f8e8aa27f732d9609b250a7ec0111237acadd2fa0cf3c1fc9ae7e36046b3b"
+  url "https://github.com/otter-sec/anchor/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "2b08bcb9b0dabb3ca4dfb24cd865f255fc7b5519d0b5c41063b8a8b89e16d58c"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0f184694cd6aad2d8758e9d923fbd1262cfbc9e2be807fad05666d3b09f8742d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b35fcd799d7572de0a77e84b4bec572189d31ccb14880629ff3b5bcb2b44e455"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "43c36988c81f0d4501b66fc0dee97a17ca8c01f426ab63bcadf16f40ff76b1bc"
-    sha256 cellar: :any_skip_relocation, sonoma:        "33231afe19d51339af4538bbc90f9a7760bd80b487f69d5fbfaf278a82cd688c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7422510a335c89d2464cffc48c5e6ec4f01ac9991ae5dd84ff03685c382e565b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e95aa0429fe630cce43209f9c597945d4a3b48a9516c773407882d9c81fee420"
+    sha256 arm64_golden_gate: "34de60342a21cb1adb5dabc0a6c1ad88bd759639791ca70de3deb009f9d367b6"
+    sha256 arm64_tahoe:       "14df7a7e7842f5d04697a6fc03b5165a557a20c2a7a1753b3703499d7c247b4e"
+    sha256 arm64_sequoia:     "c7626a179d30f39c07cce1e0d09a22d9ab9082edeaa5710a9a675f1db992ab85"
+    sha256 arm64_sonoma:      "f141564e4868163a823e092bdb1a3ef89090699a8d0b4682c1dfe13767e7c7dd"
+    sha256 arm64_linux:       "4725a7f018759fb80bb11be3eed94ab85124a04098d225f7820a6f9cd53307e9"
+    sha256 x86_64_linux:      "58cc2fdbf9da4037ba125f3a804ce7dbe892b1023b828963186f617b9b0cd911"
   end
 
   depends_on "pkgconf" => :build
-  depends_on "rust" => :build
   depends_on "node" => :test
-  depends_on "yarn" => :test
+  depends_on "rust"
 
   on_linux do
     depends_on "systemd" # for `libudev`
+  end
+
+  def anchor_workspace_toml
+    <<~TOML
+      [provider]
+      cluster = "localnet"
+      wallet = "~/.config/solana/id.json"
+
+      [programs.localnet]
+    TOML
   end
 
   def install
@@ -29,12 +38,22 @@ class Anchor < Formula
 
     system "cargo", "install", "--no-default-features", *std_cargo_args(path: "cli")
 
+    # TEMPORARY: anchor searches parents for `Anchor.toml` and the Linux sandbox denies listing `/`
+    (buildpath/"Anchor.toml").write anchor_workspace_toml
     generate_completions_from_executable(bin/"anchor", "completions", shells: [:bash, :zsh, :fish, :pwsh])
   end
 
   test do
     assert_match "anchor-cli #{version}", shell_output("#{bin}/anchor --version")
-    system bin/"anchor", "init", "test_project"
+
+    (testpath/"Anchor.toml").write anchor_workspace_toml
+    (testpath/"Cargo.toml").write <<~TOML
+      [workspace]
+      members = []
+      resolver = "2"
+    TOML
+
+    system bin/"anchor", "init", "--force", "test_project"
     assert_path_exists testpath/"test_project/Cargo.toml"
     assert_path_exists testpath/"test_project/Anchor.toml"
   end

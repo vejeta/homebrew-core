@@ -1,8 +1,8 @@
 class Buf < Formula
   desc "New way of working with Protocol Buffers"
   homepage "https://buf.build"
-  url "https://github.com/bufbuild/buf/archive/refs/tags/v1.71.0.tar.gz"
-  sha256 "fad7621cfcf54891a7b1c82c060b7a54c2ad6d13e0a1c99aea2d744e43bc82b7"
+  url "https://github.com/bufbuild/buf/archive/refs/tags/v1.73.0.tar.gz"
+  sha256 "5b74e94416114ccfcef2692592150a5c8459a9cb6f94088d42341ac06c389a22"
   license "Apache-2.0"
   head "https://github.com/bufbuild/buf.git", branch: "main"
 
@@ -15,19 +15,24 @@ class Buf < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2e874c8c448ae4b67cfc0f853cc5b51bd3b229be1f6a2697b4a6d8d86e1d4797"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2e874c8c448ae4b67cfc0f853cc5b51bd3b229be1f6a2697b4a6d8d86e1d4797"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2e874c8c448ae4b67cfc0f853cc5b51bd3b229be1f6a2697b4a6d8d86e1d4797"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d6dfbcf3c18cef408880fa9700cc136613e957507ea61109012a167f56a2dda4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "157aacbaf87422deb9165c19064a6b39ef0ca5f392ae5ab7ffcf6db7337f5f36"
-    sha256 cellar: :any,                 x86_64_linux:  "d4e5dac752f627898e748b51ec08b84137c85923cd634bbad17fdf7576c8d5d1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "df04188ac60caaed0d938a0c192a6b014720e000f91a5ef9a325f92452071841"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "df04188ac60caaed0d938a0c192a6b014720e000f91a5ef9a325f92452071841"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "df04188ac60caaed0d938a0c192a6b014720e000f91a5ef9a325f92452071841"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "8b079ebce6f2b387af366ea19a2462d58f5746b4d59f2b99cb8e799f874810dc"
+    sha256 cellar: :any,                 x86_64_linux:      "8820ef7b124ded0b13751752af6d2c754340c9d84c3a6dac7cce112b49b3fac2"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     %w[buf protoc-gen-buf-breaking protoc-gen-buf-lint].each do |name|
-      system "go", "build", *std_go_args(ldflags: "-s -w", output: bin/name), "./cmd/#{name}"
+      system "go", "build", *std_go_args(output: bin/name), "./cmd/#{name}"
     end
 
     generate_completions_from_executable(bin/"buf", shell_parameter_format: :cobra)

@@ -1,18 +1,20 @@
 class WhodbCli < Formula
   desc "Database management CLI with TUI interface, MCP server support, AI, and more"
   homepage "https://whodb.com/"
-  url "https://github.com/clidey/whodb/archive/refs/tags/0.115.0.tar.gz"
-  sha256 "7f1149472a8d6721824abd0922c6343ec4b6f983f0642c1b66ceb122fdd0455b"
+  url "https://github.com/clidey/whodb/archive/refs/tags/0.127.0.tar.gz"
+  sha256 "dfa1207f62c7a78e2d796c395272932b443742e43f0faa30d1c826dfd07b19aa"
   license "Apache-2.0"
   head "https://github.com/clidey/whodb.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ca43f81c6aa582b40712089c6ec8f78d1f9f1e81d222a980ef2d4b479c16fc28"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "cbc561d45ea94d289d89e76ddc5b74931205eedf347d4b130ec09ab28370d661"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b8e8795cae96762ce9fda696193def1a018f7248d7560bee4b79de9f4af8b046"
-    sha256 cellar: :any_skip_relocation, sonoma:        "169d8597fb6f07f34f3ad0f74581e1bc1289d8367f8c7897590afb0730cf06b9"
-    sha256 cellar: :any,                 arm64_linux:   "09239985e1ddc97a845aaf60aa519b028e0773dfb3becb708754d9abcf4ef8de"
-    sha256 cellar: :any,                 x86_64_linux:  "ce7ddf06229fc1ad538a2e16389609363ef4ab1d86c12e1aac9f0cbb7fb1d23e"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "20230b0e256d4b29f7416444b887b7b0318fe3fda3e9d23d4d67b68eb7efa386"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1050143e72a6976d6ddd3b71c94355e87a0d44e52d5609153159bf13bae6fc4f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ab0c1f688dead9781bc4a3bcb512069344d7b1dc57151a8cd374a17603d2744e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "5e4777273c8acb52eac0f43dda41cc0c1d0add886197ee317e943c0fbe8a7598"
+    sha256 cellar: :any_skip_relocation, sonoma:            "67064c262901e81939dfa9e83f9fbe1507e7be38fc7c20f20404b11c8d0224c1"
+    sha256 cellar: :any,                 arm64_linux:       "649ca07c37c9b6ae4276bc1d3c22786adfe3861d464ed358d77ab15d6c07808d"
+    sha256 cellar: :any,                 x86_64_linux:      "e9139e5712b381025e2a539153eb4ff7b0a2c74349f3f860fa18741efa2fc146"
   end
 
   depends_on "go" => :build
@@ -22,22 +24,22 @@ class WhodbCli < Formula
 
     baml_version = File.read("core/go.mod")[%r{github\.com/boundaryml/baml\s+v?([\d.]+)}, 1]
     ldflags = %W[
-      -s -w
       -X github.com/clidey/whodb/cli/pkg/version.Version=#{version}
       -X github.com/clidey/whodb/cli/pkg/version.Commit=#{tap.user}
       -X github.com/clidey/whodb/cli/pkg/version.BuildDate=#{time.iso8601}
       -X github.com/clidey/whodb/cli/internal/baml.BAMLVersion=#{baml_version}
     ]
 
-    system "go", "build", *std_go_args(ldflags:), "./cli"
+    system "go", "build", *std_go_args(output: bin/"whodb", ldflags:), "./cli"
+    bin.install_symlink bin/"whodb" => "whodb-cli"
 
-    generate_completions_from_executable(bin/"whodb-cli", shell_parameter_format: :cobra)
+    generate_completions_from_executable(bin/"whodb", shell_parameter_format: :cobra)
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/whodb-cli version")
+    assert_match version.to_s, shell_output("#{bin}/whodb version")
 
-    output = shell_output("#{bin}/whodb-cli connections list --format json")
+    output = shell_output("#{bin}/whodb connections list --format json")
     assert_kind_of Array, JSON.parse(output)
   end
 end

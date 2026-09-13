@@ -1,18 +1,18 @@
 class Forgejo < Formula
   desc "Self-hosted lightweight software forge"
   homepage "https://forgejo.org/"
-  url "https://codeberg.org/forgejo/forgejo/releases/download/v15.0.3/forgejo-src-15.0.3.tar.gz"
-  sha256 "39ac3023d1d6165a87d89bb44402ec4567327d952900d5522b92a3951b45db45"
+  url "https://codeberg.org/forgejo/forgejo/releases/download/v16.0.4/forgejo-src-16.0.4.tar.gz"
+  sha256 "13c5d34ff00cf24e8dc27d9b4df69d1e85263398c56ccab3e944ee8b0bb89ab2"
   license "GPL-3.0-or-later"
   head "https://codeberg.org/forgejo/forgejo.git", branch: "forgejo"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4722726e87f7bba5fc403dd9743680ddcc69ed76d2a702d2befdd91daa74ace2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "dcc800b9e4b385baa8b83165540dd49fee4ba871e3734c196a26160315e4e66b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d913e1e31ac4ab4d2457d9484d895d876b1e883aa34bb1f8f4f28f05a1670903"
-    sha256 cellar: :any_skip_relocation, sonoma:        "17bf3764a9b4f3b4146181e8712c5e7945174293430b147f82e5979d8803a7b6"
-    sha256 cellar: :any,                 arm64_linux:   "7f86f05219ed0afb2547b680d740807b8328de73ca55ee0468af700cbc81f78a"
-    sha256 cellar: :any,                 x86_64_linux:  "da14a700e96c188bc1745ccd48a18f96c687ca9675db297bb887c3324471984f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1ad60108657cac87765d0566c63115403a39940ae5f83d4bb18b5350dddf01aa"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "c52721d0059a0228bfb2e519faef4831c0e71f348766b7da722673f560dee492"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5b4140b88f14f32f4eec705f1d773f88a68c8cb26fd7aa10141e857dd156fefb"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "09c0affe2d857a1263b58a04e68fcdc4d1c8d99d151dab5587d6778733bc02f0"
+    sha256 cellar: :any,                 arm64_linux:       "d4c123d2b49a4feedd8a5f6d3116f9920912f8a776158e2352c7a87175c79c2b"
+    sha256 cellar: :any,                 x86_64_linux:      "2746c3f8659cbc80b544ecd722c172eb9ddc5644ca995c90c66ec6b8d4118f9a"
   end
 
   depends_on "go" => :build
@@ -25,6 +25,12 @@ class Forgejo < Formula
     ENV["TAGS"] = "bindata sqlite sqlite_unlock_notify"
     system "make", "build"
     bin.install "gitea" => "forgejo"
+
+    generate_completions_from_executable(bin/"forgejo", "completion")
+    # powershell completion uses "pwsh" as the shell name
+    # instead of the usual "powershell" used by generate_completions_from_executable
+    (pwsh_completion/"forgejo").write Utils.safe_popen_read({ "SHELL" => "pwsh" }, bin/"forgejo",
+                                                            "completion", "pwsh")
   end
 
   service do

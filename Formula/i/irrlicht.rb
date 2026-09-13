@@ -16,20 +16,23 @@ class Irrlicht < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "a8314699b2d76022efabbfc053bc1b50eb1d0e6c18a0e1744e7e45ecccab9f0f"
-    sha256 cellar: :any,                 arm64_sequoia: "ac1612d4a8706ea6a300353422b7e14dfeeec124a1a21afa2da6e58930bc6fcc"
-    sha256 cellar: :any,                 arm64_sonoma:  "964e8ca8b0f221dfbc7b84fee7dc436d05e3db20b5f52bdce10f05dd25849c21"
-    sha256 cellar: :any,                 sonoma:        "1a45162a1578616ec8bae85d0dc0637969d7ac24fd462bd3ba0901087da8f7fc"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a49171c9452f5c4af632a3dd080122c7f2de63fde6837922009041806912707d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b320467b91ab4658abdd8a6f7a356f2babd5e66be6d4eee2de4a34fe2caf1eea"
+    sha256 cellar: :any,                 arm64_golden_gate: "c7fdcded2790adc32880da0efd774cdc50f161f89b325f953284adc4d2c18716"
+    sha256 cellar: :any,                 arm64_tahoe:       "a8314699b2d76022efabbfc053bc1b50eb1d0e6c18a0e1744e7e45ecccab9f0f"
+    sha256 cellar: :any,                 arm64_sequoia:     "ac1612d4a8706ea6a300353422b7e14dfeeec124a1a21afa2da6e58930bc6fcc"
+    sha256 cellar: :any,                 arm64_sonoma:      "964e8ca8b0f221dfbc7b84fee7dc436d05e3db20b5f52bdce10f05dd25849c21"
+    sha256 cellar: :any,                 sonoma:            "1a45162a1578616ec8bae85d0dc0637969d7ac24fd462bd3ba0901087da8f7fc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a49171c9452f5c4af632a3dd080122c7f2de63fde6837922009041806912707d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "b320467b91ab4658abdd8a6f7a356f2babd5e66be6d4eee2de4a34fe2caf1eea"
   end
-
-  depends_on xcode: :build
 
   depends_on "jpeg-turbo"
   depends_on "libpng"
 
   uses_from_macos "bzip2"
+
+  on_macos do
+    depends_on xcode: :build
+  end
 
   on_linux do
     depends_on "libx11"
@@ -40,14 +43,12 @@ class Irrlicht < Formula
 
   # Use libraries from Homebrew or macOS
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/d16313ce/Patches/irrlicht/use-system-libs.patch"
-    sha256 "70d2534506e0e34279c3e9d8eff4b72052cb2e78a63d13ce0bc60999cbdb411b"
+    file "Patches/irrlicht/use-system-libs.patch"
   end
 
   # Update Xcode project to use libraries from Homebrew and macOS
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/irrlicht/xcode.patch"
-    sha256 "2cfcc34236469fcdb24b6a77489272dfa0a159c98f63513781245f3ef5c941c0"
+    file "Patches/irrlicht/xcode.patch"
   end
 
   def install
@@ -59,8 +60,8 @@ class Irrlicht < Formula
                 "(NSOpenGLPixelFormatAttribute)nil", "(NSOpenGLPixelFormatAttribute)0"
 
       inreplace "source/Irrlicht/MacOSX/MacOSX.xcodeproj/project.pbxproj" do |s|
-        s.gsub! "@LIBPNG_PREFIX@", Formula["libpng"].opt_prefix
-        s.gsub! "@JPEG_PREFIX@", Formula["jpeg-turbo"].opt_prefix
+        s.gsub! "@LIBPNG_PREFIX@", formula_opt_prefix("libpng")
+        s.gsub! "@JPEG_PREFIX@", formula_opt_prefix("jpeg-turbo")
       end
 
       extra_args = []
@@ -88,16 +89,16 @@ class Irrlicht < Formula
     else
       cd "source/Irrlicht" do
         inreplace "Makefile" do |s|
-          s.gsub! "/usr/X11R6/lib$(LIBSELECT)", Formula["libx11"].opt_lib
-          s.gsub! "/usr/X11R6/include", Formula["libx11"].opt_include
+          s.gsub! "/usr/X11R6/lib$(LIBSELECT)", formula_opt_lib("libx11")
+          s.gsub! "/usr/X11R6/include", formula_opt_include("libx11")
         end
-        ENV.append "LDFLAGS", "-L#{Formula["bzip2"].opt_lib} -lbz2"
-        ENV.append "LDFLAGS", "-L#{Formula["jpeg-turbo"].opt_lib} -ljpeg"
-        ENV.append "LDFLAGS", "-L#{Formula["libpng"].opt_lib} -lpng"
-        ENV.append "LDFLAGS", "-L#{Formula["zlib-ng-compat"].opt_lib} -lz"
-        ENV.append "LDFLAGS", "-L#{Formula["mesa"].opt_lib}"
-        ENV.append "LDFLAGS", "-L#{Formula["libxxf86vm"].opt_lib}"
-        ENV.append "CXXFLAGS", "-I#{Formula["libxxf86vm"].opt_include}"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("bzip2")} -lbz2"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("jpeg-turbo")} -ljpeg"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("libpng")} -lpng"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("zlib-ng-compat")} -lz"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("mesa")}"
+        ENV.append "LDFLAGS", "-L#{formula_opt_lib("libxxf86vm")}"
+        ENV.append "CXXFLAGS", "-I#{formula_opt_include("libxxf86vm")}"
         args = %w[
           NDEBUG=1
           BZIP2OBJ=

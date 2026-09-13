@@ -1,25 +1,24 @@
 class Gnmic < Formula
   desc "GNMI CLI client and collector"
   homepage "https://gnmic.openconfig.net"
-  url "https://github.com/openconfig/gnmic/archive/refs/tags/v0.46.0.tar.gz"
-  sha256 "325ba31b59fe255f1265dc01ec721c17bef3479ed4fcd12bbc4ddf525ba1e5a0"
+  url "https://github.com/openconfig/gnmic/archive/refs/tags/v0.48.0.tar.gz"
+  sha256 "444aad2dd219a39c0dba35f8537572b1c5fdc5e847f25ba00d2f0379293a3921"
   license "Apache-2.0"
   head "https://github.com/openconfig/gnmic.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e7ecae92177e2789f5f19f07c86ce7e1e490c50fb09c374c1ee5443caacffca1"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0ec89a5566ef72f8ed1bb69b3e961231c85eee2dabc7f522848d8b76b7bf2c8b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2936e894739703897762b81f9436079a74b68f621a370d0876ad40a9d908185a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "25bfa5df4096527bc3a4642532c48c33fe01ba31f7ca3a804e1268774b1ccfea"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d43e3674e3e92aca5554c7fc5db1ee590f2e796815fc8f433300df4812ed3178"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f818492a3ef79c7f2348772abbca0c28c6b843ebfe289c18e5b3b7a12cb87c45"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cb1ae434c2261ba6166e70e10044cb928e68a261171652e338b1ac5be0384907"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "5b5b56ea7a0f47be09285a7195924c23bd51a6408dfc0c9f65e518ab8edd3028"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "571eca45d57175c2e37647170cc48544de09469ea3e824e075549afaaa61c241"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "9c35c8568ff68cafa63a08ecae0ec9f7a8ca1e7cebd605a4bc09aef5a7b69c66"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "9b149b1dedbe6ebe36489a3c9f88525fee11e04048349809bbb866b5e1607ea5"
+    sha256 cellar: :any,                 x86_64_linux:      "f8f1c060bc7e6e140d14603d6d7ace2e66308b253db10bdd3cd0156379d15009"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/openconfig/gnmic/pkg/version.Version=#{version}
       -X github.com/openconfig/gnmic/pkg/version.Commit=#{tap.user}
       -X github.com/openconfig/gnmic/pkg/version.Date=#{time.iso8601}

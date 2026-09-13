@@ -1,8 +1,8 @@
 class Hugo < Formula
   desc "Configurable static site generator"
   homepage "https://gohugo.io/"
-  url "https://github.com/gohugoio/hugo/archive/refs/tags/v0.163.3.tar.gz"
-  sha256 "e51d50afd870c601a85c9e9077e18e452d427c5e4f59856b9e83e6565de9c53e"
+  url "https://github.com/gohugoio/hugo/archive/refs/tags/v0.166.0.tar.gz"
+  sha256 "599566b8270a0872061f43564d81961a5f1a02857022078d1fcb3a601189f573"
   license "Apache-2.0"
   head "https://github.com/gohugoio/hugo.git", branch: "master"
 
@@ -12,22 +12,27 @@ class Hugo < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "85fab952c874363d282fc96d3d7cd4f5c4a9b2b178eae0473ad1dec8a67ead62"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c43ec4b74d5d44d5a0fd9c6d0e85511ad59e4928134659c3065c803fd93afcc6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "33812dd832fa05fa563a9dab58bc7ff14692b44942c83835c73d37a729c26a5e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "974cf138c9db423572dd91e2d1ba069ad5e137da2c3d373cdc29f4925024be1a"
-    sha256 cellar: :any,                 arm64_linux:   "860fbe04fde6279d62e8b33f7a771208aebd8d2c3dfb0ada12e488b1133c7f17"
-    sha256 cellar: :any,                 x86_64_linux:  "58c9bcc338faacaf450a4609dbb179647b71e98d8aebce5003eb24a73955c2a0"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "088bb47ac929c1c3c16826726ad90e886ef11856aea218b8e036df7dcdba4189"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "42c0dce318df473c0aeb0b903d5c26e322ddc61775211499b02528418568e33c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "125be6bd5a8c2f380d4d13094a6f3e3adad83aeccc1a93fe394261fa5a49f2b4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "28dcd3fb14e87d8d723c49e859c05d45200b290d7dd2f827fcdf05898f064d3a"
+    sha256 cellar: :any,                 arm64_linux:       "0f25e075da310243e68412e3224e2d1175792993ff8eb359c9f83c68498dc874"
+    sha256 cellar: :any,                 x86_64_linux:      "6c7f3d35d92ca89f710228deb52beb4700bc61d471cb77718c564e6f91bbd3e8"
   end
 
   depends_on "go" => :build
+
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     # Needs CGO (which is disabled by default on Linux Arm)
     ENV["CGO_ENABLED"] = "1" if OS.linux? && Hardware::CPU.arm?
 
     ldflags = %W[
-      -s -w
       -X github.com/gohugoio/hugo/common/hugo.commitHash=#{tap.user}
       -X github.com/gohugoio/hugo/common/hugo.buildDate=#{time.iso8601}
       -X github.com/gohugoio/hugo/common/hugo.vendorInfo=#{tap.user}

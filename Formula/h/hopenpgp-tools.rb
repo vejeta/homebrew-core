@@ -1,20 +1,18 @@
 class HopenpgpTools < Formula
   desc "Command-line tools for OpenPGP-related operations"
   homepage "https://hackage.haskell.org/package/hopenpgp-tools"
-  # TODO: Check if `ixset-typed` resource can be dropped
-  url "https://hackage.haskell.org/package/hopenpgp-tools-0.23.11/hopenpgp-tools-0.23.11.tar.gz"
-  sha256 "2a056bd320caafe0f7ac3c95d56819f9fef02ddafe11b59802ea5a678d88a54f"
+  url "https://hackage.haskell.org/package/hopenpgp-tools-0.26/hopenpgp-tools-0.26.tar.gz"
+  sha256 "8b309ca4f8b7a47b77b83ad4e475ddac6876957ef56dfc845dad0c7e18c676f8"
   license "AGPL-3.0-or-later"
-  revision 1
-  head "https://salsa.debian.org/clint/hOpenPGP.git", branch: "master"
+  head "https://salsa.debian.org/clint/hOpenPGP.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "9ed34e785a3cbeff6ea95e7b39aeda7f414e0da121428eb90dd8642c4ec28226"
-    sha256 cellar: :any,                 arm64_sequoia: "91215b8ed2b56500b6827ddb3a0ffe02c97f11312a1bd23d2dee8e0c9597b243"
-    sha256 cellar: :any,                 arm64_sonoma:  "2892ccd7b57f203042e950e4806a1b1cfe970374a6d88a9a45de3ddba22cd050"
-    sha256 cellar: :any,                 sonoma:        "a483c64b027cd0275d5ff317052e708c706f79054f1b3b130e1fbf4ffc657e6a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "804a0866e6ee6e795186d87f5c963de1e33589899650792f925dfce6735fa569"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "caf063335e13be6ddb1511d2b586659bf80e345b0e53008283a12421ba548a68"
+    sha256 cellar: :any, arm64_golden_gate: "74618cfa9ca7931b890f77da44ea949797b0a4c72e4a4cf9d7659a538bd03403"
+    sha256 cellar: :any, arm64_tahoe:       "9da81157ee5ff4eedc714c233d0efcfba763f0024d7333af5e1b9f6146c767ff"
+    sha256 cellar: :any, arm64_sequoia:     "7e1707730e18a9ddb15b70fc3f8e3fa1536ffd4db3ac00ab5c6e21753b5d237d"
+    sha256 cellar: :any, arm64_sonoma:      "4536b7a0cc032f269a52f54627bf098afccbfd61a07c42fc3ed2141ac9f1a47f"
+    sha256 cellar: :any, arm64_linux:       "395cb4703450a389bb5dd0ecc4a1f794a67cdff2f43da3a937663005d141aa1b"
+    sha256 cellar: :any, x86_64_linux:      "87159edcdd422034fbd5da97cc07bd800ed8829a47eaea63545cb99a9244a064"
   end
 
   depends_on "cabal-install" => :build
@@ -22,7 +20,7 @@ class HopenpgpTools < Formula
   depends_on "pkgconf" => :build
   depends_on "gnupg" => :test
   depends_on "gmp"
-  depends_on "nettle@3" # https://github.com/stbuehler/haskell-nettle/issues/12
+  depends_on "nettle"
 
   uses_from_macos "libffi"
 
@@ -30,24 +28,24 @@ class HopenpgpTools < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # TODO: Remove resource once new release ixset-typed release is available
-  resource "ixset-typed" do
-    url "https://hackage.haskell.org/package/ixset-typed-0.5.1.0/ixset-typed-0.5.1.0.tar.gz"
-    sha256 "08b7b4870d737b524a8575529ee1901b0d8e39ff72298a6b231f8719b5a8790c"
+  # TODO: remove resource after once haskell-nettle supports Nettle 4
+  # https://github.com/stbuehler/haskell-nettle/issues/12
+  resource "nettle" do
+    url "https://hackage.haskell.org/package/nettle-0.3.1.1/nettle-0.3.1.1.tar.gz"
+    sha256 "d548552c257ad0c64ddec7d4605456b0d0a672ca95eb6a3f761e19c6815acb42"
 
-    # Backport https://github.com/well-typed/ixset-typed/pull/23
+    # Apply Arch Linux patch until upstream supports Nettle 4
     patch do
-      url "https://github.com/well-typed/ixset-typed/commit/460901368dcb452d352a17bcd4b8f60200a6fa71.patch?full_index=1"
-      sha256 "e284534df9ff14f49dad95a6745137c36c7a6335e896201c577d709794882e4c"
+      url "https://gitlab.archlinux.org/archlinux/packaging/packages/haskell-nettle/-/raw/aeed8e35267fb46cb17b137ecb12d2d34caefdb2/nettle-4.patch"
+      sha256 "7de52534a84bff5f6893ac9267d268990ab2532d73016fa8dc31ef9169cc2c08"
+      type :unofficial
     end
-    # Backport https://github.com/well-typed/ixset-typed/commit/1ee029539a77b0c7d854660707c9daa957d6fb11
-    patch :DATA
   end
 
   def install
     # Workaround to use newer GHC
-    (buildpath/"cabal.project.local").write "packages: . ixset-typed/"
-    (buildpath/"ixset-typed").install resource("ixset-typed")
+    (buildpath/"cabal.project.local").write "packages: . vendor/*/*.cabal"
+    (buildpath/"vendor/nettle").install resource("nettle")
 
     # Workaround to build aeson with GHC 9.14, https://github.com/haskell/aeson/issues/1155
     args = ["--allow-newer=base,containers,template-haskell", "--constraint=aeson>=2.2", "--constraint=errors>=2"]
@@ -69,7 +67,7 @@ class HopenpgpTools < Formula
       %commit
     GPG
 
-    gpg = Formula["gnupg"].opt_bin/"gpg"
+    gpg = formula_opt_bin("gnupg")/"gpg"
     begin
       system gpg, "--batch", "--gen-key", "batch.gpg"
       output = pipe_output("#{bin}/hokey lint", shell_output("#{gpg} --export Testing"), 0)
@@ -79,18 +77,3 @@ class HopenpgpTools < Formula
     end
   end
 end
-
-__END__
-diff --git a/ixset-typed.cabal b/ixset-typed.cabal
-index 888d8a7..e42b86b 100644
---- a/ixset-typed.cabal
-+++ b/ixset-typed.cabal
-@@ -38,7 +38,7 @@ library
-                      deepseq          >= 1.3 && < 2,
-                      safecopy         >= 0.8 && < 0.11,
-                      syb              >= 0.4 && < 1,
--                     template-haskell >= 2.8 && < 2.23
-+                     template-haskell >= 2.8 && < 2.24
- 
-   hs-source-dirs:    src
-   exposed-modules:

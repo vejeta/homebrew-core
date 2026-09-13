@@ -1,8 +1,8 @@
 class Buildkitd < Formula
   desc "Concurrent, cache-efficient, and Dockerfile-agnostic builder toolkit (Daemon)"
   homepage "https://github.com/moby/buildkit"
-  url "https://github.com/moby/buildkit/archive/refs/tags/v0.31.0.tar.gz"
-  sha256 "d000939ab93c32eab5a6d7c7a200bf4d42b1972a0e0dec5d5ebbe60c02667183"
+  url "https://github.com/moby/buildkit/archive/refs/tags/v0.33.0.tar.gz"
+  sha256 "c365476e1b10e27a2ab809e3a7a6dcd0647a60fa6e8917799b894d4127af7306"
   license "Apache-2.0"
   head "https://github.com/moby/buildkit.git", branch: "master"
 
@@ -15,8 +15,8 @@ class Buildkitd < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_linux:  "e0944d60bc9d855006c178f5e3b94ea684d9f165a4093dff9c570e4a489e8f9b"
-    sha256 cellar: :any,                 x86_64_linux: "b6e978420f7f5ad31dbc36384d72dcaf63270c960704f855747657d00944bf39"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "71c4d219053a9d6b84d0038d9b9f98d897c938c1acc2d9cc37fba8dd38480201"
+    sha256 cellar: :any,                 x86_64_linux: "6f60d572fdf3814c817010dec8b430c2b48add485638f44c3e1814bfc233e578"
   end
 
   depends_on "go" => :build
@@ -27,7 +27,6 @@ class Buildkitd < Formula
   def install
     revision = build.head? ? Utils.git_short_head : tap.user
     ldflags = %W[
-      -s -w
       -X github.com/moby/buildkit/version.Version=#{version}
       -X github.com/moby/buildkit/version.Revision=#{revision}
       -X github.com/moby/buildkit/version.Package=github.com/moby/buildkit

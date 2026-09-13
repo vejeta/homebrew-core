@@ -19,23 +19,26 @@ class Distcc < Formula
     patch do
       url "https://github.com/distcc/distcc/commit/83e030a852daf1d4d8c906e46f86375d421b781e.patch?full_index=1"
       sha256 "d65097b7c13191e18699d3a9c7c9df5566bba100f8da84088aa4e49acf46b6a7"
+      type :backport
     end
 
     # Switch from distutils to setuptools
     patch do
       url "https://github.com/distcc/distcc/commit/76873f8858bf5f32bda170fcdc1dfebb69de0e4b.patch?full_index=1"
       sha256 "611910551841854755b06d2cac1dc204f7aaf8c495a5efda83ae4a1ef477d588"
+      type :backport
     end
   end
 
   bottle do
     rebuild 1
-    sha256 arm64_tahoe:   "09fcd33f368d1daff6716752ee32cf50cbb62f7acb0200a0a07bd676d65cd3f2"
-    sha256 arm64_sequoia: "232f2d8db68393c3f700e16d29d914e19aa565f2e8a6d2e0e3846c8b317fd931"
-    sha256 arm64_sonoma:  "a25d35cebbe97e9bb683c53994a2956e256d4f7dfb1bd024e1a412826ee7c1d1"
-    sha256 sonoma:        "ab7cc55d6cfae2c77316093229ae3668f7e34d2d80713e4eec5f2c41f69983d2"
-    sha256 arm64_linux:   "42071ee608cbbcfcc761fe4a9b18ed90499115dab3108c03ff72a27825a2beef"
-    sha256 x86_64_linux:  "d04aa534933e21b7e469f009c76e5bde6e50ecadecbab3d6de4f134db8f7eef2"
+    sha256 arm64_golden_gate: "bfa3f1a618d785da2b6dccd39d3e5cbee74814710a49c5f510aeb749708c7494"
+    sha256 arm64_tahoe:       "09fcd33f368d1daff6716752ee32cf50cbb62f7acb0200a0a07bd676d65cd3f2"
+    sha256 arm64_sequoia:     "232f2d8db68393c3f700e16d29d914e19aa565f2e8a6d2e0e3846c8b317fd931"
+    sha256 arm64_sonoma:      "a25d35cebbe97e9bb683c53994a2956e256d4f7dfb1bd024e1a412826ee7c1d1"
+    sha256 sonoma:            "ab7cc55d6cfae2c77316093229ae3668f7e34d2d80713e4eec5f2c41f69983d2"
+    sha256 arm64_linux:       "42071ee608cbbcfcc761fe4a9b18ed90499115dab3108c03ff72a27825a2beef"
+    sha256 x86_64_linux:      "d04aa534933e21b7e469f009c76e5bde6e50ecadecbab3d6de4f134db8f7eef2"
   end
 
   head do
@@ -51,7 +54,7 @@ class Distcc < Formula
   depends_on "python@3.14"
 
   def install
-    ENV["PYTHON"] = python3 = which("python3.14")
+    ENV["PYTHON"] = python3
     site_packages = prefix/Language::Python.site_packages(python3)
 
     if build.stable?

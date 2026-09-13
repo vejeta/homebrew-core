@@ -3,18 +3,17 @@ class Nuitka < Formula
 
   desc "Python compiler written in Python"
   homepage "https://nuitka.net"
-  url "https://files.pythonhosted.org/packages/e6/2e/9ea398ca1a4fc458958fdf477ae18d3395bee8c9f8950ca6f0f039ea2585/nuitka-4.1.2.tar.gz"
-  sha256 "efc2359b171d7b63046ca8ec8dee57015c3466a9df74b68a049c2c1a7e93ecee"
+  url "https://files.pythonhosted.org/packages/c7/ce/38409fc853cc26d86ab71ccd53f7dfddbc7a84d4821b9b54db428b35779b/nuitka-4.2.1.tar.gz"
+  sha256 "815c6e571a7a6424af384fe9d95d4ba38f1634d39a5515e8094d7fbfa090cbcb"
   license "AGPL-3.0-only"
   head "https://github.com/Nuitka/Nuitka.git", branch: "develop"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c7f1bc18263931735a823916b99a0e0671d9990aadb6b712f05b5499402034f8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "12f4589f94bbabf12985a66e08510e3712af34f21db3c4943fabf53a2b143989"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "41d7c424e1ec756bab0421b786bb964bc94349a1cbd57581c1278f07086f3506"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9476737584dd42a9a9318400e1233321dd02c42af02852dc79b530d0852a1988"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "81f9a8a4c27cecdbb26e9bff0bd0b67a8693a667e51bef94a9802c01cbc37f75"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b6c9f88841ae624dbaa209aefdc2deb79ae39d4847a09abd935425a294864b8c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "93fbcf03989703be1dd9cd9aaccba7df8e74400e60146a4e6853f3508bedfcbb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0059fce146eb290a626160c27f2dc82a1a035a633752ae35e766c03c54d2ab9f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "abb43d672314778277adace4c772986ca4697ee6aecd09cc2711a5660644a1ee"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "4db9b94045a265b20323bbb765a65f96df13820a8812aa41c1794efb63f34edc"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ae9bb805d18b48c7a76fe311a97a5f15bc927fb2352afc144c0eb771a0982184"
   end
 
   depends_on "ccache"

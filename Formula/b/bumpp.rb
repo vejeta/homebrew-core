@@ -1,12 +1,12 @@
 class Bumpp < Formula
   desc "Interactive CLI that bumps your version numbers and more"
   homepage "https://github.com/antfu-collective/bumpp"
-  url "https://registry.npmjs.org/bumpp/-/bumpp-11.1.0.tgz"
-  sha256 "32e8e6aad0f9b2533c1c50358a37bb4266b772d6a0763f407da0f56f46710505"
+  url "https://registry.npmjs.org/bumpp/-/bumpp-12.3.0.tgz"
+  sha256 "0e3a43694c4a1104c82f4fc50ffa696a0bc7e3c0f311cc3d65894ab0985d13b0"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "bcd86b57f385885a7ac598daea2bdac02b8ad0dfa7bf9f48871cff85a781bcc5"
+    sha256 cellar: :any_skip_relocation, all: "bc7b478bed1e9bcb818a33163442f62527ca6ff68d9fc67987991dda4c50687a"
   end
 
   depends_on "node"

@@ -6,24 +6,24 @@ class Cassandra < Formula
   homepage "https://cassandra.apache.org"
   # TODO: Switch to `python@3.13` after https://github.com/apache/cassandra/pull/4628
   # TODO: Switch to `openjdk@21` in 6.0, https://issues.apache.org/jira/browse/CASSANDRA-18831
-  url "https://www.apache.org/dyn/closer.lua?path=cassandra/5.0.8/apache-cassandra-5.0.8-bin.tar.gz"
-  mirror "https://archive.apache.org/dist/cassandra/5.0.8/apache-cassandra-5.0.8-bin.tar.gz"
-  sha256 "1579d7d3f2d812741a28cd2c2cbe29e83541bb4d25fb21ec2c00c1e4fb3b9a8f"
+  url "https://www.apache.org/dyn/closer.lua?path=cassandra/5.0.9/apache-cassandra-5.0.9-bin.tar.gz"
+  mirror "https://archive.apache.org/dist/cassandra/5.0.9/apache-cassandra-5.0.9-bin.tar.gz"
+  sha256 "eee1460b47ebe188a29521207230617f22aad7f9e1674f5ea454f10c8f344d61"
   license "Apache-2.0"
 
   bottle do
     rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "cb4559cf042bd2687e7395e553b00173ab666e54edc9ae9ed69d36060c80641e"
-    sha256 cellar: :any, arm64_sequoia: "eb5a8f9e7f9e4c3b1e44c16750040387f698b5dc7617185a9fad5dfba9518117"
-    sha256 cellar: :any, arm64_sonoma:  "db4989989ecfd605b284c96fb7d94e0c47f3e355a43f07b50d93b930a5d1fefa"
-    sha256 cellar: :any, sonoma:        "cb0bd5a7df73e1c5fa667b72b399c93bef11c55338a5489455a1956cda629e3a"
-    sha256 cellar: :any, arm64_linux:   "a05bf40cd730f8ae05e8d03574a681e92be1770bff8b243f7d2f3848b0d6135e"
-    sha256 cellar: :any, x86_64_linux:  "297d639039fe125abf191f65c26a1d38815accc2023e8da2bf915b6c33f950d5"
+    sha256 cellar: :any, arm64_golden_gate: "6b7840959d2d05f86d28ed4ab7599deb9acca6a39ad31d66099e55c714ec75fd"
+    sha256 cellar: :any, arm64_tahoe:       "37de0df52ed2e121f2c8b8a835350ffc7b59fe6d85ad1633c5d4249acc54a29c"
+    sha256 cellar: :any, arm64_sequoia:     "ee2e2beccc4ca2cb7323a1333bda7e081d1caf732503f2dc3c07a3fa35d6ae60"
+    sha256 cellar: :any, arm64_sonoma:      "ea91ba7f14db53c15154457c86c6cdd56889ce9a96eae61d572f427edecfa307"
+    sha256 cellar: :any, arm64_linux:       "c1a52caf133cae5d1f035891d2e4f9ee894e6cd5a33e1f786ab582da09069e3f"
+    sha256 cellar: :any, x86_64_linux:      "04c7e985396162fca47816da345a4fe3a7aea9fa673d3fe86563ed0c427a9c5e"
   end
 
   depends_on "libev"
   depends_on "openjdk@17"
-  depends_on "python@3.11" # required 3.8-3.11, https://github.com/apache/cassandra/blob/trunk/bin/cqlsh#L65-L73
+  depends_on "python@3.13"
 
   conflicts_with "emqx", because: "both install `nodetool` binaries"
 
@@ -31,32 +31,18 @@ class Cassandra < Formula
                 extra_packages: ["cassandra-driver", "wcwidth"]
 
   resource "cassandra-driver" do
-    url "https://files.pythonhosted.org/packages/06/47/4e0fbdf02a7a418997f16f59feba26937d9973b979d3f23d79fbd8f6186f/cassandra_driver-3.29.3.tar.gz"
-    sha256 "ff6b82ee4533f6fd4474d833e693b44b984f58337173ee98ed76bce08721a636"
-
-    # Remove `ez_setup.py` to be compatible with setuptools 82+, remove in next release
-    patch do
-      url "https://github.com/apache/cassandra-python-driver/commit/7d8015e3c1cff543a5f64c70cff3e14216e58037.patch?full_index=1"
-      sha256 "66a5a714aed117306e6c0e78b51615b56ca655e12cb9ea5718b0c1ae384ceef6"
-    end
-    patch :DATA
-  end
-
-  resource "cassandra-driver" do
-    url "https://files.pythonhosted.org/packages/06/47/4e0fbdf02a7a418997f16f59feba26937d9973b979d3f23d79fbd8f6186f/cassandra_driver-3.29.3.tar.gz"
-    sha256 "ff6b82ee4533f6fd4474d833e693b44b984f58337173ee98ed76bce08721a636"
-
-    # Remove `ez_setup.py` to be compatible with setuptools 82+, remove in next release
-    patch do
-      url "https://github.com/apache/cassandra-python-driver/commit/7d8015e3c1cff543a5f64c70cff3e14216e58037.patch?full_index=1"
-      sha256 "66a5a714aed117306e6c0e78b51615b56ca655e12cb9ea5718b0c1ae384ceef6"
-    end
-    patch :DATA
+    url "https://files.pythonhosted.org/packages/bb/ed/4e16210e194660f107929ee494f1cf18557252655067d9b39029c241be2d/cassandra_driver-3.30.1.tar.gz"
+    sha256 "0c6a3e1428f7c6a9aa6c944b9c47a37cd2cdbeb5b5a82d42c33afdd56f14e398"
   end
 
   resource "click" do
-    url "https://files.pythonhosted.org/packages/57/75/31212c6bf2503fdf920d87fee5d7a86a2e3bcf444984126f13d8e4016804/click-8.3.2.tar.gz"
-    sha256 "14162b8b3b3550a7d479eafa77dfd3c38d9dc8951f6f69c78913a8f9a7540fd5"
+    url "https://files.pythonhosted.org/packages/76/d4/81420972a676e8ffea40450d8c8c92943e7218a78fe9b64359836cc9876b/click-8.4.2.tar.gz"
+    sha256 "9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6"
+  end
+
+  resource "deprecated" do
+    url "https://files.pythonhosted.org/packages/49/85/12f0a49a7c4ffb70572b6c2ef13c90c88fd190debda93b23f026b25f9634/deprecated-1.3.1.tar.gz"
+    sha256 "b1b50e0ff0c1fddaa5708a2c6b0a6588bb09b892825ab2b214ac9ea9d92a5223"
   end
 
   resource "geomet" do
@@ -65,14 +51,18 @@ class Cassandra < Formula
   end
 
   resource "wcwidth" do
-    url "https://files.pythonhosted.org/packages/35/a2/8e3becb46433538a38726c948d3399905a4c7cabd0df578ede5dc51f0ec2/wcwidth-0.6.0.tar.gz"
-    sha256 "cdc4e4262d6ef9a1a57e018384cbeb1208d8abbc64176027e2c2455c81313159"
+    url "https://files.pythonhosted.org/packages/34/74/c6428f875774288bec1396f5bfcbc2d925700a4dad61727fd5f2b12f249d/wcwidth-0.8.2.tar.gz"
+    sha256 "91fbef97204b96a3d4d421609b80340b760cf33e26da123ff243d76b1fda8dda"
+  end
+
+  resource "wrapt" do
+    url "https://files.pythonhosted.org/packages/2b/b0/c1f5a970721f06b85c0cd5142e0ff8fe067708abd779b0c4f4be7d61d09f/wrapt-2.3.0.tar.gz"
+    sha256 "681a2d0eefd721998f90642762b8e75c2159ec531b20ad5e437245ea7b06a107"
   end
 
   def install
     (var/"log/cassandra").mkpath
 
-    python3 = "python3.11"
     venv = virtualenv_create(libexec/"vendor", python3)
     venv.pip_install resources
 
@@ -169,19 +159,3 @@ class Cassandra < Formula
     assert_match "Connection error", output
   end
 end
-
-__END__
-diff --git a/setup.py b/setup.py
-index ef735b7..891d192 100644
---- a/setup.py
-+++ b/setup.py
-@@ -16,9 +16,6 @@ import os
- import sys
- import warnings
- 
--import ez_setup
--ez_setup.use_setuptools()
--
- from setuptools import setup
- from distutils.command.build_ext import build_ext
- from distutils.core import Extension

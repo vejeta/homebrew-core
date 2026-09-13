@@ -7,12 +7,13 @@ class Paps < Formula
   revision 3
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "8d95f99591217a56718331ee68a6996b39f059ca4aecfe5d0921a11566d75735"
-    sha256 cellar: :any, arm64_sequoia: "b26fed1929f8d01dac18fb575c540f386006b2db8ce860288001f1424b3e6baa"
-    sha256 cellar: :any, arm64_sonoma:  "e3679db03c165c79cdbb9a8ceac9fc0df4f3226622590452249e076e38ebe0ff"
-    sha256 cellar: :any, sonoma:        "183b02cb1d125fa77ad0320bd003589aa346d9077d530ab85779916c41503547"
-    sha256               arm64_linux:   "f8bff76dd84fc102e71509567f16a62036320efb8d3fb10240cee22ae5b70d19"
-    sha256               x86_64_linux:  "cf456bd3c1d9da480517bda9f2bf04ca1545c409538e802caba1c11411329029"
+    sha256 cellar: :any, arm64_golden_gate: "c62494b8dadb713c19b4ce12625946844f1b34406317643abc84572476ab9c31"
+    sha256 cellar: :any, arm64_tahoe:       "8d95f99591217a56718331ee68a6996b39f059ca4aecfe5d0921a11566d75735"
+    sha256 cellar: :any, arm64_sequoia:     "b26fed1929f8d01dac18fb575c540f386006b2db8ce860288001f1424b3e6baa"
+    sha256 cellar: :any, arm64_sonoma:      "e3679db03c165c79cdbb9a8ceac9fc0df4f3226622590452249e076e38ebe0ff"
+    sha256 cellar: :any, sonoma:            "183b02cb1d125fa77ad0320bd003589aa346d9077d530ab85779916c41503547"
+    sha256               arm64_linux:       "f8bff76dd84fc102e71509567f16a62036320efb8d3fb10240cee22ae5b70d19"
+    sha256               x86_64_linux:      "cf456bd3c1d9da480517bda9f2bf04ca1545c409538e802caba1c11411329029"
   end
 
   depends_on "meson" => :build
@@ -29,17 +30,19 @@ class Paps < Formula
 
   # Apply open PR to fix build with recent `glib`. This restores behavior before
   # https://gitlab.gnome.org/GNOME/glib/-/commit/c583162cc6d7078ff549c72615617092b0bc150a
-  # PR ref: https://github.com/dov/paps/pull/71
   patch do
     url "https://github.com/dov/paps/commit/e6ec698be127822661e31f7fca7d2e0107944b24.patch?full_index=1"
     sha256 "52848f9618dab9bc98c1554cc8a7a0b3ce419cfca53781b909d543ec4e4b27ea"
+    type :backport
+    resolves "https://github.com/dov/paps/pull/71"
   end
 
   # Fix compatibility with fmt 12.
-  # https://github.com/dov/paps/pull/77
   patch do
     url "https://github.com/dov/paps/commit/a26a20d7ca3feb08476a8a19fd97c3ececcc1e2e.patch?full_index=1"
     sha256 "604bc9e60b33162b522d18f251e3436745ca20b39a763202cfc7660423d9a9fe"
+    type :backport
+    resolves "https://github.com/dov/paps/pull/77"
   end
 
   def install

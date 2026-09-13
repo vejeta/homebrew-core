@@ -1,24 +1,24 @@
 class Fn < Formula
   desc "Command-line tool for the fn project"
   homepage "https://fnproject.io"
-  url "https://github.com/fnproject/cli/archive/refs/tags/0.6.60.tar.gz"
-  sha256 "d614fd3d6e2a741d416e8fec752f1c5f9961208fae546f30b688f5fb2ebc2fc6"
+  url "https://github.com/fnproject/cli/archive/refs/tags/0.6.66.tar.gz"
+  sha256 "0cda5864146b7280b8c05f98590b3b5e2e025d19634094e2e445ed1d8326fb9c"
   license "Apache-2.0"
   head "https://github.com/fnproject/cli.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "645df28f810cdac3e31df511670e240b5e27cd3cb2d460d8e721b9502cae3632"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "645df28f810cdac3e31df511670e240b5e27cd3cb2d460d8e721b9502cae3632"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "645df28f810cdac3e31df511670e240b5e27cd3cb2d460d8e721b9502cae3632"
-    sha256 cellar: :any_skip_relocation, sonoma:        "819c1fe550394a806dfaa8681726a5f63585218fe9d234f37b5b0c018bdc8c85"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8ce455d010d527b8b66eb3b4ea0fe3d33f23ff02bbd21a1a4523c9a7e07690d6"
-    sha256 cellar: :any,                 x86_64_linux:  "5d5a00ee519572666e534b7f3846418e923233aebeb450ed9a37c67d41438854"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "264e101de29c9b14f601b091109bc865a7f40f93e0f7c23ffa85924a9c584775"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "264e101de29c9b14f601b091109bc865a7f40f93e0f7c23ffa85924a9c584775"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "264e101de29c9b14f601b091109bc865a7f40f93e0f7c23ffa85924a9c584775"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "264e101de29c9b14f601b091109bc865a7f40f93e0f7c23ffa85924a9c584775"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "5d5f6e84e4516d1e2ad7f0a364a5cc24a3bca9dc32ceb2719d63c9917b6e416a"
+    sha256 cellar: :any,                 x86_64_linux:      "b0429b8e74ee4f4467f606d8679c0d136591758ff7308951031a11ba52e0cfe8"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
   end
 
   test do

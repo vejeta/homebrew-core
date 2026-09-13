@@ -18,6 +18,9 @@ class AnsibleCmdb < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:  "c82c4713092df1c5856967eb0d0d4072622d531083501e3995dfa27f10f2fbdb"
   end
 
+  deprecate! date: "2026-09-05", because: :repo_removed
+  disable! date: "2027-03-05", because: :repo_removed
+
   depends_on "libyaml"
   depends_on "python@3.14"
 
@@ -47,10 +50,12 @@ class AnsibleCmdb < Formula
   end
 
   # from https://github.com/fboender/ansible-cmdb/pull/260
-  # fixes imp being deprecated in python 3.12 https://github.com/fboender/ansible-cmdb/issues/259
+  # fixes imp being deprecated in python 3.12
   patch do
     url "https://github.com/fboender/ansible-cmdb/commit/02242d4eed9d4295d02cf2835a51eb4f422b18cf.patch?full_index=1"
     sha256 "5b63452cd28eb49afa2ea927e61280e864bf04edeaf830f37f5e63620169fd41"
+    type :unofficial
+    resolves "https://github.com/fboender/ansible-cmdb/issues/259"
   end
 
   def install

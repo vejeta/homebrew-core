@@ -18,7 +18,6 @@ class Libmemcached < Formula
     sha256 cellar: :any,                 ventura:        "2807a08a7c29739bd49450c44ec6f926e7c626b3b2104b1ed160226820a5465b"
     sha256 cellar: :any,                 monterey:       "902c0e16ba5ec76696c3f45888ef0c61b840a10b344149242bec812a7c99ee0d"
     sha256 cellar: :any,                 big_sur:        "c41f0bfdc440d240f8d0653dcc87270bd315571eab6979ff94d3271f863cb0e7"
-    sha256 cellar: :any,                 catalina:       "70c6e1e3dd76241e343a4a3b38a62fae5bea6d2e2405739b11473d084f4409a9"
     sha256 cellar: :any_skip_relocation, arm64_linux:    "b9e04c066fb48f43434519b8da53433b1659b0c8942cae5115b80393694fc197"
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "b551d4cc72d953e3018369057901f77a88b1b633661f5acfedcf6bba37385a8b"
   end
@@ -27,14 +26,12 @@ class Libmemcached < Formula
 
   # https://bugs.launchpad.net/libmemcached/+bug/1245562
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libmemcached/1.0.18.patch"
-    sha256 "afc8fe6ceb43e732484c632b08f69a79c4c88f71e50129fc2e2b2a9af1a33597"
+    file "Patches/libmemcached/1.0.18.patch"
   end
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
+    file "Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
   end
 
   def install

@@ -1,10 +1,10 @@
 class Netdata < Formula
   desc "Diagnose infrastructure problems with metrics, visualizations & alarms"
   homepage "https://www.netdata.cloud/"
-  url "https://github.com/netdata/netdata/releases/download/v2.10.3/netdata-v2.10.3.tar.gz"
-  sha256 "d7f178b89dc327f4f761aeaf5bd6e76a13ba220497c64c30f587f98ddc65b42b"
+  url "https://github.com/netdata/netdata/releases/download/v2.11.0/netdata-v2.11.0.tar.gz"
+  sha256 "3e21070e084045757df8281a8de4213458a59a2d35a295c7d692370071797c86"
   license "GPL-3.0-or-later"
-  revision 1
+  revision 3
 
   livecheck do
     url :stable
@@ -13,12 +13,12 @@ class Netdata < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "6375da5e4618576f58bbd4e285298826c4485d935c6ea00a7b965714850053b8"
-    sha256 arm64_sequoia: "d420522db7cb9a477f50b9adfd37c121b4af5dbf3aa40b49bb10ca40846a4f9e"
-    sha256 arm64_sonoma:  "bc2a821a16b70b6451df36a584b8231a80a7976b118754c44a6235658cbda8d8"
-    sha256 sonoma:        "0ee473d790a1fa90d2c510e740c832d395b01f30f919a6173dd147ed3734b3d6"
-    sha256 arm64_linux:   "1e2d12694148700cb65d5f0100bf93325063243b1743d7b31cfce0986ef8d2a0"
-    sha256 x86_64_linux:  "e1d472edda6be3f427701d2d39127bc78321d622a7534621a9beef858dd00936"
+    sha256 arm64_golden_gate: "559dfcad3c70096573706e392af68f6081f317d878f8dfe6a904ee176bb0c697"
+    sha256 arm64_tahoe:       "c7dd33b89b8563bc96f144d9f18cef85928a8c1663709d60c585c106d4e93fa8"
+    sha256 arm64_sequoia:     "65b0fa9a5f553037cfc8733865d1317f723848e3abf5426d4eb04dc5d0086f0e"
+    sha256 arm64_sonoma:      "76b7d36b3bb8533a31788aa50e1c7321119ca899aa5c0b3f1ee73dc085689ad4"
+    sha256 arm64_linux:       "70cd7279a7759e848fee17535dc14e8e610d27ba37f321306a7c8a1bd5820ad3"
+    sha256 x86_64_linux:      "b0fa1b61484c6c2703062d6bb9cea5e86f6fab57f67a869da86c4790011bef78"
   end
 
   depends_on "cmake" => :build
@@ -54,6 +54,9 @@ class Netdata < Formula
   end
 
   def install
+    # Work around superenv breaking aws-lc-sys `-O0` needed to build CPU Jitter RNG
+    ENV["AWS_LC_SYS_NO_JITTER_ENTROPY"] = "1"
+
     # Fix to error: no member named 'tcps_sc_zonefail' in 'struct tcpstat'
     # Issue ref: https://github.com/netdata/netdata/issues/20985
     if OS.mac? && MacOS.version >= :tahoe

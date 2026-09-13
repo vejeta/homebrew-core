@@ -2,8 +2,8 @@ class GitlabRunner < Formula
   desc "Official GitLab CI runner"
   homepage "https://gitlab.com/gitlab-org/gitlab-runner"
   url "https://gitlab.com/gitlab-org/gitlab-runner.git",
-      tag:      "v19.1.0",
-      revision: "5eb085abb18b9c9614ba6e12951ece859d092272"
+      tag:      "v19.3.2",
+      revision: "23a5dafcd67321b432c2a823c5db1d448666ddf3"
   license "MIT"
   head "https://gitlab.com/gitlab-org/gitlab-runner.git", branch: "main"
 
@@ -13,20 +13,25 @@ class GitlabRunner < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b2a2d34ed3f508deed14177749358a3aac130cf92312f748eb6de6c3064a6ea5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3bf7c5fdf7f7a07f2d402e097d2cf28ac42f5b5a62a3c8a59bc59695479ae158"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4483f1f1887efb3408b547fe008b2cd97b9648cddfa2ea6c0d88bb74f0591e1a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "66253415a9e9627fc7bc6f31700ab671132af743e0426e395c0cd932bb1a62d8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e49c8d767d8c49ee554d903644f3f68dee52c35f38ff2d250eaff5d804536f5c"
-    sha256 cellar: :any,                 x86_64_linux:  "a86a79f39f70da38d0eb02049c8e2676dac0e92c07761204a4553533da64d194"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "eda6a9d603aead1051fbaea3a491a2031996a2ca81816e98e47f0ab49449508e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f072aa24e76955ab13dde9fb7a278d0a483d3c55a566b41deb201944677f400e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f9eb3db26f2b7f637d17cd0bc1960cd8d5e4216a9d239f976ee28bd38dee89e9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "662d2154378c18a0fb4b65c26d5ad0901a078d286200c7ee6de1f9c151b6049f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "6afc906496ada5cb5cca299b7f9def77b3c517df9b5f9c8bcdaff30cf6a5fe82"
+    sha256 cellar: :any,                 x86_64_linux:      "0e55d843c91c55b2f19c117427ca9f7245699189e652f8debd30b91060238a0b"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     proj = "gitlab.com/gitlab-org/gitlab-runner"
     ldflags = %W[
-      -s -w
       -X #{proj}/common.NAME=gitlab-runner
       -X #{proj}/common.VERSION=#{version}
       -X #{proj}/common.REVISION=#{Utils.git_short_head(length: 8)}

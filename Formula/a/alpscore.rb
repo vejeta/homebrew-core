@@ -6,12 +6,13 @@ class Alpscore < Formula
   license "MIT"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "16b003e1fcfc63f47e2217207533f1405444f36f6b369ffb3b6a87797d2299cc"
-    sha256 cellar: :any,                 arm64_sequoia: "d508dd93dcb9b30108f016c3bde1e489a068ffd973c4ec1b8d9533a8a46404ca"
-    sha256 cellar: :any,                 arm64_sonoma:  "19cf64b22d44d1ccdfe0191d7bfb4cc3612099a6dc4dd3d097c289ddba5265c9"
-    sha256 cellar: :any,                 sonoma:        "4eebc3f7b25ef31e92e780d7f2d1ecbb9042ede6babf538a26b69605492439bc"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "05f2a3395aa08f324c86a989a576c4befecee594adf30429b8b43c541002c81a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e27347e7bd388ee1d21bdde50c1d0311141caabcbd7e9900fe8cca5fa09a7ef2"
+    sha256 cellar: :any,                 arm64_golden_gate: "7742745181fbba3555d0c594df1775d01361944720ba54d554d469b250882648"
+    sha256 cellar: :any,                 arm64_tahoe:       "16b003e1fcfc63f47e2217207533f1405444f36f6b369ffb3b6a87797d2299cc"
+    sha256 cellar: :any,                 arm64_sequoia:     "d508dd93dcb9b30108f016c3bde1e489a068ffd973c4ec1b8d9533a8a46404ca"
+    sha256 cellar: :any,                 arm64_sonoma:      "19cf64b22d44d1ccdfe0191d7bfb4cc3612099a6dc4dd3d097c289ddba5265c9"
+    sha256 cellar: :any,                 sonoma:            "4eebc3f7b25ef31e92e780d7f2d1ecbb9042ede6babf538a26b69605492439bc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "05f2a3395aa08f324c86a989a576c4befecee594adf30429b8b43c541002c81a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "e27347e7bd388ee1d21bdde50c1d0311141caabcbd7e9900fe8cca5fa09a7ef2"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -24,7 +25,7 @@ class Alpscore < Formula
     args = %W[
       -DALPS_BUILD_SHARED=ON
       -DALPS_CXX_STD=c++14
-      -DEIGEN3_INCLUDE_DIR=#{Formula["eigen"].opt_include}/eigen3
+      -DEIGEN3_INCLUDE_DIR=#{formula_opt_include("eigen")}/eigen3
       -DENABLE_MPI=ON
       -DTesting=OFF
     ]
@@ -45,8 +46,8 @@ class Alpscore < Formula
     ]
 
     inreplace files_with_cellar_references do |s|
-      s.gsub!(Formula["open-mpi"].prefix.realpath, Formula["open-mpi"].opt_prefix)
-      s.gsub!(Formula["hdf5"].prefix.realpath, Formula["hdf5"].opt_prefix, audit_result: false)
+      s.gsub!(Formula["open-mpi"].prefix.realpath, formula_opt_prefix("open-mpi"))
+      s.gsub!(Formula["hdf5"].prefix.realpath, formula_opt_prefix("hdf5"), audit_result: false)
     end
   end
 
@@ -79,8 +80,8 @@ class Alpscore < Formula
       target_link_libraries(test ${ALPSCore_LIBRARIES})
     CMAKE
 
-    system "cmake", "."
-    system "cmake", "--build", "."
-    assert_equal "3 #2\n1 (type: double) (name='myparam')\n", shell_output("./test")
+    system "cmake", "-S", ".", "-B", "build"
+    system "cmake", "--build", "build"
+    assert_equal "3 #2\n1 (type: double) (name='myparam')\n", shell_output("build/test")
   end
 end

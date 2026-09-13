@@ -1,8 +1,8 @@
 class Flashrom < Formula
   desc "Identify, read, write, verify, and erase flash chips"
   homepage "https://flashrom.org/"
-  url "https://download.flashrom.org/releases/flashrom-v1.7.0.tar.xz"
-  sha256 "4328ace9833f7efe7c334bdd73482cde8286819826cc00149e83fba96bf3ab4f"
+  url "https://download.flashrom.org/releases/flashrom-v1.8.0.tar.xz"
+  sha256 "654c9c61745c250cd3b5ccd0e56fc43ee76980f92a5e078420420639d66975a2"
   license "GPL-2.0-or-later"
   head "https://review.coreboot.org/flashrom.git", branch: "main"
 
@@ -12,12 +12,12 @@ class Flashrom < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "bddf59497d339e94335a78dcd020f39c2abeb6ab6743d2879425af065cc09cf1"
-    sha256 cellar: :any, arm64_sequoia: "7f44705e5537d6294a8b740c64f5f4ca9ea348d67ebb39e1da7f9bb1ac311568"
-    sha256 cellar: :any, arm64_sonoma:  "a675503867c985d6ff3599597a692283c47009ba672d1b0267e8ea58c7101c84"
-    sha256 cellar: :any, sonoma:        "7fff618fcbcc53469b5ccb96826f2db688098ef222a0afc55ecf2970dc5f6e8f"
-    sha256               arm64_linux:   "fa19b35b685c9ce8e2ba999ee52869440da81e6abe9271c843503548e9cfc85d"
-    sha256               x86_64_linux:  "8746313816786192056a06b6f94cb8aa0111984edca71343560e72af081669c0"
+    sha256 cellar: :any, arm64_golden_gate: "05fc622d67c4e9e8217ec1b6678bd6c031a1919678909bf96d7347e2a8321171"
+    sha256 cellar: :any, arm64_tahoe:       "abef39cb494d1475064b425daa8a0d12562bab5e608860178ddceb74a3d4ae02"
+    sha256 cellar: :any, arm64_sequoia:     "c9c225aa76b4dbdcfa75a7f8b2ab3f2bfb1db0bcf8980e837ea332dfa6e8dd40"
+    sha256 cellar: :any, arm64_sonoma:      "0e5d1e2587bcfbff9e208486f066f95fad7bc8e3768bbe8f4cedbba35c84b6f8"
+    sha256 cellar: :any, arm64_linux:       "62429c2654e7a723b1eba6f402f24a6862cb93e7e2e32e9f5453a33468942e26"
+    sha256 cellar: :any, x86_64_linux:      "d94065e9ad3a5c19cc2a5ae33f03eaef78694c1c3b179e2ab064f58b866ca4f0"
   end
 
   depends_on "meson" => :build
@@ -25,6 +25,7 @@ class Flashrom < Formula
   depends_on "pkgconf" => :build
 
   depends_on "libftdi"
+  depends_on "libjaylink"
   depends_on "libusb"
   depends_on "openssl@3"
 

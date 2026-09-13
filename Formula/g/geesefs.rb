@@ -1,24 +1,24 @@
 class Geesefs < Formula
   desc "FUSE FS implementation over S3"
   homepage "https://github.com/yandex-cloud/geesefs"
-  url "https://github.com/yandex-cloud/geesefs/archive/refs/tags/v0.43.7.tar.gz"
-  sha256 "4a55c8caab14d95ac8b4c89544b0e5ff9296d0de09225f455eb8dc071f182961"
+  url "https://github.com/yandex-cloud/geesefs/archive/refs/tags/v0.43.9.tar.gz"
+  sha256 "beee3771a2bbe652c49f9e8048b4f3e1ef2f606432d496e8de574c9355cb2dee"
   license "Apache-2.0"
   head "https://github.com/yandex-cloud/geesefs.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ade340dd49faf60b3ef49d91d3ad33c2b065b3e0e0d70d7ea4c74be908be0357"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c23a5dc60559d499fa34f97a15d9b1c7c37664cec16d0fa733a817452c7159e9"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1fd8e9ad507f34677d0db1d41cb6a00e73b341d528a3065a563e60927581e2c0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2e9cb4f10d1bd68d8cd2e5e75e9dc6d186d5ea717788b55f83f1639d5a7cc907"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9699a8dcf88959b339e5cc91898197a5e0592885678200207f51144fc45c178b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "199fe006f4670713eb32b0e0f111f29b0eac7b8f26000d89157699f25b5955f9"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "557843be6881259582973b37d0438a7fe3ab69fb05b41eca47d957999ce81251"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "09f67dd31ffa1ea952cd08bafd3bd0c7986d207b32308b4accf8d2910c3bcc23"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "445329938ca4cb40e01cf61cc8ba9f0f1d3d6e15a548575d6e8edb358b8f0554"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "9e5f7ba6258e767062ec7b758ae8e27c7b20b86e59b42ab77e99ede15fb1cec5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "34806013234398e8e8f7d71bab559e60972f57e68f15d8d63aca071a204b423a"
+    sha256 cellar: :any,                 x86_64_linux:      "b66ab0518c8bcc6ecc1e1c9b43e83824d8fb9ac8eaccdb886cf0cffc622124fd"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
   end
 
   test do

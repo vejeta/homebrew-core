@@ -7,12 +7,13 @@ class Nrpe < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "07fee8d6d39bfded2363a9ffb8c95ca5700948e889194f0f5f21d149bbffcf1f"
-    sha256 cellar: :any,                 arm64_sequoia: "13aae650600b1f2bba6c2ae01fb48b20be2ea55382ef85b930b3800ebac3629a"
-    sha256 cellar: :any,                 arm64_sonoma:  "2402923dcc08342f07df2ed6eca7be468ede9ab2446731dc1d6a5d09b445be32"
-    sha256 cellar: :any,                 sonoma:        "a1eb81992236474786db808dc9dfd8b5a605c08a30505c00383a8d2770d06764"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "21b4958641e1851b4cb580603b4cbe0eb4de0441bd01d67baa8f7625ce983cd7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "777c9bbafb34853267f741afdd9f3e9977c82b2a6e8892e522c582fde5f24e4e"
+    sha256 cellar: :any,                 arm64_golden_gate: "d3031157d0584e8e0deaf526d31de194fe94139384a53b5c4649fd1c05332d51"
+    sha256 cellar: :any,                 arm64_tahoe:       "07fee8d6d39bfded2363a9ffb8c95ca5700948e889194f0f5f21d149bbffcf1f"
+    sha256 cellar: :any,                 arm64_sequoia:     "13aae650600b1f2bba6c2ae01fb48b20be2ea55382ef85b930b3800ebac3629a"
+    sha256 cellar: :any,                 arm64_sonoma:      "2402923dcc08342f07df2ed6eca7be468ede9ab2446731dc1d6a5d09b445be32"
+    sha256 cellar: :any,                 sonoma:            "a1eb81992236474786db808dc9dfd8b5a605c08a30505c00383a8d2770d06764"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "21b4958641e1851b4cb580603b4cbe0eb4de0441bd01d67baa8f7625ce983cd7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "777c9bbafb34853267f741afdd9f3e9977c82b2a6e8892e522c582fde5f24e4e"
   end
 
   depends_on "nagios-plugins"
@@ -35,9 +36,9 @@ class Nrpe < Formula
                           "--with-nrpe-group=#{group}",
                           "--with-nagios-user=#{user}",
                           "--with-nagios-group=#{group}",
-                          "--with-ssl=#{Formula["openssl@3"].opt_prefix}",
+                          "--with-ssl=#{formula_opt_prefix("openssl@3")}",
                           # Set both or it still looks for /usr/lib
-                          "--with-ssl-lib=#{Formula["openssl@3"].opt_lib}",
+                          "--with-ssl-lib=#{formula_opt_lib("openssl@3")}",
                           "--enable-ssl",
                           "--enable-command-args"
 
@@ -72,7 +73,6 @@ class Nrpe < Formula
 
     pid = spawn bin/"nrpe", "-n", "-c", testpath/"nrpe.cfg", "-d"
     sleep 2
-    sleep 10 if Hardware::CPU.intel?
 
     begin
       assert port_open?("localhost", port), "nrpe did not start"

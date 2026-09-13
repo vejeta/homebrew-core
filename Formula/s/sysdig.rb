@@ -17,12 +17,13 @@ class Sysdig < Formula
   end
 
   bottle do
-    sha256                               arm64_tahoe:   "c1eafef500b305c7d4a754f6edf6894336ec38ba168fb4a2d1feded291bb1e4d"
-    sha256                               arm64_sequoia: "44b1343fca5533f7cb2b3e790c7d5f19482d10639e5bad9d939620722a85a437"
-    sha256                               arm64_sonoma:  "b409e1941b49c9f58c06e01562646d600902e7f3ec9a0e534ea6a763a3c5125a"
-    sha256                               sonoma:        "0b1d1289931d1428eb36e3cbe85051e944eafd2c731648b03b5181a749f0acab"
-    sha256                               arm64_linux:   "82711f9f2836f79924436860cba749cc2819f14ae2f71cedf8e72c75e1a8c9b4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3d25a86f4a35852a81c81d1dae2b4b328700ccb61e1fe5048ca7f0cf24a8485f"
+    sha256                               arm64_golden_gate: "ddbfe97c5c68df66663541fac03c0b62519951b1643cfb366c5c34de189df0bb"
+    sha256                               arm64_tahoe:       "c1eafef500b305c7d4a754f6edf6894336ec38ba168fb4a2d1feded291bb1e4d"
+    sha256                               arm64_sequoia:     "44b1343fca5533f7cb2b3e790c7d5f19482d10639e5bad9d939620722a85a437"
+    sha256                               arm64_sonoma:      "b409e1941b49c9f58c06e01562646d600902e7f3ec9a0e534ea6a763a3c5125a"
+    sha256                               sonoma:            "0b1d1289931d1428eb36e3cbe85051e944eafd2c731648b03b5181a749f0acab"
+    sha256                               arm64_linux:       "82711f9f2836f79924436860cba749cc2819f14ae2f71cedf8e72c75e1a8c9b4"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "3d25a86f4a35852a81c81d1dae2b4b328700ccb61e1fe5048ca7f0cf24a8485f"
   end
 
   # FIXME: switch to brewed `falcosecurity-libs`
@@ -52,10 +53,11 @@ class Sysdig < Formula
   end
 
   # Fix inclusion of removed `zlib.cmake` module
-  # https://github.com/draios/sysdig/pull/2176
   patch do
     url "https://github.com/draios/sysdig/commit/1f4565219b74c8b8ff9084425e24c50b43ec3d7b.patch?full_index=1"
     sha256 "6002ab9759c08e79d6382b48e43f47e70cf07141981be5a1717bdc4ad503402a"
+    type :unofficial
+    resolves "https://github.com/draios/sysdig/pull/2176"
   end
 
   def install
@@ -74,10 +76,6 @@ class Sysdig < Formula
         -DFALCOSECURITY_LIBS_VERSION=#{resource("falcosecurity-libs").version}
         -DUSE_BUNDLED_DEPS=OFF
       ]
-      # TODO: remove on next release which has dropped option
-      # https://github.com/falcosecurity/libs/commit/d45d53a1e0e397658d23b216c3c1716a68481554
-      args << "-DMINIMAL_BUILD=ON" if OS.mac?
-
       system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args(install_prefix: falco_prefix)
       system "cmake", "--build", "build"
       system "cmake", "--install", "build"

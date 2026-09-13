@@ -1,18 +1,18 @@
 class Serie < Formula
   desc "Rich git commit graph in your terminal"
   homepage "https://lusingander.github.io/serie/"
-  url "https://github.com/lusingander/serie/archive/refs/tags/v0.8.0.tar.gz"
-  sha256 "b0f0801ad32acb71107ba7a48aa5a01a2ab230639b13b444e012fa105b4b1d9c"
+  url "https://github.com/lusingander/serie/archive/refs/tags/v0.9.0.tar.gz"
+  sha256 "701f2c916db7756e38d0eeac8337942dc6392a090d7c5f4235f06be643cab05c"
   license "MIT"
   head "https://github.com/lusingander/serie.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "536d68f5284a23e29f96753e445930d5fbd039ddfe4e2dcae45388a68ed501ef"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5fd9a63bed19d8ae2fa45bb3d96e1cfc840193f19f12618ba868fd90d9b7d500"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3cd654192670474d1a517760a81338c44bee34bab778b298524a66b5f0bc79e7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "78071dead9d87d5edeb95d488af4eba9ace2f00af8740869804622b235737d6a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "eb07f25e1b80f827940f9dc8bc9a1774e8e570e263b80b83f3393e25d2de9317"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0e046118fcf8c2e1e6340e7bb7d6548bf8e3b85c11a067478f4f88c8a7cc8d39"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "222544d21e2157ede100003dc4af38909b25c502e13e130b5c5ed9a21559de04"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7a8806ff2f256162896e9ebe637c4f27c8caec7dcf26aa560808457ab4eefcc8"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "035719d277d038dbf1f8f2c2911cd85993031febc51c146f4a577453319e15b8"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "87adf28d2cd7445ef08067ac8b099c1d9ecc4a352a30adc7acc1586d740b3997"
+    sha256 cellar: :any,                 arm64_linux:       "dacb89175b1648ccb90ba7a116cd16847504f2dde910df0109cb84168a56b56d"
+    sha256 cellar: :any,                 x86_64_linux:      "9b8e3af765d3f2aeea8e2fa207475a30c8be9bcc35be97512c2c492ac178d705"
   end
 
   depends_on "rust" => :build
@@ -37,7 +37,6 @@ class Serie < Formula
         r.winsize = [80, 130]
       end
       sleep 1
-      sleep 2 if OS.mac? && Hardware::CPU.intel?
       assert_match "Initial commit", output_log.read
     ensure
       Process.kill("TERM", pid)

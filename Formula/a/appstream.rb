@@ -1,22 +1,22 @@
 class Appstream < Formula
   desc "Tools and libraries to work with AppStream metadata"
   homepage "https://www.freedesktop.org/wiki/Distributions/AppStream/"
-  url "https://github.com/ximion/appstream/archive/refs/tags/v1.1.2.tar.gz"
-  sha256 "564ec87b16e9e4ee81fb021e612250fd27f3a3ecd31c209a5dd1ff59def3022d"
+  url "https://github.com/ximion/appstream/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "02f723cb1afa372d434896e138503163a44ad49e4a813d0d30713fc38ccb8d0c"
   license "LGPL-2.1-or-later"
   compatibility_version 1
 
   bottle do
-    sha256 arm64_tahoe:   "f2c581be46ed6b1247e389b64e1ad6362873ab8c03302cbf0dedc0120ab92299"
-    sha256 arm64_sequoia: "796493bf50d9d0074104f9d531db5743535efd8331ca63e4f70cb1c5d4d37c91"
-    sha256 arm64_sonoma:  "cfa7613cb47ceeb7db8eddddc3a53e390aa765a2b94d8122bbfb4f9cfe7e7e0b"
-    sha256 sonoma:        "92b9ee15d004bc825753ae940b52a5ee6af25ff76baab576d7aacc5314515013"
-    sha256 arm64_linux:   "4570742f348cdfc3f3308550fdd3a87997f7b32a5f1cce32bf514989bcae08b6"
-    sha256 x86_64_linux:  "9739adf95825abbf49377ad78790e4878f40e871ead0f2f38dd547f021b97b9e"
+    sha256 arm64_golden_gate: "ce221f500feb9906108821e6efdbd1185ec559bdcb0de9210abe80fa1e61257f"
+    sha256 arm64_tahoe:       "e6b87c9e02342b8ccd9a395d4f445ced6111339e03a52d5a7b4d861a440b5930"
+    sha256 arm64_sequoia:     "604eafd3c96174850663c242804c118d6bc7311a2a9cef8838ceccfe8ff241a3"
+    sha256 arm64_sonoma:      "1524097ba8b03c845424486a93edb3a87572ff033ebc5f8d5b355c75a76924cc"
+    sha256 arm64_linux:       "a6995700d66b2c34cf2830b45cc0385daf371693fa77802a25b6add07eddbe7f"
+    sha256 x86_64_linux:      "9338282f7cf8aa877fe0ede9aa968cc7b295bdffb023e875e1402433dc4bdcf2"
   end
 
+  depends_on "docbook-xsl" => :build
   depends_on "gobject-introspection" => :build
-  depends_on "gtk-doc" => :build
   depends_on "itstool" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
@@ -41,12 +41,7 @@ class Appstream < Formula
     depends_on "gettext" => :build
     depends_on "gperf" => :build
     depends_on "systemd"
-  end
-
-  # fix macos build, upstream PR ref, https://github.com/ximion/appstream/pull/556
-  patch do
-    url "https://github.com/ximion/appstream/commit/06eeffe7eba5c4e82a1dd548e100c6fe4f71b413.patch?full_index=1"
-    sha256 "d0ad5853d451eb073fc64bd3e9e58e81182f4142220e0f413794752cda235d28"
+    depends_on "wayland"
   end
 
   def install
@@ -62,6 +57,7 @@ class Appstream < Formula
       -Dapidocs=false
       -Dinstall-docs=false
       -Dbash-completion=false
+      -Ddisplay-detection=auto
     ]
 
     args << "-Dsystemd=false" if OS.mac?

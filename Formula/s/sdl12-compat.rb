@@ -14,12 +14,13 @@ class Sdl12Compat < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "56dc659b94776ea6230f7b978c84fcb4df46a5970a565960a12805ae922eb9a6"
-    sha256 cellar: :any,                 arm64_sequoia: "fe94f9cd0d788a8b77c8704b7681f59edc67e20c801b22b4aba248d27a58e2dd"
-    sha256 cellar: :any,                 arm64_sonoma:  "ec62b168684492e1686bbc7d308f8fc2f4f03858b0d5f4eb27299acb2c39bac6"
-    sha256 cellar: :any,                 sonoma:        "84eefd7e2780806b46ad5b0fc88c9d6d8a2025a74f41237226eb964bc3ece057"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "2c85d1ec8070299e38628a852d5dc491f11d8e13f9010908bc8716b8ced7f2a9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5325fbcdb88813f34b205c7bdb1a52a9f4d282c31d4da5518941cbfbd119c230"
+    sha256 cellar: :any,                 arm64_golden_gate: "7ca3dcab1bd97aec47fb1f6e3a0023c409e8cf395c9a2454865b8d223e6bb215"
+    sha256 cellar: :any,                 arm64_tahoe:       "56dc659b94776ea6230f7b978c84fcb4df46a5970a565960a12805ae922eb9a6"
+    sha256 cellar: :any,                 arm64_sequoia:     "fe94f9cd0d788a8b77c8704b7681f59edc67e20c801b22b4aba248d27a58e2dd"
+    sha256 cellar: :any,                 arm64_sonoma:      "ec62b168684492e1686bbc7d308f8fc2f4f03858b0d5f4eb27299acb2c39bac6"
+    sha256 cellar: :any,                 sonoma:            "84eefd7e2780806b46ad5b0fc88c9d6d8a2025a74f41237226eb964bc3ece057"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "2c85d1ec8070299e38628a852d5dc491f11d8e13f9010908bc8716b8ced7f2a9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "5325fbcdb88813f34b205c7bdb1a52a9f4d282c31d4da5518941cbfbd119c230"
   end
 
   depends_on "cmake" => :build
@@ -27,7 +28,7 @@ class Sdl12Compat < Formula
 
   def install
     args = ["-DSDL12TESTS=OFF"]
-    args << "-DCMAKE_INSTALL_RPATH=#{rpath(target: Formula["sdl2-compat"].opt_lib)}" if OS.mac?
+    args << "-DCMAKE_INSTALL_RPATH=#{rpath(target: formula_opt_lib("sdl2-compat"))}" if OS.mac?
 
     # We override install_prefix to make sure substituted CMAKE_INSTALL_FULL_* use
     # HOMEBREW_PREFIX path because most build scripts assume that all SDL modules
@@ -46,11 +47,17 @@ class Sdl12Compat < Formula
     assert_path_exists lib/"libSDLmain.a"
     assert_equal version.to_s, shell_output("#{bin}/sdl-config --version").strip
 
+    ENV["SDL_VIDEODRIVER"] = "dummy"
+
     (testpath/"test.c").write <<~C
       #include <SDL.h>
 
+      // Avoid SDLmain's Cocoa startup in headless CI.
+      #undef main
+
       int main(int argc, char* argv[]) {
-        SDL_Init(SDL_INIT_EVERYTHING);
+        if (SDL_Init(SDL_INIT_VIDEO) < 0)
+          return 1;
         SDL_Quit();
         return 0;
       }

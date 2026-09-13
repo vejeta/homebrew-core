@@ -1,24 +1,24 @@
 class WoodpeckerCli < Formula
   desc "CLI client for the Woodpecker Continuous Integration server"
   homepage "https://woodpecker-ci.org/"
-  url "https://github.com/woodpecker-ci/woodpecker/archive/refs/tags/v3.15.0.tar.gz"
-  sha256 "14acf419b5a8b349fc73662ac272e238b8492477911ad27c95701f8efbbdc5c2"
+  url "https://github.com/woodpecker-ci/woodpecker/releases/download/v3.18.1/woodpecker-src.tar.gz"
+  sha256 "21b3566b52d8a9f516ba162e21d2f2bcb0c80f9c0d54dc34ef33187e4102557d"
   license "Apache-2.0"
   head "https://github.com/woodpecker-ci/woodpecker.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "bb2935fca19a06b02a8f3bd54cf1883642c9bb19f2110e833112a7dd38134a46"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "bb2935fca19a06b02a8f3bd54cf1883642c9bb19f2110e833112a7dd38134a46"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "bb2935fca19a06b02a8f3bd54cf1883642c9bb19f2110e833112a7dd38134a46"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ba8a3c6c7b5f140c7ce7bbb3f2430cb64d53d335ef8a943434b10890b0e3c768"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6f607d6523a605145992a8fd91edb79d2f19aa72180f284ab6af9edf9fee6304"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ea82afa883bb00c9128d2dc6114c6557f8f1ab8ab1bf820a73336869edccf68c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "eeeca24e1e54f3cdf361c02cd6892ed8eb1e101379bfd5b6e2cf83b9a93d88f9"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "eeeca24e1e54f3cdf361c02cd6892ed8eb1e101379bfd5b6e2cf83b9a93d88f9"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "eeeca24e1e54f3cdf361c02cd6892ed8eb1e101379bfd5b6e2cf83b9a93d88f9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "eeeca24e1e54f3cdf361c02cd6892ed8eb1e101379bfd5b6e2cf83b9a93d88f9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "ddab9692c51f5a8076378c6723f1ef6dfab9325841ce6c1e3fd7a13e3e0700b5"
+    sha256 cellar: :any,                 x86_64_linux:      "3f02f87a35a5bebcf8b5ad479be589f78cd9299f9437afa411d1521cea97d761"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X go.woodpecker-ci.org/woodpecker/v#{version.major}/version.Version=#{version}"
+    ldflags = "-X go.woodpecker-ci.org/woodpecker/v#{version.major}/version.Version=#{version}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/cli"
     generate_completions_from_executable(bin/"woodpecker-cli", "completion")
     # woodpecker-cli expects "pwsh", not "powershell" so we use the custom shell_parameter_format

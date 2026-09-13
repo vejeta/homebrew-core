@@ -1,8 +1,8 @@
 class GnomeAutoar < Formula
   desc "GNOME library for archive handling"
   homepage "https://github.com/GNOME/gnome-autoar"
-  url "https://download.gnome.org/sources/gnome-autoar/0.4/gnome-autoar-0.4.5.tar.xz"
-  sha256 "838c5306fc38bfaa2f23abe24262f4bf15771e3303fb5dcb74f5b9c7a615dabe"
+  url "https://download.gnome.org/sources/gnome-autoar/0.5/gnome-autoar-0.5.2.tar.xz"
+  sha256 "6c20bd16c87aba15869e56444424481f632ac302989a203e8ce4dcc73dea33a5"
   license "LGPL-2.1-or-later"
 
   # gnome-autoar doesn't seem to follow the typical GNOME version format where
@@ -14,13 +14,12 @@ class GnomeAutoar < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:   "e989aba6c89f26eb5a551f54006af3f52408071a32cf0a6e32befa60c79cfe61"
-    sha256 cellar: :any, arm64_sequoia: "83d4a5f33857515b1a11149a955dd293411f6648b983304a8388f8cb2dbc6174"
-    sha256 cellar: :any, arm64_sonoma:  "5b8a042462f7b953f9d0ca1ee8dcbf7f8802fccf79b666b253368923d06cdbd2"
-    sha256 cellar: :any, sonoma:        "2785109ee3638584ee08d1ac71cd1a5ac71520b2309c81ad41da1102b35b5540"
-    sha256               arm64_linux:   "5c4524e591a8f0475cc70d08c9515467b643514164adfd165e4a1cf2454033c4"
-    sha256               x86_64_linux:  "7130c2c436ce821f2a7154113ddf5028eb3e4b9674b5b9e50e0ae64d11e96aab"
+    sha256 cellar: :any, arm64_golden_gate: "61d6d8f9a50af982ec4ddf0a7e3b3e26a0f44c0f96ffc471717443411eec1b23"
+    sha256 cellar: :any, arm64_tahoe:       "e55340827c5750f4a79057710c350994b6e38a7aec2968ad72f2a0881ca4d931"
+    sha256 cellar: :any, arm64_sequoia:     "8ce9e8b6a660655a3f91aad4c39be3659c583e8747ed5ab53e81d8dca0c2db86"
+    sha256 cellar: :any, arm64_sonoma:      "497c2c6f8b61c2cf4e2772661a83a14253b040c105542da2c763a4fd4be69192"
+    sha256 cellar: :any, arm64_linux:       "5056db5ff19505d9f941e8a3c491abe3dd1cdf0cb231011100c3316cbfe15a7a"
+    sha256 cellar: :any, x86_64_linux:      "4ca8ac8ac5837114ba173f19f1265e3e184c43849b45543a567e0575c28a4deb"
   end
 
   depends_on "meson" => :build
@@ -60,7 +59,7 @@ class GnomeAutoar < Formula
       }
     C
 
-    ENV.prepend_path "PKG_CONFIG_PATH", Formula["libarchive"].opt_lib/"pkgconfig"
+    ENV.prepend_path "PKG_CONFIG_PATH", formula_opt_lib("libarchive")/"pkgconfig"
     flags = shell_output("pkgconf --cflags --libs gnome-autoar-0").chomp.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"

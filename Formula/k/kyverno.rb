@@ -1,8 +1,8 @@
 class Kyverno < Formula
   desc "Kubernetes Native Policy Management"
   homepage "https://kyverno.io/"
-  url "https://github.com/kyverno/kyverno/archive/refs/tags/v1.18.1.tar.gz"
-  sha256 "d8aefee8cc5dd5e127bb536e2fa4c42f20879f163026c05184499ddd3f44f88f"
+  url "https://github.com/kyverno/kyverno/archive/refs/tags/v1.19.1.tar.gz"
+  sha256 "f016955f08e3113575380b9155d9c93b8a930567b4439be6702e8ab49734f148"
   license "Apache-2.0"
   head "https://github.com/kyverno/kyverno.git", branch: "main"
 
@@ -14,12 +14,12 @@ class Kyverno < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1b2132f688a5063d1a5975655784fd75583ff8e3a353ff0f731e4ba1c1c6ac89"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7fbb0658ac28b2b44f11aedaf10311f3e61b80621c23ed0b18ae92b09a0b1a2f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c130c844084ebc34aedf22fda573a2a1fcc0ee34699344abe6d00b503fbc3f08"
-    sha256 cellar: :any_skip_relocation, sonoma:        "39f6e0fc510e363b861518c0b8b466dd9d733eef50e6d6f594e15107fd5eae8b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8aac63239790675d05552e2be41887e1be2063c1ee4d051e01b3673a45088549"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e1ff80b8475a83188c72a3407746152f7f2090e78636cf36174ebd2f5fed7a4e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "74a624aa1e37e0998a6bc94eef626014181777a11b22b9fbd323f5523ed19662"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "feaabb65b4ca29408962e7c0c4bcb6339322f15f0d3de849dc599e57532b7d08"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "2d33d01cb52a7f536e35048585d9d21e65cb421643cea6e4b1ebd28992ac0458"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2017295e4264e8ccaa3819fe3ceb6e441b779bd96d0c3f03d96609e8cfc27c9e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "2ca57c1c3916f8e8cc921d041ad0084dd135c70e0019d865fc08e5a895f986a9"
+    sha256 cellar: :any,                 x86_64_linux:      "602cb8117c6ee545847395231764633d0f3893f84d77b548bd93aae47c367783"
   end
 
   depends_on "go" => :build
@@ -27,7 +27,6 @@ class Kyverno < Formula
   def install
     project = "github.com/kyverno/kyverno"
     ldflags = %W[
-      -s -w
       -X #{project}/pkg/version.BuildVersion=#{version}
       -X #{project}/pkg/version.BuildHash=
       -X #{project}/pkg/version.BuildTime=#{time.iso8601}

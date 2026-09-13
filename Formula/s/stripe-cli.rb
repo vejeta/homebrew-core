@@ -1,25 +1,31 @@
 class StripeCli < Formula
   desc "Command-line tool for Stripe"
   homepage "https://docs.stripe.com/stripe-cli"
-  url "https://github.com/stripe/stripe-cli/archive/refs/tags/v1.42.14.tar.gz"
-  sha256 "85a7f5098dff21b538101a9d0377b54ebca95e469ffff2bfee6b4c091d8b3d10"
+  url "https://github.com/stripe/stripe-cli/archive/refs/tags/v1.50.11.tar.gz"
+  sha256 "60571665ca0b7021a33a90a0b99adf7d13cbb6f9d28a398a9ac80d646a303f11"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "32041d749f8ecd84f9f2b20e28ac8d70df93ec2d3fe10ddb33ee81c4a6279fb3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "429cf8c2facb8986af3a7eb88d87db0b5d9b7f375e59039a5fb290679e9c0712"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "17dbf4c467a674906e380125174fc3f9b9ca71aa8ceef94d01fee6a1b1bf50a8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9b3c1699e4861b00c897b3b6be50252d681cdfbec6fe74dcca0b1cf42905a7ca"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b43c9f5652f17c093d7f380a5856853c161128c16709c21235cd86ab3dd7683c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d6c3672b2425e7e4853552a5d9d05aa765a45ee1588c8f5dbb8531f5a99871a1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "bb3fdbd154995ed714498c7fc0762affaab63cc7196fd1958c2dcbb014567072"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bb3fdbd154995ed714498c7fc0762affaab63cc7196fd1958c2dcbb014567072"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bb3fdbd154995ed714498c7fc0762affaab63cc7196fd1958c2dcbb014567072"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bb3fdbd154995ed714498c7fc0762affaab63cc7196fd1958c2dcbb014567072"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "5eb50631960a6471ee61cbeca92e795febaec7993de5f33be679fffccdc14d9b"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "5a76f40d37e5573aa9e2fee80a6f4772fcbdd0ba328a440eddb4f844fad312eb"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     # See configuration in `.goreleaser` directory
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
-    ldflags = %W[-s -w -X github.com/stripe/stripe-cli/pkg/version.Version=#{version}]
+    ldflags = %W[-X github.com/stripe/stripe-cli/pkg/version.Version=#{version}]
     system "go", "build", *std_go_args(ldflags:, output: bin/"stripe"), "cmd/stripe/main.go"
 
     generate_completions_from_executable(bin/"stripe", "completion", "--write-to-stdout", "--shell")

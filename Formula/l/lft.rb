@@ -1,8 +1,8 @@
 class Lft < Formula
   desc "Layer Four Traceroute (LFT), an advanced traceroute tool"
   homepage "https://pwhois.org/lft/"
-  url "https://pwhois.org/dl/index.who?file=lft-3.98.tar.gz"
-  sha256 "395ced8d95ee2bcc588a837f187e23bb25ce97999a0bb8481b2b3e0c1c633455"
+  url "https://pwhois.org/dl/index.who?file=lft-4.01.tar.gz"
+  sha256 "77a2923dbd10b1e3d2b55d8f3c4144795a80f73772d4f41f5e27751d1f3f0c62"
   license "VOSTROM"
 
   livecheck do
@@ -11,22 +11,23 @@ class Lft < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "7f89494bec6e8351e0ce8d648954f8a46bcd966b35113518df85b0b97438a1c2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "419eda32f35554778ee34e24d65104e50fca5bd934de9fc2c5264fe040828f3c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3e0f89ea402cb4c6598e3890b25bb03c46a7f1532ec759c127eb68910497e077"
-    sha256 cellar: :any_skip_relocation, sonoma:        "78c94f8f33339c225c2354822384f955ff614916f55629e65f6dae7cda03779a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "fac6c8bc94198d5a1a8638fe527c54506b9368891a87e66a1eb6c2b416398101"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f5f45aab33f889b46dba96f3b077f47b5d49638d9439bc1981c299eae110615"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "28b467003612952ce8da88579e1a59b71ab2020731393dcf9c15b0ae042468a2"
+    sha256 cellar: :any, arm64_tahoe:       "2c40112b2be68d4e3795726c155ce2a6472f633c63d9fc8ce1785b56577325db"
+    sha256 cellar: :any, arm64_sequoia:     "7d338e52186416ed983276718c2d6ed0a27a7ca76c025f2544bafa2124e29b79"
+    sha256 cellar: :any, arm64_sonoma:      "094ad51fa666ae8fe50de127b5da956649766caeeefd782c897da756df0f614f"
+    sha256 cellar: :any, arm64_linux:       "52df348b8b0c2575f2563cb97d22e53a2596c767661afc2aaad4b83821e82f00"
+    sha256 cellar: :any, x86_64_linux:      "8779ebca5ff64b3bae3b3f4ba9a55e89906c5b73c77e73d892b1596d58ceb6af"
   end
+
+  depends_on "pkgconf" => :build
+  depends_on "c-ares"
+  depends_on "ncurses"
 
   uses_from_macos "libpcap"
 
   def install
-    args = %w[
-      --disable-async-dns
-      --disable-ncurses
-    ]
-    system "./configure", *args, *std_configure_args
+    system "./configure", *std_configure_args
     system "make", "install"
   end
 

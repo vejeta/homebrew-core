@@ -1,11 +1,11 @@
 class Qt < Formula
   desc "Cross-platform application and UI framework"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.11/6.11.1/submodules/md5sums.txt"
-  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.1/submodules/md5sums.txt"
-  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.1/submodules/md5sums.txt"
-  version "6.11.1"
-  sha256 "9e6bcc7f14c6776eb9dd480ec3df75a5bb458ab76cfb3b91b14e999968a62e73"
+  url "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/md5sums.txt"
+  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.2/submodules/md5sums.txt"
+  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.2/submodules/md5sums.txt"
+  version "6.11.2"
+  sha256 "1034acf85131b4c8b11469ce5e23db2e6adaa8b74a7f92a5eb9b933eb65e8071"
   license all_of: [
     "BSD-3-Clause",
     "GFDL-1.3-no-invariants-only",
@@ -19,12 +19,11 @@ class Qt < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "18d5da47996c56cc8c026aa6d565327c8adb0ab38f3eb75bb16c56a7d6dd1187"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "18d5da47996c56cc8c026aa6d565327c8adb0ab38f3eb75bb16c56a7d6dd1187"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "18d5da47996c56cc8c026aa6d565327c8adb0ab38f3eb75bb16c56a7d6dd1187"
-    sha256 cellar: :any_skip_relocation, sonoma:        "18d5da47996c56cc8c026aa6d565327c8adb0ab38f3eb75bb16c56a7d6dd1187"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "81393ac2960afa9d4531de2c96a80ad991ad7956afe032f738682b90cf423f48"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f4a84e5ac98cddf7bec9875bf85571c99dc59d8efdc0a5d04b40b842e5f8ec50"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9c67b4739b66e20a5274b3fadad59efcb37dd808680daccad96d3bdf893c699c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9c67b4739b66e20a5274b3fadad59efcb37dd808680daccad96d3bdf893c699c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9c67b4739b66e20a5274b3fadad59efcb37dd808680daccad96d3bdf893c699c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "04e3a2e7b0bc9c1803b2475feb6a795d952bd47e6ab33c4b1315a2a1e3d3d1ff"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "04e3a2e7b0bc9c1803b2475feb6a795d952bd47e6ab33c4b1315a2a1e3d3d1ff"
   end
 
   depends_on "cmake" => :test
@@ -68,19 +67,13 @@ class Qt < Formula
   depends_on "qtwebchannel"
   depends_on "qtwebsockets"
 
-  on_sonoma :or_newer do
+  on_system :linux, macos: :sonoma_or_newer do
     depends_on "qtwebengine"
     depends_on "qtwebview"
   end
 
   on_linux do
     depends_on "qtwayland"
-
-    # TODO: Add dependencies on all Linux when `qtwebengine` is bottled on arm64 Linux
-    on_intel do
-      depends_on "qtwebengine"
-      depends_on "qtwebview"
-    end
   end
 
   def webengine_supported?
@@ -88,9 +81,7 @@ class Qt < Formula
       return true
     end
     on_linux do
-      on_intel do
-        return true
-      end
+      return true
     end
     false
   end
@@ -165,7 +156,7 @@ class Qt < Formula
       CONFIG  -= app_bundle
       TEMPLATE = app
       SOURCES += main.cpp
-      INCLUDEPATH += #{Formula["vulkan-headers"].opt_include}
+      INCLUDEPATH += #{formula_opt_include("vulkan-headers")}
     QMAKE
 
     (testpath/"main.cpp").write <<~CPP
@@ -210,7 +201,7 @@ class Qt < Formula
     CPP
 
     ENV["LC_ALL"] = "en_US.UTF-8"
-    ENV["QT_QPA_PLATFORM"] = "minimal" if OS.linux? && ENV["HOMEBREW_GITHUB_ACTIONS"]
+    ENV["QT_QPA_PLATFORM"] = "minimal"
 
     system "cmake", "-S", ".", "-B", "cmake"
     system "cmake", "--build", "cmake"

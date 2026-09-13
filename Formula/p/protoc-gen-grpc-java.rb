@@ -1,17 +1,18 @@
 class ProtocGenGrpcJava < Formula
   desc "Protoc plugin for gRPC Java"
   homepage "https://grpc.io/docs/languages/java/"
-  url "https://github.com/grpc/grpc-java/archive/refs/tags/v1.82.0.tar.gz"
-  sha256 "079bdef3cb6343e5036e3dd86ce2f535a667e5df540e2b51284b47bfd00a359f"
+  url "https://github.com/grpc/grpc-java/archive/refs/tags/v1.84.0.tar.gz"
+  sha256 "4ac03e3244da9565f13f62a24e87f57ee13baa7657033db35ea086e16fc32869"
   license "Apache-2.0"
+  revision 1
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "962180d23632a81e1df7584942efd6227d96b21c723bfc5249413fbe292f3fed"
-    sha256 cellar: :any, arm64_sequoia: "d6045279afbba64d873980020959f44aaf721b8d5f319f9ce39b1dcd1c6ea796"
-    sha256 cellar: :any, arm64_sonoma:  "22dd298bcdd124e5cc54ead1921045d8abde9755cc7086cf745873e419aef6bc"
-    sha256 cellar: :any, sonoma:        "aeb1791e5eef33bbd6b3c74d0661720997487406d5fb15872e56b5fb023050fb"
-    sha256 cellar: :any, arm64_linux:   "709a19e0fe92d0df73b09ef595b9c44906bf7c8cb28a8fc0b5aae843849835da"
-    sha256 cellar: :any, x86_64_linux:  "f2ee117d20724d56b4e4aa8ca4d905e6fa5e47d462c7099ee03e1b21c2755f2c"
+    sha256 cellar: :any, arm64_golden_gate: "4fa97dc28ccd9491ccdbda4c65aca312699491a275b0dba09a3a4b9145df74a6"
+    sha256 cellar: :any, arm64_tahoe:       "c78946f57be9177d00d9662b29445ba0f5bd336016023007f930a675de9f2b40"
+    sha256 cellar: :any, arm64_sequoia:     "79c643fd1ada27f9a9ab963594c2efe079c8402d110e610b7a5649fcb7e8ac3e"
+    sha256 cellar: :any, arm64_sonoma:      "d1f9b4acf35b5bfdb013fb94209c4bf2cbd2bac856592f9e27e857dc98a66e9e"
+    sha256 cellar: :any, arm64_linux:       "21028e5f939de70b369d7f74b43af955e0942a1b1ddb0ffc629922d3b5e977ee"
+    sha256 cellar: :any, x86_64_linux:      "d13733a10af0165e2880252ac9883a62791288d82ec2bc753ed6141d8b618194"
   end
 
   depends_on "gradle@8" => :build
@@ -31,7 +32,7 @@ class ProtocGenGrpcJava < Formula
       # Avoid build errors on ARM macOS from old minimum macOS deployment
       s.gsub! '"-mmacosx-version-min=10.7",', ""
       # Avoid static linkage on Linux
-      s.gsub! '"-Wl,-Bstatic"', "\"-L#{Formula["protobuf"].opt_lib}\""
+      s.gsub! '"-Wl,-Bstatic"', "\"-L#{formula_opt_lib("protobuf")}\""
       s.gsub! ', "-static-libgcc"', ""
     end
 

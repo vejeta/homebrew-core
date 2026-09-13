@@ -1,18 +1,17 @@
 class Navidrome < Formula
   desc "Modern Music Server and Streamer compatible with Subsonic/Airsonic"
   homepage "https://www.navidrome.org"
-  url "https://github.com/navidrome/navidrome/archive/refs/tags/v0.62.0.tar.gz"
-  sha256 "4e1d3c8cdb5b16deadbe2e7b29f6cc147aadc466a771eb929daec95153ac1cb0"
+  url "https://github.com/navidrome/navidrome/archive/refs/tags/v0.64.0.tar.gz"
+  sha256 "0f395ee2672d32eed9da9ad6b16ec21d1a270d3ba5299fd638ddca237db5fa4c"
   license "GPL-3.0-only"
   head "https://github.com/navidrome/navidrome.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8d9d63571f4dd4367bf583302583f65e0eabffea57e7643077e560e0b06043ce"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c427b61bc9acf38e700e39ffa91d8be2c29a4cd3f16cc090d2a6596ed418b47e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8a7069ac28c7dae89f507a0254cbcad8585caf242fdfbf0c759e9045debdfd99"
-    sha256 cellar: :any_skip_relocation, sonoma:        "66f5fcd1380e4433980aff601dc51635188ab1149cba09526174b8991e6a3d30"
-    sha256 cellar: :any,                 arm64_linux:   "eeab8d7555c3a19221d14bedf4692d4add535680e37828f73f7802f7ca6487d7"
-    sha256 cellar: :any,                 x86_64_linux:  "0efc7038bc25d744ab90f27ccf9237509baf2d4d5df6d88a041517f6d2e3452c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "07fa928a0933be79b8252668eb94735f40c7da169130f8c3856f619d6bab679c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "0ac8fa8b4ccdfcfbc35f8b6a78bc75665804a13d1ab377038f354d1315dce51c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d916c58b6878bf3fdd34dd83033ffabc9e3b3190def468fa6cd80c9fb560cf92"
+    sha256 cellar: :any,                 arm64_linux:       "d00f536ff47bbc9f8c69728758e22992fedd1943082add4108e0b06aa91f4410"
+    sha256 cellar: :any,                 x86_64_linux:      "b585894984028fe847896b525e595c1b6bd891696828aae8b8850254a1d7f99c"
   end
 
   depends_on "go" => :build
@@ -30,7 +29,6 @@ class Navidrome < Formula
     end
 
     ldflags = %W[
-      -s -w
       -X github.com/navidrome/navidrome/consts.gitTag=v#{version}
       -X github.com/navidrome/navidrome/consts.gitSha=source_archive
     ]
@@ -47,7 +45,6 @@ class Navidrome < Formula
     port = free_port
     pid = spawn bin/"navidrome", "--port", port.to_s
     sleep 20
-    sleep 100 if OS.mac? && Hardware::CPU.intel?
     assert_equal ".", shell_output("curl http://localhost:#{port}/ping")
   ensure
     Process.kill "KILL", pid

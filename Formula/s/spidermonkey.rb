@@ -1,9 +1,9 @@
 class Spidermonkey < Formula
   desc "JavaScript-C Engine"
   homepage "https://spidermonkey.dev"
-  url "https://archive.mozilla.org/pub/firefox/releases/140.12.0esr/source/firefox-140.12.0esr.source.tar.xz"
-  version "140.12.0"
-  sha256 "85dfb9f6021152b4302b8968ef485d958c8c471cb02415a19853daaad5acce62"
+  url "https://archive.mozilla.org/pub/firefox/releases/140.15.0esr/source/firefox-140.15.0esr.source.tar.xz"
+  version "140.15.0"
+  sha256 "358bb03c550f95172f1e31694e4287da3411560df91e931cb25210efdf90e524"
   license "MPL-2.0"
   compatibility_version 1
   head "https://hg.mozilla.org/mozilla-central", using: :hg
@@ -16,12 +16,12 @@ class Spidermonkey < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "5f69763014ce5e58580a048d14b083c88d86b702621bfc7c03f51c5fcb9d4d98"
-    sha256 cellar: :any, arm64_sequoia: "95c23ace47ac4d727671854e128b6f283cacad99837f3f1b28d1eeef6f857457"
-    sha256 cellar: :any, arm64_sonoma:  "1109529e3d9a7bc03b6d57354bdeeafe674e139ff951e2369821f31f635e5c3d"
-    sha256 cellar: :any, sonoma:        "bd9168ac56b9b436cc609ca86b8039f99f4311094576b1e1a7ef66203dda8dcd"
-    sha256               arm64_linux:   "adcc91dd0e89d8062045a6cecf948c455c563b198c0389c64bb97da5a414da65"
-    sha256               x86_64_linux:  "622ec399fb8c9b42ef57f26c83778fd6d2ec10d4976c57c4a1265dacf95833b2"
+    sha256 cellar: :any, arm64_golden_gate: "ae3124646018ead00f8349e73ab4704848f5dd3d0748b54788256cb549fc776d"
+    sha256 cellar: :any, arm64_tahoe:       "63988f16dae980764e907c8d148a31d806b498f72b06b64778ec5c2f316f789c"
+    sha256 cellar: :any, arm64_sequoia:     "42d82a7079cbe5321001d90eeb26bfe98f9b007f02e0207cfeae4f7fb843bc35"
+    sha256 cellar: :any, arm64_sonoma:      "ebbebdd9bb9a24caedea935b3eb39a3c76efc8257caea9f6b49936f1d10fa444"
+    sha256               arm64_linux:       "27787fd83fa8cf79c3a505cc73274c719e03931b11353fdf5de22d60e66fe4c6"
+    sha256               x86_64_linux:      "02f360861cf02f95e13a074716f8748d4ebf12654ffd5f004a9082f4b8d6c576"
   end
 
   depends_on "cbindgen" => :build
@@ -55,12 +55,13 @@ class Spidermonkey < Formula
   # ERROR: *** The pkg-config script could not be found. Make sure it is
   # *** in your path, or set the PKG_CONFIG environment variable
   # *** to the full path to pkg-config.
-  # Ref: https://bugzilla.mozilla.org/show_bug.cgi?id=1783570
   # Ref: https://discourse.gnome.org/t/gnome-45-to-depend-on-spidermonkey-115/16653
   patch do
     on_macos do
       url "https://github.com/ptomato/mozjs/commit/c82346c4e19a73ed4c7f65a6b274fc2138815ae9.patch?full_index=1"
       sha256 "0f1cd5f80b4ae46e614efa74a409133e8a69fff38220314f881383ba0adb0f87"
+      type :unofficial
+      resolves "https://bugzilla.mozilla.org/show_bug.cgi?id=1783570"
     end
   end
 
@@ -68,13 +69,24 @@ class Spidermonkey < Formula
   patch do
     url "https://github.com/ptomato/mozjs/commit/9aa8b4b051dd539e0fbd5e08040870b3c712a846.patch?full_index=1"
     sha256 "5c2a8c804322ccacbc37f152a4a3d48a5fc2becffb1720a41e32c03899af0be6"
+    type :unofficial
+    resolves "https://bugzilla.mozilla.org/show_bug.cgi?id=1973994"
   end
 
   # Backport support for Python 3.14
   patch do
     url "https://github.com/mozilla-firefox/firefox/commit/d497aa4f770ca02f6083e93b94996a8fe32c2ff4.patch?full_index=1"
     sha256 "026f91a56cd60907a87c62dd4143eac8300d6fc7433b94888229c632a43c34bf"
+    type :backport
+    resolves "https://bugzilla.mozilla.org/show_bug.cgi?id=1969769"
   end
+
+  # Fix Rust target detection for OpenEmbedded Linux.
+  # TODO: Check resolution in https://bugzilla.mozilla.org/show_bug.cgi?id=2068494
+  # Fixes:
+  # checking for rust host triplet...
+  # ERROR: Don't know how to translate x86_64-pc-linux-gnu for rustc
+  patch :DATA
 
   def install
     ENV.runtime_cpu_detection
@@ -131,7 +143,7 @@ class Spidermonkey < Formula
     # Avoid writing nspr's versioned Cellar path in js*-config
     inreplace bin/"js#{version.major}-config",
               Formula["nspr"].prefix.realpath,
-              Formula["nspr"].opt_prefix
+              formula_opt_prefix("nspr")
   end
 
   test do
@@ -141,3 +153,36 @@ class Spidermonkey < Formula
     assert_equal "hello", shell_output("#{bin}/js #{path}").strip
   end
 end
+
+__END__
+diff --git a/build/moz.configure/rust.configure b/build/moz.configure/rust.configure
+--- a/build/moz.configure/rust.configure
++++ b/build/moz.configure/rust.configure
+@@ -410,7 +410,14 @@ def detect_rustc_target(
+             return narrowed[0].rust_target
+
+-        # Finally, see if the vendor can be used to disambiguate.
+-        narrowed = [c for c in candidates if c.target.vendor == host_or_target.vendor]
++        # Finally, see if the vendor can be used to disambiguate. Autoconf uses
++        # "pc" where Rust uses "unknown" for generic targets.
++        vendor_aliases = {"unknown": ("pc",)}
++        narrowed = [
++            c
++            for c in candidates
++            if c.target.vendor == host_or_target.vendor
++            or host_or_target.vendor in vendor_aliases.get(c.target.vendor, ())
++        ]
+         if len(narrowed) == 1:
+             return narrowed[0].rust_target
+
+diff --git a/python/mozbuild/mozbuild/test/configure/test_toolchain_configure.py b/python/mozbuild/mozbuild/test/configure/test_toolchain_configure.py
+--- a/python/mozbuild/mozbuild/test/configure/test_toolchain_configure.py
++++ b/python/mozbuild/mozbuild/test/configure/test_toolchain_configure.py
+@@ -1881,6 +1881,7 @@ def gen_invoke_rustc(version, rustup_wrapper=False):
+                 "x86_64-fortanix-unknown-sgx",
+                 "x86_64-fuchsia",
+                 "x86_64-linux-android",
++                "x86_64-oe-linux-gnu",
+                 "x86_64-pc-nto-qnx710",
+                 "x86_64-pc-solaris",
+                 "x86_64-pc-windows-gnu",

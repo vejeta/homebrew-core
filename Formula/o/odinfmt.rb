@@ -1,17 +1,16 @@
 class Odinfmt < Formula
   desc "Formatter for The Odin Programming Language"
   homepage "https://github.com/DanielGavin/ols"
-  url "https://github.com/DanielGavin/ols/archive/refs/tags/dev-2026-05.tar.gz"
-  sha256 "387b9f47304abab5c7cbe12f041c85de892ddc94a54e03f2789ff6ac9fc16386"
+  url "https://github.com/DanielGavin/ols/archive/refs/tags/dev-2026-08.tar.gz"
+  sha256 "e8d368f35b6833efa7e840753881d01f76607f3c0872c614e536f2b7e939f800"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "30b2ae021be0765ffcaacf7224a586a6733e0e69793035372c75784e7ff837c2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fbf3261e6fc07e272c5a5209a1392ee9253f543b5dc7b88fecbe402ecdac9a01"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "53bd17fd9bf54d9d6a516237daddf8d52afcad5f2a8582438378e9d2b975f19e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "39179f6a02be59aa32e2052b968dad99975808d15d8498381f9984927a96f35f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a7563e87f1fb473998245d26b8389d638e7e2387eafd662c3e4c9db637e3cdc4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "73da0f82098fb046542067e5b89a45024755623cd82064d071ca97691f61631a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f26b6a496b8213bd10aad2d2d630ad8d3dd202bd62f36bf766b3b1419dfc9c5c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "16240d03be08c79ff463e78278f04e72a7b73f89b0c9990dbbc76a42bbffdd41"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "487253cf55edf35c4b603118dc4090f416c207d55f17f1233ab7e0606dda5111"
+    sha256 cellar: :any,                 arm64_linux:   "9210172c28d1f25625325be06afa3e18c2b23a1c02ebcbb375f6b8ca68bcb2c2"
+    sha256 cellar: :any,                 x86_64_linux:  "655f9706f47e3d2a6f919d95cc4cbb5c60e292713e9d2e742146de4d9d9177c7"
   end
 
   depends_on "odin" => :build
@@ -47,7 +46,6 @@ class Odinfmt < Formula
       main :: proc() {
       \tfmt.println("Hellope!")
       }
-
     ODIN
 
     (testpath/"hello.odin").write(input)

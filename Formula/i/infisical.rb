@@ -1,27 +1,29 @@
 class Infisical < Formula
   desc "CLI for Infisical"
   homepage "https://infisical.com/docs/cli/overview"
-  url "https://github.com/Infisical/cli/archive/refs/tags/v0.43.96.tar.gz"
-  sha256 "84e2c941f1bb4d419f77f5b26af247b5b3f69c2f1f9320d01c253bc7859f48d4"
+  url "https://github.com/Infisical/cli/archive/refs/tags/v0.43.132.tar.gz"
+  sha256 "44824c4291213be290318126076069670aa1e226e8989df29713ecd28707ea60"
   license "MIT"
   head "https://github.com/Infisical/cli.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8640a1cfa8fd8c80fef63c8dcc603a2e1f5943a291840a939701608aab7980c5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8640a1cfa8fd8c80fef63c8dcc603a2e1f5943a291840a939701608aab7980c5"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8640a1cfa8fd8c80fef63c8dcc603a2e1f5943a291840a939701608aab7980c5"
-    sha256 cellar: :any_skip_relocation, sonoma:        "061f00570b2dd430ad295738519032ccfa2f4fed4c74be8ed61ca38fdce5ed9d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b4d578c44aa40997b4636e2936a720300674667740e42c61f2d7226cb6b2b3b7"
-    sha256 cellar: :any,                 x86_64_linux:  "4d8fc0f790ac3a005cb5b63bf09731ccd8e13708877394c0a9c8b196bd5d4f77"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f3fcf82285a6798a47da9fc802b7c77f18787a5e3aeec18f8e0fefd931a2540e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f3fcf82285a6798a47da9fc802b7c77f18787a5e3aeec18f8e0fefd931a2540e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f3fcf82285a6798a47da9fc802b7c77f18787a5e3aeec18f8e0fefd931a2540e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "ade1cf3e75e0da395ef076c4e83b38b2b38097548bf1e960c87ce3361b909637"
+    sha256 cellar: :any,                 x86_64_linux:      "59439e57d6318de08d7cded5fc5c6060521d372712db359047d40eb41b64f3cf"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = %W[
-      -s -w
-      -X github.com/Infisical/infisical-merge/packages/util.CLI_VERSION=#{version}
-    ]
+    ldflags = %W[-X github.com/Infisical/infisical-merge/packages/util.CLI_VERSION=#{version}]
     system "go", "build", *std_go_args(ldflags:)
 
     generate_completions_from_executable(bin/"infisical", shell_parameter_format: :cobra)

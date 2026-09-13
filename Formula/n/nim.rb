@@ -1,8 +1,8 @@
 class Nim < Formula
   desc "Statically typed compiled systems programming language"
   homepage "https://nim-lang.org/"
-  url "https://nim-lang.org/download/nim-2.2.10.tar.xz"
-  sha256 "7957b7ed004206bcf10bcc4f3b4744153878e62f2431552a9a8e9d3f40e8d5d5"
+  url "https://nim-lang.org/download/nim-2.2.12.tar.xz"
+  sha256 "2639a06a5ea7a7fcf57df1e7e1ef4d1b2bee58c7ac9bd00dbd2aa5bea1e5a56a"
   license "MIT"
   compatibility_version 1
   head "https://github.com/nim-lang/Nim.git", branch: "devel"
@@ -13,12 +13,12 @@ class Nim < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9562f3177bbc268b4cb77396ba673a463b306f3911372063c8fe36942e848f82"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2dd6d0afe58bda10dfb591a4f9e60db7f095f02cb6f9f1e0c740895b088a06f4"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9d67c02cc0c3b10da447be6fc6320c4951202328864992de6e06034b14dead08"
-    sha256 cellar: :any_skip_relocation, sonoma:        "53a114ab549a17345feca2d5a3e9770a9fe1e0342278de34c13469495bfe5b8a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a953d392c026e0affc4cc1d57d79a4fbddfdaba80bba2c639a5d98b1698ab6b4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1a5fc2ecd28eb33dec002d3c0f5ebc8e2e29b80d226bba0e59ae2f837791e673"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "e8822dfac3dcb17d51495233cef89c6f0010b9990d950dcb9c9ad19df543f4b2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1c9f56f6246e35c2adbe293d1c35f36687a25a6cd7b47305bba7cc71a3e300c4"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "0bb64964dfadb7bc00b984dc9efa5bfb190f39e010c8f519f4d4171a7df4adf9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bb43c1ee29eb5345b64c9da8c2e4f06c3a391b041fa4c3383247c0b59ebecb25"
+    sha256 cellar: :any,                 arm64_linux:       "149ca4284efc1bee86cacbad6a96bd878821163df13ce1144c6f7d653dd4e780"
+    sha256 cellar: :any,                 x86_64_linux:      "95d7ee10379cce87bab03c85494959ebacae257d59cc99699221383f12499c8d"
   end
 
   depends_on "help2man" => :build
@@ -29,36 +29,49 @@ class Nim < Formula
 
   conflicts_with "atlas", "mongodb-atlas-cli", because: "both install `atlas` executable"
 
-  # Apply commits from open PR to replace `pcre` with `pcre2`
-  # PR ref: https://github.com/nim-lang/Nim/pull/24405
-  # Issue ref: https://github.com/nim-lang/Nim/issues/23668
+  # Replace `pcre` with `pcre2` using commits from an unmerged upstream PR
   patch do
     url "https://github.com/nim-lang/Nim/commit/8c2ec2a7b010ef1a43b967205324ac83d11815d1.patch?full_index=1"
     sha256 "f9171dba1817a83aada2960aab68b988fb6b3e766aa50b9527acc3daeafa6364"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405",
+             "https://github.com/nim-lang/Nim/issues/23668"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/817af7edfcfca41e60e07b258c0943613783dd55.patch?full_index=1"
     sha256 "120d313213c34bd3d48ae02baaa84dc5a0e80a88a6cae4de6a6164aefd6ff300"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/ce1761dff9e79d00bc012938ad6be37caa2edcfd.patch?full_index=1"
     sha256 "06ecc37ab1c349a154cf05f1ca468ed0044e59e812d6401fc2a0f076717cbabc"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/cb802af44e3c684a8738684ebdd84df31aeabf09.patch?full_index=1"
     sha256 "b9d5c030510018822c59714f26b933f822e462856f970ec918af6d4c6a9d285f"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/27fc4fedb5c1be6a4ec27f7d0d0c913a63f792b4.patch?full_index=1"
     sha256 "f012298fe2ef8201fc303f8a7e91dcb10662f3382693ec899e0a505dd90872cc"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/0e3ac706156887ce143681da42b21874c2b20774.patch?full_index=1"
     sha256 "625c837b002bfd492b60cecce812ecdd2d42bd4b3117526f6d3004661949ce90"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
   patch do
     url "https://github.com/nim-lang/Nim/commit/07de39cde6341ae278b47d64f73dd9c823dd18c5.patch?full_index=1"
     sha256 "33b5787281af6bcd4c30354de8ad49457a3360f3acfb000230b162aad114fe4c"
+    type :unofficial
+    resolves "https://github.com/nim-lang/Nim/pull/24405"
   end
 
   def install

@@ -17,10 +17,6 @@ class Arjun < Formula
 
   pypi_packages exclude_packages: "certifi"
 
-  def python3
-    "python3.14"
-  end
-
   resource "charset-normalizer" do
     url "https://files.pythonhosted.org/packages/e7/a1/67fe25fac3c7642725500a3f6cfe5821ad557c3abb11c9d20d12c7008d3e/charset_normalizer-3.4.7.tar.gz"
     sha256 "ae89db9e5f98a11a4bf50407d4363e7b09b31e55bc117b4f7d80aab97ba009e5"
@@ -70,15 +66,15 @@ class Arjun < Formula
           def log_message(self, *args):
               pass
 
-      HTTPServer(("127.0.0.1", #{port}), Handler).serve_forever()
+      HTTPServer(("localhost", #{port}), Handler).serve_forever()
     PYTHON
 
     server_pid = spawn python3, testpath/"server.py"
-    sleep 2
+    sleep 10
 
     begin
       dbfile = libexec/Language::Python.site_packages(python3)/"arjun/db/small.txt"
-      output = shell_output("#{bin}/arjun -u http://127.0.0.1:#{port}/ -m GET -w #{dbfile}")
+      output = shell_output("#{bin}/arjun -u http://localhost:#{port}/ -m GET -w #{dbfile}")
       assert_match "No parameters were discovered", output
     ensure
       Process.kill("TERM", server_pid)

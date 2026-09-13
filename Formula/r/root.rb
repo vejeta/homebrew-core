@@ -1,10 +1,20 @@
 class Root < Formula
   desc "Analyzing petabytes of data, scientifically"
   homepage "https://root.cern"
-  url "https://root.cern/download/root_v6.40.02.source.tar.gz"
-  sha256 "f631eebee3dbea128f1415f4b784f5e83637a2b431193bce75f10385f71efc56"
   license "LGPL-2.1-or-later"
   head "https://github.com/root-project/root.git", branch: "master"
+
+  stable do
+    url "https://root.cern/download/root_v6.40.04.source.tar.gz"
+    sha256 "44ada253b1935d34b6801222232d50731fe7c5e3cbcfab47734c85031cfbe4d3"
+
+    # Backport fix for PyROOT to use macOS libffi
+    patch do
+      url "https://github.com/root-project/root/commit/b2212ae8abdeb01eaed633b7ed243a72763f939d.patch?full_index=1"
+      sha256 "9839dd1bc50635643fb4c8d69a52b60f7f8e2ae6721a8c57388eb860f3d48d91"
+      type :backport
+    end
+  end
 
   livecheck do
     url "https://root.cern/install/all_releases/"
@@ -15,18 +25,18 @@ class Root < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "61afc0bb7174d8d0c375e5cd42495057132c07f922d1d929bd0b74ddebf1be52"
-    sha256 arm64_sequoia: "9e294ddb0c46b87be2e3e90f173cb759f83dc86267e730f7c903fcbba75c3620"
-    sha256 arm64_sonoma:  "c7bb83f0187f9a20c694bca48a0adb9c10d14e05725b8a992f285af27db83342"
-    sha256 sonoma:        "1bb53775d704823ccf790eb7f2192dd335a1d025a3d61cdfde5e69238cabab24"
-    sha256 arm64_linux:   "2f4fca8b68dfb92c9fc615d189c4249aaae3fef3a8e45d56f9c60a12cb1bde66"
-    sha256 x86_64_linux:  "a6514b7674185501f19d3a3f390c237b41bd1fb95a18d78d861dc3366b1450c6"
+    sha256 arm64_tahoe:   "94f7b838a7bdee3f23883db98e663ef0b71f55391236768e0a1cf10ed59b8e7b"
+    sha256 arm64_sequoia: "ae3ec829f8fa27a74261ea9cd4d51de122b72b70504b22bf36f4da500682391a"
+    sha256 arm64_sonoma:  "08f0018a99450e24b3e9bd266cd23fd2b390984c1e33afe12a4d2cc90e51cb18"
+    sha256 arm64_linux:   "3770a1310450cb190cce9b7ac519fe63030c64af91992bc4bc2841b8657659cc"
+    sha256 x86_64_linux:  "1ce144359de1568f340f297ff91068efb1684129b40a6b61c6732f6ffe22ecd4"
   end
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
   depends_on "cfitsio"
+  depends_on "civetweb"
   depends_on "davix"
   depends_on "fftw"
   depends_on "freetype"
@@ -34,7 +44,6 @@ class Root < Formula
   depends_on "gcc" # for gfortran
   depends_on "giflib"
   depends_on "gl2ps"
-  depends_on "glew"
   depends_on "graphviz"
   depends_on "gsl"
   depends_on "jpeg-turbo"
@@ -49,6 +58,8 @@ class Root < Formula
   depends_on "python@3.14"
   depends_on "sqlite"
   depends_on "tbb"
+  depends_on "unuran"
+  depends_on "vdt"
   depends_on "xrootd"
   depends_on "xxhash"
   depends_on "xz" # for LZMA
@@ -75,10 +86,6 @@ class Root < Formula
 
   skip_clean "bin"
 
-  def python3
-    "python3.14"
-  end
-
   def install
     # Skip modification of CLING_OSX_SYSROOT to the unversioned SDK path
     # Related: https://github.com/Homebrew/homebrew-core/issues/135714
@@ -87,16 +94,14 @@ class Root < Formula
       inreplace "interpreter/cling/lib/Interpreter/CMakeLists.txt", '"MacOSX[.0-9]+\.sdk"', '"SKIP"'
     end
 
-    # Work around upstream overriding CMAKE_OSX_SYSROOT
-    inreplace "CMakeLists.txt", "include(cmake/modules/SetOSX_SDK.cmake)", ""
-
     args = %W[
       -DCLING_CXX_PATH=clang++
-      -DCMAKE_CXX_STANDARD=17
+      -DCMAKE_CXX_STANDARD=20
       -DCMAKE_INSTALL_ELISPDIR=#{elisp}
-      -DPYTHON_EXECUTABLE=#{which(python3)}
-      -DXROOTD_ROOT_DIR=#{Formula["xrootd"].opt_prefix}
+      -DPYTHON_EXECUTABLE=#{python3}
+      -DXROOTD_ROOT_DIR=#{formula_opt_prefix("xrootd")}
       -Dbuiltin_cfitsio=OFF
+      -Dbuiltin_civetweb=OFF
       -Dbuiltin_clang=ON
       -Dbuiltin_cling=ON
       -Dbuiltin_cppzmq=OFF
@@ -105,7 +110,6 @@ class Root < Formula
       -Dbuiltin_freetype=OFF
       -Dbuiltin_ftgl=OFF
       -Dbuiltin_gl2ps=OFF
-      -Dbuiltin_glew=OFF
       -Dbuiltin_gsl=OFF
       -Dbuiltin_llvm=ON
       -Dbuiltin_lz4=OFF
@@ -117,11 +121,9 @@ class Root < Formula
       -Dbuiltin_tbb=OFF
       -Dbuiltin_unuran=OFF
       -Dbuiltin_vc=OFF
-      -Dbuiltin_vdt=ON
-      -Dbuiltin_veccore=OFF
+      -Dbuiltin_vdt=OFF
       -Dbuiltin_xrootd=OFF
       -Dbuiltin_xxhash=OFF
-      -Dbuiltin_zeromq=OFF
       -Dbuiltin_zlib=OFF
       -Dbuiltin_zstd=OFF
       -Dcfitsio=ON
@@ -133,23 +135,22 @@ class Root < Formula
       -Dfortran=ON
       -Dfreetype=ON
       -Dgdml=ON
-      -Dgfal=OFF
       -Dgnuinstall=ON
       -Dimt=ON
       -Dmathmore=ON
-      -Docaml=OFF
-      -Doracle=OFF
-      -Dpgsql=OFF
       -Dpyroot=ON
-      -Dpythia6=OFF
       -Dpythia8=OFF
       -Droofit=ON
       -Dssl=ON
       -Dtmva=ON
+      -Dunuran=ON
       -Dvdt=ON
       -Dxrootd=ON
       -GNinja
     ]
+
+    # SetUpMacOS.cmake runs `lipo` on the make program, which fails on Homebrew's ninja shim.
+    args << "-DCMAKE_MAKE_PROGRAM=#{formula_opt_bin("ninja")}/ninja"
 
     # Workaround the shim directory being embedded into the output
     inreplace "cmake/unix/compiledata.sh", "`type -path $CXX`", ENV.cxx

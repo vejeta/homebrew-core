@@ -1,25 +1,23 @@
 class Tinyice < Formula
   desc "Modern, all-in-one Icecast-compatible audio/video streaming server"
   homepage "https://datanoisetv.github.io/tinyice/"
-  url "https://github.com/DatanoiseTV/tinyice/archive/refs/tags/v2.6.3.tar.gz"
-  sha256 "24ced8022e42f900ada1471d7152dcc43552d8bce022efe216a7fa5eb5a55fcd"
+  url "https://github.com/DatanoiseTV/tinyice/archive/refs/tags/v2.8.2.tar.gz"
+  sha256 "2216adbfd529a2d0a80b2aa98753ef73fd7405f1706e5162a7540831e2705e39"
   license "Apache-2.0"
   head "https://github.com/DatanoiseTV/tinyice.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "445bec3d63ab9aec24b3fe66e8fb9a24df02f098c764256a2caa29641d3d2005"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "445bec3d63ab9aec24b3fe66e8fb9a24df02f098c764256a2caa29641d3d2005"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "445bec3d63ab9aec24b3fe66e8fb9a24df02f098c764256a2caa29641d3d2005"
-    sha256 cellar: :any_skip_relocation, sonoma:        "28de2be722f39d7ad03587da88b8f962c9cc38dff00ca46ccefdfeb9ad058100"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ed3e13c5bcc440427c3d077b8401828fb8d812f2ec7b213c66b8b71e899be032"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5feef288d107607ab327956c7c178e7e69d02b0190996954edadd785ae43f867"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "194d28756ef3d0631c076fe8624eb0a88d416b02b24088b0567350175d88d201"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "194d28756ef3d0631c076fe8624eb0a88d416b02b24088b0567350175d88d201"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "194d28756ef3d0631c076fe8624eb0a88d416b02b24088b0567350175d88d201"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "ad0fd1a0c847bbac8dd562d72de17c52c43ee4bbe13287fb0cd142528d8183c4"
+    sha256 cellar: :any,                 x86_64_linux:      "31c10698052efcba01c6f3babe252952d2a3bf62f0dcb425b98f156fbf312a13"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X main.Version=#{version}
       -X main.Commit=#{tap.user}
     ]

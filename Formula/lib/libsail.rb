@@ -1,17 +1,17 @@
 class Libsail < Formula
   desc "Missing small and fast image decoding library for humans (not for machines)"
   homepage "https://sail.software"
-  url "https://github.com/HappySeaFox/sail/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "b6f77d6d451b72202c8e11bd5057b697a21f7b6c4ef713f19a96de5a16c08916"
+  url "https://github.com/HappySeaFox/sail/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "fe2673d76e8088084447f388b94b4639f060afec4fab4e080e493049fbb24bf2"
   license "MIT"
 
   bottle do
-    sha256 arm64_tahoe:   "ae14f0829509fe776aa18a3798dcccf534fc6c4899c4566d22916295957a505a"
-    sha256 arm64_sequoia: "6ac971d38f6126f01d0e474878079b6ce4855a7bd8e763f2db11f7e90edd5a62"
-    sha256 arm64_sonoma:  "42e64caded31c4b11d3c345c84e81be0e96976220c8affeab14af9f409b2a1f7"
-    sha256 sonoma:        "92271e1e53859d9f21451f5d02f8fab25ff057b5f21a5beead6087e619e11fda"
-    sha256 arm64_linux:   "2c8c29756800e5477ee9bec70bd10114355196092f443774d85fb4813aad1c9a"
-    sha256 x86_64_linux:  "b578cbe8533beaf35ef965f08e894b17ed5710b7de5c7c04c94af98ff7800adc"
+    sha256 arm64_golden_gate: "cc8931d55d0d34eb3f00e9e271d0e9c6982e0416ea6b99be560a978190a7e71c"
+    sha256 arm64_tahoe:       "20018ea206df90952f10fe6f7c1dfe74d511f72c96f7c121a48cc8f6f09afeda"
+    sha256 arm64_sequoia:     "2f0c53bba24210b6538c230cc56cf3d572deaa7f6f1cb9ba56dfef8f9429cf9c"
+    sha256 arm64_sonoma:      "bfcdd061d1396eee46c6af77f01d16ac34df92b300c286cb2940b4b0291b76e6"
+    sha256 arm64_linux:       "cebe786a2b86dc33f1f59c613f5a93704d54c4fab76a1942411440a4a80e96a4"
+    sha256 x86_64_linux:      "31485079381c2cf8f584f5b7bd5c4ab48aeecf20bbafb9e3452df38193074b3d"
   end
 
   depends_on "cmake" => :build
@@ -34,6 +34,7 @@ class Libsail < Formula
     depends_on "brotli"
     depends_on "highway"
     depends_on "little-cms2"
+    depends_on "xz"
   end
 
   def install
@@ -66,7 +67,7 @@ class Libsail < Formula
       }
     C
 
-    flags = shell_output("#{Formula["pkgconf"].opt_bin}/pkgconf --cflags --libs sail").strip.split
+    flags = shell_output("#{formula_opt_bin("pkgconf")}/pkgconf --cflags --libs sail").strip.split
 
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test", test_fixtures("test.jpg")

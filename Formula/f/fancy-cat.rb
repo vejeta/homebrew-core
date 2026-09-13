@@ -4,19 +4,27 @@ class FancyCat < Formula
   url "https://github.com/freref/fancy-cat/archive/refs/tags/v0.6.0.tar.gz"
   sha256 "c40cd59bef243b3bafa80a33ac97d07c54ab27490d13702abeccbd713f59e37c"
   license "AGPL-3.0-or-later"
+  revision 4
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "0025dfb6c06da0d5495e9c70d6955cb6d2e3a9b2f72a0c83737e7bf17c6abfde"
-    sha256 cellar: :any,                 arm64_sequoia: "0cecf82a7ba9c45ced1dc1f274eac9af50f44f58b771d88be39cb0ad51abbd02"
-    sha256 cellar: :any,                 arm64_sonoma:  "f4a3682131b057c04cd5bc93d431112ea14d8643bdf62b9787618df198999097"
-    sha256 cellar: :any,                 sonoma:        "d1083731fb06f573f6bf0642c5fe482c2270ccc7c03a9ff523bde8f71542f26f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "65273d8e7b5f029c2a84d8d681b58f8ed9815b9d5f4a951a954380650c4f7259"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d32032d0e2c7cf4f0eaf5dfaf7cfceb684795311dba108180b6261b6b37e6303"
+    sha256 cellar: :any, arm64_golden_gate: "0dea307db35aef7604516282912fc6f41761c5db10ba85362c9a6109fe8d3fec"
+    sha256 cellar: :any, arm64_tahoe:       "77b537044f61970578b95e3273362dd3d260fd3e0cd6b5376cf4f1bb2e43fa69"
+    sha256 cellar: :any, arm64_sequoia:     "d7112461923c62ab6a8152b60d47010ce8635877cf7302f78b9ab69381090b6c"
+    sha256 cellar: :any, arm64_sonoma:      "d7a5d7781bf8574737bab299600ff15f9320df7280296f49d6c96d38dfa97466"
+    sha256 cellar: :any, sonoma:            "95eaf786faef157771e1077ed61ae14badd1e83699e95f83bb5850bc94999e8b"
+    sha256 cellar: :any, arm64_linux:       "9e6ab36a719950e83685b4d9faaf4d47f8babc9875192238a5618d9c8231207c"
+    sha256 cellar: :any, x86_64_linux:      "bafbb3b5d2f10ff0274848a3c1c9e9264906ae11d6189be283954a9e412190d9"
   end
 
   depends_on "zig@0.15" => :build
   depends_on "mujs"
   depends_on "mupdf"
+
+  deny_network_access!
+
+  def fetch
+    system "zig", "build", "--fetch"
+  end
 
   def install
     system "zig", "build", *std_zig_args

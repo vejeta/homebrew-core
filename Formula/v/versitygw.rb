@@ -1,24 +1,24 @@
 class Versitygw < Formula
   desc "Versity S3 Gateway"
   homepage "https://www.versity.com/products/versitygw/"
-  url "https://github.com/versity/versitygw/archive/refs/tags/v1.5.0.tar.gz"
-  sha256 "6a667e38d78a08effdf0b7c3c3e4b9929233b333c8a53c16b62eded7d43eeedc"
+  url "https://github.com/versity/versitygw/archive/refs/tags/v1.8.0.tar.gz"
+  sha256 "0ac3f5f81bcf8833a9d5c4bc134721fa95d7f062bd48eb1ed18bd5edd738e78b"
   license "Apache-2.0"
   head "https://github.com/versity/versitygw.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "eb897c2ee8beb0a6eb36f93214f96b0b12da007fd655ecff30600f3b24ac9f38"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "265bbaa265ae5335c8ddf45f8da3578a9faf370476b8341abf9b606a284862d6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "050a16a43543344b72c4878d92b0a7c2bd815d8daea0e232140245ba85cb8dc4"
-    sha256 cellar: :any_skip_relocation, sonoma:        "44b3110702abca7a7aff9cf074cbb64af9d987ba69b83fa3de2ef58d44ed6683"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3ac4b64a6fff7deb5255fdd12463f51aae868194932ba213e57f94ecec68a5df"
-    sha256 cellar: :any,                 x86_64_linux:  "913cae105ded92c4cd592e701ff1fe8393cf7d08fefcce7b6940299d0bbfa261"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a09b46d4ad7d8d50f12628f0a42ca49ad3ec69b913cf8d08431fc712c355704f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f71bc89111ba03d053d89d7111ebc0cf73a50a076da5c1552bcfa3d936ed1880"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5714755c8fc59ebb42275f409d78a1b157264f69a679bd395caf833cd198e142"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "5a7c767bef098c5c62dc3cf285a8701fb30ce80848b462c0fbdf92f11f1dff09"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a5ed0d51d5944941cdf251cf4760d4e30e22fea6abfaf30f3642fa8e37a95eb6"
+    sha256 cellar: :any,                 x86_64_linux:      "28e1ccf97e95bf635d0ea1b146ccc6b645053798b7536d53cf90e1fd430cf0b6"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.Version=#{version} -X main.BuildTime=#{time.iso8601} -X main.Build=#{tap.user}"
+    ldflags = "-X main.Version=#{version} -X main.BuildTime=#{time.iso8601} -X main.Build=#{tap.user}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/versitygw"
   end
 

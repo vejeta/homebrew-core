@@ -1,24 +1,30 @@
 class Pitchfork < Formula
   desc "CLI for managing daemons with a focus on developer experience"
   homepage "https://pitchfork.jdx.dev"
-  url "https://github.com/jdx/pitchfork/archive/refs/tags/v2.13.1.tar.gz"
-  sha256 "4896b03f16e54d0bad34b5d80a72572721316f8c8b8d2af5f268bb500ff1426b"
+  url "https://github.com/jdx/pitchfork/archive/refs/tags/v2.25.0.tar.gz"
+  sha256 "88035f4929a5df10515a27f6eb1d77f7c7eadec66720d84cfe1866f475a25cce"
   license "MIT"
   head "https://github.com/jdx/pitchfork.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "fd9cc0b6b591574a4c377ab4e3cb9f9a3f1a6ce423c0ca2cd103ceb5d4934379"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "304006d97a50a9858f5fd870eedd77ab2e3317183e2562bedf9667b48770b337"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "efbbcb676f1aa4d41f5ec12e65a27120dc7d9ee2e59613564b900d5285026554"
-    sha256 cellar: :any_skip_relocation, sonoma:        "6c2d674ac3cd2b4a5ce53034a2b0d43a20cb466ca346245d6cd06b7c7064f561"
-    sha256 cellar: :any,                 arm64_linux:   "d0eae816ceed9426111ce03a0f8687d3969d97427994063117b412a9035b337e"
-    sha256 cellar: :any,                 x86_64_linux:  "b6c78bf07f54e38d0632442cd4635dcb2f2524bcbc4de657ca1ae3e590e13aed"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "3e7fef3c912c572d841146420f743b517097dc9e9ea4f3b6236ab48e4d3cfcc2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9c3be9238feeb1a0b5f52674044200747d937ae3eeb89a6c40b4044214b7e589"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "1103e9b04790cfac2e588e2381afe83e9a4e4646b14951626e43ecc79dfe2709"
+    sha256 cellar: :any,                 arm64_linux:       "de7495b326bd281cd9bd6427a049c711ca7545561c5018f883f8704525935493"
+    sha256 cellar: :any,                 x86_64_linux:      "02772d8ce52bbb2ddc3ac4b17f8b75399cefc212750ad5657ad81ebcfd727283"
   end
 
+  depends_on "node" => :build
+  depends_on "pnpm" => :build
   depends_on "rust" => :build
   depends_on "usage"
 
   def install
+    cd "ui" do
+      system "pnpm", "install", "--frozen-lockfile"
+      system "pnpm", "build"
+    end
+
     system "cargo", "install", *std_cargo_args
     generate_completions_from_executable(bin/"pitchfork", "completion")
   end
@@ -30,5 +36,12 @@ class Pitchfork < Formula
     config = (testpath/"pitchfork.toml").read
     assert_match 'run = "echo brewed"', config
     assert_match 'ready_output = "brewed"', config
+
+    port = free_port
+    pid = spawn bin/"pitchfork", "supervisor", "run", "--web-port", port.to_s
+    sleep 1
+    assert_match "<title>Pitchfork</title>", shell_output("curl -s http://127.0.0.1:#{port}")
+  ensure
+    Process.kill("TERM", pid) if pid
   end
 end

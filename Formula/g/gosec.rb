@@ -1,24 +1,24 @@
 class Gosec < Formula
   desc "Golang security checker"
   homepage "https://securego.io/"
-  url "https://github.com/securego/gosec/archive/refs/tags/v2.27.1.tar.gz"
-  sha256 "166addad13e5b0a7b9f2745c4606e8435e17216a7658e3a256dae4a23628ae07"
+  url "https://github.com/securego/gosec/archive/refs/tags/v2.29.0.tar.gz"
+  sha256 "083422c2d64f311062e7fe36ff1bd22c98b029f0a4d69f3e81fd0a4724139092"
   license "Apache-2.0"
   head "https://github.com/securego/gosec.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a54b50f5ac2edc9104f6b820ac01a93922c7e10ecfaad6d707926cacc05b54b5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a54b50f5ac2edc9104f6b820ac01a93922c7e10ecfaad6d707926cacc05b54b5"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a54b50f5ac2edc9104f6b820ac01a93922c7e10ecfaad6d707926cacc05b54b5"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f347f278e4cff4dfee09c0d7af0e6cc8ff6f00aebecbeec17d2cce5b2d43b541"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d5b2ca42eb5132b2b3ec53087ce82b3b1a82582e475bcc1088482bda335edf9f"
-    sha256 cellar: :any,                 x86_64_linux:  "4ca47bd577aad12ae37866df3f24b18722b2efc1c0a77ff18e23248c8afb05ad"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f1d71dc551276979e813aee3f3d5e23088c1c6fb834a240525313ed3a72b3c85"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "be25ab6fcd58473a9bc26a4f68a65bd228cfa1ec3a83b4fe38b95ff73acd0ee2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "be25ab6fcd58473a9bc26a4f68a65bd228cfa1ec3a83b4fe38b95ff73acd0ee2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "be25ab6fcd58473a9bc26a4f68a65bd228cfa1ec3a83b4fe38b95ff73acd0ee2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "062ff973e1d1506215dddf65d8333604d472446fd35c39a12c264b9b91f772e2"
+    sha256 cellar: :any,                 x86_64_linux:      "e8fe3c5bebdd5739f6a3307150967f890e7f3a4d7cdbc0b3aead2f21ae2d7920"
   end
 
   depends_on "go"
 
   def install
-    ldflags = "-s -w -X main.Version=#{version} -X main.GitTag= -X main.BuildDate=#{time.iso8601}"
+    ldflags = "-X main.Version=#{version} -X main.GitTag= -X main.BuildDate=#{time.iso8601}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/gosec"
   end
 

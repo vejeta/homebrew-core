@@ -1,24 +1,24 @@
 class Timoni < Formula
   desc "Package manager for Kubernetes, powered by CUE and inspired by Helm"
   homepage "https://timoni.sh/"
-  url "https://github.com/stefanprodan/timoni/archive/refs/tags/v0.26.0.tar.gz"
-  sha256 "247d05e48dc6457bc8383534d2d1efc9d5152bafec32794cc358a00548725d1e"
+  url "https://github.com/stefanprodan/timoni/releases/download/v0.34.0/timoni_0.34.0_source_code.tar.gz"
+  sha256 "a82c0915dfa4026b429ad42e6042389a0e2b803c98931a50600d1a5fafcafdfe"
   license "Apache-2.0"
   head "https://github.com/stefanprodan/timoni.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "985eb65543c6d66660b51aa07720366d96b41552b1784b87f5f2fd40d06f76da"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "acb0e994d2cdfbd6dd5e585b2023e32226c46d3c35d0356322a055db6ebd6f96"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "310f8d997f8b4d0c51ce67020c7711c0b2d4f1200ad8fbfe66f5953494dba727"
-    sha256 cellar: :any_skip_relocation, sonoma:        "881a71472b9b239c67395e56b63a4280d959ac6da38000b0175077be4027546c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "937ed7f4c671083e30e6e68a3ee3ed5915aa79a1e1830a7029375396d5c57f23"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e987529e9b46b86f2094188368fd02daac82fb00728bdabb94e665c44b15e898"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "106a0554d00a345935a8da637ec13881d0e0d94fa3b4bfcfdebbbd99d8f47967"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7d9ee3d88207f20c8ad04b32e55effb9a98c1aa9ab60c303d331769eaf467816"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "8c6fabd04bfeb5e4e578cc6959b77af6f28051007ac7242c60d675cefd95b16f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f5b6fd2dd8e19d7b7970d131f0e46ba3dd679953e31b3766cf0f9dc88d260613"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "2c75ccc777c83b1ad9379b70df7b476e5f651ca706ccb0db29b05b8f53578e96"
+    sha256 cellar: :any,                 x86_64_linux:      "35ae7c609532e9873a329cb8a828275c8b592fe55f54d7208245f92992661dd7"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.VERSION=#{version}"), "./cmd/timoni"
+    system "go", "build", *std_go_args(ldflags: "-X main.VERSION=#{version}"), "./cmd/timoni"
 
     generate_completions_from_executable(bin/"timoni", shell_parameter_format: :cobra)
   end

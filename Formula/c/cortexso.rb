@@ -33,7 +33,7 @@ class Cortexso < Formula
   conflicts_with "cortex", because: "both install `cortex` binaries"
 
   def install
-    system "npm", "install", "--sqlite=#{Formula["sqlite"].opt_prefix}", *std_npm_args
+    system "npm", "install", "--sqlite=#{formula_opt_prefix("sqlite")}", *std_npm_args
     bin.install_symlink libexec.glob("bin/*")
 
     # Replace pre-built binaries
@@ -48,7 +48,6 @@ class Cortexso < Formula
     port = free_port
     pid = fork { exec bin/"cortex", "serve", "--port", port.to_s }
     sleep 10
-    sleep 10 if OS.mac? && Hardware::CPU.intel?
     begin
       assert_match "OK", shell_output("curl -s localhost:#{port}/v1/health")
     ensure

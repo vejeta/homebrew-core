@@ -1,17 +1,16 @@
 class Netwatch < Formula
   desc "Cross-platform realtime network diagnostics TUI"
   homepage "https://www.netwatchlabs.com/labs/netwatch"
-  url "https://github.com/matthart1983/netwatch/archive/refs/tags/v0.25.7.tar.gz"
-  sha256 "c363a044118c870d96a50999a989033a4b662cf0800fcfc8deb948bee99b0b2e"
+  url "https://github.com/matthart1983/netwatch/archive/refs/tags/v0.31.2.tar.gz"
+  sha256 "6bd60b65ecd4575b887a09276ce36b2c24c0758c44de0378dce4d08065c39b8e"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "72aa564dcc1724b8761c95c8505dc9943906244e4ab873bdb15b790d779e8eb4"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "50329e33d14e85cdbe4e7ec20819dfa735a05872e57520e164b909f0f449b139"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "eb620e43bb5c830617fb6656f21a376de09ab92e53b1b20e58c4ec5a7a3194f7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ded2dd654e644bf595a503931136b9f90f37072360e03733443383634d8c6936"
-    sha256 cellar: :any,                 arm64_linux:   "239d6c15280360dc1ad5c93c0c9c8298cf031df0c334796da9d6861b15e7cbb7"
-    sha256 cellar: :any,                 x86_64_linux:  "d42cb89ac48f8e3cf6fbd914add65f8ee053f9a3ca530dde59380efcf5751ba2"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0c56534c225a61435283dd6845e51a9e50436cedf8557182a0ae1ee47f17560c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4327246e7bac032169b7948db08d919e5854756ce9117a9f120ea082fef58e67"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "00c6502dad31c462a5eae1ac97ae46f8fdf7bd4b2f486d0eb90b74a15021d037"
+    sha256 cellar: :any,                 arm64_linux:       "a67af26f7ccde41f01ca2e20b8f36e808563af2b579f9747548ab4d9859b60e5"
+    sha256 cellar: :any,                 x86_64_linux:      "bdd739e74354a906c908bdecf37948275aa76b1cff449e1317f4e22f4f1d675f"
   end
 
   depends_on "rust" => :build
@@ -36,7 +35,7 @@ class Netwatch < Formula
     end
 
     screenlog = (testpath/"screenlog.ansi").read
-    assert_match "Topology", screenlog
+    assert_match "topology", screenlog
     # match text in help dialog
     assert_match "DASHBOARD", screenlog
   end

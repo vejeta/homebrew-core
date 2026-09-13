@@ -1,19 +1,25 @@
 class Vtk < Formula
   desc "Toolkit for 3D computer graphics, image processing, and visualization"
   homepage "https://www.vtk.org/"
-  url "https://www.vtk.org/files/release/9.6/VTK-9.6.2.tar.gz"
-  sha256 "aed12cec12a9609179bf66329070266627ca64244a10856a452b2a17ffb04a1d"
+  url "https://www.vtk.org/files/release/9.7/VTK-9.7.0.tar.gz"
+  sha256 "affdb7a15ec34ee0174407f911ab70b646c7af01161818bbab4e1160b7eff720"
   license "BSD-3-Clause"
-  compatibility_version 3
+  compatibility_version 4
   head "https://gitlab.kitware.com/vtk/vtk.git", branch: "master"
 
+  livecheck do
+    url "https://vtk.org/download/"
+    regex(/href=.*?vtk[._-]v?(\d+(?:\.\d+)+)\.t/i)
+  end
+
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "52677c4763d3fd5a7b0b0190f79eeafc08403d80f914cb2a1278967dff188006"
-    sha256 cellar: :any,                 arm64_sequoia: "491006416b0c37e0d2a4ed856b2a540c7697fe62712cae551476a9dd95291f98"
-    sha256 cellar: :any,                 arm64_sonoma:  "eec9485cf855717a3c3c524025b9c0db89da1d45334f6efda270b173c2851132"
-    sha256 cellar: :any,                 sonoma:        "56ba4896d789187a60f3f3be040e58684a352df0e6cf5be39b46e919918dc993"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3fab6cc234d5a3e736f5b4575cbd1580ab011d377189646e099b841ed312fd86"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9c8418d4936b57521f274c00486e892aace01b328c02a24bf60bb1a9c077ce6e"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "7f0e6857cefc0571e3fe4b8388c0ee7601c7b44d509e018ad38a52a94f65bf6c"
+    sha256 cellar: :any, arm64_tahoe:       "80194316cbfc7986913ea6a69a46529322ba1dc0543e5d4ac3f39773b50f6e67"
+    sha256 cellar: :any, arm64_sequoia:     "397b7a541ec513f3cb2f41474320b06a8ec3fac8121b349cf5a729c8de858e58"
+    sha256 cellar: :any, arm64_sonoma:      "67ba7684409eb1d2f77d15dc819a44e9edbc92c267cee308f461c6f0a6fe8a04"
+    sha256 cellar: :any, arm64_linux:       "e5974d3038b7cf18929f9701eb4b88aaa8765b62b6758f5a164408a62ccf2ba6"
+    sha256 cellar: :any, x86_64_linux:      "e202fef116ae131d60ed5afad83feec343c4315ef22bd019af8f1033f47dead4"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -44,7 +50,7 @@ class Vtk < Formula
   depends_on "utf8cpp"
   depends_on "xz"
 
-  uses_from_macos "expat"
+  uses_from_macos "expat", since: :sequoia
   uses_from_macos "libxml2"
 
   on_linux do
@@ -55,26 +61,18 @@ class Vtk < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # Backport fix for HDF5 2.0.0
+  # Backport fix for HDF5 2.0.0 from CMake repo
   patch :p2 do
     url "https://github.com/Kitware/CMake/commit/27e558dfa5a5441954d8930f2b6d9ae700c95050.patch?full_index=1"
     sha256 "ba4ecd3f9abfaae2c60c9be6978c250622bdb9979b42ddec52116d51d034f911"
     directory "CMake/patches/99"
+    type :cherry_pick
+    resolves "https://gitlab.kitware.com/vtk/vtk/-/work_items/20014"
   end
 
   def install
-    # Work around superenv to avoid mixing `expat` usage in libraries across dependency tree.
-    # Brew `expat` usage in Python has low impact as it isn't loaded unless pyexpat is used.
-    # TODO: Consider adding a DSL for this or change how we handle Python's `expat` dependency
-    if OS.mac? && MacOS.version < :sequoia
-      env_vars = %w[CMAKE_PREFIX_PATH HOMEBREW_INCLUDE_PATHS HOMEBREW_LIBRARY_PATHS PATH PKG_CONFIG_PATH]
-      ENV.remove env_vars, /(^|:)#{Regexp.escape(Formula["expat"].opt_prefix)}[^:]*/
-      ENV.remove "HOMEBREW_DEPENDENCIES", "expat"
-    end
-
-    python = "python3.14"
     qml_plugin_dir = lib/"qml/VTK.#{version.major_minor}"
-    vtkmodules_dir = prefix/Language::Python.site_packages(python)/"vtkmodules"
+    vtkmodules_dir = prefix/Language::Python.site_packages(python3)/"vtkmodules"
     rpaths = [rpath, rpath(source: qml_plugin_dir), rpath(source: vtkmodules_dir)]
 
     args = %W[
@@ -112,7 +110,7 @@ class Vtk < Formula
       -DVTK_MODULE_USE_EXTERNAL_VTK_tiff:BOOL=ON
       -DVTK_MODULE_USE_EXTERNAL_VTK_utf8:BOOL=ON
       -DVTK_MODULE_USE_EXTERNAL_VTK_zlib:BOOL=ON
-      -DPython3_EXECUTABLE:FILEPATH=#{which(python)}
+      -DPython3_EXECUTABLE:FILEPATH=#{python3}
       -DVTK_GROUP_ENABLE_Qt:STRING=YES
       -DVTK_QT_VERSION:STRING=6
     ]
@@ -149,9 +147,10 @@ class Vtk < Formula
       }
     CPP
 
-    system "cmake", ".", "-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_VERBOSE_MAKEFILE=ON", "-DVTK_DIR=#{vtk_dir}"
-    system "make"
-    system "./Distance2BetweenPoints"
+    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_VERBOSE_MAKEFILE=ON",
+                    "-DVTK_DIR=#{vtk_dir}"
+    system "cmake", "--build", "build"
+    system "build/Distance2BetweenPoints"
 
     (testpath/"Distance2BetweenPoints.py").write <<~PYTHON
       import vtk

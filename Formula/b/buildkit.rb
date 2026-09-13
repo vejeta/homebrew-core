@@ -1,8 +1,8 @@
 class Buildkit < Formula
   desc "Concurrent, cache-efficient, and Dockerfile-agnostic builder toolkit"
   homepage "https://github.com/moby/buildkit"
-  url "https://github.com/moby/buildkit/archive/refs/tags/v0.31.0.tar.gz"
-  sha256 "d000939ab93c32eab5a6d7c7a200bf4d42b1972a0e0dec5d5ebbe60c02667183"
+  url "https://github.com/moby/buildkit/archive/refs/tags/v0.33.0.tar.gz"
+  sha256 "c365476e1b10e27a2ab809e3a7a6dcd0647a60fa6e8917799b894d4127af7306"
   license "Apache-2.0"
   head "https://github.com/moby/buildkit.git", branch: "master"
 
@@ -15,20 +15,21 @@ class Buildkit < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0ae7af33738dcde1fc617d211cbac5dab01b1f9113cc8f6a01a0b9e941f08575"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0ae7af33738dcde1fc617d211cbac5dab01b1f9113cc8f6a01a0b9e941f08575"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0ae7af33738dcde1fc617d211cbac5dab01b1f9113cc8f6a01a0b9e941f08575"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9b31defabcea6dc353eda34dfbb10d7d83a2cda8feaeb186f2a70a31dbdccc74"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ee6afb0f7d6ca7499326b1c2f193594c13bcaa4f47dab1fb2d28395402cf237d"
-    sha256 cellar: :any,                 x86_64_linux:  "6559b13c5193c132dd6ad8fedf3797b56c99d16d6b4f53cf9e81b7b3f64cbc90"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ca2eca5d1ea6c115a1494155f842b92dfe744bdda681f4311b46f99e25a8e753"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ca2eca5d1ea6c115a1494155f842b92dfe744bdda681f4311b46f99e25a8e753"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ca2eca5d1ea6c115a1494155f842b92dfe744bdda681f4311b46f99e25a8e753"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ca2eca5d1ea6c115a1494155f842b92dfe744bdda681f4311b46f99e25a8e753"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "cadc0c70cef2471e1e27eba8106c7a69853ea8d71d7ecc621609abf4dea708ad"
+    sha256 cellar: :any,                 x86_64_linux:      "3a80704b804aae9cee4426a02eafd58bb9264dd96d89e914a0ae56d47a0009a4"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
   def install
     revision = build.head? ? Utils.git_short_head : tap.user
     ldflags = %W[
-      -s -w
       -X github.com/moby/buildkit/version.Version=#{version}
       -X github.com/moby/buildkit/version.Revision=#{revision}
       -X github.com/moby/buildkit/version.Package=github.com/moby/buildkit

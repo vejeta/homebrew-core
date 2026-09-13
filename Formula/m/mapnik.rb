@@ -1,10 +1,9 @@
 class Mapnik < Formula
   desc "Toolkit for developing mapping applications"
   homepage "https://mapnik.org/"
-  url "https://github.com/mapnik/mapnik/releases/download/v4.2.2/mapnik-v4.2.2.tar.bz2"
-  sha256 "a530f03c2bcf1ea8f9e500a0dab7f8387f1a1eae3040a886c1547b3af86f5911"
+  url "https://github.com/mapnik/mapnik/releases/download/v4.3.1/mapnik-v4.3.1.tar.bz2"
+  sha256 "aadfe037a8fdf7524bca7d72594ed9783c7047b7a53c6cf2e767f6e802d53edd"
   license "LGPL-2.1-or-later"
-  revision 1
   head "https://github.com/mapnik/mapnik.git", branch: "master"
 
   livecheck do
@@ -13,12 +12,12 @@ class Mapnik < Formula
   end
 
   bottle do
-    sha256                               arm64_tahoe:   "efabe8976d1aeae07d302ab8ddfac459b96c1ec0e1f5ab9b086165977bc8cbdc"
-    sha256                               arm64_sequoia: "6f4b11b2a78d683667c26ea5fd823c4e62f9f2ddb0ed2f6e8b62b3e07750142a"
-    sha256                               arm64_sonoma:  "57fa1ae0c46fbab2f7c1adaf969b250907585479f922f413e6106b7d11ae7b3b"
-    sha256 cellar: :any,                 sonoma:        "86a9f05bc754a8621717fd05ec2a98113079b8a4462b87e1b5bc6f71dc05c7c0"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "dd1b4c53c36b1caa9578f23efea6203105b564c885f63859bf9248e1f2a04f06"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "85d6bd1b396b521158edfe8f53f86ffaf47878aa1b9e972fa862e9aab1caf306"
+    sha256 cellar: :any, arm64_golden_gate: "8e50afe8a3bd50601577181997bfd2aa9fc70a5a929b3c6c7784774f89088fa0"
+    sha256 cellar: :any, arm64_tahoe:       "99db6651491ca3a306f61d5cbf6bca857f5031e1c13e982cdc72b7d9e5c76c80"
+    sha256 cellar: :any, arm64_sequoia:     "64bbeca5e052b964c53ec208f4b5119c78d2270ded7f13d5682822baa0861cbd"
+    sha256 cellar: :any, arm64_sonoma:      "f27b4e8159b53d0f6ce40cb21e1ffc53adbb423b10c1d236614243af02cac79c"
+    sha256 cellar: :any, arm64_linux:       "f2c15b9d4d17f09a399172b6461b8e1d7b12a83812d84c71f237937429254c43"
+    sha256 cellar: :any, x86_64_linux:      "79ec3d1289b7955084669787f0d1a5cac52f2eb932d0d796af5002bd97ded36c"
   end
 
   depends_on "cmake" => :build

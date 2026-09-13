@@ -1,10 +1,10 @@
 class Poppler < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-26.06.0.tar.xz"
-  sha256 "4cb4e5a3dc8cb5eec751c8a23c8ba19f61f96dedc0cd07d2aee6b0c8e2cf6ba4"
+  url "https://poppler.freedesktop.org/poppler-26.09.0.tar.xz"
+  sha256 "8059eadb6805340768f138c465b57f8164c92b4a0773c37ef031ea6c0d987b2e"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only"] # see README-XPDF
-  compatibility_version 4
+  compatibility_version 7
   head "https://gitlab.freedesktop.org/poppler/poppler.git", branch: "master"
 
   livecheck do
@@ -13,12 +13,12 @@ class Poppler < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "595f642965f19f62860b5c9b0267a4e78daa8ada47ae1f5dbaab76ac1f74b10d"
-    sha256 arm64_sequoia: "d7510cb2202c997dd75212d0a45ed17adc6ef67604a59da0f745322687eb1c23"
-    sha256 arm64_sonoma:  "a7f99ac7d30f36e9e00359552f07f87b6ee9eba369ca36a67359a74ce62dabab"
-    sha256 sonoma:        "e07dda384ec18f4644e2f3a6654cfe849dae68638a54dfd4c000073945cceb8b"
-    sha256 arm64_linux:   "71a442b763ece24e2e439ee1a4c287649f15848090cb00c5dcf0f27161027256"
-    sha256 x86_64_linux:  "3b4833a94144e71c2427224d774392f671426214b796c48059fde359f1542f5a"
+    sha256 arm64_golden_gate: "5e048b8b58c67f3ab0b4b7fa417b89267860870cb794d8a8e54368a44c1ba341"
+    sha256 arm64_tahoe:       "282b89b8f5a4c802f178e596fc98a29171d01b34bd1198658c88a6b2deef2b9b"
+    sha256 arm64_sequoia:     "ede746ab1ea5a7246e70ded986956fa75899a9f5bf3c79cee57a5feff5dba51d"
+    sha256 arm64_sonoma:      "91b63026986802149b65befdd5dffd897f46061fb8f6e38edefc0e5f1d3e0b3d"
+    sha256 arm64_linux:       "54a9ca8a90c5fdb7b16f5b9d29ac54dd9ef935c244c759c4c10b2a9ce83f38bf"
+    sha256 x86_64_linux:      "5bb6fe5b7850669aba761f36a6013ff12dd6234fe30a618ec1d4bdeec4eae1dc"
   end
 
   depends_on "cmake" => :build
@@ -31,6 +31,7 @@ class Poppler < Formula
   depends_on "freetype"
   depends_on "glib"
   depends_on "gpgmepp"
+  depends_on "harfbuzz"
   depends_on "jpeg-turbo"
   depends_on "libpng"
   depends_on "libtiff"
@@ -40,7 +41,7 @@ class Poppler < Formula
   depends_on "openjpeg"
 
   uses_from_macos "gperf" => :build
-  uses_from_macos "curl", since: :monterey # 7.68.0 required by poppler as of https://gitlab.freedesktop.org/poppler/poppler/-/commit/8646a6aa2cb60644b56dc6e6e3b3af30ba920245
+  uses_from_macos "curl", since: :sonoma # needs curl >= 8.5
 
   on_macos do
     depends_on "gettext"
@@ -64,12 +65,7 @@ class Poppler < Formula
     end
   end
 
-  # Fix mutex lock crash on macOS
-  # MR ref: https://gitlab.freedesktop.org/poppler/poppler/-/merge_requests/2262
-  patch do
-    url "https://gitlab.freedesktop.org/poppler/poppler/-/commit/e263f50b8ecac8aaad458a4c45d8ca9761dd8878.diff"
-    sha256 "b61ff6d4a474503f00bdd96a0bf60ee245adc9e23b77bba2096da47da182513a"
-  end
+  deny_network_access!
 
   def install
     args = std_cmake_args + %W[

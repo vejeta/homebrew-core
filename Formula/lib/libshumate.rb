@@ -1,8 +1,8 @@
 class Libshumate < Formula
   desc "Shumate is a GTK toolkit providing widgets for embedded maps"
   homepage "https://gitlab.gnome.org/GNOME/libshumate"
-  url "https://download.gnome.org/sources/libshumate/1.6/libshumate-1.6.1.tar.xz"
-  sha256 "b36aad34500791785f546684d0f2ed644e4819ff4e85ae67a2245f159eccb2d4"
+  url "https://download.gnome.org/sources/libshumate/1.7/libshumate-1.7.0.tar.xz"
+  sha256 "3896cc4b6a7bf83141c27df23ce48cdd68467603bc6b764960307cdcbbef80e5"
   license "LGPL-2.1-or-later"
 
   # libshumate doesn't use GNOME's "even-numbered minor is stable" version
@@ -14,12 +14,11 @@ class Libshumate < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "41b75f06c0baba11bc89de3df2fd5f30474849a892090b8947b26495631ab733"
-    sha256 cellar: :any, arm64_sequoia: "ef1bed2b45e2d5968a4af7ce2df08b92d66232fa079b441cd5696ff253b53fa0"
-    sha256 cellar: :any, arm64_sonoma:  "bc8db69503ea14e9b9cb9ec5269bf9bd2ea2bb0dfe179ff05aa678fa048850d0"
-    sha256 cellar: :any, sonoma:        "a427c7125bdec112cdd639474011f9b1d12af0d6e6d01ba30b07b46ef97156e7"
-    sha256               arm64_linux:   "b9ba5581b064ca447ba99a1332c8bb428951acab834ada600ef48d7678fd4adf"
-    sha256               x86_64_linux:  "64afa454bdb3778aabab6e99f54508089abec49503be15b6d6def8bf30c89434"
+    sha256 cellar: :any, arm64_golden_gate: "375b70315e0880e3d8070c4c117121165d29e5cff6cabf6d922edd878912dd2a"
+    sha256 cellar: :any, arm64_tahoe:       "aab34b59b7eccee480f399111674e63e4c77eb21c1a3e3153bdc0ed37e545f7f"
+    sha256 cellar: :any, arm64_sequoia:     "361266d4178c44c89823bbfe2025c6979b1c338118f711eb3c9882c56bf4d5d3"
+    sha256 cellar: :any, arm64_linux:       "8b40200264b2fa503d1c1a43dbeee5489d6e15ac89e1e0ce1ababa6ca404e4bb"
+    sha256 cellar: :any, x86_64_linux:      "5622d14bc8f441363cba65e30b23fe3e309829e9a01f5528efdf3ad0fdbeca0f"
   end
 
   depends_on "gettext" => :build
@@ -63,7 +62,7 @@ class Libshumate < Formula
       }
     C
 
-    flags = shell_output("#{Formula["pkgconf"].opt_bin}/pkgconf --cflags --libs shumate-1.0").strip.split
+    flags = shell_output("#{formula_opt_bin("pkgconf")}/pkgconf --cflags --libs shumate-1.0").strip.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
 

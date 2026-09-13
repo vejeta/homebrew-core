@@ -1,24 +1,24 @@
 class Tfcmt < Formula
   desc "Notify the execution result of terraform command"
   homepage "https://suzuki-shunsuke.github.io/tfcmt/"
-  url "https://github.com/suzuki-shunsuke/tfcmt/archive/refs/tags/v4.14.15.tar.gz"
-  sha256 "de5066d39c30deea6a32f237ce215a4cd9388ff69343649ad6a940db06debfb3"
+  url "https://github.com/suzuki-shunsuke/tfcmt/archive/refs/tags/v4.14.19.tar.gz"
+  sha256 "5c6fe5d838eb3019cad1f7ba1eb2d2ea4f74617529f0c61ed301036d4dd39fc9"
   license "MIT"
   head "https://github.com/suzuki-shunsuke/tfcmt.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1eaf047ce8150f1feecb975470b97bd971d32720adbc01885fa5d469592efa9d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1eaf047ce8150f1feecb975470b97bd971d32720adbc01885fa5d469592efa9d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1eaf047ce8150f1feecb975470b97bd971d32720adbc01885fa5d469592efa9d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "660ca0d854f4f6e4fae7ba34868905d20c1bea133bba07abf943592e15e3ebc8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1d71bea60799faab717d6ed7eb2b9c243e62411ebfaa3451454d03057dc57a69"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "bd2d37d70285a270280950b30822c5472e7021d62fbf7ce2666e0e6ac76e8beb"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9f1e15694f309f8e4f765bd2992889f650101b75aa5a491c0448923ea29d5e58"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "90ea369ae934cbb1c8054b6034ad6dd0791cff009eff649e7b898333dc173970"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "90ea369ae934cbb1c8054b6034ad6dd0791cff009eff649e7b898333dc173970"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "90ea369ae934cbb1c8054b6034ad6dd0791cff009eff649e7b898333dc173970"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "84c01adeeab1119b5a356a0bb7a5cadf4999e7286420bd3efe678ce5c4b1a6ba"
+    sha256 cellar: :any,                 x86_64_linux:      "4ab375b6b25943e7e0d9b96b9327f5d107efb2838f13bcd31413d2c1bd6cf77c"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
+    ldflags = "-X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/tfcmt"
   end
 

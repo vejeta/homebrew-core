@@ -1,21 +1,16 @@
 class Lit < Formula
   desc "Portable tool for LLVM- and Clang-style test suites"
   homepage "https://llvm.org"
-  url "https://files.pythonhosted.org/packages/47/b4/d7e210971494db7b9a9ac48ff37dfa59a8b14c773f9cf47e6bda58411c0d/lit-18.1.8.tar.gz"
-  sha256 "47c174a186941ae830f04ded76a3444600be67d5e5fb8282c3783fba671c4edb"
+  url "https://files.pythonhosted.org/packages/d0/4d/655d03b8a6ad89dbfe00cda03c84ef87f3143445deb4f3e69e2945a1d35b/lit-23.1.1.tar.gz"
+  sha256 "1e0d11e50ab83ecb88f5346c6698e30ba0dfea75630a4daefae0b0fb72d7f3f5"
   license "Apache-2.0" => { with: "LLVM-exception" }
 
   bottle do
-    rebuild 3
-    sha256 cellar: :any_skip_relocation, all: "30d091941a71abc54232470d2b1ec34bd194ac2ff3af457c6ae8034243577e72"
+    sha256 cellar: :any_skip_relocation, all: "fda9614e8d7f0d6dd80a2ab09583889937f39d2c17657b9ba738926ea684c590"
   end
 
   depends_on "llvm" => :test
   depends_on "python@3.14"
-
-  def python3
-    which("python3.14")
-  end
 
   conflicts_with "luvit", because: "both install `lit` binaries"
 
@@ -34,7 +29,7 @@ class Lit < Formula
   end
 
   test do
-    ENV.prepend_path "PATH", Formula["llvm"].opt_bin
+    ENV.prepend_path "PATH", formula_opt_bin("llvm")
 
     (testpath/"example.c").write <<~C
       // RUN: cc %s -o %t
@@ -52,7 +47,7 @@ class Lit < Formula
       import lit.formats
 
       config.name = "Example"
-      config.test_format = lit.formats.ShTest(True)
+      config.test_format = lit.formats.ShTest()
 
       config.suffixes = ['.c']
     PYTHON

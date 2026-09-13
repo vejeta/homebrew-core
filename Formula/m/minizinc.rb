@@ -1,18 +1,18 @@
 class Minizinc < Formula
   desc "Medium-level constraint modeling language"
   homepage "https://www.minizinc.org/"
-  url "https://github.com/MiniZinc/libminizinc/archive/refs/tags/2.9.7.tar.gz"
-  sha256 "bb04d783dda4bba58de4004afd51d65b1fa4e8d9714c88c129cac312e267152e"
+  url "https://github.com/MiniZinc/libminizinc/archive/refs/tags/2.10.1.tar.gz"
+  sha256 "089ea94698cea94ed8396be77559b82d828437a808f5e37d10bccc9f1d39dd33"
   license "MPL-2.0"
-  head "https://github.com/MiniZinc/libminizinc.git", branch: "master"
+  head "https://github.com/MiniZinc/libminizinc.git", branch: "develop"
 
   bottle do
-    sha256 arm64_tahoe:   "21e719d9abeaee024e6d4a8fb61de4e78c85b561be4c75926b28ea5ebb35d9da"
-    sha256 arm64_sequoia: "823e80ca5e2e8b120bf3aef2ced45235e3fe4fcd7e745c04033702f7b34b4965"
-    sha256 arm64_sonoma:  "2207824ab90e235bc59c628929439045b174d48d7657c918a6d4ef970e9f04f9"
-    sha256 sonoma:        "255661302426073c6bf6fa13306bdaeec31064ace1e5f77e56653143e38444e0"
-    sha256 arm64_linux:   "76b1edbce4ea92e5160928cf9a10eb0365bf2282f9445f9b2ffda920dce7e9ad"
-    sha256 x86_64_linux:  "b09ec05d0208d12737ae739c438caf6c4f8a870ecfc3d0f54ce8fa76e2b0820f"
+    sha256 arm64_golden_gate: "7ce8ae49a7159112321f619709aadca67bbc8882d1b97b6e88e317849fdcffbc"
+    sha256 arm64_tahoe:       "0e399701db20c046b319387ab97f0928136a89b83401e939934862a0585d5f97"
+    sha256 arm64_sequoia:     "6decd5eebaa54328910cee5a32e580db6b0424c0b58c71d9044558f8ee77913c"
+    sha256 arm64_sonoma:      "981041ddb6bdb98f0b7d7cb52d81d291603bae2145d19aa399851584eca7f25e"
+    sha256 arm64_linux:       "33ef0af1f067f0cd1a6141aa2b5b17fc7d85a9aebe03107d6125ef3e8efbe29e"
+    sha256 x86_64_linux:      "c5c6631aab467d49232e52fee307c7bd641b0ffd6222887243abed1500c2820b"
   end
 
   depends_on "cmake" => :build
@@ -23,8 +23,6 @@ class Minizinc < Formula
   depends_on "coinutils"
   depends_on "gecode"
   depends_on "osi"
-
-  conflicts_with cask: "minizincide", because: "both install `minizinc` binaries"
 
   def install
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args

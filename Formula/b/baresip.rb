@@ -1,17 +1,18 @@
 class Baresip < Formula
   desc "Modular SIP useragent"
   homepage "https://github.com/baresip/baresip"
-  url "https://github.com/baresip/baresip/archive/refs/tags/v4.9.0.tar.gz"
-  sha256 "fe0dc70640616b5b6814f728af3ce83b4c56dd1d7a9a21658480c305bd092367"
+  url "https://github.com/baresip/baresip/archive/refs/tags/v4.11.0.tar.gz"
+  sha256 "e170ad5857994dfed0c84c4c04eb904fa410f3ec2d5a6c789b50b3fda47ba98c"
   license "BSD-3-Clause"
 
   bottle do
-    sha256 arm64_tahoe:   "541c0f92a16b0071959c7ff38b22fc7ec4365d024cf63faf3c4d3c43912efc7f"
-    sha256 arm64_sequoia: "b4dbf937d23eccd58ec201fb21bce454094142e2364edbf3ebc08055bd7184c2"
-    sha256 arm64_sonoma:  "3853bccc4ed0b8eecff0255adc20c51f1a04b71b3bceac9ac6432743bc9a413e"
-    sha256 sonoma:        "1850eb7c8c96b01831911ecedaf31ece824224a44b2b302ab3fd06cbe9095bd0"
-    sha256 arm64_linux:   "e568d30c5aa68320353d959f258a8d9a226e54cc96e7899e1ec7a6472ec58cc8"
-    sha256 x86_64_linux:  "73dac2b0d02dd9d996f92e810c5272110196d29d70a93aa97b66062b6fe6c3d3"
+    sha256 arm64_golden_gate: "bc051029f9c6e8dbcfac25f652ae23a3d9c721570cf88c96fa988681cef3d7fa"
+    sha256 arm64_tahoe:       "40c9520cd69893e56e6046e10e035196568c6baf09fe08f090d3fdc490f2da92"
+    sha256 arm64_sequoia:     "370a7d08ee7c31c06a492aa64dbe3215346cae69ede1824099a1dd77630a4eee"
+    sha256 arm64_sonoma:      "9b26add3c82d656d831d75ff31761d8190479041d13b7b910198f377ba307b3a"
+    sha256 sonoma:            "c55215d6f13b4a53bd8d5503d0e2aa6bd04a892f879ab4e8b124ab20b8cd4b39"
+    sha256 arm64_linux:       "28362d656809541607b82679094966019090aff492212729a5bcd4fe64d8aeca"
+    sha256 x86_64_linux:      "0f5215e5362343c1dd566aba13c1e79e27ea823363b2c73ad2c9aa75fbdc45d9"
   end
 
   depends_on "cmake" => :build
@@ -21,7 +22,7 @@ class Baresip < Formula
   def install
     args = %W[
       -DCMAKE_INSTALL_RPATH=#{rpath}
-      -DRE_INCLUDE_DIR=#{Formula["libre"].opt_include}/re
+      -DRE_INCLUDE_DIR=#{formula_opt_include("libre")}/re
     ]
     args += %w[EXE SHARED].map { |type| "-DCMAKE_#{type}_LINKER_FLAGS=-Wl,-dead_strip_dylibs" } if OS.mac?
 

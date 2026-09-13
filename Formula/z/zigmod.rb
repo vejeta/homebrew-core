@@ -1,34 +1,31 @@
 class Zigmod < Formula
   desc "Package manager for the Zig programming language"
   homepage "https://nektro.github.io/zigmod/"
-  url "https://github.com/nektro/zigmod/archive/refs/tags/r103.tar.gz"
-  sha256 "965bd1aacbe4fee5c3dbbe0715d40f5b6a6413065bf5dc0385ba1ba1acc6c2e2"
+  url "https://github.com/nektro/zigmod/archive/refs/tags/r105.tar.gz"
+  version "r105"
+  sha256 "b88a477602b63ce4f013701369ab4356ff91830915021443aa74380df474c1b3"
   license "MIT"
+  version_scheme 1
 
   livecheck do
     url :stable
-    regex(/^r(\d+)$/i)
+    regex(/^(r\d+)$/i)
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5ef437f4e9b2f69a1be4adaa651df67f580cfd84f34fe9efc3f20001361e303e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "84e496ca7896cdd75e684c8640aa3fed836274cb3dfb8d02454a03910d98b7ae"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "aa5303dd5bb7b26327a14ae30734651f0904d1247f5aa18458bd4a737ad75fe2"
-    sha256 cellar: :any_skip_relocation, sonoma:        "018603bd82921507439ac811e64a345a812d8c8ec1c70244372b91e791c25806"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "49762f0cd3b574d5b33a269347537dc5636c94c4dd61f5b7a6c2ea1b234863f8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6cc6fc70bf0c8af0294cbe4319ad37118c9ebe83c9f4ec940961d6b04c03b625"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "97cd47ddf8b006b927ad700079ef1d0a1ea55a9fa381fa121665aa257d4a4cbc"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f37c874532fafe5bebe759e1d780063e8a8e1203ab0eab92397c4e51e7911bc0"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bc17ae0d9a279c31fc35588761117b8533f3e03c05190e7f05d8823d29f074bc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f3a25a78f5a61d2d5e1e7b828bd5532adf9e13c51b35dc78512d907cecb3ae32"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b614aa01d3a6253b86ad4c066fc24902db2e6db296d6277e899de656d5ea9d67"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "456c7505eecfd41737459a8cf5d4f3f2f4a745a9e71421b6bda86fa515320e55"
   end
 
-  depends_on "pkgconf" => :build
-  depends_on "zig@0.15"
+  depends_on "zig"
 
   def install
-    # Avoid zig-nfs mkdirat failure when creating absolute cache paths on macOS x86_64.
-    inreplace "src/common.zig", "try nfs.cwd().makePath(cachepath);",
-                                "try std.fs.cwd().makePath(cachepath);"
-
     args = %W[
-      -Dtag=r#{version}
+      -Dtag=#{version}
       -Dstrip=true
     ]
 
@@ -45,6 +42,7 @@ class Zigmod < Formula
       license: MIT
       description: Test zig.mod dependency
       min_zig_version: 0.11.0
+      min_zigmod_version: #{version}
       dependencies:
     YAML
     (testpath/"dependency/src/lib.zig").write <<~ZIG

@@ -1,19 +1,16 @@
 class TaLib < Formula
   desc "Tools for market analysis"
   homepage "https://ta-lib.org/"
-  url "https://github.com/ta-lib/ta-lib/releases/download/v0.6.4/ta-lib-0.6.4-src.tar.gz"
-  sha256 "aa04066d17d69c73b1baaef0883414d3d56ab3775872d82916d1cdb376a3ae86"
+  url "https://github.com/ta-lib/ta-lib/releases/download/v0.8.1/ta-lib-0.8.1-src.tar.gz"
+  sha256 "ec59ccd88c0c77f618587d858787c8f9d06c40460a09d66751926f6fd670f985"
   license "BSD-3-Clause"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "7817d0d8bfa2799e2b90618352a6d276dfa36ff1af3f343c9f4d7fe0be8d6240"
-    sha256 cellar: :any,                 arm64_sequoia: "0ef739e4436909635fc3bacd8df2362d37a9467f11631111463dd387776b6b13"
-    sha256 cellar: :any,                 arm64_sonoma:  "8d7deb75b383ebc50513ebd077c4268acdb09d602b19ed4c8878f915f8f8b1e4"
-    sha256 cellar: :any,                 arm64_ventura: "12709c4df99f1dce0315b653a1bdb962f3cc6c429bda41a13d17f4dd43079644"
-    sha256 cellar: :any,                 sonoma:        "c34c5da2df4abefcb86d3f130a7e8fe0b85fad2c83e2343d9e65e4a615c6b235"
-    sha256 cellar: :any,                 ventura:       "151e74186d18550800b5e7e714c50e99e25b1e4f536fc83521e45e4ce389fc0e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e6bc65c4e2fb0d567fb739d473d9ee2b696741bb5d05f0f10c8594e096c875c3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "868d1163296be1e3d5f10bcdf4047f0e218eb91617da562eac14fd04cd05433d"
+    sha256 cellar: :any, arm64_golden_gate: "537ead5f8cd09b4cc0f3ed3a66a3736cc925e1a234064a1f563b3c5c6a0350dc"
+    sha256 cellar: :any, arm64_tahoe:       "e6de6d178938c85fdcc0f2717376cd484dc176c5f24db4c64b4260e83318c9e0"
+    sha256 cellar: :any, arm64_sequoia:     "b6f40477c526a50e488e3148bf9c1e291a2f4c38dd61722c0222c060b9ce0be3"
+    sha256 cellar: :any, arm64_linux:       "308662968647f28aae04f83313dc7dd6fadfe5dfca8051b46946c4ba9601b9a0"
+    sha256 cellar: :any, x86_64_linux:      "cabd2109c3726727400f5182715def1b8def16c351aa4429fcfc06dd965c34d5"
   end
 
   on_macos do

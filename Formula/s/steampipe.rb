@@ -1,8 +1,8 @@
 class Steampipe < Formula
   desc "Use SQL to instantly query your cloud services"
   homepage "https://steampipe.io/"
-  url "https://github.com/turbot/steampipe/archive/refs/tags/v2.4.4.tar.gz"
-  sha256 "3b9dae922cc9bd1976208d4a32e00e1bee8a6ed099734b019172d8e1f3769f90"
+  url "https://github.com/turbot/steampipe/archive/refs/tags/v2.4.6.tar.gz"
+  sha256 "fa685e46d435a9eb59d3e69bf718bf19bfeac17764c616fa93fd9ce5c5d9cd80"
   license "AGPL-3.0-only"
   head "https://github.com/turbot/steampipe.git", branch: "develop"
 
@@ -12,19 +12,25 @@ class Steampipe < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "dbc7bc9b8f0246f7246ec8e73126ccc067c7e9ced10ec1a3ae67f0ac6b0abfd7"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "94d9cffe0f9b98d74f1a7673ed2e563c20a935e9ebdb9379ebbbab1d0746e46e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "178f3106a2e09db54cb6a624461aa933e8bf0506d48c408bc5c63d131e1635b7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e6ba5533bef28d7ffcbafeae2147277b53c8e0500dfb5ac124d9280191ca2869"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8ff08e4e500473681529f8b7b41e2fd2c232b779380c08b50e5fe4ee4f9ec644"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "498d2152b56b3f9278d0af45724ba42b02deee55b0beb1950fe3a53929ee3827"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d449b3f5a97371b28996025748a3647042ca4ad84d6b7f45ab36dacab9da21f8"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b444d07e72928db3020117ed2bb67d205ba99b6b075b44ae0076ab0833f0cd04"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "704b284ee66f3c2b4e814dc638a47c9b611a5cc43577aeabca6260ca9bef55f4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "49bd2ca54ee8f7bacb8f19b7874c1f094d1a70047cd20039cf033003da014932"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f6638a5a6b240261092e961dfd9d78cba9ad8fef1d3a9e1e6dadff2bef17c213"
+    sha256 cellar: :any,                 x86_64_linux:      "602cfc8a1cfb16c4d94d8e5ee798d2a54bb2c4425cbd9dc9070606d4808042f8"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.date=#{time.iso8601} -X main.commit=#{tap.user}"
-    system "go", "build", *std_go_args(ldflags:)
+    ldflags = "-X main.version=#{version} -X main.date=#{time.iso8601} -X main.commit=#{tap.user}"
+    system "go", "build", *std_go_args(ldflags:, tags: "http2legacy")
 
     generate_completions_from_executable(bin/"steampipe", shell_parameter_format: :cobra)
   end
@@ -35,6 +41,6 @@ class Steampipe < Formula
     output = shell_output("#{bin}/steampipe service status")
     assert_match "Steampipe service is not installed", output
 
-    assert_match "Steampipe v#{version}", shell_output("#{bin}/steampipe --version")
+    assert_match version.to_s, shell_output("#{bin}/steampipe --version")
   end
 end

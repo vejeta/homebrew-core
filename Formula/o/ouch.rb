@@ -1,8 +1,8 @@
 class Ouch < Formula
   desc "Painless compression and decompression for your terminal"
   homepage "https://github.com/ouch-org/ouch"
-  url "https://github.com/ouch-org/ouch/archive/refs/tags/0.8.0.tar.gz"
-  sha256 "72ed23c0b2aa51b1b33d3251ddae14cf2bb07a24035d1593c06fc97070e4edf0"
+  url "https://github.com/ouch-org/ouch/archive/refs/tags/0.8.3.tar.gz"
+  sha256 "f695393cbbd89cf5a2095c32235e585a85432ccfb902c78d2a2e9787abbb439c"
   license "MIT"
   head "https://github.com/ouch-org/ouch.git", branch: "main"
 
@@ -15,12 +15,11 @@ class Ouch < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e40adc94ff6f2c943bbc093e966bee940274302d608916a9886fd9c4f5df2b3c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b3b14f2d0b83e473d0fef0fdee81b9613d13664c518b7fa222fb847c80dd3585"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "bb4ee8d96140fb17d18dc5fd8e323ee8399aae510864f178939f31efae36daec"
-    sha256 cellar: :any_skip_relocation, sonoma:        "3b085807ed0527dff9fbe60cf70df7b3b1ef4f14cd5ae5894d0678eeedb35055"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6b17ecea1efc97062523a7496de51c262b4b20a0d931d739e95e81130442b140"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c4ba15ecb9054c3c76a85aabe7c3a4e94c19669e79803e41db9938b51f9ac6ba"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a70f65653c18fa8468a5031b4e33d07da96db972b95fc7f811a7654dfb1ad8ec"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d348d3a35b9387a354d32ef0055cf9f0486472827d77249a78f326c3811c083e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "98d77ead4acd9daa3e8f68470d6d31d92926e0847396de926e0b7d61a98800ee"
+    sha256 cellar: :any,                 arm64_linux:       "d512ed800733b5fa9bba0ebbc4c2f9a76247242ef716899c93880d3b3ffd65ae"
+    sha256 cellar: :any,                 x86_64_linux:      "54743318b86798d93e41c0971807cb3378aa96c87bf2b897e5a418954f96c1d4"
   end
 
   depends_on "cmake" => :build
@@ -33,6 +32,8 @@ class Ouch < Formula
   on_linux do
     depends_on "zlib-ng-compat"
   end
+
+  deny_network_access! :test
 
   def install
     # for completion and manpage generation

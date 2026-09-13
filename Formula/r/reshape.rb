@@ -1,19 +1,18 @@
 class Reshape < Formula
   desc "Easy-to-use, zero-downtime schema migration tool for Postgres"
   homepage "https://github.com/fabianlindfors/reshape"
-  url "https://github.com/fabianlindfors/reshape/archive/refs/tags/v0.9.1.tar.gz"
-  sha256 "516c68a38c22be1262f3e3da45a9b382457299a3c7503bd018f358088d6970b1"
+  url "https://github.com/fabianlindfors/reshape/archive/refs/tags/v0.11.2.tar.gz"
+  sha256 "9d8e73a54ac8fe5b23f938da0a1522e8e057cfdb11f8bc4af7ef0a76558984d5"
   license "MIT"
   head "https://github.com/fabianlindfors/reshape.git", branch: "main"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "156d49068d0e0fac6b609c466875cedb2fedd39f1b5643c12ff37fbed78430ac"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e0ea97bab6357c273ac184e0e08ef31d9eec02634db82c4281ffe5f7be4dcf31"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0dd82e64b1a93122a81a23e198f3ca8a2b85d0e31bd4dad5e0197614e68fc62a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c136b7487d666d02b31c7778fe18a03bb35b2735037a21e74e98395b98a7bf3c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b8073e96cf71f2e46e1d2e9ad085fa3253c1f7fd760b4525ff49a251f7045d95"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b8a848ec4c95b05cbc61023736b2d650d1048e708a4e015394600f3842412133"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "4d6e990d4bbdcd0188ced49903ae60a49e18811673c48f2bf398426c4f1d50ae"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "afdc2c1eb053b84222f0ed8ccb0daa5e7d83f2a1ced840f455dfba9f01f1f2a6"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "410283dc09dd4c3f4b0056121b65e48b6ce3714f0148d9c3def16acfe0dac061"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f43be9e08b3eb949f4c0dc466d2f440d886e0a3990aa38dda01f9b5b863fefd6"
+    sha256 cellar: :any,                 arm64_linux:       "e6e5782510700bf7245b67891fed8f5d85cae5639508ce74ece11ebfbf026701"
+    sha256 cellar: :any,                 x86_64_linux:      "cc31c5c4eb41fcfc9eebc2dcf832ad2696152c0ab8caef3ed86db9a2d41f36f8"
   end
 
   depends_on "pkgconf" => :build
@@ -26,7 +25,7 @@ class Reshape < Formula
   end
 
   def install
-    ENV["OPENSSL_DIR"] = Formula["openssl@4"].opt_prefix if OS.linux?
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4") if OS.linux?
     system "cargo", "install", *std_cargo_args
   end
 

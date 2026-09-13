@@ -2,7 +2,6 @@ class Snort < Formula
   desc "Flexible Network Intrusion Detection System"
   homepage "https://www.snort.org"
   url "https://github.com/snort3/snort3/archive/refs/tags/3.12.2.0.tar.gz"
-  mirror "https://fossies.org/linux/misc/snort3-3.12.2.0.tar.gz"
   sha256 "43000d6b0e0307bc1a735874d00deb61e8b6a96d074f8cc9b2fe2cde0058720b"
   license "GPL-2.0-only"
   head "https://github.com/snort3/snort3.git", branch: "master"
@@ -16,12 +15,13 @@ class Snort < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "22535016e81034f4128a8437703afe7db861dbc78a64ef851b760fcdf0e5861c"
-    sha256 cellar: :any,                 arm64_sequoia: "a4cbf3bf4567436a6064e0001d12f9bc2a105399405fac0792589fee5d1ba122"
-    sha256 cellar: :any,                 arm64_sonoma:  "d1ac9a27e6616c50350582b0ae4a97c39930d5c39bbf17e50e6d51156270b4f7"
-    sha256 cellar: :any,                 sonoma:        "b124feccfdc173aacaea506a0f445eef9403b4559f244ce6bdb60d989e1b40e8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9b25a087deea2a558670ecfea00930e7119e73bc74a443f7360d0f94ef3b67bb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1807a54fe2f92464e4db0eecdd31f610d58bab960c7776ba260d6dd416c6ba4c"
+    sha256 cellar: :any,                 arm64_golden_gate: "83d420866e0020f41893a72f0135921a0ed77e690693efe68168908265697857"
+    sha256 cellar: :any,                 arm64_tahoe:       "22535016e81034f4128a8437703afe7db861dbc78a64ef851b760fcdf0e5861c"
+    sha256 cellar: :any,                 arm64_sequoia:     "a4cbf3bf4567436a6064e0001d12f9bc2a105399405fac0792589fee5d1ba122"
+    sha256 cellar: :any,                 arm64_sonoma:      "d1ac9a27e6616c50350582b0ae4a97c39930d5c39bbf17e50e6d51156270b4f7"
+    sha256 cellar: :any,                 sonoma:            "b124feccfdc173aacaea506a0f445eef9403b4559f244ce6bdb60d989e1b40e8"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "9b25a087deea2a558670ecfea00930e7119e73bc74a443f7360d0f94ef3b67bb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "1807a54fe2f92464e4db0eecdd31f610d58bab960c7776ba260d6dd416c6ba4c"
   end
 
   depends_on "cmake" => :build

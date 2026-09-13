@@ -1,18 +1,18 @@
 class Gopass < Formula
   desc "Slightly more awesome Standard Unix Password Manager for Teams"
   homepage "https://www.gopass.pw/"
-  url "https://github.com/gopasspw/gopass/releases/download/v1.16.1/gopass-1.16.1.tar.gz"
-  sha256 "7c4a9bf398a9bdbc97a88a76890d129aa04be27604ea8079cb6f9b46033a0346"
+  url "https://github.com/gopasspw/gopass/releases/download/v1.17.2/gopass-1.17.2.tar.gz"
+  sha256 "e338e6e45a8482db4dfc9ead2bb9ef0ba5be093ef813eaa64c4a5d34354ef002"
   license "MIT"
   head "https://github.com/gopasspw/gopass.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cb2a3e09abbd49e3f9fdd82d2ec5d2f7fa748513069166b4cab95b298b6a6487"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "85d36c653824ef7686758e1ae3da83e2016b309bfac275e34920d45818b90259"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9cd62aa8cda0a1d0f1ff64bbdd59b3e6705cf9fc9bbbca1dc5e2168c139cc1e3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c7d3f36b624e00966837507ffbf45067b8b5749c91e2c158498b808c80f9fb98"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5c2a02afd35b2159a0621849778470bf7e1a697b8fcb52205b103c526f6cb34b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "73de39c67865423e1bc107f39f995d297405448a3f97b7cb5ac8b419c70dfebc"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "57ed746d3dea5fac86b498cd9b4e59c3183c2085a96f3a3485308848cbe63d0d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "c3f41e21c59631a152247b7ea5a366d3e3f4dcf3a0c180d4606321827cd69a00"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "c7ec1de3342eab9021d975374a9e479714b1d050ee654d67176082602d63dc45"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "cecf2457e6e843da4f033c3a147df1bdc03a5c52a36ec9627f3809906ee3fc43"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "bdf4c7030a7a7a772dacbdbbfe995beb2b69eaf31863adc411b97b773cba1251"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "484a766eeff405e914cb78ba4d8b2bd733e27e3d56c79b3592b084e4c0f449ce"
   end
 
   depends_on "go" => :build
@@ -50,14 +50,14 @@ class Gopass < Formula
       %commit
     GPG
     begin
-      system Formula["gnupg"].opt_bin/"gpg", "--batch", "--gen-key", "batch.gpg"
+      system formula_opt_bin("gnupg")/"gpg", "--batch", "--gen-key", "batch.gpg"
 
       system bin/"gopass", "init", "--path", testpath, "noop", "testing@foo.bar"
       system bin/"gopass", "generate", "Email/other@foo.bar", "15"
       assert_path_exists testpath/"Email/other@foo.bar.gpg"
     ensure
-      system Formula["gnupg"].opt_bin/"gpgconf", "--kill", "gpg-agent"
-      system Formula["gnupg"].opt_bin/"gpgconf", "--homedir", "keyrings/live",
+      system formula_opt_bin("gnupg")/"gpgconf", "--kill", "gpg-agent"
+      system formula_opt_bin("gnupg")/"gpgconf", "--homedir", "keyrings/live",
                                                  "--kill", "gpg-agent"
     end
   end

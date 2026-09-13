@@ -1,11 +1,10 @@
 class Libtiff < Formula
   desc "TIFF library and utilities"
   homepage "https://libtiff.gitlab.io/libtiff/"
-  url "https://download.osgeo.org/libtiff/tiff-4.7.1.tar.gz"
-  mirror "https://fossies.org/linux/misc/tiff-4.7.1.tar.gz"
-  sha256 "f698d94f3103da8ca7438d84e0344e453fe0ba3b7486e04c5bf7a9a3fabe9b69"
+  url "https://download.osgeo.org/libtiff/tiff-4.7.2.tar.gz"
+  mirror "https://ftp2.osuosl.org/pub/osgeo/download/libtiff/tiff-4.7.2.tar.gz"
+  sha256 "672bd7d10aee4606171afb864f3570b83340f6a33e2c186dc0512f7145ffdf6a"
   license "libtiff"
-  revision 1
   compatibility_version 1
 
   livecheck do
@@ -14,15 +13,17 @@ class Libtiff < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "e93670ed1f7f484d164a8755767cd55741559db7c402d7d55d1bdf6da87d5f67"
-    sha256 cellar: :any,                 arm64_sequoia: "68bf2bc8fa5ce10a32b70b2b402245c89dcc875413ed92981a024c8510d3cb9a"
-    sha256 cellar: :any,                 arm64_sonoma:  "c4458243f3615e82755fdec34041ccef27b13d20df1d867f99d876d34e7a627a"
-    sha256 cellar: :any,                 sonoma:        "9061b4453709aa2144d6c84bad4dbf0846d507eaa52a3016079822855078ba3c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "0c1b199256ee763eaf5bbf47376900c08d37480472aa5456294bfb3b1e967bd0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a2548f1c935d423641faded7ab2539f04756dd7765de31e179854d2dcf84093b"
+    rebuild 2
+    sha256 cellar: :any, arm64_golden_gate: "2678f5bb80b0578e79c76f747b637781ab3629b0c393e8c7d060ead4d42f9d6c"
+    sha256 cellar: :any, arm64_tahoe:       "9a0ff1ac153879e9fb324951f33fc52c797149a6de44176e4fb80f0c8adad9a8"
+    sha256 cellar: :any, arm64_sequoia:     "e971adc15ce3387a9c68a10ff1cf431755faf0e86b9d3a6daf668efc2f6f31d8"
+    sha256 cellar: :any, arm64_sonoma:      "4504c9c0fd45de525e9a532da674b703bda04d377d7471f70cf611954da1fb1d"
+    sha256 cellar: :any, arm64_linux:       "076896f22523cb34a4c1f8488bd27049d57b30f6e0232c74578df432700d61f2"
+    sha256 cellar: :any, x86_64_linux:      "565e06c1da5aca67e2993315807301afddd252372c0896b76be515895b3c053a"
   end
 
   depends_on "jpeg-turbo"
+  depends_on "webp"
   depends_on "xz"
   depends_on "zstd"
 
@@ -30,14 +31,18 @@ class Libtiff < Formula
     depends_on "zlib-ng-compat"
   end
 
+  deny_network_access!
+
   def install
     args = %W[
       --disable-libdeflate
-      --disable-webp
+      --enable-webp
+      --with-webp-include-dir=#{formula_opt_include("webp")}
+      --with-webp-lib-dir=#{formula_opt_lib("webp")}
       --enable-zstd
       --enable-lzma
-      --with-jpeg-include-dir=#{Formula["jpeg-turbo"].opt_include}
-      --with-jpeg-lib-dir=#{Formula["jpeg-turbo"].opt_lib}
+      --with-jpeg-include-dir=#{formula_opt_include("jpeg-turbo")}
+      --with-jpeg-lib-dir=#{formula_opt_lib("jpeg-turbo")}
       --without-x
     ]
     system "./configure", *args, *std_configure_args
@@ -62,5 +67,29 @@ class Libtiff < Formula
     system ENV.cc, "test.c", "-L#{lib}", "-ltiff", "-o", "test"
     system "./test", "test.tif"
     assert_match(/ImageWidth.*10/, shell_output("#{bin}/tiffdump test.tif"))
+    (testpath/"test_webp.c").write <<~C
+      #include <stdint.h>
+      #include <tiffio.h>
+
+      int main(int argc, char* argv[])
+      {
+        uint8_t rgb[16 * 16 * 3] = {0};
+        TIFF *out = TIFFOpen(argv[1], "w");
+        if (!out) return 1;
+        TIFFSetField(out, TIFFTAG_IMAGEWIDTH, 16);
+        TIFFSetField(out, TIFFTAG_IMAGELENGTH, 16);
+        TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 3);
+        TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
+        TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+        TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_WEBP);
+        TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, 16);
+        if (TIFFWriteEncodedStrip(out, 0, rgb, sizeof(rgb)) < 0) return 2;
+        TIFFClose(out);
+        return 0;
+      }
+    C
+    system ENV.cc, "test_webp.c", "-L#{lib}", "-ltiff", "-o", "test_webp"
+    system "./test_webp", "webp.tif"
+    assert_match "Compression Scheme: WEBP", shell_output("#{bin}/tiffinfo webp.tif")
   end
 end

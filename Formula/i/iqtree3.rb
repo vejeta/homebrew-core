@@ -1,35 +1,50 @@
 class Iqtree3 < Formula
   desc "Phylogenetics by maximum likelihood"
   homepage "http://www.iqtree.org"
-  url "https://github.com/iqtree/iqtree3/archive/refs/tags/v3.1.2.tar.gz"
-  sha256 "df85370a2ac74289787226501401ac7db7f085f51c2110d4b829b3f210822160"
+  url "https://github.com/iqtree/iqtree3/archive/refs/tags/v3.1.4.tar.gz"
+  sha256 "8bcba50d25263fb7e5d52d308f7d2a35545dd53f96e04cf44e6a0515be0f823b"
   license "GPL-2.0-or-later"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "fb5bab78cec04ce9c1ef1937fc7f3b7270e2884a705adc76c2b82b824aee4ac5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "97a3ccb3cf2246ede9938bee894ac5d6eb23961e1a90dcbf0630135a4ec05063"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "003bc18dc66b43701ac5f41f12095094ce1ed2e145c26ff443cd868675ff069f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c1c5810ba0468d089f62f4b96b4f01a0ba9d9b3a2fb8f62f5855aaf712973169"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5ddfc94e068ec16c99a267d70e371e61ee8e89a58d0e3e02d07fbe154ccfdbad"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f4b3e39d526332c45b3e11b1540e39d45fba9af976f98faa3b8c156e020e69e4"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "bc257799778fde421211fcbd0df317c84ec53587696550f03e6daeb339792aaf"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "6e33ff1f5963b4ac45ef6a4b40ae9541ee891b4011c1ef524dc4f38595b1345d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e6ce71f60f683e1fc6b5366ee0ad54dd287010dd864c2168b350497bc629266f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e2c8a928f24a2755451debca56c2a307f35dfd284ef362433f1b4b86448ed47d"
+    sha256 cellar: :any,                 arm64_linux:       "18127abe13bc2b2f8fe7f2ff39729c9a10d4aa108cabb521c6b8a9453d83a3b5"
+    sha256 cellar: :any,                 x86_64_linux:      "fc415ad7ea4b92ef5d8b7cfadbdc021fa4c7d77f5710d81d42e6123ef7b19963"
   end
 
   depends_on "boost" => :build
   depends_on "cmake" => :build
   depends_on "eigen" => :build
 
-  uses_from_macos "zlib"
+  on_linux do
+    depends_on "zlib-ng-compat"
+  end
 
   resource "lsd2" do
-    url "https://github.com/tothuhien/lsd2.git",
-        revision: "c61110f3a4fa05325b45c97b2134792ff9d55d4c"
+    url "https://github.com/tothuhien/lsd2/archive/c61110f3a4fa05325b45c97b2134792ff9d55d4c.tar.gz"
+    version "c61110f3a4fa05325b45c97b2134792ff9d55d4c"
+    sha256 "9bbeaa0f8f35783c1d8dec74df6c93a804dbca808fa04484f9123de4e7258b53"
+
+    livecheck do
+      url "https://api.github.com/repos/iqtree/iqtree3/contents/lsd2?ref=v#{LATEST_VERSION}"
+      strategy :json do |json|
+        json["sha"]
+      end
+    end
   end
 
   def install
     resource("lsd2").stage buildpath/"lsd2"
 
     args = %W[
-      -DEIGEN3_INCLUDE_DIR=#{Formula["eigen"].opt_include}/eigen3
+      -DEIGEN3_INCLUDE_DIR=#{formula_opt_include("eigen")}/eigen3
       -DIQTREE_FLAGS=single
       -DUSE_CMAPLE=OFF
       -DUSE_TERRAPHAST=OFF

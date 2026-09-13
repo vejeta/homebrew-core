@@ -1,20 +1,20 @@
 class Noir < Formula
   desc "Attack surface detector that identifies endpoints by static analysis"
   homepage "https://owasp.org/www-project-noir/"
-  url "https://github.com/owasp-noir/noir/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "1ebd3e81cf9afc332bcc35eb871d5c8fb70704dd6bd4025aca14148a8bfbdf73"
+  url "https://github.com/owasp-noir/noir/archive/refs/tags/v1.3.1.tar.gz"
+  sha256 "24a969227b9b5b8e3b9420ef00315761a9a91fd22936de52f1e94951c5016653"
   license "MIT"
   head "https://github.com/owasp-noir/noir.git", branch: "main"
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "7012c56b552f1559fe9f1af5b254eb54eab996640c8fd046534c8ac962f9c283"
-    sha256 cellar: :any, arm64_sequoia: "e085cd689af4db4cc2c7a82c479b56fc7f0a2e92d617ad2c1f61f685c5a9835f"
-    sha256 cellar: :any, arm64_sonoma:  "c50d724736eb3f8c3971b433d16192d631942816c2f38b02a251915fda3052d8"
-    sha256 cellar: :any, sonoma:        "dfb47c5a42d67e7a8bc1e4605f06956edf74373bb16ef4c28a707c28b36d077b"
-    sha256 cellar: :any, arm64_linux:   "17c394b41b0196577f058ac38574563f3338d6a06eda1813e6a1eb0941721e2d"
-    sha256 cellar: :any, x86_64_linux:  "a8beb85f7e8f0a38f1cc2aaff57170f98a46831ce7a2aa05c760d786311e3201"
+    sha256 cellar: :any, arm64_golden_gate: "0becb4b738bebff5ea05bfec7243ba81d59aeaca5139d7ccdaa02e7a5177a97a"
+    sha256 cellar: :any, arm64_tahoe:       "b482fc3e28690c78b329c725cdd9d366ff2d2c659384345b67734caec73c6f5a"
+    sha256 cellar: :any, arm64_sequoia:     "e0a4365d097c186addafa20efbe78a2187c10bf6f95b611be5fb5d92685ff810"
+    sha256 cellar: :any, arm64_sonoma:      "73bdf965e689dcaa097aa8be938fc572bda07329257a8daa6fb56d278dbf9974"
+    sha256 cellar: :any, arm64_linux:       "8f9da9a00236c21fdc767f877fd113c3370e4183f8571b85b092c05d291d70d8"
+    sha256 cellar: :any, x86_64_linux:      "f2b0adefa70187c1d1fd5f674289f5de725acb40f7c2ee5896edb9984a3f6ac5"
   end
 
   depends_on "crystal" => :build
@@ -31,8 +31,14 @@ class Noir < Formula
     depends_on "zlib-ng-compat"
   end
 
+  deny_network_access!
+
+  def fetch
+    system "shards", "install", "--production", "--skip-postinstall"
+  end
+
   def install
-    system "shards", "build", "--production", "--release", "--no-debug"
+    system "shards", "build", *std_shards_args
     bin.install "bin/noir"
 
     generate_completions_from_executable(bin/"noir", "--generate-completion")

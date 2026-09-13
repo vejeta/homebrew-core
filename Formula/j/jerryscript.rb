@@ -7,23 +7,26 @@ class Jerryscript < Formula
   head "https://github.com/jerryscript-project/jerryscript.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "04e3aa7517ef94bc29b49da6892f29a2034a1433091bec5da32b16cca77a2f0d"
-    sha256 cellar: :any,                 arm64_sequoia: "2c9278894af0e7dd27da2735af8ed66408de529fe2b896c9308ff2ffe10b695e"
-    sha256 cellar: :any,                 arm64_sonoma:  "de8fb8e81f6cc123a414bd905c7f3d0da65f88b35d533a3cda511f88fcbef0dc"
-    sha256 cellar: :any,                 arm64_ventura: "54b1c8bc94bc0c5f125e8f7ebab191540df56987dfc2e1a58c61ac6a5e25d2a9"
-    sha256 cellar: :any,                 sonoma:        "28aa15489cdb4c63a3ca8dcabeb18bbf0937d16d7e627a19a3376936e2f1adbb"
-    sha256 cellar: :any,                 ventura:       "2426c72ce0d91dd244fc0a4eb59a4912d6c753f090707a71367f9dd36f503751"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "0e969a7aa188293a61c458794e5673f6bc1012c48badcaeddfccb379bcc84e80"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "700fa052538ab63fbaa0c9f8fda9ec3491777d6a65c4698e7ad488297bbbadcf"
+    sha256 cellar: :any,                 arm64_golden_gate: "8e525998b0bf6e347d58d1889a1e3060aff77df7cc4b7117ea4487376213dfec"
+    sha256 cellar: :any,                 arm64_tahoe:       "04e3aa7517ef94bc29b49da6892f29a2034a1433091bec5da32b16cca77a2f0d"
+    sha256 cellar: :any,                 arm64_sequoia:     "2c9278894af0e7dd27da2735af8ed66408de529fe2b896c9308ff2ffe10b695e"
+    sha256 cellar: :any,                 arm64_sonoma:      "de8fb8e81f6cc123a414bd905c7f3d0da65f88b35d533a3cda511f88fcbef0dc"
+    sha256 cellar: :any,                 arm64_ventura:     "54b1c8bc94bc0c5f125e8f7ebab191540df56987dfc2e1a58c61ac6a5e25d2a9"
+    sha256 cellar: :any,                 sonoma:            "28aa15489cdb4c63a3ca8dcabeb18bbf0937d16d7e627a19a3376936e2f1adbb"
+    sha256 cellar: :any,                 ventura:           "2426c72ce0d91dd244fc0a4eb59a4912d6c753f090707a71367f9dd36f503751"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0e969a7aa188293a61c458794e5673f6bc1012c48badcaeddfccb379bcc84e80"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "700fa052538ab63fbaa0c9f8fda9ec3491777d6a65c4698e7ad488297bbbadcf"
   end
 
   depends_on "cmake" => :build
   depends_on "pkgconf" => :test
 
-  # rpath patch, upstream pr ref, https://github.com/jerryscript-project/jerryscript/pull/5204
+  # rpath patch
   patch do
     url "https://github.com/jerryscript-project/jerryscript/commit/e8948ac3f34079ac6f3d6f47f8998b82f16b1621.patch?full_index=1"
     sha256 "ebce75941e1f34118fed14e317500b0ab69f48182ba9cce8635e9f62fe9aa4d1"
+    type :unofficial
+    resolves "https://github.com/jerryscript-project/jerryscript/pull/5204"
   end
 
   def install

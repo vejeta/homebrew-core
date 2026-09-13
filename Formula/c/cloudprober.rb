@@ -1,18 +1,19 @@
 class Cloudprober < Formula
   desc "Active monitoring software to detect failures before your customers do"
   homepage "https://cloudprober.org"
-  url "https://github.com/cloudprober/cloudprober/archive/refs/tags/v0.14.3.tar.gz"
-  sha256 "13c013f9c80abc011646f4c3e90bc9e68ed3d94ce6b2794934545d980060d5c5"
+  url "https://github.com/cloudprober/cloudprober/archive/refs/tags/v0.14.5.tar.gz"
+  sha256 "0a12517c9e69e279d392e642b9b9040b4f7013a0035e496b7e23f08e978c82c3"
   license "Apache-2.0"
   head "https://github.com/cloudprober/cloudprober.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1e923f5b34eb57c92978ae7dfcce8ab45bbab441a8ded599cc0bdf6c1119b3b9"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e2bc69518da27afc30c0eb0b84e790fbbaf163b033133a5afdda42ffbdb5ec4c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "7d12c706149ed1e4bdace0aafbda897697533acbf832823635c9c7cf95cd1eec"
-    sha256 cellar: :any_skip_relocation, sonoma:        "afb895b466e687920d5ff8ddfaa196a1050f1d5757aba492aad11667aced9006"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "dc28a3c158fd2a1419a3cfdb1441cda59899b1dcabaf3bcb2576469c4bfd79d9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5742ff10c19afda49fa419e1f5bcbd98bda19f34ffb61cf4d4e2378045aef3a0"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7293d9e89a9b7fd9175f9f44a6d74f59b6f94eef3451d897967b7472101d5860"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b15dc8f8127d2ab035ec98791cd154d6065f58fde895c066591b9bdd9df67c77"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "4442df6612be9a9aeb2363204499dcd3b651d1598e253c25b73d56acce18035e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "fd1429f2155fcc2c08448914f11df44ff30a23233fabfe3f72a80539a7947583"
+    sha256 cellar: :any_skip_relocation, sonoma:            "f7d60d6810bffd5ac870ec76fe24d800458349d55987d97cf5d08557235b0b4d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f1eea02a42fd51c04cbf37aad982fe690e258fa67d1119ae6ef16c8c056e07ec"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "02fa774371c89d65c8c1e382e5149736bebe8361823fc71c25af9f66975dcb21"
   end
 
   depends_on "go" => :build

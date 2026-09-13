@@ -1,10 +1,9 @@
 class Corsixth < Formula
   desc "Open source clone of Theme Hospital"
   homepage "https://github.com/CorsixTH/CorsixTH"
-  url "https://github.com/CorsixTH/CorsixTH/archive/refs/tags/v0.69.2.tar.gz"
-  sha256 "cbad15f9a16edd4c068ce14fb17f39cdb811dab0135fca80fafffa9a45732aec"
+  url "https://github.com/CorsixTH/CorsixTH/archive/refs/tags/v0.70.1.tar.gz"
+  sha256 "b3a37b09f168f30600d305314f5a823d3af10bf407074e9a837e0e85acfe9ba3"
   license "MIT"
-  revision 1
   head "https://github.com/CorsixTH/CorsixTH.git", branch: "master"
 
   # Upstream uses GitHub releases to indicate that a version is released
@@ -16,20 +15,22 @@ class Corsixth < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "b4f772b1be3d58659f0f2a8edf319f3d75a5cabce381c00a24249936ccb4c6f1"
-    sha256 arm64_sequoia: "259ef9b4fc61dd9ff3056679d97bfc5f63a2312a671e7432e6f99337f32a486a"
-    sha256 arm64_sonoma:  "37df3671019913aa6856fa54ef77b104b7050c1302e69af55f35744171ed53d7"
-    sha256 sonoma:        "b2fe6522ea0a6678c8ccd1d04c685d5eda18ce288aa9d52f283cab0ab38034d5"
-    sha256 arm64_linux:   "1abb0a5d9fce89718f14d908306a2bcd904cbfa6b9276309f3c7c2455daadc15"
-    sha256 x86_64_linux:  "6590db90107ccdd804ee592950f8f70719d0215feabc76e22bdb2f3525437770"
+    sha256 arm64_golden_gate: "7ebd30c6a0b51cd345b25df418b9ef7c6c57cf9331ecd66bfe03021d471d50e9"
+    sha256 arm64_tahoe:       "7557dd28cec742e975a8d12022ea6b21a4083bf538dee279968e728badc80c0f"
+    sha256 arm64_sequoia:     "e1c89b5f871313c7b3f646de6c5a6cd75cc2e7719af0a8c74a885a4705bfc421"
+    sha256 arm64_sonoma:      "d5f9cf90b301b0a1f87eb15a49d9dbc7303f70e9d9c988ed4be21ecdc618e4e0"
+    sha256 arm64_linux:       "1693d2b4220b7dfa9d62ec6dae6657aeee3d860c29adc267a7d1335af1068fc1"
+    sha256 x86_64_linux:      "bfd93732ee7667445750e9a0579a7c934abcc6ad7495b62223bd598c40fb4f39"
   end
 
   depends_on "cmake" => :build
   depends_on "luarocks" => :build
   depends_on "ffmpeg"
   depends_on "freetype"
+  depends_on "libpng"
   depends_on "lpeg" => :no_linkage
-  depends_on "lua@5.4"
+  depends_on "lua"
+  depends_on "rtmidi"
   depends_on "sdl2-compat"
   depends_on "sdl2_mixer"
 
@@ -37,22 +38,20 @@ class Corsixth < Formula
 
   on_linux do
     depends_on "mesa"
+    depends_on "zlib-ng-compat"
   end
 
   resource "luafilesystem" do
-    url "https://github.com/keplerproject/luafilesystem/archive/refs/tags/v1_9_0.tar.gz"
+    url "https://github.com/lunarmodules/luafilesystem/archive/refs/tags/v1_9_0.tar.gz"
     sha256 "1142c1876e999b3e28d1c236bf21ffd9b023018e336ac25120fb5373aade1450"
   end
 
   # Make sure I point to the right version!
   def lua
-    Formula["lua@5.4"]
+    Formula["lua"]
   end
 
   def install
-    # https://github.com/orgs/CorsixTH/projects/15
-    odie 'Switch to `depends_on "lua"`' if build.stable? && version >= "0.70.0"
-
     ENV["TARGET_BUILD_DIR"] = "."
     ENV["FULL_PRODUCT_NAME"] = "CorsixTH.app"
 
@@ -77,8 +76,8 @@ class Corsixth < Formula
     # On Linux, install binary to libexec/bin so we can put an env script with LUA_PATH in bin.
     args << "-DCMAKE_INSTALL_BINDIR=#{libexec}/bin" unless OS.mac?
 
-    system "cmake", ".", *args
-    system "make"
+    system "cmake", "-S", ".", "-B", "build", *args
+    system "cmake", "--build", "build"
     if OS.mac?
       resources = %w[
         CorsixTH/CorsixTH.lua
@@ -88,10 +87,11 @@ class Corsixth < Formula
         CorsixTH/Graphics
         CorsixTH/Bitmap
       ]
-      cp_r resources, "CorsixTH/CorsixTH.app/Contents/Resources/"
-      prefix.install "CorsixTH/CorsixTH.app"
+      app = buildpath/"build/CorsixTH/CorsixTH.app"
+      cp_r resources, app/"Contents/Resources"
+      prefix.install app
     else
-      system "make", "install"
+      system "cmake", "--install", "build"
     end
 
     lua_env = { LUA_PATH: ENV["LUA_PATH"], LUA_CPATH: ENV["LUA_CPATH"] }
@@ -108,7 +108,6 @@ class Corsixth < Formula
 
     PTY.spawn(bin/"CorsixTH") do |r, _w, pid|
       sleep 30
-      sleep 30 if OS.mac? && Hardware::CPU.intel?
       Process.kill "KILL", pid
 
       output = ""

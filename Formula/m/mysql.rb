@@ -1,26 +1,25 @@
 class Mysql < Formula
   desc "Open source relational database management system"
-  # FIXME: Actual homepage fails audit due to Homebrew's user-agent
-  # homepage "https://dev.mysql.com/doc/refman/9.3/en/"
   homepage "https://github.com/mysql/mysql-server"
-  url "https://cdn.mysql.com/Downloads/MySQL-9.6/mysql-9.6.0.tar.gz"
-  mirror "https://repo.mysql.com/apt/ubuntu/pool/mysql-innovation/m/mysql-community/mysql-community_9.6.0.orig.tar.gz"
-  sha256 "240061d869d5ae188c9a333845928899e9d963ccbd67865a8a2e4b6fcb67178c"
+  url "https://cdn.mysql.com/Downloads/MySQL-26.7/mysql-26.7.0.tar.gz"
+  mirror "https://repo.mysql.com/apt/ubuntu/pool/mysql-innovation/m/mysql-community/mysql-community_26.7.0.orig.tar.gz"
+  sha256 "95e949183b94bbe39e70c6355e6c90d2a640a62ede996ca5f7a6a3e0827a3260"
   license "GPL-2.0-only" => { with: "Universal-FOSS-exception-1.0" }
-  revision 3
+  revision 1
 
   livecheck do
-    url "https://dev.mysql.com/downloads/mysql/?tpl=files&os=src"
+    url "https://dev.mysql.com/downloads/mysql/?tpl=files&os=src",
+        user_agent: :browser
     regex(/href=.*?mysql[._-](?:boost[._-])?v?(\d+(?:\.\d+)+)\.t/i)
   end
 
   bottle do
-    sha256 arm64_tahoe:   "ee46fa8655baa8f9083df4c21098b9227ab183634c3918a9a9fe64a75e1ad92e"
-    sha256 arm64_sequoia: "3ecb0c592912732303685db3e74223147d6898927ac110d89d93e76b0d6d41b7"
-    sha256 arm64_sonoma:  "4480da809d598b05c1c5f8aca558b5caca68a5f5fee08ddcb36c4e1db395f1d5"
-    sha256 sonoma:        "5aa47132f40edcf4369d0ddbf3958ba7f61a411eabea716d737777894a92d466"
-    sha256 arm64_linux:   "4fc02bee5dd022b789cc8f67fc44787e97f32229cc2465fb6d6a61cfdfc52425"
-    sha256 x86_64_linux:  "5c355c67b4fb0378659b2d1f90b761d65992fc3c8d82ad34574c588117aacb0a"
+    sha256 arm64_golden_gate: "e8db6830382c041ea1837a9528f3b46982265aac01d40913dc0587645409bfb8"
+    sha256 arm64_tahoe:       "edfbd06d0838afb932e0865ee566037667f12bd497d3eef5af41a45756da94b3"
+    sha256 arm64_sequoia:     "6937f7cd44328631f332feb5c65047a5932e2ba84a96d20656961321da6116b0"
+    sha256 arm64_sonoma:      "66a150de8a76c0eea0264d68bb9ca68413d3048364626e11b9a50db666ebbe4b"
+    sha256 arm64_linux:       "c34f8c6ccede7517ebc94ad4b5bbabbf6b2a63360911ac76b790d5f3799eac46"
+    sha256 x86_64_linux:      "3b8803ed680694cadc6f0e4e83b4603ce1bfcfcd55a8c43fec16e3d96d9536e3"
   end
 
   depends_on "bison" => :build
@@ -80,10 +79,10 @@ class Mysql < Formula
       # Disable ABI checking
       inreplace "cmake/abi_check.cmake", "RUN_ABI_CHECK 1", "RUN_ABI_CHECK 0"
     elsif MacOS.version <= :ventura
-      ENV.append "LDFLAGS", "-L#{Formula["llvm"].opt_lib}/unwind -lunwind"
+      ENV.append "LDFLAGS", "-L#{formula_opt_lib("llvm")}/unwind -lunwind"
       # When using Homebrew's superenv shims, we need to use HOMEBREW_LIBRARY_PATHS
       # rather than LDFLAGS for libc++ in order to correctly link to LLVM's libc++.
-      ENV.prepend_path "HOMEBREW_LIBRARY_PATHS", Formula["llvm"].opt_lib/"c++"
+      ENV.prepend_path "HOMEBREW_LIBRARY_PATHS", formula_opt_lib("llvm")/"c++"
     end
 
     icu4c = deps.find { |dep| dep.name.match?(/^icu4c(@\d+)?$/) }
@@ -101,8 +100,8 @@ class Mysql < Formula
       -DINSTALL_PLUGINDIR=lib/plugin
       -DMYSQL_DATADIR=#{datadir}
       -DSYSCONFDIR=#{etc}
-      -DBISON_EXECUTABLE=#{Formula["bison"].opt_bin}/bison
-      -DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}
+      -DBISON_EXECUTABLE=#{formula_opt_bin("bison")}/bison
+      -DOPENSSL_ROOT_DIR=#{formula_opt_prefix("openssl@3")}
       -DWITH_ICU=#{icu4c.opt_prefix}
       -DWITH_SYSTEM_LIBS=ON
       -DWITH_EDITLINE=system
@@ -112,11 +111,22 @@ class Mysql < Formula
       -DWITH_ZLIB=system
       -DWITH_ZSTD=system
       -DWITH_UNIT_TESTS=OFF
+      -DWITH_MYSQL_SERVER_TELEMETRY=OFF
+      -DWITH_MYSQL_CLIENT_TELEMETRY=OFF
     ]
+
+    if OS.linux?
+      args << "-DCURL_LIBRARY=#{formula_opt_lib("curl")}"
+      args << "-DCURL_INCLUDE_DIR=#{formula_opt_include("curl")}"
+    end
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
+
+    # mysqld logs this under the cgroup memory limits of Homebrew CI, failing the check below
+    inreplace prefix/"mysql-test/include/mtr_warnings.sql", '("THE_LAST_SUPPRESSION");',
+              "(\"Server ignores the discovered container restrictions\"),\n (\"THE_LAST_SUPPRESSION\");"
 
     cd prefix/"mysql-test" do
       system "./mysql-test-run.pl", "check", "--vardir=#{buildpath}/mysql-test-vardir"
@@ -145,29 +155,17 @@ class Mysql < Formula
     etc.install "my.cnf"
   end
 
-  def post_install
+  post_install_steps do
     # Make sure the var/mysql directory exists
-    (var/"mysql").mkpath
-
-    if (my_cnf = ["/etc/my.cnf", "/etc/mysql/my.cnf"].find { |x| File.exist? x })
-      opoo <<~EOS
-        A "#{my_cnf}" from another install may interfere with a Homebrew-built
-        server starting up correctly.
-      EOS
-    end
-
     # Don't initialize database, it clashes when testing other MySQL-like implementations.
-    return if ENV["HOMEBREW_GITHUB_ACTIONS"]
-
-    unless (datadir/"mysql/general_log.CSM").exist?
-      ENV["TMPDIR"] = nil
-      system bin/"mysqld", "--initialize-insecure", "--user=#{ENV["USER"]}",
-                           "--basedir=#{prefix}", "--datadir=#{datadir}", "--tmpdir=/tmp"
-    end
+    init_data_dir "mysql", using: :mysql, base: :var
   end
 
   def caveats
     <<~EOS
+      A "/etc/my.cnf" or "/etc/mysql/my.cnf" from another install may interfere
+      with a Homebrew-built server starting up correctly.
+
       Upgrading from MySQL <8.4 to MySQL >9.0 requires running MySQL 8.4 first:
        - brew services stop mysql
        - brew install mysql@8.4

@@ -1,21 +1,22 @@
 class Kingfisher < Formula
   desc "MongoDB's blazingly fast secret scanning and validation tool"
   homepage "https://mongodb.github.io/kingfisher/"
-  url "https://github.com/mongodb/kingfisher/archive/refs/tags/v1.103.0.tar.gz"
-  sha256 "e8619c33144006c38df07745af15fe98ef84ba91eec65ba8a31e7e155e33b1fd"
+  url "https://github.com/mongodb/kingfisher/archive/refs/tags/v2.2.0.tar.gz"
+  sha256 "7262b2740f6b2da83bbbd84285a70f63302cae431560ae3e87764103f86dc6e8"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "6e01aea3ea8950a392e59f8a3ba0f8d4f14c00bd8292cb3eff8f5b449143acae"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "389004db079c2609364d51f7b05e76f9cb12f92db92a6c066934bb82f2fd8fd1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c71066739f23c498773100034df1fa5337f5e2e5aba382357178e8e0b7632473"
-    sha256 cellar: :any_skip_relocation, sonoma:        "93cc674a007512fb8decdbc859a4ca2a7989c55697098d9ec32c592794f29d19"
-    sha256 cellar: :any,                 arm64_linux:   "331572010a99c729c7d2e82e7fb952f2f44b0b8e74a8f98345e1fcb67c779432"
-    sha256 cellar: :any,                 x86_64_linux:  "bfda91d0279796559ec50020447bbc6c820a625ecc7dd86f9db9bc8f66f3617e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "37cd35354e220da044e49770c2fe73c804e34ea895e56c96af79c23dac40e8f7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "07dc2acf1cabd799a146bf16ae8f05cf6a7bea0c87ea2a623bdce725e3acfeea"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "37136a3a69d524e024814d6847765a19fc0f1723b227eee552099cefef03190e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "0e5307e45f3cfa351c81bfdcde4a31cb7d5e7a38ec4c878b40d65bfdc82dd0e5"
+    sha256 cellar: :any,                 arm64_linux:       "0653ea964278cb508fd99eb4f1d40dea50e51ad099130d7f3d8f5d7c5d0516e5"
+    sha256 cellar: :any,                 x86_64_linux:      "75df681456c127d1c3f02d498fd4976376f074781ac3e93d78218900eb2e1863"
   end
 
   depends_on "boost" => :build
   depends_on "cmake" => :build
+  depends_on "openssl@3" => :build
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
 

@@ -1,18 +1,19 @@
 class Frei0r < Formula
   desc "Minimalistic plugin API for video effects"
   homepage "https://frei0r.dyne.org/"
-  url "https://github.com/dyne/frei0r/archive/refs/tags/v3.2.1.tar.gz"
-  sha256 "b44e7862574f130c35659ea84a5504c501d7ed0fe296b2d66d7167f080b9c0a2"
+  url "https://github.com/dyne/frei0r/archive/refs/tags/v3.5.0.tar.gz"
+  sha256 "41cc8afa4991f5499cea0973be974469dcee377e67dbfbf6ca76e82b2b9bf22e"
   license "GPL-2.0-or-later"
   compatibility_version 1
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e1f0978e8e4a1df2c12c5efddc7b166420ac6dbc83b8ba3464194eb17488b403"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7a8f6a0fe96b253c4444a188da546fa8af7374678e03716e37246b1cd7bd8b6f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5cf75259b06039d2fa813ae9e051f845f498e09a20a833f3cbeff012d9f73a0c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "0f1abd654a2e3d1f47f7e65fc2c99e6c33ca7c1bc6dde4b4bd99717d497aeb4a"
-    sha256 cellar: :any,                 arm64_linux:   "3697ce6bc8e105266ae90716534e15ed8de1a20adc00c9fc90e9a064ce83c879"
-    sha256 cellar: :any,                 x86_64_linux:  "dbd8eedfcb715a7715d87bf2dcfb390c990ac908f5bdb45764d788061a36275c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a03b25d34a8e7a0d0183ec9da062b77744d5809d7221a513f02c0e459467f605"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f62e1e37fdbf253a7cda8627c0539b57fff76595769374542b9bdc2d349633eb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5eef616a2ede2f846a8786054610027f8483d8c5f5aad025100bf5fe7ec4dad3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "677444bb7fa85f3cbb354edbe0c3cce4de0e2d84cfd289007aa008127f4ee6ec"
+    sha256 cellar: :any_skip_relocation, sonoma:            "e25204514624becd13ca144f764ac1bb92c81e219b843e2750df4d5ecc42814c"
+    sha256 cellar: :any,                 arm64_linux:       "50e97373cb446c29c76763fbc29915b8e15657144ff349703056146f60ee2530"
+    sha256 cellar: :any,                 x86_64_linux:      "fcff0b2a4af65da0c9165db0e571aa00ede0135831e6d5a4fc3e45304bea2260"
   end
 
   depends_on "cmake" => :build

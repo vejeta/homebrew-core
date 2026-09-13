@@ -1,8 +1,8 @@
 class RattlerBuild < Formula
   desc "Universal conda package builder"
   homepage "https://rattler.build"
-  url "https://github.com/prefix-dev/rattler-build/archive/refs/tags/v0.66.2.tar.gz"
-  sha256 "bae642cb19f1f8b15f7bc27cd8973f4f8bb357f62f57094a9d09b66d8a699e52"
+  url "https://github.com/prefix-dev/rattler-build/archive/refs/tags/v0.76.0.tar.gz"
+  sha256 "61f6b4971c7c14667730af6c860baebb878ebba61301d0968473edd4525a2147"
   license "BSD-3-Clause"
   head "https://github.com/prefix-dev/rattler-build.git", branch: "main"
 
@@ -15,17 +15,17 @@ class RattlerBuild < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "aea3e5bfd86868fb130f1c2a36c07fcc1c870b192c22887b0be4241d4ed45143"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2c38f30526e12be5e206c4bf7577580f833597aa9eb307ee85d49d8e3a49761d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a4b9f88ead21c29a120120aa7763b327d37984f4d71ff2a27fe01e50ae3246cb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "dcccdbb5d38dddf951fb717b365175510cd4756686f89d911cb87d86ba790d3e"
-    sha256 cellar: :any,                 arm64_linux:   "c4853b23f6611fdb5e7ca0e13d7c57eb817f1c2d198d83714d8ea12b4563a86b"
-    sha256 cellar: :any,                 x86_64_linux:  "f8a5d0d6e857c36dce36259916dad889bd6698a7aadea716ec184d1d346e2e65"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7d594ae6ba768806f48115626b9f0fd118b5c9358c46ef1d090cd8472e4ecfac"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "fef0cef1e2527f74090ed4604b027741689b239ee4f6c8676084edd670ac6f2f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "761703862a82f88505623c814d50ab30eb381f3dc214b73e63ba158edc110970"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "c3a0aa3bc60504a345993f5d6969a7d428d5ef1bd302bf83402d9d2856205762"
+    sha256 cellar: :any,                 arm64_linux:       "73d59ec1ccbca030e156755c67d3504f3a573a3a212a2526090919e645a7a7bb"
+    sha256 cellar: :any,                 x86_64_linux:      "640c9824957d373a34a573f0a6f74c4981ceefb8b52ca57d27ee702ab05305da"
   end
 
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "xz"
 
   uses_from_macos "bzip2"

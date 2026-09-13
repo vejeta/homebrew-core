@@ -1,26 +1,30 @@
 class D2 < Formula
   desc "Modern diagram scripting language that turns text to diagrams"
   homepage "https://d2lang.com/"
-  url "https://github.com/terrastruct/d2/archive/refs/tags/v0.7.1.tar.gz"
-  sha256 "b784d6472d53fdaaa7ecc9bdbe23456e2b4a90e18736828028b3f951537e56a1"
+  url "https://github.com/d2lang/d2/archive/refs/tags/v0.9.0.tar.gz"
+  sha256 "1256ad3907bceb4fcee7ed40d17c5726f8b602eea900e94500ba3352e96febbc"
   license "MPL-2.0"
-  head "https://github.com/terrastruct/d2.git", branch: "master"
+  head "https://github.com/d2lang/d2.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "61a38ce31638ad307378e0031fce216fbf8e5082132ac4866ab5ca81e7337010"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2a82ceeada44a2e61646f59f749286ee4347ca364fe568007235089844fe473f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2a82ceeada44a2e61646f59f749286ee4347ca364fe568007235089844fe473f"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "2a82ceeada44a2e61646f59f749286ee4347ca364fe568007235089844fe473f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "cfca943125fe7319b8bd9a09256b9e62a6185d378b2394c307273a488567616e"
-    sha256 cellar: :any_skip_relocation, ventura:       "cfca943125fe7319b8bd9a09256b9e62a6185d378b2394c307273a488567616e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "06d2bb3e6e93b2734ef66111772aefb0120938dabfb2697dad37e119e09f0157"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "74e100511019db1329966018c384c0be60853e9e2bb5de50e8d4b092da92552a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "fff1255d00f1dbd66353d680b440f697677dfb68c54a93fea271118fec73c83f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "fff1255d00f1dbd66353d680b440f697677dfb68c54a93fea271118fec73c83f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fff1255d00f1dbd66353d680b440f697677dfb68c54a93fea271118fec73c83f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "fff1255d00f1dbd66353d680b440f697677dfb68c54a93fea271118fec73c83f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "29e91a66c47fe0e014a50843b2d09ba767e30e2caf08d51f2f18e40dc2938b99"
+    sha256 cellar: :any,                 x86_64_linux:      "f8783a842cb964680aad7dfaa26aba87095ad389d9932b08d68ee1487fc5ea3d"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X oss.terrastruct.com/d2/lib/version.Version=#{version}"
+    ldflags = "-X github.com/d2lang/d2/lib/version.Version=v#{version}"
     system "go", "build", *std_go_args(ldflags:)
     man1.install "ci/release/template/man/d2.1"
   end
@@ -34,7 +38,7 @@ class D2 < Formula
     system bin/"d2", "test.d2"
     assert_path_exists testpath/"test.svg"
 
-    assert_match "dagre is a directed graph layout library for JavaScript",
+    assert_match "dagre is a directed graph layout algorithm implemented natively in Go by Dagro",
       shell_output("#{bin}/d2 layout dagre")
 
     assert_match version.to_s, shell_output("#{bin}/d2 version")

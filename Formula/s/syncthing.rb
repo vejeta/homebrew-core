@@ -1,8 +1,8 @@
 class Syncthing < Formula
   desc "Open source continuous file synchronization application"
   homepage "https://syncthing.net/"
-  url "https://github.com/syncthing/syncthing/archive/refs/tags/v2.1.1.tar.gz"
-  sha256 "25976b972457dafbde3d0c606c1801a3acbc33603338f4f6d06bf4c2555178e4"
+  url "https://github.com/syncthing/syncthing/archive/refs/tags/v2.1.5.tar.gz"
+  sha256 "1b3e217022848b65a1b7ececa4d5e752fc044b4e8643befa1f9a8a9dc9b2bbbf"
   license "MPL-2.0"
   head "https://github.com/syncthing/syncthing.git", branch: "main"
 
@@ -12,15 +12,22 @@ class Syncthing < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "65d524c8b478a805a335ab861fdf186bb6eadfaa79926612580fcf3f59def3a6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e3200fcc65cd5fe10be246491bde7cded5bea834bff47143f229619c349f25fa"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a580260570afc414478fcba5c64872e5a7bb527d66377b4ef28a1f010865dcac"
-    sha256 cellar: :any_skip_relocation, sonoma:        "55503bc86a06f475bfcdee29fa3079cb352ea651847d4a62df2cb062cbced061"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c64e7cbd670e36a8570ae27f23aa27f4529ea87efbe745cdae90d750086be817"
-    sha256 cellar: :any,                 x86_64_linux:  "208ddb5ae3a012c5dd67875c00b1d3b19ca1aadcf8eb96989f8583e772f9038d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "653687fdfe4b0ef441240ad5669997a2f000201a5b365b99d4712daa91b5120f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4d48134c7f47a5de9b7a07b98be10e42780c77c852d2301b26021e288d5bb709"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fa382557928d53bbc02e65bebbcff20e5fe5406bfdf57a17c7cdb44ffe1b93c7"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "359a7fa0adc0f3c7e1b7219e06a18c7f6b3da69bce8d25c8b6236441afeb402c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "52c09f3b97eef64765400e06e1d4d81adf3276867a19c1f21c39a1ba5478b73d"
+    sha256 cellar: :any,                 x86_64_linux:      "286db36bd9eb9e40a00b69825f0e45ee937994ce5a275ea74b65e2c43cbdd684"
   end
 
   depends_on "go" => :build
+
+  # `test do` block binds local ports for config generation
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     build_version = build.head? ? "v0.0.0-#{version}" : "v#{version}"

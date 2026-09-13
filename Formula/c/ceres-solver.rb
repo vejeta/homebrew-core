@@ -18,6 +18,7 @@ class CeresSolver < Formula
     patch do
       url "https://github.com/ceres-solver/ceres-solver/commit/f9b7b6651b108136a16df44d91fb31735645f5a7.patch?full_index=1"
       sha256 "019006cc850b19b442e108118c599c98b18af8eb06ab37c22e6698c55d55a512"
+      type :backport
     end
   end
 
@@ -27,12 +28,13 @@ class CeresSolver < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "8bca5dac2f24d423391151bf8fb69c53b119eb94e5ba899f95fe961cac036ee7"
-    sha256 cellar: :any,                 arm64_sequoia: "05cf5a6bb6673ae173ed0832fdd1fa8fcfe5a7fd4db1947510f0f61501d94984"
-    sha256 cellar: :any,                 arm64_sonoma:  "bd3d4182288ca1689514d81fccb367151585e4a12acb015a59c2726831230cc7"
-    sha256 cellar: :any,                 sonoma:        "0f8775984f506622a7760a114108ea0623708e4657f4b0763f5fa2fd85d73aed"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7cff4740905f47653e817429811c68ed7d7f8615c988bac94778eefd49896c5a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9827d7d0b9acc123b2d2841d8755be3ff1e4761917740fcd35f4836006360101"
+    sha256 cellar: :any,                 arm64_golden_gate: "9d27f4a4963615280f74b88bfc54b46fc2245f39ed76822f6f6e5f27dc71001f"
+    sha256 cellar: :any,                 arm64_tahoe:       "8bca5dac2f24d423391151bf8fb69c53b119eb94e5ba899f95fe961cac036ee7"
+    sha256 cellar: :any,                 arm64_sequoia:     "05cf5a6bb6673ae173ed0832fdd1fa8fcfe5a7fd4db1947510f0f61501d94984"
+    sha256 cellar: :any,                 arm64_sonoma:      "bd3d4182288ca1689514d81fccb367151585e4a12acb015a59c2726831230cc7"
+    sha256 cellar: :any,                 sonoma:            "0f8775984f506622a7760a114108ea0623708e4657f4b0763f5fa2fd85d73aed"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7cff4740905f47653e817429811c68ed7d7f8615c988bac94778eefd49896c5a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "9827d7d0b9acc123b2d2841d8755be3ff1e4761917740fcd35f4836006360101"
   end
 
   head do

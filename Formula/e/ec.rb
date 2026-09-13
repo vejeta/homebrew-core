@@ -1,24 +1,22 @@
 class Ec < Formula
   desc "TUI 3-way git mergetool"
   homepage "https://github.com/chojs23/ec"
-  url "https://github.com/chojs23/ec/archive/refs/tags/v0.3.3.tar.gz"
-  sha256 "9598d57cd71c35c057ce92fda690380e3a138b44404ef14cbedf9f577772b71b"
+  url "https://github.com/chojs23/ec/archive/refs/tags/v0.4.2.tar.gz"
+  sha256 "bfd7017c09b395df73850b72d7b27f026fb6001b2ac165097f7c3d7cebf23534"
   license "MIT"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a43dff355d32cd7d40cb11c1483ee1fc01ee4a88b0ea45f7a9298a313ece8548"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a43dff355d32cd7d40cb11c1483ee1fc01ee4a88b0ea45f7a9298a313ece8548"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a43dff355d32cd7d40cb11c1483ee1fc01ee4a88b0ea45f7a9298a313ece8548"
-    sha256 cellar: :any_skip_relocation, sonoma:        "de3be0619797e0575512802fa496cb3ee78dfdcf7a0706c4e9f5b035ef299b2f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "02018e408c69c3a4fa65c3f9d952e7a7e6122098ec82f9d754308583aaa6ade0"
-    sha256 cellar: :any,                 x86_64_linux:  "8072200a975fbf9ecd984f791d9bcf29630b32cdd3adca8bd05a6ad91fa09150"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "282fe3cad8025db72fad98fb305dc599e2b38836c5f5f84e934e927547bb1665"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "282fe3cad8025db72fad98fb305dc599e2b38836c5f5f84e934e927547bb1665"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "282fe3cad8025db72fad98fb305dc599e2b38836c5f5f84e934e927547bb1665"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "107397e248483445a682084b861b8795e3202d3f1b05518ac200d3f9ab4ba6cb"
+    sha256 cellar: :any,                 x86_64_linux:      "cfbc752b3fb81d4f609055509853cc4cea6a1279acd66e0731ee29688ccb9037"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}"), "./cmd/ec"
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}"), "./cmd/ec"
   end
 
   test do

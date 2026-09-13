@@ -1,24 +1,35 @@
 class EditorconfigChecker < Formula
   desc "Tool to verify that your files are in harmony with your .editorconfig"
   homepage "https://editorconfig-checker.github.io/"
-  url "https://github.com/editorconfig-checker/editorconfig-checker/archive/refs/tags/v3.7.0.tar.gz"
-  sha256 "df08c7aa8eb33c147ba38b628f53aff7baf3877d44c577d8964d9899e8052c81"
+  url "https://github.com/editorconfig-checker/editorconfig-checker/archive/refs/tags/v4.0.1.tar.gz"
+  sha256 "9a53621851423ea758647521be5f2bbc45c97dfca2197e7dfd3a814196a0b783"
   license "MIT"
   head "https://github.com/editorconfig-checker/editorconfig-checker.git", branch: "main"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "765f27ee4ade870cb1aa5cbe3d4da0b01252e4fd786010a5bf7495900a5ef86a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "765f27ee4ade870cb1aa5cbe3d4da0b01252e4fd786010a5bf7495900a5ef86a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "765f27ee4ade870cb1aa5cbe3d4da0b01252e4fd786010a5bf7495900a5ef86a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "18d13f384d62b3503db4c82297742621fb5e5c23856296c91b96d218de40607e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8e2e3b5cbc07b15e2345043451de37d69af31b118d1b12c4f9d11f84cd8f30ca"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "163c4067dc70610dd98b85a6cba36cefffe14b3b5a73c9cc88ad6d2c611264ad"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7a1d28f73dfb85a04bd4d37334cd658e65d5388311e81d2de6283929809e3388"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7a1d28f73dfb85a04bd4d37334cd658e65d5388311e81d2de6283929809e3388"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7a1d28f73dfb85a04bd4d37334cd658e65d5388311e81d2de6283929809e3388"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "7a1d28f73dfb85a04bd4d37334cd658e65d5388311e81d2de6283929809e3388"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "31f9c41d8ae8ff72455eaa933278fc9a1180894eb34218ebf1575b58828aca8a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "9a3f10415c9211b25420a08a37ae6e18c3f2a006f03c2913efcaa96a98c437d1"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version}"
+    ldflags = "-X main.version=#{version}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/editorconfig-checker/main.go"
   end
 

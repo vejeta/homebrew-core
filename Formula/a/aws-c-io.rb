@@ -1,18 +1,18 @@
 class AwsCIo < Formula
   desc "Event driven framework for implementing application protocols"
   homepage "https://github.com/awslabs/aws-c-io"
-  url "https://github.com/awslabs/aws-c-io/archive/refs/tags/v0.27.2.tar.gz"
-  sha256 "42caef5ef624ca8f5046d4e9f21c8dcaf1c4d7d0b2d46d965357b13079f2d2d3"
+  url "https://github.com/awslabs/aws-c-io/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "5fecb19c2c0a165687cdd94723943a02ab23a0270deade5661fd935a3cd55e78"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "047ca86439e4aedaa13ec16c2ef4fcc148052c818ed03ace8dffe5832cfefe3e"
-    sha256 cellar: :any, arm64_sequoia: "a15620e07e6186e8539f1d5cd90d27ee5b5aca906f67f4f35ee401690e25a0fe"
-    sha256 cellar: :any, arm64_sonoma:  "9fbdc7f22913bb02d3ef7b794d530189a47b66235d382e66cef59f55d6c2111d"
-    sha256 cellar: :any, sonoma:        "5d662d42b6c340b21f666687ea210986b2a9182448000e12a9a04a8869b314dc"
-    sha256 cellar: :any, arm64_linux:   "ce802693acb4b0ba791ab8ddefc6af0bb63e1d9e26460fe2c3ef25faf9fa7c33"
-    sha256 cellar: :any, x86_64_linux:  "52fb201477fd730551f827ae3de9778f69cf333006605bfb0dc29c7ec99b7bb9"
+    sha256 cellar: :any, arm64_golden_gate: "2ec493e1ab13a40ced07a5b7203b2a8cd2ef607547bd9a0543f7ca56a0aa18e4"
+    sha256 cellar: :any, arm64_tahoe:       "65af61010890938814768b618a543ab222ab760ad19a08e8c7e6e075d03d16dd"
+    sha256 cellar: :any, arm64_sequoia:     "85e9dc2ac23c5d280e71e3f71b7107385282f3fb2cc2206a1bb5d8e6a7e2852d"
+    sha256 cellar: :any, arm64_sonoma:      "290d7a03edbc9c44a563458520150777ceb1474514bb53f54a2f8aa560f126ac"
+    sha256 cellar: :any, arm64_linux:       "dda27f924d1af2035f485ac5324803482d396ac4de993e2b4151f45a47632aa9"
+    sha256 cellar: :any, x86_64_linux:      "4c0b9176cfa29cde228f14084758627c0c584c934ac3968313ed39416f5fb587"
   end
 
   depends_on "cmake" => :build
@@ -52,7 +52,7 @@ class AwsCIo < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-io",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

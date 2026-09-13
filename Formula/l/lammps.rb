@@ -1,12 +1,12 @@
 class Lammps < Formula
   desc "Molecular Dynamics Simulator"
   homepage "https://docs.lammps.org/"
-  url "https://github.com/lammps/lammps/archive/refs/tags/stable_22Jul2025_update4.tar.gz"
+  url "https://github.com/lammps/lammps/releases/download/stable_22Jul2025_update6/lammps-src-22Jul2025_update6.tar.gz"
   # lammps releases are named after their release date. We transform it to
   # YYYY-MM-DD (year-month-day) so that we get a sane version numbering.
   # We only track stable releases as announced on the LAMMPS homepage.
-  version "20250722-update4"
-  sha256 "411088d9c03339e025f6a975e0a5741bb9e3f351cc39eda220ab22ac318fe2fb"
+  version "20250722-update6"
+  sha256 "34a2526440d52f220f86d9c6537c471184edd25e1fbaa655ffa0c9d41c0ab78a"
   license "GPL-2.0-only"
 
   # The `strategy` block below is used to massage upstream tags into the
@@ -29,12 +29,12 @@ class Lammps < Formula
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "631170e3d3136cec64ce4bce3f6dd9a5a9c26276cb93fbe4e06a99834ccc4a3b"
-    sha256 cellar: :any,                 arm64_sequoia: "565e1b7546fdad6c167b1606654d19c1995ca6d66d37acaea40614f058e325ab"
-    sha256 cellar: :any,                 arm64_sonoma:  "c4cfa0dc4a222511f3fe9f294968f15a0d472f48955e6214e0a176ba0502449f"
-    sha256 cellar: :any,                 sonoma:        "6a680035bd987dd6d0fb3f2ba105b4c71165c62b89b0ff264f9b3048c9a42cb3"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6a71f8951b35659b56b15a8edbbe176b0aa63f49099ecb45afc33dc3838990ed"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3d2a3019f1d730e2bfb4de7dae3514d27694536966c72d27461039667eb98a78"
+    sha256 cellar: :any, arm64_golden_gate: "9dd2b2d9d2c375c4064f401f3077422109b91d6f2df9e4cfeea4a1be83a64e82"
+    sha256 cellar: :any, arm64_tahoe:       "b745844bc9c4955038758b18cbda5e903b422ec3fd1c08ae75c0773d23021ea6"
+    sha256 cellar: :any, arm64_sequoia:     "dbc6aed23b49cdcc12db563ac674c61b7072ed25c740a140ce4e525b4c6718b7"
+    sha256 cellar: :any, arm64_sonoma:      "cfc9f2476cf72979383895645e7683a52b13d519ca0d61273488b909feed2058"
+    sha256 cellar: :any, arm64_linux:       "f92fcfd8fb346a07bf5840f7dd572aeac6304058358278c3f38ec3917fe0fde8"
+    sha256 cellar: :any, x86_64_linux:      "d666f2c16d755705448c7bfd938d0973b553fd972a478da5469c8c24bf2f5c2e"
   end
 
   depends_on "cmake" => :build
@@ -73,7 +73,7 @@ class Lammps < Formula
         "-DWITH_PNG=yes",
         "-DCMAKE_INSTALL_RPATH=#{rpath}"
       ]
-      args << "-DOpenMP_CXX_FLAGS=-I#{Formula["libomp"].opt_include}" if OS.mac?
+      args << "-DOpenMP_CXX_FLAGS=-I#{formula_opt_include("libomp")}" if OS.mac?
       system "cmake", *args, *std_cmake_args
       system "cmake", "--build", "build_#{variant}"
       system "cmake", "--install", "build_#{variant}"

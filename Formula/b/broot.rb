@@ -1,18 +1,18 @@
 class Broot < Formula
   desc "New way to see and navigate directory trees"
   homepage "https://dystroy.org/broot/"
-  url "https://github.com/Canop/broot/archive/refs/tags/v1.57.0.tar.gz"
-  sha256 "28d576f218a92bbb3543124296fb24b40a323b21f586017d073155c44f1cb786"
+  url "https://github.com/Canop/broot/archive/refs/tags/v1.60.1.tar.gz"
+  sha256 "23f6c5caed90400b4a7a277501c3c6fb46bacd4be5250da9ea357822e5a504ca"
   license "MIT"
   head "https://github.com/Canop/broot.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a02fc825e87ee81b19f6184917c85217000cee934e63907d31527fcb19fdc0a9"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0fc3bcdd26bb8d5d92ab72c93686717088289cf2789fb759f3b80a1560bc7c45"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "38b8eef935b48366070335da13f513b0ace8880f22e64e10bc453dd21ef4cff3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "444ca89cc21a5dcbcf98483a2594b5e7e7aa1cffd76e668b380b1635436e9cee"
-    sha256 cellar: :any,                 arm64_linux:   "39f1643a041cb3850cd02a5ee8bee06a72b43e8e020e307a0e17213d9e5ee4a2"
-    sha256 cellar: :any,                 x86_64_linux:  "bdfd4131276d204331494a55696a3f330cec512d6fe42dafbc44d5f9c61151c1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "125feb4c14405a20fe16ca8e53a397e5e445565b7dd5d5a090dc4347fe06481f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4467571c47751245b74b6676f67d4d4a23106c0945cba9b88e0d6f492258cc19"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "a3eaae5c0bdd3a8391757efe3a1b47fa77b576e50a65b2f7ebd8d54a62dac926"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "5aec28fb13dbff56d359ad58e6e5d9856d6c71f611fe0c690524a6463653d7cf"
+    sha256 cellar: :any,                 arm64_linux:       "75e56a5a61195bf057527b8b19ee6b2f58353de44695de4b4e2d23402cf2b52f"
+    sha256 cellar: :any,                 x86_64_linux:      "3d9e7571b383b792fbfe08483d5c65e22b1c5777bdeea4ff5082008c2e8b8777"
   end
 
   depends_on "rust" => :build
@@ -52,18 +52,20 @@ class Broot < Formula
     assert_match "lets you explore file hierarchies with a tree-like view", output
     assert_match version.to_s, shell_output("#{bin}/broot --version")
 
+    (testpath/"conf.hjson").write "enable_kitty_keyboard: false\n"
+    (testpath/"test.txt").write "Homebrew\n"
+
     require "pty"
     require "io/console"
-    PTY.spawn(bin/"broot", "-c", ":print_tree", "--color", "no", "--outcmd", testpath/"output.txt") do |r, w, pid|
+    PTY.spawn(bin/"broot", "--conf", testpath/"conf.hjson", "-c", ":print_tree", "--color", "no") do |r, _w, pid|
       r.winsize = [20, 80] # broot dependency terminal requires width > 2
-      w.write "n\r\n"
       output = ""
       begin
         r.each { |line| output += line }
       rescue Errno::EIO
         # GNU/Linux raises EIO when read is done on closed pty
       end
-      assert_match "New Configuration files written in", output
+      assert_match "test.txt", output
       assert_predicate Process::Status.wait(pid), :success?
     end
   end

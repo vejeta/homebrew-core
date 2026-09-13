@@ -7,12 +7,13 @@ class CargoOutdated < Formula
   head "https://github.com/kbknapp/cargo-outdated.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "6174085b6cd0d46cd1be2c6dda1a24a0f7bcd4e98c362808c63e09d0c11bf3bc"
-    sha256 cellar: :any,                 arm64_sequoia: "57f2a20781ae0cbfcf3e279725f528d12d808d008876e0bcccf5cda173eafc1f"
-    sha256 cellar: :any,                 arm64_sonoma:  "c77702c3d4da76762864ace24b8b25318bd732b95019471c061b6188892c38bd"
-    sha256 cellar: :any,                 sonoma:        "6afd5d52a700fd64b1f613980c399f08a05ccfe5f38072f42bfc438bd89a826f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1f4b8afc5760e243f583e60f81e11cd92a9819a14d6d00bfdc7125fcede1b035"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8d8f21cc13aba011e544f746cb9096799337c335ff8796586c23163bab069f1c"
+    sha256 cellar: :any,                 arm64_golden_gate: "38bb83c4629df4791ec1a85f6d959ec01eacbf50c286ff7178dc420f8122f2b0"
+    sha256 cellar: :any,                 arm64_tahoe:       "6174085b6cd0d46cd1be2c6dda1a24a0f7bcd4e98c362808c63e09d0c11bf3bc"
+    sha256 cellar: :any,                 arm64_sequoia:     "57f2a20781ae0cbfcf3e279725f528d12d808d008876e0bcccf5cda173eafc1f"
+    sha256 cellar: :any,                 arm64_sonoma:      "c77702c3d4da76762864ace24b8b25318bd732b95019471c061b6188892c38bd"
+    sha256 cellar: :any,                 sonoma:            "6afd5d52a700fd64b1f613980c399f08a05ccfe5f38072f42bfc438bd89a826f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "1f4b8afc5760e243f583e60f81e11cd92a9819a14d6d00bfdc7125fcede1b035"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "8d8f21cc13aba011e544f746cb9096799337c335ff8796586c23163bab069f1c"
   end
 
   depends_on "pkgconf" => :build
@@ -27,7 +28,7 @@ class CargoOutdated < Formula
 
   def install
     ENV["LIBGIT2_NO_VENDOR"] = "1"
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "cargo", "install", *std_cargo_args
   end
@@ -37,7 +38,7 @@ class CargoOutdated < Formula
 
     # Show that we can use a different toolchain than the one provided by the `rust` formula.
     # https://github.com/Homebrew/homebrew-core/pull/134074#pullrequestreview-1484979359
-    ENV.prepend_path "PATH", Formula["rustup"].bin
+    ENV.prepend_path "PATH", formula_opt_bin("rustup")
     system "rustup", "set", "profile", "minimal"
     system "rustup", "default", "beta"
 
@@ -63,9 +64,9 @@ class CargoOutdated < Formula
     end
 
     [
-      Formula["libgit2"].opt_lib/shared_library("libgit2"),
-      Formula["openssl@3"].opt_lib/shared_library("libssl"),
-      Formula["openssl@3"].opt_lib/shared_library("libcrypto"),
+      formula_opt_lib("libgit2")/shared_library("libgit2"),
+      formula_opt_lib("openssl@3")/shared_library("libssl"),
+      formula_opt_lib("openssl@3")/shared_library("libcrypto"),
     ].each do |library|
       assert Utils.binary_linked_to_library?(bin/"cargo-outdated", library),
              "No linkage with #{library.basename}! Cargo is likely using a vendored version."

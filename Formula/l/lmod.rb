@@ -1,22 +1,22 @@
 class Lmod < Formula
   desc "Lua-based environment modules system to modify PATH variable"
   homepage "https://lmod.readthedocs.io"
-  url "https://github.com/TACC/Lmod/archive/refs/tags/9.2.4.tar.gz"
-  sha256 "c5df5c2c00ec44444123d97709c2c5bf5d7ebfa5488fec45f5255b803608645a"
+  url "https://github.com/TACC/Lmod/archive/refs/tags/9.4.2.tar.gz"
+  sha256 "30c9e29d6ab942a194e9c8f7c78430f4e26269d9439a68f451fe1ca4063da774"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "e550979b3f773535bcaad5907b24fba68ac01dba752baae4684a7c3514c86073"
-    sha256 cellar: :any, arm64_sequoia: "fbcfd4f85c46a338f9839d6974c67a2988660b947563128f629168814b5d6196"
-    sha256 cellar: :any, arm64_sonoma:  "71645efa2f0cba6536bf77d1badc094a7e4b8cb94275a52844900b98a2a8955d"
-    sha256 cellar: :any, sonoma:        "46e53d810532481d4ee31ecfc4f4ed939e3f5b5a8f7b0c6a4628cd41cd065829"
-    sha256 cellar: :any, arm64_linux:   "2df5e70b82e43be326c7777077766d7405155b1620e7462270a94cf270776a21"
-    sha256 cellar: :any, x86_64_linux:  "e68e2f1a209dac68d989c1c979f6865e157fcbcd6ad3505816d5eee84844217e"
+    sha256 cellar: :any, arm64_golden_gate: "d8cf46268e33319c0d44cc895c86b20f5b673202c530f1bc5cff29a9be9b989a"
+    sha256 cellar: :any, arm64_tahoe:       "66a8e31693ec3dc1010118c8a939040c7cfeb98c3faa2561dd80e6d430e30126"
+    sha256 cellar: :any, arm64_sequoia:     "1df555bae2204243bd6acfc5219abb7bd015d2f457c79f992a48932a4c5ac980"
+    sha256 cellar: :any, arm64_sonoma:      "297bce9d86f194b5ef7d21d7ee9fa0abb64611e3a3587fe37c38665232d457a7"
+    sha256 cellar: :any, arm64_linux:       "a03fab7d5dbcaa52d58557293cfa0403bade93aabc1222858c48c9ffd764752f"
+    sha256 cellar: :any, x86_64_linux:      "645c0d250d04763bada4c68b37d581e20b484c2492224ff24184fa4bfee618bb"
   end
 
   depends_on "luarocks" => :build
   depends_on "pkgconf" => :build
-  depends_on "lua@5.4" # due to luaposix
+  depends_on "lua"
   depends_on "tcl-tk"
 
   uses_from_macos "bc-gh" => :build
@@ -42,7 +42,7 @@ class Lmod < Formula
   end
 
   def install
-    lua = Formula["lua@5.4"]
+    lua = Formula["lua"]
     luaversion = lua.version.major_minor
     luapath = libexec/"vendor"
     ENV["LUA_PATH"] = "?.lua;" \
@@ -52,6 +52,16 @@ class Lmod < Formula
 
     resources.each do |r|
       r.stage do
+        # Arch Linux, Debian and Fedora have packaged luaposix 36.3 for Lua 5.5 without code changes.
+        # They don't use luarocks dependency resolver so end up ignoring the Lua constraint.
+        # - https://gitlab.archlinux.org/archlinux/packaging/packages/lua-posix/-/commit/bc724ec92dc18e6496593b58561bae8742cd4fd4
+        # - https://salsa.debian.org/lua-team/lua-posix/-/commit/b1bd0ec25be0599fbdf7b50fc2442b6874f2e51e
+        # - https://src.fedoraproject.org/rpms/lua-posix/c/faa875d881a18fac9b9b277bac4bc72fdeca4624
+        #
+        # TODO: Remove following when luaposix increases Lua upper bound. Upstream is still
+        # waiting on test dependencies: https://github.com/luaposix/luaposix/issues/394
+        inreplace "luaposix-36.3-1.rockspec", "'lua >= 5.1, < 5.5'", "'lua >= 5.1, < 5.6'" if r.name == "luaposix"
+
         system "luarocks", "make", "--tree=#{luapath}", "--lua-dir=#{lua.opt_prefix}"
       end
     end

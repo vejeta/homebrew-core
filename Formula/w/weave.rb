@@ -1,18 +1,18 @@
 class Weave < Formula
   desc "Entity-level semantic merge driver for Git using tree-sitter"
   homepage "https://ataraxy-labs.github.io/weave/"
-  url "https://github.com/Ataraxy-Labs/weave/archive/refs/tags/v0.3.6.tar.gz"
-  sha256 "3795fcc28ada8b522fb0081a1b8f3ace6e4f61d7be46fdb3cf588777b5f0608f"
+  url "https://github.com/Ataraxy-Labs/weave/archive/refs/tags/v0.5.4.tar.gz"
+  sha256 "e5a2da626bb329b7ad38cbd206dc9cf67e30be719e84900d45415d448da76af7"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/Ataraxy-Labs/weave.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "eb079cf08f69a75c497116a47d3819a5f281321484a9c319e440d72871a4b691"
-    sha256 cellar: :any, arm64_sequoia: "abf4ba376ddea9c2ffabd2d7d85a76a9d6a28ed67e2ca47377c9bc9c211322a2"
-    sha256 cellar: :any, arm64_sonoma:  "939a7a987580f91d21c2f5f8e35cba4a3a3773e6a408a407efd3b692f97ed930"
-    sha256 cellar: :any, sonoma:        "4b9143760b2dbd574d05fc61ce794f052e799677a522a470fd96cdb99ecafb24"
-    sha256 cellar: :any, arm64_linux:   "885faf28efaef1b93f8eb623b863553b7ddae4fda1b47326dcf78614e3967a81"
-    sha256 cellar: :any, x86_64_linux:  "d2da3f1e3a12401c147af121d879eddfce1064d7b8f1fc49d05000b98b75e1c2"
+    sha256 cellar: :any, arm64_golden_gate: "d763a24fefa8d0c73780806439099cbaafcb1263659d7d3fafaca909b8f1c16f"
+    sha256 cellar: :any, arm64_tahoe:       "7ad89619320fa3faa0783c9bb3cf085f5bce8d9c526ceed1e11d2207763f3654"
+    sha256 cellar: :any, arm64_sequoia:     "64d4c4c5a50ea28d61ea94c8c587cad825580bcafc7854566127d71058cd8512"
+    sha256 cellar: :any, arm64_sonoma:      "bd7c7a78eb87fc5f29cd816ccaad06ee5940c7554c1d8a48384eacbce5724ae9"
+    sha256 cellar: :any, arm64_linux:       "cc97bef0c42d906b1870f7f7a240d55a5466eab9f3697a40ca299dd29ec42187"
+    sha256 cellar: :any, x86_64_linux:      "8f8a177158423d782e8cdf6e156434fbb69a99064efe23dc125c03e9eee2194a"
   end
 
   depends_on "pkgconf" => :build
@@ -29,6 +29,7 @@ class Weave < Formula
   def install
     system "cargo", "install", *std_cargo_args(path: "crates/weave-cli")
     system "cargo", "install", *std_cargo_args(path: "crates/weave-driver")
+    system "cargo", "install", *std_cargo_args(path: "crates/weave-mcp")
   end
 
   test do

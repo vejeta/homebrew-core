@@ -1,17 +1,16 @@
 class Sanity < Formula
   desc "Command-line interface for Sanity"
   homepage "https://www.sanity.io/"
-  url "https://registry.npmjs.org/@sanity/cli/-/cli-7.2.3.tgz"
-  sha256 "1683ccf22ef8dd793733d52a9c05ef88af204d45caed9f7e3ca3064ec9aa8a32"
+  url "https://registry.npmjs.org/@sanity/cli/-/cli-8.11.0.tgz"
+  sha256 "54f5ce9f093a10a900955adba2867268077559ce4c1fa31d5ffbc73e38220892"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "e59bc94886132b260ec5a06e9d579a31636008f4b5846b0c7080bb53a259806a"
-    sha256 cellar: :any, arm64_sequoia: "afe210afb1cfd5885d62ffd85d7b31bf03b6eaf09ec1a30570fe8d98187476c3"
-    sha256 cellar: :any, arm64_sonoma:  "afe210afb1cfd5885d62ffd85d7b31bf03b6eaf09ec1a30570fe8d98187476c3"
-    sha256 cellar: :any, sonoma:        "6a70068a8283ba4be508106307c53318aaf8733580ca219a6d164702ed400463"
-    sha256 cellar: :any, arm64_linux:   "0b7950361ef69d95aa7d826e30847a644264173873e35b1c2f76a5af73dea3c9"
-    sha256 cellar: :any, x86_64_linux:  "5ee5e9dcd746b66aa01b1ff23b2e8cb15552ca631cc28d866266ecab701de66a"
+    sha256 cellar: :any, arm64_golden_gate: "a36deecd4cb6023d6d8a49cb75650c03edca7a17f630577dcff38cfed45abc81"
+    sha256 cellar: :any, arm64_tahoe:       "a36deecd4cb6023d6d8a49cb75650c03edca7a17f630577dcff38cfed45abc81"
+    sha256 cellar: :any, arm64_sequoia:     "a36deecd4cb6023d6d8a49cb75650c03edca7a17f630577dcff38cfed45abc81"
+    sha256 cellar: :any, arm64_linux:       "14820996bd81c8e3d7857aa6c64de38923af562292c350a8c49068a1e8d3a205"
+    sha256 cellar: :any, x86_64_linux:      "d12f675e26ec165b0defd8c103df9944d6117608cf31d9440d58ffb788e9f9d9"
   end
 
   depends_on "node"
@@ -21,10 +20,10 @@ class Sanity < Formula
     bin.install_symlink libexec.glob("bin/*")
 
     node_modules = libexec/"lib/node_modules/@sanity/cli/node_modules"
-    # Remove incompatible pre-built `bare-fs`/`bare-os`/`bare-url` binaries
+    # Remove incompatible pre-built `bare-fs`/`bare-path`/`bare-os`/`bare-url` binaries
     os = OS.kernel_name.downcase
     arch = Hardware::CPU.intel? ? "x64" : Hardware::CPU.arch.to_s
-    node_modules.glob("{bare-fs,bare-os,bare-url}/prebuilds/*")
+    node_modules.glob("{bare-fs,bare-path,bare-os,bare-url}/prebuilds/*")
                 .each { |dir| rm_r(dir) if dir.basename.to_s != "#{os}-#{arch}" }
 
     deuniversalize_machos node_modules/"fsevents/fsevents.node" if OS.mac?

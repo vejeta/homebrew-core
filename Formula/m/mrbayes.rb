@@ -1,9 +1,8 @@
 class Mrbayes < Formula
   desc "Bayesian inference of phylogenies and evolutionary models"
   homepage "https://nbisweden.github.io/MrBayes/"
-  url "https://github.com/NBISweden/MrBayes/archive/refs/tags/v3.2.7a.tar.gz"
-  version "3.2.7a"
-  sha256 "3eed2e3b1d9e46f265b6067a502a89732b6f430585d258b886e008e846ecc5c6"
+  url "https://github.com/NBISweden/MrBayes/releases/download/v3.2.7a/mrbayes-3.2.7a.tar.gz"
+  sha256 "1a4670be84e6b968d59382328294db4c8ceb73e0c19c702265deec6f2177815c"
   license "GPL-3.0-or-later"
   head "https://github.com/NBISweden/MrBayes.git", branch: "develop"
 
@@ -13,12 +12,13 @@ class Mrbayes < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "7e0813e7f10eb1abadd4172e54fc18d7fac02f2a2521d3034217ea8ee99ffa04"
-    sha256 cellar: :any,                 arm64_sequoia: "098da5cbc7c3371cbc845399356634f3373723ab9a10813af39420706adc495b"
-    sha256 cellar: :any,                 arm64_sonoma:  "3297974985b7c483dad355decca53663b6dd88f9aff0571200997b491a44d582"
-    sha256 cellar: :any,                 sonoma:        "4e22bb908f3d2fabacebe0f1896de5cc05f74b5a1bcd224fb2fa85585db5074c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4b2aaf7489371e64e11bc0dde781218fd8b4a85a41cd7db039f2a8c377f726c1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5b7379add8dcffcc268785b68f80f88fb0478f10c76ef139b43b0c6983e30675"
+    sha256 cellar: :any,                 arm64_golden_gate: "711f6adc0df538fc80a9abf9d1d71d8cb582db8e8a9eb4adf5c192aacfd1be3b"
+    sha256 cellar: :any,                 arm64_tahoe:       "7e0813e7f10eb1abadd4172e54fc18d7fac02f2a2521d3034217ea8ee99ffa04"
+    sha256 cellar: :any,                 arm64_sequoia:     "098da5cbc7c3371cbc845399356634f3373723ab9a10813af39420706adc495b"
+    sha256 cellar: :any,                 arm64_sonoma:      "3297974985b7c483dad355decca53663b6dd88f9aff0571200997b491a44d582"
+    sha256 cellar: :any,                 sonoma:            "4e22bb908f3d2fabacebe0f1896de5cc05f74b5a1bcd224fb2fa85585db5074c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "4b2aaf7489371e64e11bc0dde781218fd8b4a85a41cd7db039f2a8c377f726c1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "5b7379add8dcffcc268785b68f80f88fb0478f10c76ef139b43b0c6983e30675"
   end
 
   depends_on "pkgconf" => :build
@@ -31,13 +31,8 @@ class Mrbayes < Formula
       args << "--disable-avx"
       # There is no argument to override AX_EXT SIMD auto-detection, which is done in
       # configure and adds -m<simd> to build flags and also defines HAVE_<simd> macros
-      if OS.mac?
-        args << "ax_cv_have_sse41_cpu_ext=no" unless MacOS.version.requires_sse41?
-        args << "ax_cv_have_sse42_cpu_ext=no" unless MacOS.version.requires_sse42?
-      else
-        args << "ax_cv_have_sse41_cpu_ext=no"
-        args << "ax_cv_have_sse42_cpu_ext=no"
-      end
+      args << "ax_cv_have_sse41_cpu_ext=no"
+      args << "ax_cv_have_sse42_cpu_ext=no"
       args << "ax_cv_have_sse4a_cpu_ext=no"
       args << "ax_cv_have_sha_cpu_ext=no"
       args << "ax_cv_have_aes_cpu_ext=no"

@@ -1,9 +1,8 @@
 class Snap < Formula
   desc "Tool to work with .snap files"
   homepage "https://snapcraft.io/"
-  url "https://github.com/canonical/snapd/releases/download/2.76/snapd_2.76.vendor.tar.xz"
-  version "2.76"
-  sha256 "78ad358dc685ab5a40b9ca0b3fc283ae7c8fbbabb4612182d512bde7efeef605"
+  url "https://github.com/canonical/snapd/releases/download/2.77.1/snapd_2.77.1.vendor.tar.xz"
+  sha256 "10c824694cd9c9954ba7a826d245458d8fa1006d49937fe480dc9f36b57b1efc"
   license "GPL-3.0-only"
 
   livecheck do
@@ -12,24 +11,33 @@ class Snap < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "92599851a72632849a6ff3e8b98d2a7081a4fada1bcdaf5b9ef327bba2250d7c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "92599851a72632849a6ff3e8b98d2a7081a4fada1bcdaf5b9ef327bba2250d7c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "92599851a72632849a6ff3e8b98d2a7081a4fada1bcdaf5b9ef327bba2250d7c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "7aa84103fde25f7556684986927a404c35d7f60be4e843f48f9e1cecbbd56a11"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e3d6a31cd6389022f5b8c18122117b47be83387447bdf5582bca2d61815a1433"
-    sha256 cellar: :any,                 x86_64_linux:  "cdeab768af092b8ea38c2ca94a94f408f409a2e88988a9c3c23926078c39ef26"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6e685cad43397b00acdcd01bace349c88b0b898d88fd0c47697c2f279c64620d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "6e685cad43397b00acdcd01bace349c88b0b898d88fd0c47697c2f279c64620d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6e685cad43397b00acdcd01bace349c88b0b898d88fd0c47697c2f279c64620d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6e685cad43397b00acdcd01bace349c88b0b898d88fd0c47697c2f279c64620d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d8b67e525a563e09262d4e7d83b7acff6672779dc8203314cff8bb0350fe7166"
+    sha256 cellar: :any,                 x86_64_linux:      "ad30adf44f0d7201c9462b22869bd670403bc935120e365bd8e77492b722a725"
   end
 
   depends_on "go" => :build
   depends_on "squashfs"
 
   def install
-    system "./mkversion.sh", version.to_s
-    tags = OS.mac? ? "nosecboot" : ""
-    system "go", "build", *std_go_args(ldflags: "-s -w", tags:), "./cmd/snap"
+    # 2.77's vendor tarball wraps the source in an extra directory, unlike the packing scripts
+    work_dir = File.directory?("snapd-#{version}") ? "snapd-#{version}" : "."
 
-    bash_completion.install "data/completion/bash/snap"
-    zsh_completion.install "data/completion/zsh/_snap"
+    cd work_dir do
+      # TODO: Drop when a release tarball ships a `vendor` synced with `go.mod`.
+      inreplace "mkversion.sh", "MOD=-mod=vendor", "MOD=-mod=mod"
+
+      system "./mkversion.sh", version.to_s
+      tags = OS.mac? ? "nosecboot" : ""
+
+      system "go", "build", "-mod=mod", *std_go_args(tags:), "./cmd/snapd"
+
+      bash_completion.install "data/completion/bash/snap"
+      zsh_completion.install "data/completion/zsh/_snap"
+    end
 
     (man8/"snap.8").write Utils.safe_popen_read(bin/"snap", "help", "--man")
   end

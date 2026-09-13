@@ -1,8 +1,8 @@
 class Juliaup < Formula
   desc "Julia installer and version multiplexer"
   homepage "https://github.com/JuliaLang/juliaup"
-  url "https://github.com/JuliaLang/juliaup/archive/refs/tags/v1.20.4.tar.gz"
-  sha256 "64bedf53df302eb9bb99e84c2f9ca39d30b7b5ba54927e998f786149ab3ec471"
+  url "https://github.com/JuliaLang/juliaup/archive/refs/tags/v1.22.3.tar.gz"
+  sha256 "74479b687a914db8c0b7e63c58babdf25f7dff4183d729f576b6e9d59dd30a8e"
   license "MIT"
   head "https://github.com/JuliaLang/juliaup.git", branch: "main"
 
@@ -12,12 +12,12 @@ class Juliaup < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f76e8918f8b417449aafa2e3e450438bbb20071de373bad7740ff5d19303e37d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7173c0f87cc84bc7aaa9fdc44dd8e83f3914eb5ba6f59a4b6f96b3ddfaac69f7"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4705d7e97349455c1d8949abbe9aa97d45eb9e8dc8f796cb880f67a40e2d1306"
-    sha256 cellar: :any_skip_relocation, sonoma:        "611fa980331817605129d5c7a329d8a2ec00e5f909ee649423ded4b44fe17a0d"
-    sha256 cellar: :any,                 arm64_linux:   "1867030a2713b02efbc0fca8c0f5fa3aed7522b0aee535ef6fb86a567343e6f5"
-    sha256 cellar: :any,                 x86_64_linux:  "078a80ec06bd0cdd5c5cfaa7e42d287169a4d5aa053e72322b488c816f65a0ea"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "9938c749ea726fc8f706f400be831025d40a3835fa69ce77dc5bd724e1b8983a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "97c846abdb00e70dc327266fb8f74ff844b7e519e3b5e6a52d035dd4b2119df3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "18055e7ec73efcb4098cbad61d43e117d75cf1627378ab67655b87337a3e1052"
+    sha256 cellar: :any,                 arm64_linux:       "3192d8cd920d36274d59938601e87770a5f71416e4ffc1f82b161e0cfdf24580"
+    sha256 cellar: :any,                 x86_64_linux:      "90fab19126ce1d040f3ebb1ed4b7f1bcbec2c2ce6385d106807eeda256daee0a"
   end
 
   depends_on "rust" => :build
@@ -27,6 +27,7 @@ class Juliaup < Formula
   def install
     system "cargo", "install", "--bin", "juliaup", *std_cargo_args
     system "cargo", "install", "--bin", "julialauncher", *std_cargo_args(features: "binjulialauncher")
+    system "cargo", "install", *std_cargo_args(path: "juliaupgui")
 
     bin.install_symlink "julialauncher" => "julia"
 
@@ -36,5 +37,6 @@ class Juliaup < Formula
   test do
     expected = "Default  Channel  Version  Update"
     assert_equal expected, shell_output("#{bin}/juliaup status").lines.first.strip
+    assert_path_exists bin/"juliaupgui"
   end
 end

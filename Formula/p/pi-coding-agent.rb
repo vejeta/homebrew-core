@@ -1,28 +1,35 @@
 class PiCodingAgent < Formula
   desc "AI agent toolkit"
   homepage "https://pi.dev/"
-  url "https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-0.79.7.tgz"
-  sha256 "2cda1beb3c80d451ce5db5dab8276f222d9d1c3c34b2dc46f2afde71c71d4841"
+  url "https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-0.85.1.tgz"
+  sha256 "1f498729649bdce647d1160993b4d92bf3c614cc819213bee2f91dd34f2a7af4"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "8383db1285a0ad65b4ae7c5cd1bfebc4ea9e78da00cb08d22d6a5054f1e5192a"
-    sha256 cellar: :any,                 arm64_sequoia: "191879fdf90704e9396a192767740f562693e8c7f10f3ca2217e96f9624b8371"
-    sha256 cellar: :any,                 arm64_sonoma:  "191879fdf90704e9396a192767740f562693e8c7f10f3ca2217e96f9624b8371"
-    sha256 cellar: :any,                 sonoma:        "c0a6e8e4d50fabf8afc973616bd6ea6edf985e2ea620f2ade0fb6a22aad1f73b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "12a31be32b21384a46feda1c79e536c0d30b29bb39b1f0c6095767a8c5fa0d5c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f374c9bea133927ddc44b4ad92662d3c1d9912803a34592b0371d97475772a5f"
+    sha256 cellar: :any,                 arm64_golden_gate: "dc4bc3c921b3ba4f7fb3942966c3a08fb4c26a0e436811664533b0836a1d9966"
+    sha256 cellar: :any,                 arm64_tahoe:       "32c6d3f03776b845255950fa82aef81aa0dc7984587277461434b43cebaa81f3"
+    sha256 cellar: :any,                 arm64_sequoia:     "9e3b3e33dc7dac78522d7aa56017e50481e3f1b95ed2261bb116cdee78e534d6"
+    sha256 cellar: :any,                 arm64_sonoma:      "82ebeb1a1d3fd649dda55196b248cd2146bc46169ba6073df43c7d338874ff28"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "e90d956046cbb48c971d664268fc315dde2f0ce81269f3478e8840dfa755c2c1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "b83e435b41ce18498eec0ba2e494013d47e731bb260c8e63bf317526ebad80d5"
   end
 
   depends_on "node"
 
+  on_macos do
+    depends_on "rust" => :build
+
+    resource "clipboard" do
+      url "https://registry.npmjs.org/@mariozechner/clipboard/-/clipboard-0.3.9.tgz"
+      sha256 "25986ebeecaffadf3d1dd5f9199869057e4b64c37d7069c7f31c231dd86b5639"
+    end
+  end
+
   def install
     system "npm", "install", *std_npm_args
-    bin.install_symlink libexec.glob("bin/*")
+    (bin/"pi").write_env_script libexec/"bin/pi", PI_SKIP_VERSION_CHECK: "1"
 
     node_modules = libexec/"lib/node_modules/@earendil-works/pi-coding-agent/node_modules/"
-    deuniversalize_machos node_modules/"@mariozechner/clipboard-darwin-universal/clipboard.darwin-universal.node"
-
     arch = Hardware::CPU.arm? ? "arm64" : "x64"
     os = OS.linux? ? "linux" : "darwin"
     node_modules.glob("koffi/build/koffi/*").each do |dir|
@@ -33,6 +40,15 @@ class PiCodingAgent < Formula
     node_modules.glob("@earendil-works/pi-tui/native/**/prebuilds/*").each do |dir|
       basename = dir.basename.to_s
       rm_r(dir) if basename != "#{os}-#{arch}"
+    end
+
+    return unless OS.mac?
+
+    # Rebuild as the npm prebuilt lacks Mach-O header space to relocate install names for bottling
+    resource("clipboard").stage do
+      system "cargo", "build", "--lib", "--release"
+      cp "target/release/libcrosscopy_clipboard.dylib",
+         node_modules/"@mariozechner/clipboard-darwin-universal/clipboard.darwin-universal.node"
     end
   end
 

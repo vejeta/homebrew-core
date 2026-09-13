@@ -1,9 +1,8 @@
 class OpensslAT35 < Formula
   desc "Cryptography and SSL/TLS Toolkit"
   homepage "https://openssl-library.org"
-  url "https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz"
-  mirror "http://fresh-center.net/linux/misc/openssl-3.5.7.tar.gz"
-  sha256 "a8c0d28a529ca480f9f36cf5792e2cd21984552a3c8e4aa11a24aa31aeac98e8"
+  url "https://github.com/openssl/openssl/releases/download/openssl-3.5.8/openssl-3.5.8.tar.gz"
+  sha256 "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
   license "Apache-2.0"
 
   livecheck do
@@ -12,36 +11,34 @@ class OpensslAT35 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "624ed5a904991f3263a6f3509be3efb1a3bac4f97a8342c5774fe168c68f4921"
-    sha256 arm64_sequoia: "0e6b59601b121345ad1e33b6e01f7a330c55b4d9f1a82bc1ac104903df356ea9"
-    sha256 arm64_sonoma:  "59885e2ae4205961b81c929560ec6cd1f041b56380efdbf9814d3c75dfdfdafe"
-    sha256 tahoe:         "f237ada244089c5d49f5cec01a056a0c2a16ed2c7c0fb06113efc4ae4b9db602"
-    sha256 sequoia:       "3ad5a09973bf0c2f26af7468c436ff76b058f7841357d2aeac1eecbf31645fd9"
-    sha256 sonoma:        "7827b9b45f3342d0039128a2d11b8fd23e69149d496c53213023e557c8f28bde"
-    sha256 arm64_linux:   "24ee56a63150533a1629300ddc7dbcda3803e40b8d59913a49a3ad883fa34e2b"
-    sha256 x86_64_linux:  "c004545456b35aa2d9d59503715686ca81313a79c4df34c9fa80d181be5c3d05"
+    sha256 arm64_golden_gate: "0ec65ea0879beccba0a8b7cb12f08d49a8dbdaaaec236358349953516081ecda"
+    sha256 arm64_tahoe:       "6195683a95e6a839c4694a656a89bc5f8a273a670e004362be176a0489c43b79"
+    sha256 arm64_sequoia:     "1a4c97d1ab594a16b200f258fe208afc38d799e5584aebb143b51e54ab9e68db"
+    sha256 arm64_sonoma:      "31b9a3ebccd1782fe9313de5c1727352c96ddc23c475b4d04844d1d2d39ec2c2"
+    sha256 tahoe:             "8964c5484210bd921c5dfd9e5f26df9245ba3c759b066a503db121f6b884c7de"
+    sha256 sequoia:           "11af4da9ac7469aabf418a30ae480378aa5a882a80424ca24fd9e08b81bb3b98"
+    sha256 sonoma:            "c9052851587bbd82bd7dbd31d45bf10c27499e64231077e658149b216b2e43ba"
+    sha256 arm64_linux:       "996915f8a03fd0953f1e022fe1c1e4ce56b006b4021ebb547c06163512a5d5e1"
+    sha256 x86_64_linux:      "656278db8ef3e8c315cc1f46e79a91a215f5b18261020e3526a0685c41d60f43"
   end
 
   keg_only :versioned_formula
 
-  depends_on "ca-certificates"
+  depends_on "ca-certificates" => :no_linkage
 
   on_linux do
     resource "Test::Harness" do
       url "https://cpan.metacpan.org/authors/id/L/LE/LEONT/Test-Harness-3.52.tar.gz"
-      mirror "http://cpan.metacpan.org/authors/id/L/LE/LEONT/Test-Harness-3.52.tar.gz"
       sha256 "8fe65cfc0261ed3c8a4395f0524286f5719669fe305f9b03b16cf3684d62cd70"
     end
 
     resource "Test::More" do
-      url "https://cpan.metacpan.org/authors/id/E/EX/EXODIST/Test-Simple-1.302220.tar.gz"
-      mirror "http://cpan.metacpan.org/authors/id/E/EX/EXODIST/Test-Simple-1.302220.tar.gz"
-      sha256 "bbca30d9fb64a67a28ccd9086cdc08cdb6046423fa032d9101f978d7ccd46cf9"
+      url "https://cpan.metacpan.org/authors/id/E/EX/EXODIST/Test-Simple-1.302224.tar.gz"
+      sha256 "6c366b8ab03553976dd1813940770b60bdb4396e7bbae8c263baa6e96ec52fd7"
     end
 
     resource "ExtUtils::MakeMaker" do
       url "https://cpan.metacpan.org/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-7.78.tar.gz"
-      mirror "http://cpan.metacpan.org/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-7.78.tar.gz"
       sha256 "43b33c20f8d82dba7cc48f8cd702f8fc9811e9d07880886dfd31b7077bd4a3a6"
     end
   end
@@ -87,7 +84,7 @@ class OpensslAT35 < Formula
     # This ensures where Homebrew's Perl is needed the Cellar path isn't
     # hardcoded into OpenSSL's scripts, causing them to break every Perl update.
     # Whilst our env points to opt_bin, by default OpenSSL resolves the symlink.
-    ENV["PERL"] = Formula["perl"].opt_bin/"perl" if which("perl") == Formula["perl"].opt_bin/"perl"
+    ENV["PERL"] = formula_opt_bin("perl")/"perl" if which("perl") == formula_opt_bin("perl")/"perl"
 
     arch_args = []
     if OS.mac?
@@ -110,13 +107,10 @@ class OpensslAT35 < Formula
     touch %w[certs private].map { |subdir| openssldir/subdir/".keepme" }
   end
 
-  def openssldir
-    etc/"openssl@3.5"
-  end
+  def openssldir = pkgetc
 
-  def post_install
-    rm(openssldir/"cert.pem") if (openssldir/"cert.pem").exist?
-    openssldir.install_symlink Formula["ca-certificates"].pkgetc/"cert.pem"
+  post_install_steps do
+    symlink "{{etc}}/ca-certificates/cert.pem", "{{pkgetc}}/cert.pem", overwrite: true
   end
 
   def caveats

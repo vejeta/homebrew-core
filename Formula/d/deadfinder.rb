@@ -7,16 +7,18 @@ class Deadfinder < Formula
   head "https://github.com/hahwul/deadfinder.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "3cd70822a8e851cba61fc82b404a3c288027c5e1428085419572da755190f3e7"
-    sha256 cellar: :any,                 arm64_sequoia: "da399f4212adcd55edf32b957d467ba0ca4074b5b152b98761019110867b2807"
-    sha256 cellar: :any,                 arm64_sonoma:  "56b8210526219201d86964a11f215964e61bb78b21ad8663931f052c670f2d96"
-    sha256 cellar: :any,                 sonoma:        "25aae4c594c1a3a66a7f3c89df5958f044e61b09eb66989b135eb3607178314a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3c0b06102fec2f436837c35f2990b04ad9bb64dea9ba7e51a3bb6cbdb835b5ce"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7b3b0164aa904fda4b1cb754c6cd4cb450fd7ff3d0004f0f6ad5134f845c2666"
+    sha256 cellar: :any,                 arm64_golden_gate: "58ba4933e6685c5f8be7ccf6a890c936fcb28a8e0699aec98b53eb72acd1d00b"
+    sha256 cellar: :any,                 arm64_tahoe:       "3cd70822a8e851cba61fc82b404a3c288027c5e1428085419572da755190f3e7"
+    sha256 cellar: :any,                 arm64_sequoia:     "da399f4212adcd55edf32b957d467ba0ca4074b5b152b98761019110867b2807"
+    sha256 cellar: :any,                 arm64_sonoma:      "56b8210526219201d86964a11f215964e61bb78b21ad8663931f052c670f2d96"
+    sha256 cellar: :any,                 sonoma:            "25aae4c594c1a3a66a7f3c89df5958f044e61b09eb66989b135eb3607178314a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "3c0b06102fec2f436837c35f2990b04ad9bb64dea9ba7e51a3bb6cbdb835b5ce"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "7b3b0164aa904fda4b1cb754c6cd4cb450fd7ff3d0004f0f6ad5134f845c2666"
   end
 
   depends_on "cmake" => :build
   depends_on "crystal" => :build
+  depends_on "lexbor" => :build
   depends_on "pkgconf" => :build
   depends_on "bdw-gc"
   depends_on "libevent"
@@ -30,8 +32,17 @@ class Deadfinder < Formula
     depends_on "zlib-ng-compat"
   end
 
+  allow_network_access! :test
+
+  def fetch
+    system "shards", "install", "--production", "--skip-postinstall"
+  end
+
   def install
-    system "shards", "build", "--production", "--release", "--no-debug"
+    # Use our lexbor as long as compatible with https://github.com/kostya/lexbor
+    (buildpath/"lib/lexbor/src/ext/lexbor-c/build").install_symlink formula_opt_lib("lexbor")/"liblexbor_static.a"
+
+    system "shards", "build", *std_shards_args
     bin.install "bin/deadfinder"
 
     generate_completions_from_executable(bin/"deadfinder", "completion")

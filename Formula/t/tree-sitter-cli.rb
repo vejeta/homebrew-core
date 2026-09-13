@@ -1,8 +1,8 @@
 class TreeSitterCli < Formula
   desc "Parser generator tool"
   homepage "https://tree-sitter.github.io"
-  url "https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v0.26.9.tar.gz"
-  sha256 "8e14780500933f43d86662fcaa1b0ce99ebe9c220f4680bc929dce09a0e0cfc6"
+  url "https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v0.27.0.tar.gz"
+  sha256 "d35c96e68736bd9569d2757c3cc71052485f33082c3825f1aed9d0e86013a159"
   license "MIT"
   head "https://github.com/tree-sitter/tree-sitter.git", branch: "master"
 
@@ -11,12 +11,12 @@ class TreeSitterCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a2fd4dbcd920e4f89ebb5571e0fdef01968504be04f2cddbeea52dedf886527c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a0777c63f4741915c9acab1def9a39abc50573571baa5f342332ef09ef5e9e43"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f141ae2b77499ffb083432a1f176405b499450d80ac0051839a529a7984d92f9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "6ca73fbff9639286b5d55548be354b107998629c40068332237c76c9d064782e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "93eafc53d90ceab37359197d5dc2780e8cccd2109ea38fb80e80e83ed589c97b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "14565e2d575cfbc5a7cbc45ae0f4f1160627497ef929f886b74d8d73e1e76fe1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7511d666e46b50ccec5e7c4a92ba84a975c31da1889974707cc9f3b8ea001f9a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "c1e4865e90a81586656c0027daef6046757968659c5cebe1f99321ab4e04a021"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "60e4cb5e6ccd6a68e0c0eaddbc6038445cb10b371d3aec47ba258fb3f37617c2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "d0e56ea40a11bd7014eeaa98355b36569c6bd7d24ddfd2198f653fdbe73ec15b"
+    sha256 cellar: :any,                 arm64_linux:       "19eb18ac3cf6c11416d2143764efc8c0928ac6e462423ad4578decfbddceacf1"
+    sha256 cellar: :any,                 x86_64_linux:      "88c855f4b54e377a69cb86c457b99716015d0f9e0d4d5b75f01482a37ac747cf"
   end
 
   depends_on "rust" => :build

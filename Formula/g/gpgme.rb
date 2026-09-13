@@ -1,8 +1,8 @@
 class Gpgme < Formula
   desc "Library access to GnuPG"
   homepage "https://www.gnupg.org/related_software/gpgme/"
-  url "https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-2.1.0.tar.bz2"
-  sha256 "841c5ea53fc26259f4fbf0e8bde982dea1b8a1ca0cb77e681c82b050566bf92b"
+  url "https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-2.2.0.tar.bz2"
+  sha256 "7160e80e84dafd00d956c84891c533bb7ab16a6a54fbe1574b2f3acf0496977b"
   license "LGPL-2.1-or-later"
   compatibility_version 1
 
@@ -12,12 +12,12 @@ class Gpgme < Formula
   end
 
   bottle do
-    sha256                               arm64_tahoe:   "0c10ccfca11d15aa56e4d1256f5937e42a014599476c8bf0fc205f8ccaec4ac8"
-    sha256                               arm64_sequoia: "364e7d5a64a11cff1fc174c45ae003edc05710647440d659497093e6e3f852e4"
-    sha256                               arm64_sonoma:  "806e6087437443c0f8e0eea337e6d1fd8358085c9d40042a9c3855045fc435e7"
-    sha256 cellar: :any,                 sonoma:        "20246e1dabf22226e2cb05d555807e564c89fd05c29ef9e6513ff4dc9ff5d453"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7c083601bce346a536b7ea6541c4bd50428486ef8c2e71987c7b85938eeca4d0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6cca578994038bbe5e6ec56d04faf8c4f4f272ffbed1808bd574a004213c3037"
+    sha256               arm64_golden_gate: "a4c932fc348a7662f4d740342b51a714ad6e62309247f2e5916238db9875339c"
+    sha256               arm64_tahoe:       "c9e850e7f6254e826ea76b15d02825fe712cebad5ed54505ffea7feab5da12c3"
+    sha256               arm64_sequoia:     "1b998805d11e6020682577dd8b817e7ff771bac1d6e289c142f8b079308475b4"
+    sha256               arm64_sonoma:      "668db25027a3ce2fe6d755086fc8ee60cf33649fa68cbc86bc40e00efd528722"
+    sha256 cellar: :any, arm64_linux:       "9a3d9fad56efbfb22e2e6cf337282b7951dfd97237953e3e6fb5e2263ec99151"
+    sha256 cellar: :any, x86_64_linux:      "50b32ff4b366cb33d66508f530a1609e38bd0cbc66cf7cdbe2398d79658d6c18"
   end
 
   depends_on "gnupg"
@@ -35,7 +35,7 @@ class Gpgme < Formula
       # avoid triggering mandatory rebuilds of software that hard-codes this path
       s.gsub! prefix, opt_prefix
       # replace libassuan Cellar paths to avoid breakage on libassuan version/revision bumps
-      s.gsub! Formula["libassuan"].prefix.realpath, Formula["libassuan"].opt_prefix
+      s.gsub! Formula["libassuan"].prefix.realpath, formula_opt_prefix("libassuan")
     end
   end
 

@@ -1,10 +1,11 @@
 class HierarchyBuilder < Formula
   desc "High level commands to declare a hierarchy based on packed classes"
   homepage "https://github.com/math-comp/hierarchy-builder"
-  url "https://github.com/math-comp/hierarchy-builder/releases/download/v1.10.2/hierarchy-builder-1.10.2.tar.gz"
-  sha256 "bdd7dccc5248e7500e02fd1745fd17faa41920f43a32ca2de2b2139212ee53b5"
+  url "https://github.com/math-comp/hierarchy-builder/releases/download/v1.10.3/hierarchy-builder-1.10.3.tar.gz"
+  sha256 "577597528f25d217baee91040cc5d7e5f621be7e7a629cccf295e337f73a6d45"
   license "MIT"
-  revision 4
+  revision 3
+  compatibility_version 1
 
   livecheck do
     url :stable
@@ -12,19 +13,19 @@ class HierarchyBuilder < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "edc11fa3e8253c2058fd25f195f89b3fd5056838dec7342975d16903a2757cd8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "df34f47ebb916cddc88a4cd7474c155df6004dca53ef7f0f59b16f0cf6251171"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1e1ed20ca222c990fec8c74f1658f39132cb3f8bc43fead4868a733e698eb122"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b21d207ae42cbb5466eec8e31c0a2b1a6eaaf3e921735b75197f7d549641d753"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1ebb13c22ff6a196c9cccd8134bce760662e1b024c09da3402a862faa556b39f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ca8f1dae64c88a25d2df84e25549980dd3bde8aa8fa3546ee957e82520f373e3"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8b7ba09ab0107433b1e879b11a0110c2a9e7b5973526e7296c06fef7088b9b4d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a98c84826e077c75a13c907d9111f6a7174ef97509741aae4c05c41c067d14b2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "772ba09e4a4c8adcda7ac47aa49738a6be58bf3bcb5e6bdd68b9cd5fa249b3e9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4a8cb2cc028ccc10421b0f08a1e7f7356681a8600de139e45659cb82b73221df"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a74387bbb64cb6cc57c4ea99e961479439d9218ca0298928aee01ab2f2e15eac"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "385456012114ce828db0c01d46cb0cefb3c85ec700ed69338c553e76ded8bfb2"
   end
 
   depends_on "rocq"
   depends_on "rocq-elpi"
 
   def install
-    ENV["OCAMLFIND_CONF"] = Formula["rocq-elpi"].libexec/"lib/findlib.conf"
+    ENV["OCAMLFIND_CONF"] = formula_opt_libexec("rocq-elpi")/"lib/findlib.conf"
     system "make", "build"
     system "make", "install", "COQLIB=#{lib}/ocaml/coq"
   end
@@ -50,8 +51,8 @@ class HierarchyBuilder < Formula
       Check forall (M : AddComoid.type) (x : M), x + x = 0.
     ROCQ
 
-    ENV["OCAMLFIND_CONF"] = Formula["rocq-elpi"].libexec/"lib/findlib.conf"
-    assert_equal <<~ROCQ, shell_output("#{Formula["rocq"].bin}/rocq compile test.v")
+    ENV["OCAMLFIND_CONF"] = formula_opt_libexec("rocq-elpi")/"lib/findlib.conf"
+    assert_equal <<~ROCQ, shell_output("#{formula_opt_bin("rocq")}/rocq compile test.v")
       forall (M : AddComoid.type) (x : M), x + x = 0
            : Prop
     ROCQ

@@ -1,8 +1,8 @@
 class Apko < Formula
   desc "Build OCI images from APK packages directly without Dockerfile"
   homepage "https://github.com/chainguard-dev/apko"
-  url "https://github.com/chainguard-dev/apko/archive/refs/tags/v1.2.17.tar.gz"
-  sha256 "12af82ec319f989c82da2ff5ef59a19822fc0193158f6510b0ada3b72f2d7662"
+  url "https://github.com/chainguard-dev/apko/archive/refs/tags/v1.3.0.tar.gz"
+  sha256 "0f9e882489b04b3a36b2c620ab4df6ae485dd84dbed3cab742d70b2b56655ef9"
   license "Apache-2.0"
   head "https://github.com/chainguard-dev/apko.git", branch: "main"
 
@@ -15,19 +15,18 @@ class Apko < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cc1947f4120344ac82181f82d75496bcc49d98999b028beab12c78eaaacb2a9b"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "114e9b3cd923ab14f7433568a07796e98f9e2a3d857d95db923d3dbbd82f2d4b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c9e493e9ecec99194334281d7214ab90afd74bbb8628cb3b61c80339153f065a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "15babf7d2d1fcc12f796eb058372a2a29d6d6ef577dca0c29d96d33a8979c2c0"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d5d50a4b619aa70fc0f581ef5d6f2af16b6d13ad60eb84ca0a014222e8125bda"
-    sha256 cellar: :any,                 x86_64_linux:  "25027e15edd2b52fd1ad7df11eb6107bf3b27c11dd97a95b7385c37f6563c229"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "c4da30844094ed39545e57b327b369665cd9faa261fc8821776d9f76d975c89a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "12e39d3639fb37851570afe09de84d07bc88dc70146d0e38ea23f36996791900"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "93c685c9333b130c2f9e1a88474d813d1d2cbc897f6b5bc94cecb21155e9bda1"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "554093ba5ae521bf9983038306311c69c82d96b9cd1f3370af54c9b36543bcef"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b5efdc29772c5ed4654e9be61563063908496a7b0d0bab269ad5818afaed88f0"
+    sha256 cellar: :any,                 x86_64_linux:      "8599af396faaf112b21d0c244835e0dd35d5357badb109b45688f6a61ef3353f"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X sigs.k8s.io/release-utils/version.gitVersion=#{version}
       -X sigs.k8s.io/release-utils/version.gitCommit=#{tap.user}
       -X sigs.k8s.io/release-utils/version.gitTreeState=clean

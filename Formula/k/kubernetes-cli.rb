@@ -2,8 +2,8 @@ class KubernetesCli < Formula
   desc "Kubernetes command-line interface"
   homepage "https://kubernetes.io/docs/reference/kubectl/"
   url "https://github.com/kubernetes/kubernetes.git",
-      tag:      "v1.36.2",
-      revision: "24e2b02af5543d7910c2bb074c7264df5a8f0467"
+      tag:      "v1.37.0",
+      revision: "f54c212e3a2f75d674b717a9b29052b20b60aefc"
   license "Apache-2.0"
   head "https://github.com/kubernetes/kubernetes.git", branch: "master"
 
@@ -13,12 +13,13 @@ class KubernetesCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "91df548e1cb396ef67e3a99aa2832777e7ebcd56e0b8050a981a9dc8f1234002"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8cf9ef220adef51db3f6835f0b4c7fe0b322f593c668753e5635566520ed06c2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5ca5116967ba01c8abc7c03019bfc2bc6599efefe6aca4dc2a913939ecfb9082"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9c4452b0a565b7687f2c374802d19c794b2c192db0ab1da264052e9c8a5cdc11"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ee8cd75eacc68081c0a08b4d038c5f61fb08d16ae45574e07c870c12ad116661"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "85ab53660f7b8edd92dc7e851191a8474ac8bc19f6281f8f0e02a4c777d494ea"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "c9a56049e7ba242b42515d3c1af76757c3b9781b79961ffafd5c2e2aad5cd7d8"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d59d9b0bb76b639511954ba218a36cc56e097955ec8b74fde7d7c7457954ac76"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e2e9246d7ca9cab0fe14f95b748afbc92f740391ff5517f04c23424a2e6e50da"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "a49e9a8e57b0cc08d96eb71f767eef0328ff6c8c18338d4eb9e4aea4bc5b0e96"
+    sha256 cellar: :any_skip_relocation, sonoma:            "9d1c8e462f18489f32789a07ff911a8808a442d01043211961bfd7dd442b5220"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "28c865c371b31fa5a0637281c59d8e143cbf30c445fd8c0b783c339d019ef9de"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "da9b138e2251ca3d0fc2a3b35644fabf689d4ec552fc24e8e1d65682226622b0"
   end
 
   depends_on "go" => :build
@@ -28,8 +29,11 @@ class KubernetesCli < Formula
     depends_on "coreutils" => :build
   end
 
+  # Go dependencies are vendored
+  deny_network_access!
+
   def install
-    ENV.prepend_path "PATH", Formula["coreutils"].libexec/"gnubin" if OS.mac? # needs GNU date
+    ENV.prepend_path "PATH", formula_opt_libexec("coreutils")/"gnubin" if OS.mac? # needs GNU date
     ENV["FORCE_HOST_GO"] = "1"
     system "make", "WHAT=cmd/kubectl"
     bin.install "_output/bin/kubectl"

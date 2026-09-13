@@ -1,18 +1,19 @@
 class Dbmate < Formula
   desc "Lightweight, framework-agnostic database migration tool"
   homepage "https://github.com/amacneil/dbmate"
-  url "https://github.com/amacneil/dbmate/archive/refs/tags/v2.33.0.tar.gz"
-  sha256 "e7b57143c9ee436e9373e19420e752fef7a0b03807fe381bf7d039c7b9d2f6d6"
+  url "https://github.com/amacneil/dbmate/archive/refs/tags/v2.35.1.tar.gz"
+  sha256 "2576832a3405c5011ad948cdf5a3c08e35158396bc1007cc95057047b68e81cd"
   license "MIT"
   head "https://github.com/amacneil/dbmate.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d3bff0524ec4aa7175c2733c112a0916c07a9b3d8b3739a3850207a9a2bc03f5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c362807df33805f8d475e299bc6a22c9a1dac8346e445ffe1eee638f4f3cd8c1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "7b564a1bd09368a6c2323d2803e7eb77e4479f6df282e5255f4afafa9fd52727"
-    sha256 cellar: :any_skip_relocation, sonoma:        "82ee30716276545ce62eb907c023e603867ecdf84e2063cdea201753cd869aad"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9789c110b212bd6d1166331503055f4582c2dde56623dc00a5006dd2153af5a5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "13c5f4c9e787578f8ef9fbe8cfc1c970537e7c00b8c94af2bda4dfd1202890a2"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1a977851cded440b3046b36d5ee64bb0fbd46b8aeb6b34207d2b446043b48cfd"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b9551846172b0f8b00259df071e4ac9393d11662ec7c130b68d12b44791e898a"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e2ca1240705326660123bfd58069140d0d5ef2dc61e8b84b533b0fbb7f1a05cb"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bd0c9a8f740b61ab3ac0cedd7f32a33b32ed9ab7a5d64f4a130537280fbf2b32"
+    sha256 cellar: :any_skip_relocation, sonoma:            "4b4caf68ad0b5dfbbc25be29d5bbdac7ee276c2d8049b81c55f9464787ed9510"
+    sha256 cellar: :any,                 arm64_linux:       "91284e4c1c9300dd098e240627ec137b2deede0503a6fe3e54c0db632728a5ff"
+    sha256 cellar: :any,                 x86_64_linux:      "88bc5469aecd804b675b35a7a8b627fa095c6ded286441b0d5a85f02e16e9721"
   end
 
   depends_on "go" => :build
@@ -22,7 +23,7 @@ class Dbmate < Formula
     tags = %w[
       sqlite_omit_load_extension sqlite_json sqlite_fts5
     ]
-    system "go", "build", *std_go_args(ldflags: "-s -w", tags:)
+    system "go", "build", *std_go_args(tags:)
   end
 
   test do

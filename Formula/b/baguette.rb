@@ -1,13 +1,14 @@
 class Baguette < Formula
   desc "Headless iOS Simulator manager and host-side input injection for iOS 26"
   homepage "https://tddworks.github.io/baguette/"
-  url "https://github.com/tddworks/baguette/archive/refs/tags/v0.1.75.tar.gz"
-  sha256 "9599b9494cc83e0f4f214ecdcbe873a64c34cce6183522deabd68e778019d652"
+  url "https://github.com/tddworks/baguette/archive/refs/tags/v0.1.97.tar.gz"
+  sha256 "90785b339da7ac2925a706c0f7e624640ebda60b563a9cecb3c4d777868b7da5"
   license "Apache-2.0"
   head "https://github.com/tddworks/baguette.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe: "b930df8cfbbd530f89a8def18f5ac63a86f52d4958b82a10b886d15cf2601a7d"
+    sha256 cellar: :any, arm64_golden_gate: "3bc1d748324d2ea1332a217411c59a92c9bf790f89cd16d83bf0671ac8cba3e5"
+    sha256 cellar: :any, arm64_tahoe:       "cb4d7960c42c2c4f02a4f51d60342919aa7ca10da62ea550729484d652433f55"
   end
 
   depends_on xcode: ["26.0", :build]
@@ -20,34 +21,39 @@ class Baguette < Formula
               "let baguetteVersion = \"0.1.61\"",
               %Q(let baguetteVersion = "#{version}")
 
-    # Build the iOS-Simulator virtual-camera dylib from source rather than
-    # using the prebuilt copy in the tarball. Mirrors upstream's
-    # VirtualCamera/build.sh, compiled against the iphonesimulator SDK for this
-    # formula's arch (arm64) straight into the SPM resource directory.
-    # `-target *-simulator` stamps the iOS-Simulator platform load command and
-    # `-Wl,-adhoc_codesign` ad-hoc signs the dylib at link time. Homebrew
-    # re-signs it during relocation, which is fine: at runtime baguette copies
-    # the dylib to a fresh content-hashed path before injecting it, so the
-    # simulator's dyld loads the ad-hoc signature without the page-hash-cache
-    # "invalid-page" rejection that only hits a replaced dylib at the same path.
+    # Rebuild the iOS-Simulator injection dylibs from source: upstream ships them prebuilt and universal,
+    # which `brew audit` rejects. Mirrors each Injected/*/build.sh, for this arch only.
+    # `-target *-simulator` stamps the iOS-Simulator platform load command, and `-headerpad_max_install_names`
+    # leaves room for the Cellar-path ID Homebrew writes during relocation. Homebrew re-signing over
+    # `-adhoc_codesign` is fine: baguette copies the dylib to a content-hashed path before injecting it.
     arch = Hardware::CPU.arch.to_s
     sdk = Utils.safe_popen_read("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path").chomp
-    vc = "Sources/Baguette/Resources/VirtualCamera"
-    rm "#{vc}/VirtualCamera.dylib"
-    system "xcrun", "clang", "-arch", arch, "-isysroot", sdk,
-           "-target", "#{arch}-apple-ios17.0-simulator", "-dynamiclib",
-           "-framework", "Foundation", "-framework", "UIKit",
-           "-framework", "QuartzCore", "-framework", "CoreGraphics",
-           "-framework", "AVFoundation", "-framework", "ImageIO",
-           "-framework", "CoreServices", "-fobjc-arc", "-ldl",
-           "-install_name", "@rpath/VirtualCamera.dylib", "-Wl,-adhoc_codesign",
-           "-I", "VirtualCamera/Sources", "-o", "#{vc}/VirtualCamera.dylib",
-           "VirtualCamera/Sources/SimCamInject.m",
-           "VirtualCamera/Sources/SimCamPreviewLayerDriver.m",
-           "VirtualCamera/Sources/SimCamFakePhoto.m",
-           "VirtualCamera/Sources/SimCamSharedFrameReader.m"
+    dylibs = {
+      "VirtualCamera"  => %w[Foundation UIKit QuartzCore CoreGraphics AVFoundation CoreMedia CoreVideo
+                             ImageIO CoreServices],
+      "VirtualMotion"  => %w[Foundation CoreMotion],
+      "VirtualNetwork" => %w[Foundation],
+    }
+    dylibs.each do |name, frameworks|
+      dylib = "Sources/Baguette/Resources/#{name}/#{name}.dylib"
+      rm dylib
 
-    system "swift", "build", "--disable-sandbox", "-c", "release"
+      clang_args = %W[
+        -arch #{arch} -isysroot #{sdk}
+        -target #{arch}-apple-ios17.0-simulator
+        -dynamiclib -fobjc-arc -ldl
+        -I Injected/#{name}/Sources -o #{dylib}
+        -install_name @rpath/#{name}.dylib
+        -Wl,-headerpad_max_install_names
+        -Wl,-adhoc_codesign
+      ]
+      clang_args += frameworks.flat_map { |framework| ["-framework", framework] }
+      clang_args += Dir["Injected/#{name}/Sources/*.m"]
+
+      system "xcrun", "clang", *clang_args
+    end
+
+    system "swift", "build", *std_swift_args
 
     # Binary and its SPM resource bundle must sit side-by-side at runtime —
     # WebRoot resolves the bundle via dladdr from the executable's directory.

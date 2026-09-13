@@ -1,8 +1,8 @@
 class Bmake < Formula
   desc "Portable version of NetBSD make(1)"
   homepage "https://www.crufty.net/help/sjg/bmake.html"
-  url "https://www.crufty.net/ftp/pub/sjg/bmake-20260609.tar.gz"
-  sha256 "213c8cecb955b3307bffc3a8445a327aa3cbc725bf388d3df139df90f2c0d541"
+  url "https://www.crufty.net/ftp/pub/sjg/bmake-20260824.tar.gz"
+  sha256 "76c6253a592dd55741be0b14805b9f7e0eb8442004146a978f24b20f37d2cb72"
   license "BSD-3-Clause"
 
   livecheck do
@@ -11,12 +11,12 @@ class Bmake < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "257d521be4d843eabb4999217bedff30083ee2ca82a2d255a316dd0e64e98612"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "82728d004826bbfe80eb6ac717509d3c7fe1b14772d474326b3401f8935c3658"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3d4925d3dd8ff7cfcdfedd06843e59001b0f129c598b4e76cfba02f01ba50d1f"
-    sha256                               sonoma:        "3be3b9f0db71454c1b2c8de0d74c151d220d5cbe1a1a8fec594ff2005378567d"
-    sha256                               arm64_linux:   "c21a154e7f1ddf11c0609d76c94f965f5a660e1b3480deaa491a472c3e3fe282"
-    sha256                               x86_64_linux:  "a64d6059e2a639b46da3d68cbdd0ca485d76da23fb67b04b38efa38472125eec"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5d08f365259cb0cc1688fc5d80079ae2a20e8d93749e08fea298df71fbcd2c9e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "0fafa283d79b84abfe98173e057302e6f4265c45f77ff7e98ea8866d89839524"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "87d6db90757cc75eb24815824c15e595730c881446f6b82947cffa86f75f416f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "837db970b993aba0a96caf2320be5a8401c7454702c53c9dd50c6532de7a0319"
+    sha256                               arm64_linux:       "4f4fe160a217e09fd77e2ffff23549b21b010e73ab7c214373ae80ce617c2c6b"
+    sha256                               x86_64_linux:      "089abe3ab258dab87a7755637fca50c9c3cc23c2224f55ea2a9bb694a94b1526"
   end
 
   uses_from_macos "bc-gh" => :build
@@ -24,10 +24,16 @@ class Bmake < Formula
   def install
     # -DWITHOUT_PROG_LINK means "don't symlink as bmake-VERSION."
     # shell-ksh test segfaults since macOS 11.
-    args = ["--prefix=#{prefix}", "-DWITHOUT_PROG_LINK", "--install", "BROKEN_TESTS=shell-ksh"]
-    system "sh", "boot-strap", *args
+    broken_tests = %w[shell-ksh]
+    if OS.linux?
+      # The sandbox denies reading "/", which these unit tests and "bmake -r -m /" need
+      ENV["MK_AUTO_OBJ"] = "no"
+      broken_tests += %w[dir opt-chdir opt-where-am-i varname-dot-curdir varname-dot-path]
+    end
+    ENV["BROKEN_TESTS"] = broken_tests.join(" ")
 
-    man1.install "bmake.1"
+    args = ["--prefix=#{prefix}", "-DWITHOUT_PROG_LINK", "--install"]
+    system "sh", "boot-strap", *args
   end
 
   test do

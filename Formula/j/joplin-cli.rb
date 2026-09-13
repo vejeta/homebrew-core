@@ -1,17 +1,17 @@
 class JoplinCli < Formula
   desc "Note taking and to-do application with synchronization capabilities"
   homepage "https://joplinapp.org/"
-  url "https://registry.npmjs.org/joplin/-/joplin-3.6.2.tgz"
-  sha256 "909656e86f66014c47520fa6453deeb13c9f724044a5c7311c83167305e951e5"
+  url "https://registry.npmjs.org/joplin/-/joplin-3.7.1.tgz"
+  sha256 "18bc5b28bcfc6c5a418871e86d075015b5a83afc075dbea994fa26a40a765b56"
   license "MIT"
 
   bottle do
-    sha256               arm64_tahoe:   "2a3d3d848132f43555617067b2cb07a1e1a22d2559872e08f608ec25a34762d4"
-    sha256               arm64_sequoia: "8d326f547af34305e48ea35b81ff727d5cb47229c3aaa968541d07527aa2779c"
-    sha256               arm64_sonoma:  "9c92138d6768cac7b7c7f3e058cdceefae37222e87160ac9243a5ae5a879ccf9"
-    sha256               sonoma:        "e48a04ac906216d2b5993183b14213fd1287d5bd36e4421312a96aac122e6a30"
-    sha256 cellar: :any, arm64_linux:   "a7f8a626568e486d22123ef5dde63ea942171a024505fff54b22c6088e847df9"
-    sha256 cellar: :any, x86_64_linux:  "6b45e5a47646286de124317a1d0055836a7f97f25615cd4044261c3454658d6f"
+    sha256 cellar: :any, arm64_golden_gate: "1f01e130ff52d36091c70ed66f7e9a295903334aa9e94d3ec43dbf315b70d28e"
+    sha256 cellar: :any, arm64_tahoe:       "603a6389e61af84a635f36b39563e33832f3e4ff04e6fdf336544cef573b3aee"
+    sha256 cellar: :any, arm64_sequoia:     "557862a881e2557577d9e3a83d77f3a220b06e3717fe7d0ca0c8eab5805e90bb"
+    sha256 cellar: :any, arm64_sonoma:      "c6e69de4c392fbab9aa4ecb9aa76865e93a2d8c6c725b944d8e358b2bf13dc4b"
+    sha256 cellar: :any, arm64_linux:       "614e68953a8a7cc2972b3083cee965e6b5c5918e9d74a9d211eeac55d009e145"
+    sha256 cellar: :any, x86_64_linux:      "cc58c74c29f59f35e7259c1a0bab4d5742cc5bf8019c490f712b35074fd8efa5"
   end
 
   depends_on "pkgconf" => :build
@@ -33,9 +33,8 @@ class JoplinCli < Formula
   end
 
   def install
-    inreplace "command-version.js", "require('../package.json')", "require('./package.json')"
     # Need node-addon-api v7+: https://github.com/lovell/sharp/issues/3920
-    system "npm", "add", "node-addon-api@8.0.0"
+    system "npm", "add", "node-addon-api@8.9.0"
     system "npm", "install", *std_npm_args(ignore_scripts: false)
     bin.install_symlink libexec.glob("bin/*")
 
@@ -47,7 +46,7 @@ class JoplinCli < Formula
       terminal_notifier_dir.mkpath
 
       # replace vendored terminal-notifier with our own
-      terminal_notifier_app = Formula["terminal-notifier"].opt_prefix/"terminal-notifier.app"
+      terminal_notifier_app = formula_opt_prefix("terminal-notifier")/"terminal-notifier.app"
       ln_sf terminal_notifier_app.relative_path_from(terminal_notifier_dir), terminal_notifier_dir
     end
   end

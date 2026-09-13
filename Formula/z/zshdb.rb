@@ -23,13 +23,15 @@ class Zshdb < Formula
   end
 
   head do
-    url "https://github.com/rocky/zshdb.git", branch: "master"
+    url "https://github.com/Trepan-Debuggers/zshdb.git", branch: "master"
 
     depends_on "autoconf" => :build
     depends_on "automake" => :build
   end
 
   depends_on "zsh"
+
+  deny_network_access!
 
   def install
     system "./autogen.sh" if build.head?

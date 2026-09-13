@@ -1,8 +1,8 @@
 class NatsServer < Formula
   desc "Lightweight cloud messaging system"
   homepage "https://nats.io"
-  url "https://github.com/nats-io/nats-server/archive/refs/tags/v2.14.2.tar.gz"
-  sha256 "54cfe4361aa09a55a92524b737993941cd37fd444ccedd9ba60fc0d4a0c0cd72"
+  url "https://github.com/nats-io/nats-server/archive/refs/tags/v2.14.6.tar.gz"
+  sha256 "90aec2c35eaa94105354cbcdfb6d88cea5082415dc39409efdbe320fb66328bb"
   license "Apache-2.0"
   head "https://github.com/nats-io/nats-server.git", branch: "main"
 
@@ -12,18 +12,18 @@ class NatsServer < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cbb59426d60cc88b4357e613bd67192ea83dede0ba23d6e8157878e7fb9eb45c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "cbb59426d60cc88b4357e613bd67192ea83dede0ba23d6e8157878e7fb9eb45c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cbb59426d60cc88b4357e613bd67192ea83dede0ba23d6e8157878e7fb9eb45c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "7f90bd2ef8bb542dac1002e15d5f8f1295b8220544d996ccdcffbe825742a66b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8fae63cae3125e47561a22bf46ba297f4ab28449c9d8e1a13c97feb97458b196"
-    sha256 cellar: :any,                 x86_64_linux:  "c50801ecb6cf888b9c37b1cb9c337ddb2a76a1360e83f1d01e18109fd2cc515a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "4addba931813a4de477d658478d2f08662c4bfb87e42d164f04e6bb6113b4fd2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bbd2d1adbb10e0e8391bf06bd18188a6b19e3ce2ee20ec67bb05afdb10da5908"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bbd2d1adbb10e0e8391bf06bd18188a6b19e3ce2ee20ec67bb05afdb10da5908"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bbd2d1adbb10e0e8391bf06bd18188a6b19e3ce2ee20ec67bb05afdb10da5908"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "25378171785a7ce9f3b8608041e79bd83a7c4251306ff90c361b842786746c0a"
+    sha256 cellar: :any,                 x86_64_linux:      "a783565630fb0ed34add03db68fb044c249a8f4d28483af4b9e7aaedc380fcfb"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
   end
 
   service do

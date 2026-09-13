@@ -14,14 +14,15 @@ class Unzip < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "be1cb055cbcf3e1420ea25a48ab6da010c2e70efff5ffe7e4e91dac7231c4ae2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fe1f7ac37950ec13dde20b2ab1eb86eb45f066a305df1fa6c8349d6de0e14dec"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e7bb9045e4d39a6409b1eaa113ccd21337374726d74a9b4b2344ea6a87f13543"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "28765484286482079acb25eebf967819544b1a86daf3b92f6c19d282296e3915"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ecb59929e280df14e71d9f163de7aa1613f005fb4d44dd40fc1a811ea5d61132"
-    sha256 cellar: :any_skip_relocation, ventura:       "76363f884cbb100c668adea01a3d72a8efadc23e5bee125182ad030d6fd3685f"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8c82849237d428857a01410f203b89819f02e7ab28651400d6ebefe46f3feca4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0e3fe87c9f438d2012de977edf649608574a8c3265797fb693923bdca9227a7d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "525f5587e23a595a3e3e1d11a574c29c5a475585fd19b0c7f675895ef41c9608"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "be1cb055cbcf3e1420ea25a48ab6da010c2e70efff5ffe7e4e91dac7231c4ae2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "fe1f7ac37950ec13dde20b2ab1eb86eb45f066a305df1fa6c8349d6de0e14dec"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e7bb9045e4d39a6409b1eaa113ccd21337374726d74a9b4b2344ea6a87f13543"
+    sha256 cellar: :any_skip_relocation, arm64_ventura:     "28765484286482079acb25eebf967819544b1a86daf3b92f6c19d282296e3915"
+    sha256 cellar: :any_skip_relocation, sonoma:            "ecb59929e280df14e71d9f163de7aa1613f005fb4d44dd40fc1a811ea5d61132"
+    sha256 cellar: :any_skip_relocation, ventura:           "76363f884cbb100c668adea01a3d72a8efadc23e5bee125182ad030d6fd3685f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "8c82849237d428857a01410f203b89819f02e7ab28651400d6ebefe46f3feca4"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "0e3fe87c9f438d2012de977edf649608574a8c3265797fb693923bdca9227a7d"
   end
 
   keg_only :provided_by_macos
@@ -34,6 +35,10 @@ class Unzip < Formula
   patch do
     url "https://archive.ubuntu.com/ubuntu/pool/main/u/unzip/unzip_6.0-28ubuntu4.1.debian.tar.xz"
     sha256 "d123c8e6972dbdd17ba1a4920fb57ed2ede9237dbae149dcbf55df829c77baf3"
+    type :unofficial
+    resolves "CVE-2014-8139", "CVE-2014-8140", "CVE-2014-8141", "CVE-2014-9636",
+             "CVE-2015-7696", "CVE-2015-7697", "CVE-2014-9913", "CVE-2016-9844",
+             "CVE-2018-1000035", "CVE-2019-13232", "CVE-2022-0529", "CVE-2022-0530"
     apply %w[
       patches/01-manpages-in-section-1-not-in-section-1l.patch
       patches/02-this-is-debian-unzip.patch
@@ -104,7 +109,7 @@ class Unzip < Formula
     if OS.mac?
       system "/usr/bin/zip", "test.zip", "test1", "test2", "test3"
     else
-      system Formula["zip"].bin/"zip", "test.zip", "test1", "test2", "test3"
+      system formula_opt_bin("zip")/"zip", "test.zip", "test1", "test2", "test3"
     end
     %w[test1 test2 test3].each do |f|
       rm f

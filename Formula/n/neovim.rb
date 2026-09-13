@@ -2,12 +2,13 @@ class Neovim < Formula
   desc "Ambitious Vim-fork focused on extensibility and agility"
   homepage "https://neovim.io/"
   license "Apache-2.0"
+  revision 1
   compatibility_version 1
   head "https://github.com/neovim/neovim.git", branch: "master"
 
   stable do
-    url "https://github.com/neovim/neovim/archive/refs/tags/v0.12.3.tar.gz"
-    sha256 "36a6c66bfbba5d96fa512110aecddb981148a4d013b5ecd01a42877c49855a41"
+    url "https://github.com/neovim/neovim/archive/refs/tags/v0.12.5.tar.gz"
+    sha256 "a810c95332317bd0017e1ca07e376a8472c79075cbed00fa3737d190a8a0a45a"
 
     # Keep resources updated according to:
     # https://github.com/neovim/neovim/blob/v#{version}/cmake.deps/deps.txt
@@ -83,12 +84,12 @@ class Neovim < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "c6afc7ce2d91a302dd5945ac1699e32a72bd6122de9e101d32484eafb358414b"
-    sha256 arm64_sequoia: "4f346d05ead887cfc11e6531cc8fabf39c95fb3ee47809524f5a547489854e5e"
-    sha256 arm64_sonoma:  "ad3f08b6ea7c78a92fe187d6aec7e6be7a32b7958bf63555abbda7bbf57d6976"
-    sha256 sonoma:        "b9df347458b8c059c94576f422225e9dc950ae580cd08bfe6f1d55611ebf2d89"
-    sha256 arm64_linux:   "5cfafd456ed6fb8d4dfe2a797cc5467f5ed6622be1d87fb7ff789ab7d095dce0"
-    sha256 x86_64_linux:  "7f7b6c58f93f8a9916c6990ca77ae84b72424ff7afb3ce53d42da34154070f64"
+    sha256 arm64_golden_gate: "fda07719c6cdd5ed43684e1e68517fbb0d1d66b379dda958007490ee4d84481f"
+    sha256 arm64_tahoe:       "1fa5192523a6cc34b8c76cfb25b909888de98d4fd114def770921412172444a1"
+    sha256 arm64_sequoia:     "a6f4b223c5ee632a04afbd490411624e01b261dfbb6285275e4726d6cc01510f"
+    sha256 arm64_sonoma:      "878760350f9fadc29a2fe7873ce452b4648d9d601ba537980fe9782dc24ef72c"
+    sha256 arm64_linux:       "e565cfb4664b511b34eb4a3d57572969abd0d291d9be7d5e1f89d2cb26279f59"
+    sha256 x86_64_linux:      "54bf8c1bb1b895e89e72421cbd9208911eb6cac31a0593963403df451699c324"
   end
 
   depends_on "cmake" => :build
@@ -154,9 +155,9 @@ class Neovim < Formula
     inreplace "cmake/GenerateVersion.cmake", "--dirty", "--dirty=-Homebrew"
 
     args = [
-      "-DLUV_LIBRARY=#{Formula["luv"].opt_lib/shared_library("libluv")}",
-      "-DLIBUV_LIBRARY=#{Formula["libuv"].opt_lib/shared_library("libuv")}",
-      "-DLPEG_LIBRARY=#{Formula["lpeg"].opt_lib/shared_library("liblpeg")}",
+      "-DLUV_LIBRARY=#{formula_opt_lib("luv")/shared_library("libluv")}",
+      "-DLIBUV_LIBRARY=#{formula_opt_lib("libuv")/shared_library("libuv")}",
+      "-DLPEG_LIBRARY=#{formula_opt_lib("lpeg")/shared_library("liblpeg")}",
     ]
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"

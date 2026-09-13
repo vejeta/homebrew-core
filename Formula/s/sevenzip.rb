@@ -1,27 +1,21 @@
 class Sevenzip < Formula
   desc "7-Zip is a file archiver with a high compression ratio"
   homepage "https://7-zip.org"
-  url "https://7-zip.org/a/7z2601-src.tar.xz"
-  version "26.01"
-  sha256 "b2389e0e930b2f9a348cf0fe7d9870a46482a8ec044ee0bdf42e2136db31c3d6"
+  url "https://github.com/ip7z/7zip/releases/download/26.03/7z2603-src.tar.xz"
+  sha256 "9cbde5099c6deb73691b0579063da5827522ccbbcba3f0020fd04e8c8c16c0d4"
   license all_of: ["LGPL-2.1-or-later", "BSD-3-Clause"]
   compatibility_version 1
   head "https://github.com/ip7z/7zip.git", branch: "main"
 
-  livecheck do
-    url "https://7-zip.org/download.html"
-    regex(/>\s*Download\s+7-Zip\s+v?(\d+(?:\.\d+)+)\s+\([^)]+?\)/im)
-  end
-
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "6f0c24927488f6cff80f71a4127c89c967d70700002df0ae7dd8248bc77167a4"
-    sha256 cellar: :any,                 arm64_sequoia: "3d6255d3267e6614f8353d9acb074ec56da23069fc0730e1faa97b4b147c6b3d"
-    sha256 cellar: :any,                 arm64_sonoma:  "87f99d0cc42d909e43c57b8ed45735a479b27c5e247f3942e86148b51737d94e"
-    sha256 cellar: :any,                 sonoma:        "d846411ffedeef2f643a3aaea33233c6b038d4c166f3f46ee9542f559b1130c7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b9054ee68ffc6d140ffdfb7f7b665755c74f2cbbe9e109bdeec5ea6640ec0321"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "23143ae518a247b5b5ababcaf4e149c45cf92c4fb98e3019acc06bdd348bf609"
+    sha256 cellar: :any, arm64_golden_gate: "0ef48bf66b26f1f3482df04772d0cd193889b98845b178499c449e0a29b2f977"
+    sha256 cellar: :any, arm64_tahoe:       "253b07aca4d56ccf849cd025beeaee2db98815571195c4027c84b1a91690d274"
+    sha256 cellar: :any, arm64_sequoia:     "8e14d4dbe8fb93a9b08a0c4be9aae22d561b28d1eaf423f7a0ed0ddd94b5b1b2"
+    sha256 cellar: :any, arm64_sonoma:      "5833969c107401708c0ff136d79031831ae606e3d57962487ff85a71aa1bca50"
+    sha256 cellar: :any, arm64_linux:       "2b45a5c63c107874244eda5175db8b2f32053fed9f58f1ba71959308a431a70e"
+    sha256 cellar: :any, x86_64_linux:      "dbf1f812d853a75b2df4bdf2642094509d12dc05db52f3810687566866cef0ad"
   end
 
   def install

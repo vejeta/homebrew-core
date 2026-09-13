@@ -1,18 +1,18 @@
 class GopassJsonapi < Formula
   desc "Gopass Browser Bindings"
   homepage "https://github.com/gopasspw/gopass-jsonapi"
-  url "https://github.com/gopasspw/gopass-jsonapi/archive/refs/tags/v1.16.1.tar.gz"
-  sha256 "73449a7c359836a995946e54d91e32afe5a54e1519b5a01f78c9923c13c0894f"
+  url "https://github.com/gopasspw/gopass-jsonapi/archive/refs/tags/v1.17.2.tar.gz"
+  sha256 "b1369a2bad432386455d7aa3002f93910f9e275fc3c33e3f37f5731aa918f07a"
   license "MIT"
   head "https://github.com/gopasspw/gopass-jsonapi.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "63e40f2563f43b12908bdb89509d8b568ac3e797fe43d1c0bee05f56bcd4aa2a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e6cfbfce7315db8f388249ef66abdc19f71d996d69ab699e1bd0a48ac66dc050"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e8c19bd6e4f571996fedd915472e0ce7c37d859c856610620f41af8676bc4351"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ff59e9b4d90e3bf9d5fe694477827b7b6676f21ba75fc1ca00d63fa4c56a904c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4da1e2900218d466f4e58fa97948b8d19e0dc20078d503b06bf0406415cb176f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "497f201696c8c1e7d5098e55e064f5537c4ace06a40eac22a6ea6f552dfb94c8"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "4dff4ac9cd1dc72f764d824afd28c9951030a18ccb8b001246051dbada51c75a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f4776b2a52ab6fe0a76e08bad6e198b8a2a20ab47685b1fee4f0dea9e9499bb5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3316aba51d103cad28b209bda47eae02181766f49e82f41c42c1ff36eb07a0ca"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2fc3c9121422b93fd1c8b420567ac2fbfae69186363f252118a348798b41b1e7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "6eb6b9729f73490d72c16911e0e1461efb6e35f04c8681cd26085653641ad9dc"
+    sha256 cellar: :any,                 x86_64_linux:      "f132a16efeb00a969860bcdb269a421d2c75d870d21619e430e533aa6bd35d4b"
   end
 
   depends_on "go" => :build
@@ -23,8 +23,7 @@ class GopassJsonapi < Formula
   end
 
   def install
-    ldflags = "-s -w -X main.version=#{version}"
-    system "go", "build", *std_go_args(ldflags:)
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}")
   end
 
   test do
@@ -41,13 +40,13 @@ class GopassJsonapi < Formula
     GPG
 
     begin
-      system Formula["gnupg"].opt_bin/"gpg", "--batch", "--gen-key", "batch.gpg"
+      system formula_opt_bin("gnupg")/"gpg", "--batch", "--gen-key", "batch.gpg"
 
-      system Formula["gopass"].opt_bin/"gopass", "init", "--path", testpath, "noop", "testing@foo.bar"
-      system Formula["gopass"].opt_bin/"gopass", "generate", "Email/other@foo.bar", "15"
+      system formula_opt_bin("gopass")/"gopass", "init", "--path", testpath, "noop", "testing@foo.bar"
+      system formula_opt_bin("gopass")/"gopass", "generate", "Email/other@foo.bar", "15"
     ensure
-      system Formula["gnupg"].opt_bin/"gpgconf", "--kill", "gpg-agent"
-      system Formula["gnupg"].opt_bin/"gpgconf", "--homedir", "keyrings/live",
+      system formula_opt_bin("gnupg")/"gpgconf", "--kill", "gpg-agent"
+      system formula_opt_bin("gnupg")/"gpgconf", "--homedir", "keyrings/live",
                                                  "--kill", "gpg-agent"
     end
 

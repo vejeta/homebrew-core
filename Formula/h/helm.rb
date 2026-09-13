@@ -2,21 +2,28 @@ class Helm < Formula
   desc "Kubernetes package manager"
   homepage "https://helm.sh/"
   url "https://github.com/helm/helm.git",
-      tag:      "v4.2.2",
-      revision: "b05881cf967a5a09e19866799d0edfd40675803a"
+      tag:      "v4.3.0",
+      revision: "bec5b06ed841fe5269972d864d5177944fd5970f"
   license "Apache-2.0"
   head "https://github.com/helm/helm.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "30b3d1bc580fa98befa1857963d9f11d2e47a36df41f099ea3934199871318e6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "276000aec740958de2b7391642c29af303430b108f5e8668705642b767b5c0af"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2cbf1f084c340ed1ceac18587fda01173386ac49b8db7c6194fd27fbadabc81c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "0c3457bbe4b875e5f46f04ea44cc8e34ecb83cf8639aac687ed3cd73e1e26314"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "110ac2ba0295e03379b5eab6bcd3d13268023489bcd88a20d708aa59f0cfb4f5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c119b6f04ec4a50e327ab6f0157da03b4706f7c2339f09d515fba36c0fbcfc4a"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1d2ca7fc3689858894d282d899c8ac8f1b7160a3f1787c2319e8e3c44be95f23"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "0416a77bdf3d1bfa343bc05dae2f73fb81b84e849c2ed33fd7b261675ec9ed27"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "50a76969ec8a987a71d5cb8f64ab2ae2670d564c10341f309081b7333fab39e8"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "8f7b2f51e3918961b5496ed9416d075abf201da84e822d093358e6ea1d611ffa"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "32eee6c777495a94f4775bafd5fff96e90b4c612dd47885b60828e65bc0dbc69"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "e341bda4879fe053fa33587dfc95b2c420670755b9e819809a48cf007cba23d3"
   end
 
   depends_on "go" => :build
+
+  deny_network_access!
+
+  def fetch
+    # `make build` runs `go mod tidy`, which needs the full module graph
+    system "go", "mod", "download", "all"
+  end
 
   def install
     system "make", "build"

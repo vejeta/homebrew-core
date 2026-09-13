@@ -1,7 +1,7 @@
 class Readline < Formula
   desc "Library for command-line editing"
   homepage "https://tiswww.case.edu/php/chet/readline/rltop.html"
-  url "https://ftpmirror.gnu.org/gnu/readline/readline-8.3.tar.gz"
+  url "https://ftpmirror.gnu.org/readline/readline-8.3.tar.gz"
   mirror "https://ftp.gnu.org/gnu/readline/readline-8.3.tar.gz"
   version "8.3.3"
   sha256 "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc"
@@ -23,9 +23,10 @@ class Readline < Formula
 
   patch_checksum_pairs.each_slice(2) do |p, checksum|
     patch :p0 do
-      url "https://ftpmirror.gnu.org/gnu/readline/readline-8.3-patches/readline83-#{p}"
+      url "https://ftpmirror.gnu.org/readline/readline-8.3-patches/readline83-#{p}"
       mirror "https://ftp.gnu.org/gnu/readline/readline-8.3-patches/readline83-#{p}"
       sha256 checksum
+      type :cherry_pick
     end
   end
   compatibility_version 1
@@ -54,7 +55,7 @@ class Readline < Formula
 
       # Fetch the page for the patches directory
       patches_page = Homebrew::Livecheck::Strategy.page_content(
-        "https://ftpmirror.gnu.org/gnu/readline/#{patches_directory[1]}",
+        "https://ftpmirror.gnu.org/readline/#{patches_directory[1]}",
       )
       next versions if patches_page[:content].blank?
 
@@ -71,22 +72,25 @@ class Readline < Formula
   no_autobump! because: :incompatible_version_format
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "1c6234c033c83ea742d50aa45fd60821947fa800d5cadecb0a1aa045564bb7d1"
-    sha256 cellar: :any,                 arm64_sequoia: "2e055f7b620fcbe1f809e850a23a68daa429edcf9b484b1967f9a49d89ebed8e"
-    sha256 cellar: :any,                 arm64_sonoma:  "15440b045b3e8294c8cbb819b32ba26520ce53b18bf947166a21a38e34662d84"
-    sha256 cellar: :any,                 tahoe:         "67a24889119e6429144cd15fb9b0dc8ae37cf272388605a5780bb734f8e6b093"
-    sha256 cellar: :any,                 sequoia:       "fd72a581442e1826e1386b8620e6ca5b75d858ded59d9fe60b9e0e9001675dc3"
-    sha256 cellar: :any,                 sonoma:        "614b89ff043bb59540c284dc696aedb1ffe30c4cc902d4e27b088ebaa3dc9312"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5cbd86f40534c4ef8b800e605408411bc6b047bf7c4f3911b2c020b1cfa39b89"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ea989e13a1df95ab899b8b1d35713def4330950259e7a48053fcd7967ee316b2"
+    sha256 cellar: :any,                 arm64_golden_gate: "273d65e167d4f7bf976a5d14d226c132722015a44f1025dfa2eaa6a2f3c7b8ce"
+    sha256 cellar: :any,                 arm64_tahoe:       "1c6234c033c83ea742d50aa45fd60821947fa800d5cadecb0a1aa045564bb7d1"
+    sha256 cellar: :any,                 arm64_sequoia:     "2e055f7b620fcbe1f809e850a23a68daa429edcf9b484b1967f9a49d89ebed8e"
+    sha256 cellar: :any,                 arm64_sonoma:      "15440b045b3e8294c8cbb819b32ba26520ce53b18bf947166a21a38e34662d84"
+    sha256 cellar: :any,                 tahoe:             "67a24889119e6429144cd15fb9b0dc8ae37cf272388605a5780bb734f8e6b093"
+    sha256 cellar: :any,                 sequoia:           "fd72a581442e1826e1386b8620e6ca5b75d858ded59d9fe60b9e0e9001675dc3"
+    sha256 cellar: :any,                 sonoma:            "614b89ff043bb59540c284dc696aedb1ffe30c4cc902d4e27b088ebaa3dc9312"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "5cbd86f40534c4ef8b800e605408411bc6b047bf7c4f3911b2c020b1cfa39b89"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "ea989e13a1df95ab899b8b1d35713def4330950259e7a48053fcd7967ee316b2"
   end
 
   keg_only :shadowed_by_macos, "macOS provides BSD libedit"
 
   uses_from_macos "ncurses"
 
+  deny_network_access!
+
   def install
-    system "./configure", "--prefix=#{prefix}", "--with-curses"
+    system "./configure", "--with-curses", *std_configure_args
     # FIXME: Setting `SHLIB_LIBS` should not be needed, but, on Linux,
     #        many dependents expect readline to link with ncurses and
     #        are broken without it. Readline should be agnostic about

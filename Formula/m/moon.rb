@@ -1,8 +1,8 @@
 class Moon < Formula
   desc "Task runner and repo management tool for the web ecosystem, written in Rust"
   homepage "https://moonrepo.dev/moon"
-  url "https://github.com/moonrepo/moon/archive/refs/tags/v2.3.4.tar.gz"
-  sha256 "f1cc32e7657b0430511a25c95100bb3def168e2912c046045247dd5d58c0ea86"
+  url "https://github.com/moonrepo/moon/archive/refs/tags/v2.5.4.tar.gz"
+  sha256 "b47ca060c92af747a34b57d0e87aacd1256778d3bfe3144728f6aebc56eb9ee2"
   license "MIT"
   head "https://github.com/moonrepo/moon.git", branch: "master"
 
@@ -12,12 +12,12 @@ class Moon < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9bda0a60459c6acab6b16ba8bdd9c4a56002c364071751cddf97f3a5a47e04e0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8e971316932a33b175a4d011f1c917c21e9c3a230d163f51faff1b19a7594f3b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4060fecab4688fd415138e2f799a4df6e4fc70c7163516021db6531194f346f1"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f9b5323cd59308278bc402395f8610230a6dec0682db25637ebbf324b610e70b"
-    sha256 cellar: :any,                 arm64_linux:   "14ad3cd9bb6375d6c66d9842df5ca02291842cdfaf1e1dc3741d207ae0916a6c"
-    sha256 cellar: :any,                 x86_64_linux:  "54bb457176f1946b6fbc3d968bb63f7fc4f006a9ed290b616ccde2d14c002050"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f5ffe253fac9a6d2dba6ca8d7d6af370549cf2ce33035a6d39f85024e7115ef3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b09cd132f2c1f3f9c79c693b425ae9f00c7b97bba56b3feea9182c1a26627639"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "de6c805238fb512475e49c49399e194a5f72befe0c8735ad48643674df892a31"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "1a4102557b255876ef2fc1468aba6d4b21fffbc4dcf5c8a6e071d7f7d5cdf995"
+    sha256 cellar: :any,                 arm64_linux:       "f6bd5b58e5dff4d5aeb02dd344489196887881715b40425de123c39cc9195803"
+    sha256 cellar: :any,                 x86_64_linux:      "26ce3341a05ac09dc8a79a94541820939b1b6ebf7d371e4169cca4e89d732946"
   end
 
   depends_on "pkgconf" => :build

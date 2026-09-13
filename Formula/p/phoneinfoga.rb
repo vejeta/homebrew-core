@@ -8,12 +8,13 @@ class Phoneinfoga < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e7e2e971ea2d91fd0d388784c7435045a2d80ab6d5d91edf3fb79cfa9b65dd22"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c667724c0478647ef04487e67759737ea73957e56f04d58b8aa9eec133532bd3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b50f640dc6a718a33bf69cd1320d9c437acbfb46693dbadcc1577797ef3864ae"
-    sha256 cellar: :any_skip_relocation, sonoma:        "52c7d81cc5346eebc4f752970bbccaa955d553baa8ea2f2b5aef454b99c173c5"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "fb9ec8e8a527a8191d00e2a6a09c6fc80f0475b6bad877331f661cf8067aa44c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9d764f83d254017ec95bf389ffe2e15bdcb7f711eb641bcaf119a6938478d40d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "772f0ac670e0e9cec362cf5c3c06cd3f6dabfdc32e6b4ac3c90fc27aa80fc19c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e7e2e971ea2d91fd0d388784c7435045a2d80ab6d5d91edf3fb79cfa9b65dd22"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "c667724c0478647ef04487e67759737ea73957e56f04d58b8aa9eec133532bd3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b50f640dc6a718a33bf69cd1320d9c437acbfb46693dbadcc1577797ef3864ae"
+    sha256 cellar: :any_skip_relocation, sonoma:            "52c7d81cc5346eebc4f752970bbccaa955d553baa8ea2f2b5aef454b99c173c5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "fb9ec8e8a527a8191d00e2a6a09c6fc80f0475b6bad877331f661cf8067aa44c"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "9d764f83d254017ec95bf389ffe2e15bdcb7f711eb641bcaf119a6938478d40d"
   end
 
   # https://github.com/sundowndev/phoneinfoga/commit/041f34aba9bf232150792d4aaa7bfc7881ff69a8
@@ -25,10 +26,11 @@ class Phoneinfoga < Formula
   depends_on "node"
 
   # Bump `node-gyp` to v10+ to avoid requiring distutils
-  # https://github.com/sundowndev/phoneinfoga/pull/1512
   patch do
     url "https://github.com/sundowndev/phoneinfoga/commit/6a5b3cc849f989fe390170a127e22d990ba5c122.patch?full_index=1"
     sha256 "07ec8c3255c2183f6f42286ae498625cd51041c27a7c44130151a772d31bfcd6"
+    type :backport
+    resolves "https://github.com/sundowndev/phoneinfoga/pull/1512"
   end
 
   def install
@@ -39,7 +41,6 @@ class Phoneinfoga < Formula
     end
 
     ldflags = %W[
-      -s -w
       -X github.com/sundowndev/phoneinfoga/v2/build.Version=v#{version}
       -X github.com/sundowndev/phoneinfoga/v2/build.Commit=#{tap.user}
     ]

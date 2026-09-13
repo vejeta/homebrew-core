@@ -22,15 +22,13 @@ class Chmlib < Formula
     sha256 cellar: :any,                 ventura:        "73986282be1f4d01cfdaebb1aa2b68683143a60acd35cf67235ed8d4f8f0df31"
     sha256 cellar: :any,                 monterey:       "4d4a29e60712457e4ea3838947a95959dbc0f68338514edd3817d6ee122afbf4"
     sha256 cellar: :any,                 big_sur:        "af369d3e427b36281f053f65a0d5be2a269c2a0fb80c87443baa066892d0652c"
-    sha256 cellar: :any,                 catalina:       "96d7cb33260c72012f24f383054b7f2505f815f0e3e24298229b5712f8a66cfa"
     sha256 cellar: :any_skip_relocation, arm64_linux:    "dc0799919a7cc91ec7505ec8e8a7290baa38342a10e4e4ca9017f417ffda95c1"
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "61a085287bba377e847d027575fd848cbadc0f6b5bd8f2efc008cc54d8f32d32"
   end
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
+    file "Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
   end
 
   # Add aarch64 to 64-bit integer platform list.

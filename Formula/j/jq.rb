@@ -1,8 +1,8 @@
 class Jq < Formula
   desc "Lightweight and flexible command-line JSON processor"
   homepage "https://jqlang.github.io/jq/"
-  url "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-1.8.1.tar.gz"
-  sha256 "2be64e7129cecb11d5906290eba10af694fb9e3e7f9fc208a311dc33ca837eb0"
+  url "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-1.8.2.tar.gz"
+  sha256 "71b8d6e8f5fe81f6c6d0d110e3892251f6ce76ed095abd315e26e6e1193af3af"
   license "MIT"
   compatibility_version 1
 
@@ -12,14 +12,14 @@ class Jq < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "90b0fe4ad51959380f16fe8d84c5be8ab525478c32f1f7034c72d99de2442c9b"
-    sha256 cellar: :any,                 arm64_sequoia: "d7bce557bb82addd6cf01b8bb758d373ee11cb6671e4d7b1dc2a2c89816bcc32"
-    sha256 cellar: :any,                 arm64_sonoma:  "147e512951120ec6f10a36a857c84f5f3300fd33b3d6bcce2f2162b10b0481aa"
-    sha256 cellar: :any,                 arm64_ventura: "efd141679d5a7a57797fc8866aa8f2200b08622b141877117f9b9204b27f6e87"
-    sha256 cellar: :any,                 sonoma:        "a1a5f487f1840d9a18abdecdf1c6c5a5385917725c6ba88f7f819ac5f4cfa801"
-    sha256 cellar: :any,                 ventura:       "1b5303b052e245affedf2e7b1c59caf4424b1e5b3d65de186424dc8dcf6b1ee7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "274b391020473ad15697b0eaf0dc7e44a57312e7eaa7642e1bc8426ca9c0a54d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "82883e1f3b674759d0e3d0c37e6805c0f91e3886f3e40c7ebc57f1e0174dfbe7"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "d048dd4c28d867e939065a3bc8209f37e2a5be3e2c18d18c8c7da8f4d1629a4a"
+    sha256 cellar: :any, arm64_tahoe:       "ca67c64d0aaf1e5472790ec2cc081ff7972316f27095d8a8aab81b3321247036"
+    sha256 cellar: :any, arm64_sequoia:     "ef70e236f58a8a781436ee400f9bdf847ad7d12e75115871fb6a94b9214a1a41"
+    sha256 cellar: :any, arm64_sonoma:      "39f30266edd431962b606353091035a9cec9a61437252f448a3a8cf69dbc0551"
+    sha256 cellar: :any, sonoma:            "af9ddba2379910ceed96961891002b1c8c133f6f3f290ccb3d7c7d877dd4e9e9"
+    sha256 cellar: :any, arm64_linux:       "d67a00e578f6684163660fed1accb56ef87b01651e37dec737d362d09ece9eab"
+    sha256 cellar: :any, x86_64_linux:      "631787d9b19df5e5557cc83f972080e541f543f8df2d1f212ca4290ff23e9764"
   end
 
   head do
@@ -31,6 +31,8 @@ class Jq < Formula
   end
 
   depends_on "oniguruma"
+
+  deny_network_access!
 
   def install
     system "autoreconf", "--force", "--install", "--verbose" if build.head?

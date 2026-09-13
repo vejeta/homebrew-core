@@ -1,8 +1,8 @@
 class Bwfmetaedit < Formula
   desc "Tool for embedding, validating, and exporting BWF file metadata"
   homepage "https://mediaarea.net/BWFMetaEdit"
-  url "https://mediaarea.net/download/binary/bwfmetaedit/26.01/BWFMetaEdit_CLI_26.01_GNU_FromSource.tar.xz"
-  sha256 "bd04770fe8a30541151b65bdcd25252705f390297d992ac461c9dc3c885de2b4"
+  url "https://mediaarea.net/download/binary/bwfmetaedit/26.08.1/BWFMetaEdit_CLI_26.08.1_GNU_FromSource.tar.xz"
+  sha256 "6650b61fab0bd752b907fda5ca3bdce5bb349e12d9a6f618e8ebfc52839bbd1f"
   license "0BSD"
 
   livecheck do
@@ -11,12 +11,12 @@ class Bwfmetaedit < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "518fbf320e175c0ee0334e2237c30f9b6d58306d242c544c0be03ce470c46763"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8ce116495823ddb61a7e0114f4e1271798af02a15cb040d5f7772572568a00bf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3d42c59d32633a32bfa3fe907916c78a4295bd1d1cd7f0e65edce539155de67d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b517115003660a83189a6aea3b142b4caf6ca00110b1a6db0d24c4cb9d7a86a4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ef6f068bbbd8191e98da8589ea5c5d9c82209a72629e2e8160e5a6d47c30e93f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "664fc4e93a220a62f5bc59b2fb928296eab3532d739434826f4920288d090ce2"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "55d7e9a44fb255b9fa3f4114b11e96ba776987a7d0735186e957fa51fc43b12d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d5d5d44a097ac59d71cbf6ae1b6bc5bc20db428025227c3832ef9567931d0078"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "16bab7973bacc32d3692b2d5d17401a910dc5d4c628c571bb46200d365d5eb8e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bf4bd068a5310be947bb3139461bd04d768e69490cc7e7b1fa858ce0f00a8e24"
+    sha256 cellar: :any,                 arm64_linux:       "92a80b40aa5f790bf3688dc9b47e03cfd1e66ce01188db8509b4e57dd2a316ae"
+    sha256 cellar: :any,                 x86_64_linux:      "f541508741ae28e5b09a9de4c90d68707a4bf8f255d078b355676b932e8cf748"
   end
 
   def install
@@ -28,9 +28,8 @@ class Bwfmetaedit < Formula
 
   test do
     test_wav = test_fixtures("test.wav")
-    ret_status = OS.mac? ? 1 : 0
-    output = shell_output("#{bin}/bwfmetaedit --out-tech #{test_wav} 2>&1", ret_status)
+    output = shell_output("#{bin}/bwfmetaedit --out-tech #{test_wav} 2>&1", 1)
     assert_match "FileName,FileSize,DateCreated,DateModified,Format,CodecID,Channels,SampleRate,BitRate", output
-    assert_match "#{test_wav}: Is read only", output if OS.mac?
+    assert_match "#{test_wav}: Is read only", output
   end
 end

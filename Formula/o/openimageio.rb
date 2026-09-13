@@ -1,8 +1,8 @@
 class Openimageio < Formula
   desc "Library for reading, processing and writing images"
   homepage "https://openimageio.readthedocs.io/en/stable/"
-  url "https://github.com/AcademySoftwareFoundation/OpenImageIO/archive/refs/tags/v3.1.14.1.tar.gz"
-  sha256 "3c3e7c637aad57008b290ebee803df88fa7326c23e39712fdcb0a5b520032cd1"
+  url "https://github.com/AcademySoftwareFoundation/OpenImageIO/archive/refs/tags/v3.1.17.0.tar.gz"
+  sha256 "92a26c0af4ffc6676d72d9dfe0e991eb45fdf3192abee3d0855a24d6c721b013"
   license "Apache-2.0"
   head "https://github.com/AcademySoftwareFoundation/OpenImageIO.git", branch: "main"
 
@@ -13,12 +13,12 @@ class Openimageio < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "b98d86a7122e586646aeb5030d4df71b0e4f7d3b6620c03cb57026c4acf7c843"
-    sha256 cellar: :any, arm64_sequoia: "08445503f411ad19dafae5946cba18216fa2a7c47b01d12ade48c84423893e64"
-    sha256 cellar: :any, arm64_sonoma:  "d455882b1ae8291ec89b9f737b2c68160299744f8a5156eb24bd94b94910e8e4"
-    sha256 cellar: :any, sonoma:        "0b73337b7948af21b2608efb9b7053c00e417c5f385dab4d39705b3c15f0c37f"
-    sha256 cellar: :any, arm64_linux:   "c9cf268f7535205babb9c56bbf6aca9fd23082d9bc9f385eee1b20d3e14671be"
-    sha256 cellar: :any, x86_64_linux:  "33177f705b0d994ff4b30aa86183550db388347ddaddc87fbce491e92290b37b"
+    sha256 cellar: :any, arm64_golden_gate: "f316ded4d9e21e4681e936a507d405c5dcde2ffab194f6e9a9d11a6f41ac7e6f"
+    sha256 cellar: :any, arm64_tahoe:       "7f21f19f750a277c283adf167bc37040303e3e797c84837606f68a4a57ed5d96"
+    sha256 cellar: :any, arm64_sequoia:     "c04a4fc35ab97e97826f330d0131181606894894209d3cdcb26fbea912e8840f"
+    sha256 cellar: :any, arm64_sonoma:      "80fcc748bdf097551e2402ac6833c42a81f57f3afffc2101a110b4727c0d09c0"
+    sha256 cellar: :any, arm64_linux:       "9e9552c6b6a19fc01830f0d3ae7979836af1ea8bec9b900d4672481647543a28"
+    sha256 cellar: :any, x86_64_linux:      "9d0085bd1459aa9a5d43bca116466d952db88a3aba6042f360ff02013a03f39e"
   end
 
   depends_on "cmake" => :build
@@ -49,17 +49,13 @@ class Openimageio < Formula
     cause "Requires GCC 9.3 or later"
   end
 
-  def python3
-    "python3.14"
-  end
-
   def install
     py3ver = Language::Python.major_minor_version python3
     ENV["PYTHONPATH"] = site_packages = prefix/Language::Python.site_packages(python3)
 
     args = %W[
       -DCMAKE_INSTALL_RPATH=#{rpath};#{rpath(source: site_packages/"OpenImageIO")}
-      -DPython3_EXECUTABLE=#{which(python3)}
+      -DPython3_EXECUTABLE=#{python3}
       -DPYTHON_VERSION=#{py3ver}
       -DCCACHE_FOUND=
       -DEMBEDPLUGINS=ON

@@ -12,12 +12,13 @@ class Itstool < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "716cb0efd44428ef62000438ff166627c117befbdd87b6d9c5580afac54c9dc2"
-    sha256 cellar: :any,                 arm64_sequoia: "8659b398ae66d88d974879a6a4e4372f21b81f7d018b13d9dd10b459e84ddd95"
-    sha256 cellar: :any,                 arm64_sonoma:  "d632addd4bb1f3f422347e9f78d49d5e50d15b7a2479ff197b228082b08c32f2"
-    sha256 cellar: :any,                 sonoma:        "9304cac2b3d4b0ce0cc09134157dcd281536f5ece469dda5f2bff14fbb16c126"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d6482a8c862c867c1c53bd78c2128c9997d67a0905c700ba05eebbc0417742d6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8847008ec88f06667281b8517d4a934cf68757cb3b835d2c00a0fe356190f02a"
+    sha256 cellar: :any,                 arm64_golden_gate: "fed613387203f6d151b4ade44fd408934922c5a10f2524d9e3c0684023d425cb"
+    sha256 cellar: :any,                 arm64_tahoe:       "716cb0efd44428ef62000438ff166627c117befbdd87b6d9c5580afac54c9dc2"
+    sha256 cellar: :any,                 arm64_sequoia:     "8659b398ae66d88d974879a6a4e4372f21b81f7d018b13d9dd10b459e84ddd95"
+    sha256 cellar: :any,                 arm64_sonoma:      "d632addd4bb1f3f422347e9f78d49d5e50d15b7a2479ff197b228082b08c32f2"
+    sha256 cellar: :any,                 sonoma:            "9304cac2b3d4b0ce0cc09134157dcd281536f5ece469dda5f2bff14fbb16c126"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d6482a8c862c867c1c53bd78c2128c9997d67a0905c700ba05eebbc0417742d6"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "8847008ec88f06667281b8517d4a934cf68757cb3b835d2c00a0fe356190f02a"
   end
 
   head do
@@ -48,14 +49,10 @@ class Itstool < Formula
     end
   end
 
-  def python3
-    "python3.14"
-  end
-
   def install
     resource("libxml2").stage do
       # We need to insert our include dir first
-      includes = [Formula["libxml2"].opt_include]
+      includes = [formula_opt_include("libxml2")]
       includes << (OS.mac? ? "#{MacOS.sdk_for_formula(self).path}/usr/include" : HOMEBREW_PREFIX/"include")
       inreplace "python/setup.py.in", "includes_dir = [",
                                       "includes_dir = [#{includes.map { |inc| "'#{inc}'," }.join(" ")}"
@@ -77,7 +74,7 @@ class Itstool < Formula
     end
 
     configure = build.head? ? "./autogen.sh" : "./configure"
-    system configure, "--prefix=#{libexec}", "PYTHON=#{which(python3)}"
+    system configure, "--prefix=#{libexec}", "PYTHON=#{python3}"
     system "make", "install"
 
     bin.install Dir[libexec/"bin/*"]

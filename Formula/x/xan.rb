@@ -1,18 +1,17 @@
 class Xan < Formula
   desc "CSV CLI magician written in Rust"
   homepage "https://github.com/medialab/xan"
-  url "https://github.com/medialab/xan/archive/refs/tags/0.59.0.tar.gz"
-  sha256 "b2c101c85fb1b0e98f80aa2117e93c5381cc6483e199cbe6796da4a275511e20"
+  url "https://github.com/medialab/xan/archive/refs/tags/0.61.0.tar.gz"
+  sha256 "cd675a4ce734438f5b6b0eba28f5f1e275fdd58c387f03afc9eb37146779e18c"
   license any_of: ["MIT", "Unlicense"]
   head "https://github.com/medialab/xan.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b9f6aea0530c9944cd769d6760f6aeee47a0616ffe17ddb5da1613cf13f06ce6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c3e9c7a7e513227760fab0781692bc04ffc037dda382141597f9c29406667daf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "94f6786c71086f4c49e306cc0b911610d88fe6708a8ff1bf210b0fb0db05a0ab"
-    sha256 cellar: :any_skip_relocation, sonoma:        "60b8bbb6de5238bee503a964bb33dae9cfd5c8559423a0cfa4e34fc1ec28f699"
-    sha256 cellar: :any,                 arm64_linux:   "a4cb58257c15ea36f1199ce0d755f3436d03542e12cd25873d62cf0648b607ef"
-    sha256 cellar: :any,                 x86_64_linux:  "83c555db34eebf9ae7c61e727cdcaea7a535f17455e3dcdba94cffdf3580d4fe"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0444fe700db39ff88ff01ff5b02d066f54ebf3751b9e12b02d9cc74f7e6db2c2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1874c1ce6dd6ceef51d65dad800fb5258675514319d71dd8eadee6cb6dcbfb61"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "c68fb2f41e94b6a1d8c5b7ffeb1cd4506261dd3eb178f24f714e823ff46e64e4"
+    sha256 cellar: :any,                 arm64_linux:       "74cd71cf3f011eb16609063ad98d5112b8e5fbf3ab2f2af5902611edc4797efc"
+    sha256 cellar: :any,                 x86_64_linux:      "31254ace0f2e0aae6cc08b57eb3a083879a60a3925acfe793522d353409b50c3"
   end
 
   depends_on "rust" => :build

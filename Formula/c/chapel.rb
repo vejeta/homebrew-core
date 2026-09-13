@@ -6,24 +6,25 @@ class Chapel < Formula
   url "https://github.com/chapel-lang/chapel/releases/download/2.9.0/chapel-2.9.0.tar.gz"
   sha256 "d91ececfc070f0e94c979dd08cdd3f6da84db4ee48fe06f3187ad259ea9553e7"
   license "Apache-2.0"
+  revision 1
   head "https://github.com/chapel-lang/chapel.git", branch: "main"
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 arm64_tahoe:   "61b2d6a954c8b1c07540f271f131dd17ff8562dc981bedcba7b30cc7b3ade3e1"
-    sha256 arm64_sequoia: "02bc89e6380ea4c366f55986cb97c205eae046dbd54b40f0c9b443e9a9424896"
-    sha256 arm64_sonoma:  "79dee51debf63e84d821347f8b0febd96e27d28c9461a1a613a051aafad3b1d0"
-    sha256 sonoma:        "f311f7393814574e4ed8a9d0abb0b7e9fbcb0d6c9e894d69f134d5998c13f859"
-    sha256 arm64_linux:   "aca79e05ce356a5d5a636e363b1e360bdb6de685e94d2e8dcc992469b3659421"
-    sha256 x86_64_linux:  "c8a2e1a0d7c0613b2ccb6732474f7139b813b1328473e11cdd184226dcafff64"
+    sha256 arm64_tahoe:   "02a0ac8fd456d4370bf14bead7f287056b2445b083e6023e9c82a3b6bcbf2446"
+    sha256 arm64_sequoia: "fe9c991b88fbbc248466c5ba1597c982f5b95760e1dfec924e54ba94e0aefa64"
+    sha256 arm64_sonoma:  "e65c9c49a4b9f0cf664eadb9bdfcc4b779cdb601d7c1e37e21723c0330412da8"
+    sha256 sonoma:        "16ea1b15ae7f4051236e3483a14091b3b6ff5658fd05a7fb13000d12f18c298f"
+    sha256 arm64_linux:   "80ce9f9f681e7a494740675b0e9cc6deba17d3faeaa53bed0aacce827fdf4bdb"
+    sha256 x86_64_linux:  "df7fc5d6f337777e8be3036def8b5075f780126fa9ac21017aed99432ef283af"
   end
 
   depends_on "cmake"
   depends_on "gmp"
   depends_on "hwloc"
   depends_on "jemalloc"
-  depends_on "llvm"
+  depends_on "llvm@22"
   depends_on "pkgconf"
   depends_on "python@3.14"
 
@@ -43,10 +44,12 @@ class Chapel < Formula
 
   def install
     # Always detect Python used as dependency rather than needing aliased Python formula
-    python = "python3.14"
-    # It should be noted that this will expand to: 'for cmd in python3.14 python3 python python2; do'
-    # in our find-python.sh script.
-    inreplace "util/config/find-python.sh", /^(for cmd in )(python3 )/, "\\1#{python} \\2"
+    inreplace "util/config/find-python.sh", /^(for cmd in )(python3 )/, "\\1#{python3.basename} \\2"
+
+    # We link jemalloc dynamically, so its `Libs.private` only adds a duplicate C++ runtime
+    inreplace "util/chplenv/chpl_jemalloc.py",
+              'pkgconfig_get_system_link_args("jemalloc")',
+              'pkgconfig_get_system_link_args("jemalloc", static=False)'
 
     # a lot of scripts have a python3 or python shebang, which does not point to python3.12 anymore
     Pathname.glob("**/*.py") do |pyfile|
@@ -60,7 +63,7 @@ class Chapel < Formula
 
     # This ENV avoids a problem where cmake cache is invalidated by subsequent make calls
     ENV["CHPL_CMAKE_USE_CC_CXX"] = "1"
-    ENV["CHPL_CMAKE_PYTHON"] = python
+    ENV["CHPL_CMAKE_PYTHON"] = python3
 
     # This ENV avoids issues with GASNet picking up the wrong linker
     ENV["CHPL_IGNORE_GASNET_LD"] = "1"
@@ -195,6 +198,7 @@ class Chapel < Formula
     ENV["CHPL_LIB_PATH"] = HOMEBREW_PREFIX/"lib"
     ENV["CHPL_IGNORE_GASNET_LD"] = "1"
     ENV["CHPL_RT_SILENCE_UNUSED_CORES"] = "1"
+    ENV["CHPL_START_TEST_ARGS"] = "--test-root #{testpath}"
 
     cd libexec do
       system "util/test/checkChplInstall"

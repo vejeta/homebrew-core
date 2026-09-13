@@ -1,8 +1,8 @@
 class Nexttrace < Formula
   desc "Open source visual route tracking CLI tool"
   homepage "https://www.nxtrace.org/"
-  url "https://github.com/nxtrace/NTrace-core/archive/refs/tags/v1.7.1.tar.gz"
-  sha256 "ac5c3f4181b061b8fff2430e2b34eee165e7a8f41eb694a07ab0b4b219e5a4bb"
+  url "https://github.com/nxtrace/NTrace-core/archive/refs/tags/v1.7.3.tar.gz"
+  sha256 "b598e678dda47ac1c7d598bd39ac36089252ff773912abfdcb14ba3fffd2e1cf"
   license "GPL-3.0-only"
   head "https://github.com/nxtrace/NTrace-core.git", branch: "main"
 
@@ -14,19 +14,19 @@ class Nexttrace < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2a6624e5fdec19c2261446ec63a4e3969006402194cf1a06a00bea5b24904e14"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "79f2aaa70b7556d269f0461112b8eeefab13a1810844180403c25c31420d9652"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6cd18ce024f8f018b5e00f259365ec74ef5f7f9902b849a620d8ca22f0ce494d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "7c0be4907b9b12bd4e2c4280dcdc1138d531c06dc75e2a805953d248a17582e6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b524cb4906267c3e52755f4d5754df078183f64f393e3ed8a774550f258261e2"
-    sha256 cellar: :any,                 x86_64_linux:  "4273374f96169a2464942484cabecb8c7317c964873f75518a0babe8cb98c774"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "3554432ed87c201444a0980f1db3cac14258a271a0509d22a59354f4c9a8973a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bd033db30a430fac16d42da06c714a4961aef073d2a70dc0301c9b9718490d6d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "0a8492778ee0b8baaee2962548b7a33702bad6b85fb7b8d9435cc2d6de8d7551"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3963868c368537c4d4443f22c7983ea63767e68b14421f3695c810c0662d860d"
+    sha256 cellar: :any_skip_relocation, sonoma:            "727a9038c11d191d1d2ae9ad18adc6063dd7c6c9535074ce3dfc0065b695b613"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "3816551f795a8544eaa8547b1165bb811665811c4809912fdc16ac31195ff8a6"
+    sha256 cellar: :any,                 x86_64_linux:      "5490dbae0637953d3442ee6072aa9498d59d7042b888fb1f58bc39493ac1e7e6"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/nxtrace/NTrace-core/config.Version=#{version}
       -X github.com/nxtrace/NTrace-core/config.CommitID=#{tap.user}
       -X github.com/nxtrace/NTrace-core/config.BuildDate=#{time.iso8601}

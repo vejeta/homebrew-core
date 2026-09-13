@@ -1,18 +1,18 @@
 class Autobrr < Formula
   desc "Modern, easy to use download automation for torrents and usenet"
   homepage "https://autobrr.com/"
-  url "https://github.com/autobrr/autobrr/archive/refs/tags/v1.80.0.tar.gz"
-  sha256 "578bae78c48ba270d5026ed51c0adefcbd30bfc830726cc35a2c5b9398250a54"
+  url "https://github.com/autobrr/autobrr/archive/refs/tags/v1.86.0.tar.gz"
+  sha256 "97fda65127c6d0754b6dd990df40ba0cc4a2a0064a6c460f59e5a9f83f72293c"
   license "GPL-2.0-or-later"
   head "https://github.com/autobrr/autobrr.git", branch: "develop"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8582031e425b67ece6180472149d3ac1377a718c9bff69bb7973703648455254"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "49b54478292b6460e5c741d8ab01d0a549da9f64ec0eeeb42e1b09f9e6588a23"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "35ea8c519f39cdd7b69527c500039b9e0a2429979b233f1cdc3979f9e198e2d0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "17d5bb2e159b71ece04bf00c8082bf2437ee87446e6d2cbfa76ba52453a23941"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "43a6c291477d8ca4d98c07cbecf26e020ec9380082010e1c73f9e89366658e6f"
-    sha256 cellar: :any,                 x86_64_linux:  "e4dcbf00318c9b6fc379b66a7b45466e2f596be526614ebb51777e6067ce1d43"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "759b7f3592d2aa32275de1003bbb17a60113d7af4f594e5909ef5bee5ee928d4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "70e9bff4c4cb0f7182417a7c3ebc04a20bafc45660cacaf00ca65d0dfc99d056"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "93903c566aacdc19ec60642795a4ee0aaa67496c58bfaf2f94b69d369eb65e13"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "63b8cdd06076b6e1923dd73b88e609144eafaff0c5e91b5a9695d4cf516cdfc9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "829ddd903b89c4b9ee617caa9cf500a7962e7e79a9cd7d0d1ff2f02ca1fc3f21"
+    sha256 cellar: :any,                 x86_64_linux:      "3cd57dc2f9a676bc3afc9a46604e320a7ac5febecc6303119e5005a0cab59bff"
   end
 
   depends_on "go" => :build
@@ -20,13 +20,11 @@ class Autobrr < Formula
   depends_on "pnpm" => :build
 
   def install
-    system "pnpm", "install", "--dir", "web"
-    system "pnpm", "--dir", "web", "run", "build"
+    system "pnpm", "with", "current", "--dir", "web", "install"
+    system "pnpm", "with", "current", "--dir", "web", "run", "build"
 
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user}"
-
-    system "go", "build", *std_go_args(output: bin/"autobrr", ldflags:), "./cmd/autobrr"
-    system "go", "build", *std_go_args(output: bin/"autobrrctl", ldflags:), "./cmd/autobrrctl"
+    system "go", "build", *std_go_args(output: bin/"autobrr", ldflags: :goreleaser), "./cmd/autobrr"
+    system "go", "build", *std_go_args(output: bin/"autobrrctl", ldflags: :goreleaser), "./cmd/autobrrctl"
 
     (var/"autobrr").mkpath
   end

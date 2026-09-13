@@ -1,19 +1,20 @@
 class Deno < Formula
   desc "Secure runtime for JavaScript and TypeScript"
   homepage "https://deno.com/"
-  url "https://github.com/denoland/deno/releases/download/v2.8.3/deno_src.tar.gz"
-  sha256 "f5aad48de4230de51a3c4125e325c798d49bc1543a7cd1ad9662eff39dc510e5"
+  url "https://github.com/denoland/deno/releases/download/v2.9.6/deno_src.tar.gz"
+  sha256 "dfd816eea5147eeafda5e235c241a3286e67aeaae1d0e50f9973ff6bf4f14fb2"
   license "MIT"
   compatibility_version 1
   head "https://github.com/denoland/deno.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "af1718603e81e988c6a51fd02fcaa08fbe5b0365a23047f7ca4ddc38f911cca8"
-    sha256 cellar: :any, arm64_sequoia: "d4aeaf675cce2cbf390c53e972467388badf1b644fafd8bd505b59fe92d416d1"
-    sha256 cellar: :any, arm64_sonoma:  "2e96a62f4bcef1d6007b4a8fa44336921c824b57b03f47e1649467389bb118bd"
-    sha256 cellar: :any, sonoma:        "83907724e02bd27c26354a1e8324e9b0a3e4eab0d8203d7756f8aa6e0281f74c"
-    sha256 cellar: :any, arm64_linux:   "51159c83fab163162e5da4cd2d45badf365b1691cacbbb0de6cbab7595e155fd"
-    sha256 cellar: :any, x86_64_linux:  "d0ef3f2c2a827492e4632bcb9c30c01fd1b9c27d4c88e6eb18cb34c2feada07a"
+    sha256 cellar: :any, arm64_golden_gate: "cc593a5e9357745fe21b82719c1835846a1d4f83c85f6963f08db40bc258c12f"
+    sha256 cellar: :any, arm64_tahoe:       "fa8623e42360c728c1c3e99cb756bc8769efc3a753d66ccf6c16b52fec8bfc13"
+    sha256 cellar: :any, arm64_sequoia:     "675494457db27e146c723c1ffe4ade585423112c96c59d28e8856420d35cb65d"
+    sha256 cellar: :any, arm64_sonoma:      "8210051458267666358ca7883f9b75f771eb2456b6a92ce8726a3699194d08c2"
+    sha256 cellar: :any, sonoma:            "231acf0fb4f65e2f82471336380bd3a97b756a7f2b3e9560726b549e8f3afd2e"
+    sha256 cellar: :any, arm64_linux:       "d468db8b91e95b13dc58554937c920ef3dd611494a457200f0d06979d8539f33"
+    sha256 cellar: :any, x86_64_linux:      "60fb9a55aa0c310a57a305fda4ec36ad17fd92bba983b25d5a429c4eeb76e36f"
   end
 
   depends_on "cmake" => :build
@@ -22,12 +23,15 @@ class Deno < Formula
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  depends_on xcode: ["15.0", :build] # v8 12.9+ uses linker flags introduced in xcode 15
   depends_on "little-cms2"
   depends_on "sqlite" # needs `sqlite3_unlock_notify`
 
   uses_from_macos "python" => :build
   uses_from_macos "libffi"
+
+  on_macos do
+    depends_on xcode: ["15.0", :build] # v8 12.9+ uses linker flags introduced in xcode 15
+  end
 
   on_linux do
     depends_on "glib" => :build
@@ -37,22 +41,13 @@ class Deno < Formula
 
   conflicts_with "dxpy", because: "both install `dx` binaries"
 
-  def llvm
-    Formula["llvm"]
-  end
+  def llvm = Formula["llvm"]
 
   def install
-    inreplace "Cargo.toml" do |s|
-      # https://github.com/Homebrew/homebrew-core/pull/227966#issuecomment-3001448018
-      s.gsub!(/^lto = true$/, 'lto = "thin"')
-
-      # Avoid vendored dependencies.
-      s.gsub!(/^libffi = "(.+)"$/, 'libffi = { version = "\\1", features = ["system"] }')
-      s.gsub!(/^rusqlite = { version = "(.+)", features = \["unlock_notify", "bundled", "session"/,
-              'rusqlite = { version = "\\1", features = ["unlock_notify", "session"')
-    end
-
-    ENV["LCMS2_LIB_DIR"] = Formula["little-cms2"].opt_lib
+    # Avoid vendored dependencies.
+    ENV["CARGO_FEATURE_SYSTEM"] = "1" # libffi
+    ENV["LCMS2_LIB_DIR"] = formula_opt_lib("little-cms2")
+    ENV["LIBSQLITE3_SYS_USE_PKG_CONFIG"] = "1"
     # env args for building a release build with our python3 and ninja
     ENV["PYTHON"] = which("python3")
     ENV["NINJA"] = which("ninja")
@@ -63,7 +58,9 @@ class Deno < Formula
     # supports features from newer clang versions (>=20)
     ENV["GN_ARGS"] = "clang_version=#{llvm.version.major} use_lld=#{OS.linux?}"
 
-    system "cargo", "install", "--no-default-features", "-vv", *std_cargo_args(path: "cli")
+    # Enable V8 without `__runtime_defaults`, which brings the `upgrade` subcommand and vendored zlib-ng
+    features = ["deno_core/v8", "v8/v8"]
+    system "cargo", "install", "--no-default-features", "-vv", *std_cargo_args(path: "cli", features:)
     bin.install_symlink bin/"deno" => "dx"
     generate_completions_from_executable(bin/"deno", "completions")
   end
@@ -89,11 +86,11 @@ class Deno < Formula
     assert_match "hello deno", shell_output("#{bin}/dx -y cowsay hello deno")
 
     linked_libraries = [
-      Formula["sqlite"].opt_lib/shared_library("libsqlite3"),
+      formula_opt_lib("sqlite")/shared_library("libsqlite3"),
     ]
     unless OS.mac?
       linked_libraries += [
-        Formula["libffi"].opt_lib/shared_library("libffi"),
+        formula_opt_lib("libffi")/shared_library("libffi"),
       ]
     end
     linked_libraries.each do |library|

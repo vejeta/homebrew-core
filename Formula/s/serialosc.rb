@@ -3,18 +3,19 @@ class Serialosc < Formula
   homepage "https://github.com/monome/docs/blob/gh-pages/serialosc/osc.md"
   # pull from git tag to get submodules
   url "https://github.com/monome/serialosc.git",
-      tag:      "v1.4.7",
-      revision: "94d457f80fe3721d21df5190c99bd522c711185a"
+      tag:      "v1.4.8",
+      revision: "c96ea389dbf82c84d17f6f7adddaf311aed49438"
   license "ISC"
+  revision 1
   head "https://github.com/monome/serialosc.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "9f99630d252d5bf043ab3cd20bbfe7f523f8a5947c24116884805d3f7ce4966e"
-    sha256 cellar: :any,                 arm64_sequoia: "df8f10238c9b1db61937d5e6c08c05b4c1e90e452397f375ad789b8ee40b93eb"
-    sha256 cellar: :any,                 arm64_sonoma:  "3b130c9e39d1cdcdc8fe79d7672bc19250eea7a77f9a88469c1568f5ef2dba90"
-    sha256 cellar: :any,                 sonoma:        "6adb9865250752540188fad3bbd293935f7f82d431530bcdfeec4b372f27ed7a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a9bfe2f52193d07890dc1b74904c9b32dd9fb616d9e56deb031768dafedea448"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "be67991d5ec342af372b09090ecdc048e178960b31795f438eac84f3090b3c54"
+    sha256 cellar: :any, arm64_golden_gate: "4cc5b45d18995e43b2b62ea34526b40bc9a5d0df5f532de66d78561a58f98760"
+    sha256 cellar: :any, arm64_tahoe:       "3f19816658fa50919906a72e6d4785939ff5518e7c2372bfe809d22f4ea58491"
+    sha256 cellar: :any, arm64_sequoia:     "0876506d909bde218a5d22455974763dd822ce6bc41815d5870657347ba29347"
+    sha256 cellar: :any, arm64_sonoma:      "e3821fc60e00ff0b9dd4ff0161467c0dd3e9fc0cb8de78d22447e1b54568fda6"
+    sha256 cellar: :any, arm64_linux:       "2c5a518ea1f48ffc9513feeca36ac2d4d69927503db139ba1f92b2342027594c"
+    sha256 cellar: :any, x86_64_linux:      "cfc9138dccdd02c3ab0ff9b21add7a026fc8e7c7c4eeb1b284425a18ad84bb87"
   end
 
   depends_on "liblo"

@@ -1,10 +1,9 @@
 class Dynare < Formula
   desc "Platform for economic models, particularly DSGE and OLG models"
   homepage "https://www.dynare.org/"
-  url "https://www.dynare.org/release/source/dynare-7.1.tar.xz"
-  sha256 "fdd294a99c67c81208da8d682bf12e68fdbda75012b218d8702a4de163058a4e"
+  url "https://www.dynare.org/release/source/dynare-7.2.tar.xz"
+  sha256 "88204354739547117b315e8fa3f8780a7570c576efd12f6a292f2a2468bb7a3c"
   license "GPL-3.0-or-later"
-  revision 1
   head "https://git.dynare.org/Dynare/dynare.git", branch: "master"
 
   livecheck do
@@ -13,12 +12,10 @@ class Dynare < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "edb01020ea75b2549dbac94e452f57b1849c8797be344215161182e2667bb7eb"
-    sha256 cellar: :any, arm64_sequoia: "d28bb114a5897ade6fe0590fc587cc5a5a878819e475f4bcddb94b539f68e17b"
-    sha256 cellar: :any, arm64_sonoma:  "8ec14189bdf0be7d4cd327be0d7e9edb0285af4083aafbaca66cd788b730aa4f"
-    sha256 cellar: :any, sonoma:        "06fc4ff606f076fcb43365515f26e238c11bc2b4ca6e08cf9e74fb19df237a2c"
-    sha256               arm64_linux:   "7f1752b6e8b7a4d08100ccda65672294a0197855c80731b17abd382b27367580"
-    sha256               x86_64_linux:  "afbee497e701fd6e60c1984e2fc54ee5d5e400154dcc14e22bf379d1a248dae2"
+    sha256 cellar: :any, arm64_tahoe:   "a7d679ac8ae6db252d57b08a64ab27c6f17c58b0dad96da0ddbde33ac1ea4e8f"
+    sha256 cellar: :any, arm64_sequoia: "32945dee7315fb4ee957da7f6141d9fa11b9493de6902046d3e3cd72c42b57a0"
+    sha256 cellar: :any, arm64_linux:   "9dcfa28f62c487f2ae84a175f680a012c8c82e0c87859c16fc30a09bd4a76d24"
+    sha256 cellar: :any, x86_64_linux:  "d7286b476eb7f52e34c871205340786a4516d0d9cbbda5f50f83a3c457bbb106"
   end
 
   depends_on "bison" => :build
@@ -46,13 +43,13 @@ class Dynare < Formula
     # [^2]: https://git.dynare.org/Dynare/dynare/-/commit/6ff7d4c56c26a2b7546de633dbcfe2f163bf846d
     # [^3]: https://git.dynare.org/Dynare/dynare/-/issues/1977
     patch do
-      url "https://raw.githubusercontent.com/Homebrew/homebrew-core/c49717c390cb2e587793b2db757c1f445f096219/Patches/dynare/clang.diff"
-      sha256 "2d174336fc8db4d8989cda214a972ef49c6302bb12a64d717140869e546e17d0"
+      file "Patches/dynare/clang.diff"
+      type :unofficial
     end
   end
 
   on_sequoia do
-    depends_on xcode: ["26.0", :build] # for std::jthreads
+    depends_on xcode: ["26.0", :build] if DevelopmentTools.clang_build_version >= 1700 # for std::jthreads
   end
 
   fails_with :clang do
@@ -70,7 +67,7 @@ class Dynare < Formula
     octave = Formula["octave"]
     if OS.linux?
       ENV.append "LDFLAGS", "-Wl,-rpath,#{octave.opt_lib}/octave/#{octave.version.major_minor_patch}"
-      ENV["BOOST_ROOT"] = Formula["boost"].opt_prefix.to_s
+      ENV["BOOST_ROOT"] = formula_opt_prefix("boost").to_s
     end
 
     system "meson", "setup", "build", "-Dbuild_for=octave", *std_meson_args
@@ -118,7 +115,7 @@ class Dynare < Formula
       dynare bkk.mod console
     MATLAB
 
-    system Formula["octave"].opt_bin/"octave", "--no-gui",
+    system formula_opt_bin("octave")/"octave", "--no-gui",
            "--no-history", "--path", "#{lib}/dynare/matlab", "dyn_test.m"
   end
 end

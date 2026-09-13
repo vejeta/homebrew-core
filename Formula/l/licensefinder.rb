@@ -10,12 +10,13 @@ class Licensefinder < Formula
   revision 1
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d19855c60c9c10d7332caa54afd4af6edf8d2238ca52ff7501b3dc0a9753c43e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d19855c60c9c10d7332caa54afd4af6edf8d2238ca52ff7501b3dc0a9753c43e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cfbdef13adb23b2e6096441e61a793f57560d9162ba744f9bf2be58b52e96a12"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
+    sha256 cellar: :any_skip_relocation, sonoma:            "bc612bca33980e0d1b2c51b001fc295934c7d23bec6ecd3e546294488bf384eb"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d19855c60c9c10d7332caa54afd4af6edf8d2238ca52ff7501b3dc0a9753c43e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "d19855c60c9c10d7332caa54afd4af6edf8d2238ca52ff7501b3dc0a9753c43e"
   end
 
   depends_on "ruby"
@@ -26,6 +27,8 @@ class Licensefinder < Formula
   patch do
     url "https://github.com/pivotal/LicenseFinder/commit/4cac18e5c7a48f72700b8de4db97d3150637a20d.patch?full_index=1"
     sha256 "7a7a9b201cd34a5f868901841ba5f144f0e75580664c8ec024792449348f5875"
+    type :unofficial
+    resolves "https://github.com/pivotal/LicenseFinder/pull/1013"
   end
 
   # The logger gem was removed from the stdlib in Ruby 4.0.0.
@@ -42,7 +45,7 @@ class Licensefinder < Formula
 
   test do
     ENV["GEM_PATH"] = ENV["GEM_HOME"] = testpath
-    ENV.prepend_path "PATH", Formula["ruby"].opt_bin
+    ENV.prepend_path "PATH", formula_opt_bin("ruby")
 
     (testpath/"Gemfile").write <<~RUBY
       source 'https://rubygems.org'

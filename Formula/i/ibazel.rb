@@ -1,18 +1,18 @@
 class Ibazel < Formula
   desc "Tools for building Bazel targets when source files change"
   homepage "https://github.com/bazelbuild/bazel-watcher"
-  url "https://github.com/bazelbuild/bazel-watcher/archive/refs/tags/v0.29.0.tar.gz"
-  sha256 "910a62093c51b908a89648b0f3c1a4ff15928c1f6fe9116ec73b00036845a4c6"
+  url "https://github.com/bazelbuild/bazel-watcher/archive/refs/tags/v0.33.0.tar.gz"
+  sha256 "18f5773135c2cc92c4acae562178f54c4d9972425f5186e5d9f3a6a952027080"
   license "Apache-2.0"
   head "https://github.com/bazelbuild/bazel-watcher.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "1b4baa756ba6cebc772d4fa0dd51170a89e535bae1a39e79b8d6b60e4d274d7b"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3a6c43d962cc24d4f5269e7034e0adffbb0405c5264eacdc1df07ac8f1ae5f89"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "7c7993151ab5e001dacafc89b5501739de9a93b419c3389638ffc5fde110f454"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f47c8051c691e08a5b95b7ccf1cd89d0deaec8d61f93dec122cf785b6b448087"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "566c2afdfe1b731ce242cadd395846fbe582329403fc7a4e62c423ff54bc60ae"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "83ce7ea23ede410aee5efdecdf42025fb86086d939fc77e5438b559bfd32c7cc"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4075760d89bb69bcddba942a2e386efdc2c8109d0e3ea81197e3c50b44436d49"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f6f0eedc9b9e7c686be17d89a760e3c4aa5cbef0630383984f8f6ae61fc9b71a"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "44a777b0e98211fe37f7fe3a13202327505660b67261a78b873fb4adf6f4d378"
+    sha256 cellar: :any_skip_relocation, sonoma:        "231889cea7114b6866b572484a5cd8b2665b2ec3d5287524d3055d526266918d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e24d7df45c6ecc8b49704f48409175e025da3b42cdd8c05c2df30fc4fb4ec06f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "90810ad4c98551e2b0573db2d07416e57a1dc56836348f3fc54923a47abaa50f"
   end
 
   depends_on "go" => [:build, :test]
@@ -20,7 +20,7 @@ class Ibazel < Formula
 
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.Version=#{version}"), "./cmd/ibazel"
+    system "go", "build", *std_go_args(ldflags: "-X main.Version=#{version}"), "./cmd/ibazel"
   end
 
   test do

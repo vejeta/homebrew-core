@@ -1,19 +1,20 @@
 class Nettle < Formula
   desc "Low-level cryptographic library"
   homepage "https://www.lysator.liu.se/~nisse/nettle/"
-  url "https://ftpmirror.gnu.org/gnu/nettle/nettle-4.0.tar.gz"
+  url "https://ftpmirror.gnu.org/nettle/nettle-4.0.tar.gz"
   mirror "https://ftp.gnu.org/gnu/nettle/nettle-4.0.tar.gz"
   sha256 "3addbc00da01846b232fb3bc453538ea5468da43033f21bb345cb1e9073f5094"
   license any_of: ["GPL-2.0-or-later", "LGPL-3.0-or-later"]
   compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "ba11eb261bc502c28c9cd695f8354306d0a31cb1e55c3d3f1568e051293a0f10"
-    sha256 cellar: :any,                 arm64_sequoia: "01050aa13ce3825fc1b81f1a3c5994a165301b9d5223a9fb9015d122bde5ca3e"
-    sha256 cellar: :any,                 arm64_sonoma:  "ffcf86d94ce0ee31890cfc5e2debfba3f4ab9125a507ff21cfa557acac70087e"
-    sha256 cellar: :any,                 sonoma:        "2830a19a06e2995fc7a19ecd7c14d3bc87e9362fb9c52d2489582246f256662d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "150e9b064e29adf5e75acedbe9de51af5befbd2a7d9986e8ec578646a0af6b19"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "06c75ac3e75c761b4553312c4ffc12c31eb1757b5ec3e85ce75adc9524337302"
+    sha256 cellar: :any,                 arm64_golden_gate: "42ff85a054b4a265542175dd31f4a515e0a3e7d8113cfddacc5472555a036bc8"
+    sha256 cellar: :any,                 arm64_tahoe:       "ba11eb261bc502c28c9cd695f8354306d0a31cb1e55c3d3f1568e051293a0f10"
+    sha256 cellar: :any,                 arm64_sequoia:     "01050aa13ce3825fc1b81f1a3c5994a165301b9d5223a9fb9015d122bde5ca3e"
+    sha256 cellar: :any,                 arm64_sonoma:      "ffcf86d94ce0ee31890cfc5e2debfba3f4ab9125a507ff21cfa557acac70087e"
+    sha256 cellar: :any,                 sonoma:            "2830a19a06e2995fc7a19ecd7c14d3bc87e9362fb9c52d2489582246f256662d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "150e9b064e29adf5e75acedbe9de51af5befbd2a7d9986e8ec578646a0af6b19"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "06c75ac3e75c761b4553312c4ffc12c31eb1757b5ec3e85ce75adc9524337302"
   end
 
   depends_on "gmp"

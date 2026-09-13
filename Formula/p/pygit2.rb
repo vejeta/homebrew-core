@@ -1,19 +1,18 @@
 class Pygit2 < Formula
   desc "Bindings to the libgit2 shared library"
   homepage "https://www.pygit2.org/"
-  url "https://files.pythonhosted.org/packages/a6/44/415aa93422b4bfc21a6448acb7e16280d5f33a9a3fae38a384e37b046ae4/pygit2-1.19.3.tar.gz"
-  sha256 "a543e6d4ebb43825564935758dc234e770016fed673b84370d46ae9580558831"
+  url "https://files.pythonhosted.org/packages/9c/11/592cc7854795830a7257ab6025a1fc803b58b0e7bf7d31f619bc7288ed4d/pygit2-1.20.1.tar.gz"
+  sha256 "36dff84d237f2b8f18b0b146d6e7c3f99a7bce2da98cc4103a14387f53319f95"
   license "GPL-2.0-only" => { with: "GCC-exception-2.0" }
   compatibility_version 1
   head "https://github.com/libgit2/pygit2.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "943128ffecf388b567b33a6af0bb156cf8e7331c864baff75e7293c4f989aaa3"
-    sha256 cellar: :any, arm64_sequoia: "1acaec4c8d2db3a3315059d8c52149151ea7b621116e6f75474eedf35e6d387f"
-    sha256 cellar: :any, arm64_sonoma:  "ebfb9fbc818fc003bdd0e1ae07ade23add6d89e2c3dc608b3c9e851d836f9935"
-    sha256 cellar: :any, sonoma:        "095cb288d14b0c91c8112df910614cb1e2a3e2ab805daf89210af355ffba785d"
-    sha256 cellar: :any, arm64_linux:   "d8d4bafa9c7119b8b35a8ccabc4b4f410e130be4c7355717c33c7f713db02f5e"
-    sha256 cellar: :any, x86_64_linux:  "708e65e2735fcb44c3d62e299cf528620a74844eb96dd4b8ecb5721562e19cbe"
+    sha256 cellar: :any, arm64_golden_gate: "e2abda1fe37ef063c31a915d17cbdd21306ad1290f5ff7baa8462be740acc093"
+    sha256 cellar: :any, arm64_tahoe:       "b75937a6e4604325f7197e3a3b3fab48c2c67da3b38e6a4acd5eee4f134b0ba4"
+    sha256 cellar: :any, arm64_sequoia:     "7a2a7fa73b46aa24fe72d1182b208ffcd6755d9c8b2ac264dbb9260d0f3df472"
+    sha256 cellar: :any, arm64_linux:       "78e34cc4ada6ed12cda9fa6161f5f9cb6c4c56a4b2e60ff88807eb57afbf3af5"
+    sha256 cellar: :any, x86_64_linux:      "dedef89ae1f9d119a1d0fce35f78205ecfe4efcb3430ea4e0efcbdc66b46d831"
   end
 
   depends_on "python@3.13" => [:build, :test]

@@ -1,18 +1,24 @@
 class GrafanaAlloy < Formula
   desc "OpenTelemetry Collector distribution with programmable pipelines"
   homepage "https://grafana.com/oss/alloy-opentelemetry-collector/"
-  url "https://github.com/grafana/alloy/archive/refs/tags/v1.17.0.tar.gz"
-  sha256 "9662f0afe53257360cfaeeeeffeaf8ff43b5061ffb6c5dec114fc8be24f304d1"
+  url "https://github.com/grafana/alloy/archive/refs/tags/v1.19.2.tar.gz"
+  sha256 "3906c641ccfa03ad2ff777618c13ca3a0ee8417f995d192b5912d310aa5a34a4"
   license "Apache-2.0"
   head "https://github.com/grafana/alloy.git", branch: "main"
 
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4dad3c6ff61214e68ef1f271b92880b1b32ed644d5012560c2ceb00e6deec78d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ce15d019c376bd915ae2c8c999466984a7a3873d9bafbaf1b65dfc88e4832123"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5a616ca10a900e1bb2e1ae604c11826a7681ecd7cd1dc30513089ba9c773b9eb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "3f21fe369be335fd5dcea3c8602b88df7b7cc60a4b125d790df8ffcb7c311f1e"
-    sha256 cellar: :any,                 arm64_linux:   "035ba59d1e3101466fb158a162f9f583c81d82ae5d8bd466d604000b726bf0a8"
-    sha256 cellar: :any,                 x86_64_linux:  "50adde81e0af123ee469a7b47d96879e502ea071c86ceef857fff7462ecbc4a0"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "2d389210537ee450e0608866af1327b6ff757e69d4c290dd9184a51d0836e972"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "129bd2ac4a2490c75daf16f158b2e20eee190e467b8512361f85afc218c67a74"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b930361f022e115483b0a0648a7811e14e1301d97ff7d295a3086a261e708468"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "473289a03a7b5f8e874a262ae7369e81982e980539cfacc628d380562f1f81c0"
+    sha256 cellar: :any_skip_relocation, sonoma:            "3fd4efacf9cf10fbe6dfc9ef3a1d77fdcb801147aef7b0ff4a632d4e0d7f431b"
+    sha256 cellar: :any,                 arm64_linux:       "da08511ff740cc2742b7c6f37df769840d58173312a103a0071cb4ddd2017009"
+    sha256 cellar: :any,                 x86_64_linux:      "a8324ee08b3e3c0d066c2500bbf91dc66a8b173e124cc1a7cff17127d699ecca"
   end
 
   depends_on "go" => :build
@@ -24,6 +30,16 @@ class GrafanaAlloy < Formula
 
   conflicts_with "alloy-analyzer", because: "both install `alloy` binaries"
 
+  # `test do` block runs a local server
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download", "-C", "collector"
+    cd "internal/web/ui" do
+      system "npm", "install", *std_npm_args(prefix: false)
+    end
+  end
+
   def install
     # Workaround to avoid patchelf corruption when cgo is required (for godror)
     if OS.linux? && Hardware::CPU.arch == :arm64
@@ -33,7 +49,6 @@ class GrafanaAlloy < Formula
     end
 
     ldflags = %W[
-      -s -w
       -X github.com/grafana/alloy/internal/build.Branch=HEAD
       -X github.com/grafana/alloy/internal/build.Version=v#{version}
       -X github.com/grafana/alloy/internal/build.BuildUser=#{tap.user}
@@ -45,8 +60,7 @@ class GrafanaAlloy < Formula
     tags << "promtail_journal_enabled" if OS.linux?
 
     cd "internal/web/ui" do
-      system "npm", "install", *std_npm_args(prefix: false)
-      system "npm", "run", "build"
+      system "npm", "--offline", "run", "build"
     end
 
     system "go", "build", "-C", "collector", *std_go_args(ldflags:, tags:, output: bin/"alloy")

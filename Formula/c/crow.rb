@@ -1,8 +1,8 @@
 class Crow < Formula
   desc "Fast and Easy to use microframework for the web"
   homepage "https://crowcpp.org"
-  url "https://github.com/CrowCpp/Crow/archive/refs/tags/v1.3.2.tar.gz"
-  sha256 "82926bba66a48fa8dd0165cbc1f1b96b6dc9c3e56d08d318d901196e13eccf1a"
+  url "https://github.com/CrowCpp/Crow/archive/refs/tags/v1.3.4.tar.gz"
+  sha256 "6be759b3a648b41f0adc3a8408a53fd0243775217b4e32e8101d69e4aadf48cc"
   license "BSD-3-Clause"
   head "https://github.com/CrowCpp/Crow.git", branch: "master"
 
@@ -12,7 +12,7 @@ class Crow < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "ea8ea782dc4dfa04e0be6da9cf4755adf6fc93ae84674fde27fa8c049b59ddcb"
+    sha256 cellar: :any_skip_relocation, all: "4e583318c4782293d5c2170b18a0d7615d5d4cae5fe9f370161f80d48d1d2840"
   end
 
   depends_on "cmake" => :build

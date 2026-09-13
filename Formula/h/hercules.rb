@@ -8,12 +8,13 @@ class Hercules < Formula
 
   bottle do
     rebuild 1
-    sha256 arm64_tahoe:   "c39ccead16433acc00edfe54721fc9354225596901556828b5771ba04dfb0826"
-    sha256 arm64_sequoia: "d6bf59da64af8e0c785e00a0dd9650079d6a947889a2a6ad11f0db47c095187e"
-    sha256 arm64_sonoma:  "2cb5be7faa77bc9a7f76f183af1c091fac9a34cb062dbf17a17295ecf9c3fd2a"
-    sha256 sonoma:        "50c7c08f9bb643baed46c414771177597cdb56bffccc4c1f9530a0f04bd17092"
-    sha256 arm64_linux:   "7a503644a4ecf23cbf89b23b5fdecd14bff658578b4c86c8dfa302e7752cccdc"
-    sha256 x86_64_linux:  "4d13a5a101f408a41ea50a649a38cf8bf768050dc563f6006a26e3fa971cd8ee"
+    sha256 arm64_golden_gate: "af4fae048c7e916644bb9208eb88822e41f29469b827f0153a1a3be5935dac54"
+    sha256 arm64_tahoe:       "c39ccead16433acc00edfe54721fc9354225596901556828b5771ba04dfb0826"
+    sha256 arm64_sequoia:     "d6bf59da64af8e0c785e00a0dd9650079d6a947889a2a6ad11f0db47c095187e"
+    sha256 arm64_sonoma:      "2cb5be7faa77bc9a7f76f183af1c091fac9a34cb062dbf17a17295ecf9c3fd2a"
+    sha256 sonoma:            "50c7c08f9bb643baed46c414771177597cdb56bffccc4c1f9530a0f04bd17092"
+    sha256 arm64_linux:       "7a503644a4ecf23cbf89b23b5fdecd14bff658578b4c86c8dfa302e7752cccdc"
+    sha256 x86_64_linux:      "4d13a5a101f408a41ea50a649a38cf8bf768050dc563f6006a26e3fa971cd8ee"
   end
 
   depends_on "autoconf" => :build
@@ -34,6 +35,7 @@ class Hercules < Formula
     patch do
       url "https://github.com/SDL-Hercules-390/crypto/commit/9ac58405c2b91fb7cd230aed474dc7059f0fcad9.patch?full_index=1"
       sha256 "e650ed22fb63ec7d87c0dd79ec6f98ea4988e7635a8add13c8149d0731826710"
+      type :backport
     end
   end
 
@@ -45,6 +47,7 @@ class Hercules < Formula
     patch do
       url "https://github.com/SDL-Hercules-390/decNumber/commit/995184583107625015bb450228a5f3fb781d9502.patch?full_index=1"
       sha256 "4a803caf1841cbb6597c195df3e5287345c35e154d46ac58f33c21b737b1e4b7"
+      type :backport
     end
   end
 
@@ -56,6 +59,7 @@ class Hercules < Formula
     patch do
       url "https://github.com/SDL-Hercules-390/SoftFloat/commit/e053494d988ec0648c92f683abce52597bfae745.patch?full_index=1"
       sha256 "ac13515baeb9de206d943e6d85fba30ad5f06c058e017161d18edada34aaf203"
+      type :backport
     end
   end
 
@@ -67,6 +71,7 @@ class Hercules < Formula
     patch do
       url "https://github.com/SDL-Hercules-390/telnet/commit/384b2542dfc9af67ca078e2bc13487a8fc234a3f.patch?full_index=1"
       sha256 "c56109ba2cd9365da690bb13cc5d9d3caaaa8413d800c0bc482482cf02739a01"
+      type :backport
     end
   end
 

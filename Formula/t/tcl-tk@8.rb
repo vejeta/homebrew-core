@@ -12,12 +12,13 @@ class TclTkAT8 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "c40ffcd937c2f73a63ee9f881e0efc9ae71ad4d47a723fafedca529da35f5068"
-    sha256 arm64_sequoia: "0c8dffb79d3016c682d91b8523bad6fa7d34dcbf71b0ac6748739e4cef4bf709"
-    sha256 arm64_sonoma:  "d63f01ac7cd5b63caad23298dd1cde88ff1e0cc157c7523d12e0de5c2d9d6c7d"
-    sha256 sonoma:        "00a571bba78b5e8af791f7e9922dc8d0e820f33592a7b0e94cb4376337467fad"
-    sha256 arm64_linux:   "3a0d2901293c588fa84b7d09d147f946bf4bd2b94234b18ea8b235b351b24a4c"
-    sha256 x86_64_linux:  "21ee038d6ced19d84c4e64d13563f4c66fcaa331847ef8fe5c6e28a855b87a48"
+    sha256 arm64_golden_gate: "95ef1b01d51d38d01c2edf65ef6021d8664651f53b3fa8db050a775afbd879f4"
+    sha256 arm64_tahoe:       "c40ffcd937c2f73a63ee9f881e0efc9ae71ad4d47a723fafedca529da35f5068"
+    sha256 arm64_sequoia:     "0c8dffb79d3016c682d91b8523bad6fa7d34dcbf71b0ac6748739e4cef4bf709"
+    sha256 arm64_sonoma:      "d63f01ac7cd5b63caad23298dd1cde88ff1e0cc157c7523d12e0de5c2d9d6c7d"
+    sha256 sonoma:            "00a571bba78b5e8af791f7e9922dc8d0e820f33592a7b0e94cb4376337467fad"
+    sha256 arm64_linux:       "3a0d2901293c588fa84b7d09d147f946bf4bd2b94234b18ea8b235b351b24a4c"
+    sha256 x86_64_linux:      "21ee038d6ced19d84c4e64d13563f4c66fcaa331847ef8fe5c6e28a855b87a48"
   end
 
   keg_only :versioned_formula
@@ -60,7 +61,6 @@ class TclTkAT8 < Formula
   # would cause `bad URI(is not URI?)` error on 12/13 builds
   resource "itk4" do
     url "https://deb.debian.org/debian/pool/main/i/itk4/itk4_4.1.0.orig.tar.gz"
-    mirror "https://src.fedoraproject.org/lookaside/extras/itk/itk4.1.0.tar.gz/sha512/1deed09daf66ae1d0cc88550be13814edff650f3ef2ecb5ae8d28daf92e37550b0e46921eb161da8ccc3886aaf62a4a3087df0f13610839b7c2d6f4b39c9f07e/itk4.1.0.tar.gz"
     sha256 "da646199222efdc4d8c99593863c8d287442ea5a8687f95460d6e9e72431c9c7"
   end
 
@@ -116,7 +116,7 @@ class TclTkAT8 < Formula
 
     resource("tcltls").stage do
       system "./configure", "--with-ssl=openssl",
-                            "--with-openssl-dir=#{Formula["openssl@3"].opt_prefix}",
+                            "--with-openssl-dir=#{formula_opt_prefix("openssl@3")}",
                             "--prefix=#{prefix}",
                             "--mandir=#{man}"
       system "make", "install"

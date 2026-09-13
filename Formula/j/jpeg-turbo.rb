@@ -1,8 +1,8 @@
 class JpegTurbo < Formula
   desc "JPEG image codec that aids compression and decompression"
   homepage "https://www.libjpeg-turbo.org/"
-  url "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.1.4.1/libjpeg-turbo-3.1.4.1.tar.gz"
-  sha256 "ecae8008e2cc9ade2f2c1bb9d5e6d4fb73e7c433866a056bd82980741571a022"
+  url "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz"
+  sha256 "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e"
   license all_of: [
     "IJG", # libjpeg API library and programs
     "Zlib", # libjpeg-turbo SIMD source code
@@ -17,12 +17,13 @@ class JpegTurbo < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "9a0e281d4e1b3047460f4d0d7e291790a136c32677532fd62bea6bb6428acec6"
-    sha256 cellar: :any,                 arm64_sequoia: "ec354654375dbeeba9dd637ecbfafb7c3e1132138bbcbf8a0beb08ec1e4dad4b"
-    sha256 cellar: :any,                 arm64_sonoma:  "42f79e8bea4e55f60ff202617c82527bae17eec9a2575d57833fe510634d360d"
-    sha256 cellar: :any,                 sonoma:        "0412ff07188c22bc04957ae45382873aef059fa3efee3ae52c974c27cbec70fa"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c20b1d8af8574deef518f29e7711a330aaa34dd2e0c2fbab2ac5ad81c5fb1764"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2cdefb3a7bdb35b19658d014d7659e6f47f472edb4e88269bb3db7fe45c0dcff"
+    rebuild 1
+    sha256 cellar: :any, arm64_golden_gate: "7bc0f7c007a73c68da8c11055e836de66c2814c1b0ca0302da9a6317199fd37a"
+    sha256 cellar: :any, arm64_tahoe:       "02539b0736cfacdc6c4bb6a7d274d0c5c8b6e1faf9b5bab1e155168961d288aa"
+    sha256 cellar: :any, arm64_sequoia:     "6dc55edcd33c693e474299ed2bba3c472ac1331cbe300066ec8ef99b88fab17c"
+    sha256 cellar: :any, arm64_sonoma:      "3ff48858f9042df4ce6ca4bf4006bae5e46f919037cba077f0c81a1f6e0a288a"
+    sha256 cellar: :any, arm64_linux:       "17e9fc799ed71fa8453d35fae0bdec249b015d2ba61d3258c8a4ba2bd47faf86"
+    sha256 cellar: :any, x86_64_linux:      "85713cddd87d363f7e772f9ab0db5d4192d6f4ef8793393458601ffdba8a1e07"
   end
 
   depends_on "cmake" => :build
@@ -38,6 +39,8 @@ class JpegTurbo < Formula
   link_overwrite "lib/libjpeg.dylib", "lib/libjpeg.so", "lib/libjpeg.a", "lib/pkgconfig/libjpeg.pc"
   link_overwrite "share/man/man1/cjpeg.1", "share/man/man1/djpeg.1", "share/man/man1/jpegtran.1",
                  "share/man/man1/rdjpgcom.1", "share/man/man1/wrjpgcom.1"
+
+  deny_network_access!
 
   def install
     args = ["-DWITH_JPEG8=1", "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath,#{rpath}"]

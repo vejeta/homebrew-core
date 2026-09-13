@@ -4,16 +4,16 @@ class Buildapp < Formula
   url "https://github.com/xach/buildapp/archive/refs/tags/release-1.5.6.tar.gz"
   sha256 "d77fb6c151605da660b909af058206f7fe7d9faf972e2c30876d42cb03d6a3ed"
   license "BSD-2-Clause"
-  revision 4
+  revision 6
   head "https://github.com/xach/buildapp.git", branch: "master"
 
   bottle do
-    sha256 arm64_tahoe:   "41ea69cf949b8ef0f20b9b174f782e0ff539ed9f0fd6de9e75b20870a4464396"
-    sha256 arm64_sequoia: "5478cbb2fa632a52202bc864bca54bf1e53dd679a53f89b03745180b2e1d7edc"
-    sha256 arm64_sonoma:  "3106074e9f1ca504946ce090f23fec209d395817a9afdd7627cda2dea601f70b"
-    sha256 sonoma:        "1bcb452e9daa0bf6c79342e5787a27e4d8f4b09d710eb28d67040c08b9fdd4b7"
-    sha256 arm64_linux:   "012afed152e0cee571cac5c5c8ea20670d0827bf45a04db711019a67a9c081b5"
-    sha256 x86_64_linux:  "8dccd3fc72893770eda060bd3bba1f13eef10816c5592842f8d6b172d8fed952"
+    sha256               arm64_golden_gate: "d494dda9984b4ffa898a312898da4639e0844322ab8b716916dc556bc0711e4a"
+    sha256               arm64_tahoe:       "3d82cd94f66c4729c19620e8c226b13f575f9e9137fa54132fcc40c27f8398cb"
+    sha256               arm64_sequoia:     "d56a8c04e6c3c2088fdf197400f642840815bbeace5c28ffe652d2a7ffa9ed56"
+    sha256               arm64_sonoma:      "a7fb1b444eae795648703680aa10512d68a9c64726ec2557639f8eea955847d5"
+    sha256 cellar: :any, arm64_linux:       "40293c0cbd6e99e1299a3fbdf7b70fe88f0ed9a44f019a6ee82f74e87660355e"
+    sha256 cellar: :any, x86_64_linux:      "7fd3555b69e16ff7b0d922debb3686e062dc6b50da384f384d9477ecdb72d486"
   end
 
   depends_on "sbcl"
@@ -31,12 +31,8 @@ class Buildapp < Formula
     end
   end
 
-  def post_install
-    if (prefix/"buildapp.gz").exist?
-      system "gunzip", prefix/"buildapp.gz"
-      bin.install prefix/"buildapp"
-      (bin/"buildapp").chmod 0755
-    end
+  post_install_steps do
+    install_gzipped_executable "buildapp.gz", "bin/buildapp"
   end
 
   test do

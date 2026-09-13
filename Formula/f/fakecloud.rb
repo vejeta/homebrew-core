@@ -1,18 +1,19 @@
 class Fakecloud < Formula
   desc "Free, open-source local AWS cloud emulator for integration testing"
   homepage "https://fakecloud.dev/"
-  url "https://github.com/faiscadev/fakecloud/archive/refs/tags/v0.20.0.tar.gz"
-  sha256 "7ba2789a76c781ea565d65b35ca600fd0f1fe3a305c93977dee0a3ac7217c223"
+  url "https://github.com/faiscadev/fakecloud/archive/refs/tags/v0.44.10.tar.gz"
+  sha256 "72376f92ee00602ba8b15035eef3339722f790bfe00c2e9c8299cdddcff0ef1e"
   license "AGPL-3.0-or-later"
   head "https://github.com/faiscadev/fakecloud.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "7cafabc89e3e10ff1d06908440a169636d1aa5f633e396a26854768cfcbe4278"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "bf836b5e4cdd599efff1befbf68a43a03998dd808bd498b9f8e99d93c00d2530"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b07545b84d8a2cb2810f12d84cf2d9a6b7c893320f6d922baa777107b882e331"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a4fe806740a41017bdd82a54ab810f5682aebf1a9b4010d8be67dac4fc40cea0"
-    sha256 cellar: :any,                 arm64_linux:   "b8f2c7aa514c49087eac467b6ab5271f33f1cd92b9377ae6d66a1907b30874d7"
-    sha256 cellar: :any,                 x86_64_linux:  "95098bce58718f652cbe84e2f74a52a8781c2c4fada7b44512fdcf8cd5d903d6"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "14620f4b17a76f03c75cc84e04ada150379776ff0662e3e5758e0cb3ad8cd9c7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4441c54edc3f57fcb4ca7a7c1b797416102b7d9b394313dfbfdc4768e882ce0c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "78f49bd5618921c6df02f8181452b58d612507b82984feb49caa98523293f358"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f5a9d6908b1cc8b6abce2dbd85279f9a428c308aa81404006c27b568e473aa42"
+    sha256 cellar: :any_skip_relocation, sonoma:            "7904583b80247bf0e16dd81a70fdd8c09eed3ba18d1faa9236d6f9008878aa7c"
+    sha256 cellar: :any,                 arm64_linux:       "68a68cb0dca6c7498427fafeceb5878ee606db1683e8e831bd8bfd929b92bba3"
+    sha256 cellar: :any,                 x86_64_linux:      "8c42310106caed3bf30893716a1771ae718f711afac8bb84813f412cbea28923"
   end
 
   depends_on "pkgconf" => :build

@@ -57,8 +57,8 @@ class Neovide < Formula
       ENV["CLANG_PATH"] = which(ENV.cc) # force bindgen to use superenv clang to find brew libraries
 
       # GN doesn't use CFLAGS so pass extra paths using superenv
-      ENV.append_path "HOMEBREW_INCLUDE_PATHS", Formula["freetype"].opt_include/"freetype2"
-      ENV.append_path "HOMEBREW_INCLUDE_PATHS", Formula["harfbuzz"].opt_include/"harfbuzz"
+      ENV.append_path "HOMEBREW_INCLUDE_PATHS", formula_opt_include("freetype")/"freetype2"
+      ENV.append_path "HOMEBREW_INCLUDE_PATHS", formula_opt_include("harfbuzz")/"harfbuzz"
     end
 
     system "cargo", "install", *std_cargo_args
@@ -66,7 +66,8 @@ class Neovide < Formula
     return unless OS.mac?
 
     # https://github.com/burtonageo/cargo-bundle/issues/118
-    with_env(TERM: "xterm") { system "cargo", "bundle", "--release" }
+    # Skip the default `.dmg`, which needs `hdiutil`: only the `.app` is installed anyway
+    with_env(TERM: "xterm") { system "cargo", "bundle", "--release", "--format", "osx" }
     prefix.install "target/release/bundle/osx/Neovide.app"
     rm bin/"neovide" # Remove the original binary first
     bin.write_exec_script prefix/"Neovide.app/Contents/MacOS/neovide"

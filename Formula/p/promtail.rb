@@ -27,7 +27,7 @@ class Promtail < Formula
 
   def install
     cd "clients/cmd/promtail" do
-      system "go", "build", *std_go_args(ldflags: "-s -w")
+      system "go", "build", *std_go_args
       etc.install "promtail-local-config.yaml"
     end
   end
@@ -51,7 +51,6 @@ class Promtail < Formula
 
     spawn bin/"promtail", "-config.file=promtail-local-config.yaml"
     sleep 3
-    sleep 3 if OS.mac? && Hardware::CPU.intel?
 
     output = shell_output("curl -s localhost:#{port}/metrics")
     assert_match "log_messages_total", output

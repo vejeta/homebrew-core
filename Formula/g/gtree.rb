@@ -1,24 +1,25 @@
 class Gtree < Formula
   desc "Generate directory trees and directories using Markdown or programmatically"
   homepage "https://ddddddo.github.io/gtree/"
-  url "https://github.com/ddddddO/gtree/archive/refs/tags/v1.14.1.tar.gz"
-  sha256 "a5e1d360ab3da8973aa3b2010233479d2895101ee8c6023ab320557ee644cded"
+  url "https://github.com/ddddddO/gtree/archive/refs/tags/v1.14.9.tar.gz"
+  sha256 "fbedb935bacd045e67a2d91402fa441da0824ff67941bfb5903a653db817e623"
   license "BSD-2-Clause"
   head "https://github.com/ddddddO/gtree.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0cea794f4aecc68828afe59044765c9d678adc98fa32e35c3ff6fc279130f68b"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0cea794f4aecc68828afe59044765c9d678adc98fa32e35c3ff6fc279130f68b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0cea794f4aecc68828afe59044765c9d678adc98fa32e35c3ff6fc279130f68b"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e29fe46330413a102545697c35570b9a1b6008d4b0f394e134de5d3b495c4b40"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9c97c3b289510d45f5cb374f80c59f78841c995aad678c9e3e9476f07bc6e728"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "585bd1a989836fa735d7d2f3e9727491464acc166f3401c8f80869e238e50d4e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "53ff18f5c2d5da5b880e14c6bb95809c18b3ce92cf2854fa495812825a67ce6c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "bf657ac4061ee824d1e261b650ce900b1381b7a8fbab824c7d84eec2876d8a62"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bf657ac4061ee824d1e261b650ce900b1381b7a8fbab824c7d84eec2876d8a62"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "bf657ac4061ee824d1e261b650ce900b1381b7a8fbab824c7d84eec2876d8a62"
+    sha256 cellar: :any_skip_relocation, sonoma:            "051f88324c026087969ee7411b1887a906c3760dea39ca26dd378e53df69cf24"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "2db7280129a5ade6bfa0b1676904bbd38effe03c787c59e552ac899137b8133a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "649344a16805fc4b1ace32624df9e75ffd7e0a7dab33c6495baff1e53d9fe2f1"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-s -w -X main.Version=#{version} -X main.Revision=#{tap.user}"
+    ldflags = "-X main.Version=#{version} -X main.Revision=#{tap.user}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/gtree"
   end
 

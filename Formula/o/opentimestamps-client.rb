@@ -6,15 +6,16 @@ class OpentimestampsClient < Formula
   url "https://files.pythonhosted.org/packages/3d/cb/15156c9bc8ab404e1fc2750a3b5aa4ecafccd632923776d61c875f116702/opentimestamps-client-0.7.2.tar.gz"
   sha256 "083a08f59c3123682d6742cc57d3e229ed7b3397807638836efe3a949517accb"
   license "LGPL-3.0-or-later"
-  revision 2
+  revision 7
+  head "https://github.com/opentimestamps/opentimestamps-client.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d4d79c0aa719d27feeb1ebf147bc2b76bedf083bcf8c8ef743e147e42314006d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "95d9e0d68247d3d5c307e93d145feb7c9bb3624d743b0388bff6fdaf3d05652d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8b06964d8c5ada3db0d8173374d9c7924543eebf01d42c187c469ffe6624c0b8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8e442bd53f3b76b950e0f74385c566630a74749d4a2d63d103e42a7936e4392c"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "356457f9a1f751957f7cb319ccb56eb9553aaf35c73814c4a7b6d92773a3093c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "973c81f2ce52da1d6956e39d35c3a561b4d68c3b99e64368dcc193fcb251d816"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "969829d0f83948458eafbe6322913dedca646bf1cec30c0672d93a6c66e9ee4a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "048842d698bcb718dd51f4aef325817a32411164da151a59fbb3b8f4d50d9f5b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ecfaf2cee26262d5d08dd5068f36e4d8d4e1d8d41fd13e56c5aa0aa7e5a4da4a"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3d9824e5a6b54c2991ba0978354b8b416b95cbd0d7f4701852b0348172bb0218"
+    sha256 cellar: :any,                 arm64_linux:       "1ddf0186e4164f3f770fe7572dcb3357ac4f0eec21bcbeed1d7b45bd8ad76408"
+    sha256 cellar: :any,                 x86_64_linux:      "06310ffc31843a48aac9677124dc2dbcd97932764c21443b8c5d4043c2c0d57d"
   end
 
   depends_on "certifi" => :no_linkage
@@ -33,8 +34,8 @@ class OpentimestampsClient < Formula
   end
 
   resource "gitpython" do
-    url "https://files.pythonhosted.org/packages/33/f6/354ae6491228b5eb40e10d89c4d13c651fe1cf7556e35ebdded50cff57ce/gitpython-3.1.50.tar.gz"
-    sha256 "80da2d12504d52e1f998772dc5baf6e553f8d2fcfe1fcc226c9d9a2ee3372dcc"
+    url "https://files.pythonhosted.org/packages/6f/61/3285044215fb596bf093e39ccb96ece0a1076a8ca57a61e069a6a33cdb1b/gitpython-3.1.61.tar.gz"
+    sha256 "f51c24d8c0f733a195447385f5774a5dfe8767f5acfd7994a33755644c6ecc95"
   end
 
   resource "opentimestamps" do
@@ -69,26 +70,14 @@ class OpentimestampsClient < Formula
   test do
     (testpath/"input.txt").write("homebrew test input")
 
-    system libexec/"bin/python3.14", "-c", <<~PYTHON
-      from opentimestamps.core.notary import PendingAttestation
-      from opentimestamps.core.op import OpSHA256
-      from opentimestamps.core.serialize import StreamSerializationContext
-      from opentimestamps.core.timestamp import DetachedTimestampFile
+    system bin/"ots", "stamp", "input.txt"
+    assert_path_exists testpath/"input.txt.ots"
 
-      with open("input.txt", "rb") as f:
-          detached = DetachedTimestampFile.from_fd(OpSHA256(), f)
-      detached.timestamp.attestations.add(PendingAttestation("https://calendar.example"))
-      with open("input.txt.ots", "wb") as out:
-          detached.serialize(StreamSerializationContext(out))
-    PYTHON
-
-    output = shell_output("#{bin}/ots --no-cache info input.txt.ots")
+    output = shell_output("#{bin}/ots info input.txt.ots")
     assert_match "File sha256 hash: d4de79205af8b0150c9cb0ea47d11c96bbc2236b89768a9a8d1028da8552994e", output
-    assert_match "PendingAttestation('https://calendar.example')", output
+    assert_match "PendingAttestation('https://btc.calendar.catallaxy.com')", output
 
-    expected = "Ignoring attestation from calendar https://calendar.example: Calendar not in whitelist"
-    verify_output = shell_output("#{bin}/ots --no-cache --no-default-whitelist \
-                                            verify -f input.txt input.txt.ots 2>&1", 1)
-    assert_match expected, verify_output
+    output = shell_output("#{bin}/ots --no-default-whitelist verify -f input.txt input.txt.ots 2>&1", 1)
+    assert_match "Ignoring attestation from calendar", output
   end
 end

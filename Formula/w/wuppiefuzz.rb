@@ -1,18 +1,17 @@
 class Wuppiefuzz < Formula
   desc "Coverage-guided REST API fuzzer developed on top of LibAFL"
   homepage "https://github.com/TNO-S3/WuppieFuzz"
-  url "https://github.com/TNO-S3/WuppieFuzz/releases/download/v1.5.1/source.tar.gz"
-  sha256 "36fc2fade7e3a3901540c751f0e29c456ecb434dd171960e32a2d338731c09c9"
+  url "https://github.com/TNO-S3/WuppieFuzz/releases/download/v1.7.1/source.tar.gz"
+  sha256 "93e3c143b90d552a2620211b866176cedfea58d263bf75331f2da550a55996f3"
   license "Apache-2.0"
-  revision 1
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "45600a8e3e8c3e4d5e0c7e73d585289dc11f2b49d83687ec840b807215b996fb"
-    sha256 cellar: :any, arm64_sequoia: "468c2d2e9c102846d9ceb3566947bf285754a277e389971e1745d0cb18bc2c60"
-    sha256 cellar: :any, arm64_sonoma:  "cd8b0d6dbd2b15fd1bd87737809f376c29e2628429e025b3d0718cf25652e07c"
-    sha256 cellar: :any, sonoma:        "a46d8fbb0f066ae740a129388a10dfd7864d4ffbfdccf3a18bb90352f26e4a30"
-    sha256 cellar: :any, arm64_linux:   "023b77dc6149ad6bdaee167066ef0175bea0a94fb840a99c1d3373592f91c306"
-    sha256 cellar: :any, x86_64_linux:  "13f49800bb6de3aa0ea596fbcb5383b32d7c61f59bf66533138bd307dc269ea2"
+    sha256 cellar: :any, arm64_golden_gate: "87a928a6982793d4a1d9886ca9a93283f64cc141cc34566858ceaef27a7bec61"
+    sha256 cellar: :any, arm64_tahoe:       "9c262ae160c959c3a173a1cdac5e8cc8dff007d76b2c9dec36bc18d6b0ffc933"
+    sha256 cellar: :any, arm64_sequoia:     "5027f7c0331bf2f97d6ad18807862a9fef576718524fce430cc94afe05b375a6"
+    sha256 cellar: :any, arm64_sonoma:      "fd84fcf149222b32a825730a697d969e152e1837a83288041ae82fe2c6a28aa4"
+    sha256 cellar: :any, arm64_linux:       "30dd3db10fa7bb455866d9c55540b84534f5115f5503558c1192425028c8bfda"
+    sha256 cellar: :any, x86_64_linux:      "bac2b56b09e4d0357d4b02e9265c6df2febea55021bda69a3b04352c4a86919a"
   end
 
   depends_on "cmake" => :build
@@ -28,8 +27,9 @@ class Wuppiefuzz < Formula
   end
 
   def install
-    ENV["Z3_LIBRARY_PATH_OVERRIDE"] = Formula["z3"].opt_lib
-    ENV["Z3_SYS_Z3_HEADER"] = Formula["z3"].opt_include/"z3.h"
+    rm ".cargo/config.toml" # macOS `-stack_size` flag breaks proc-macro linking
+    ENV["Z3_LIBRARY_PATH_OVERRIDE"] = formula_opt_lib("z3")
+    ENV["Z3_SYS_Z3_HEADER"] = formula_opt_include("z3")/"z3.h"
     system "cargo", "install", "--no-default-features", *std_cargo_args(features: ["std"])
   end
 

@@ -1,24 +1,23 @@
 class Keploy < Formula
   desc "Testing Toolkit creates test-cases and data mocks from API calls, DB queries"
   homepage "https://keploy.io"
-  url "https://github.com/keploy/keploy/archive/refs/tags/v3.5.71.tar.gz"
-  sha256 "8fb7765f5ba9500ec2cd94bd53331a113fcc11d765a2604345243997e4fe1652"
+  url "https://github.com/keploy/keploy/archive/refs/tags/v3.6.59.tar.gz"
+  sha256 "60fefa98659203b8c2e32a720d861686102c6f0dbf3c3a09e03a2d9b68725056"
   license "Apache-2.0"
   head "https://github.com/keploy/keploy.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d1732bf460855ca7db71c3e3242358168ad36ed35caa0687b74d16d8cd9ed5a3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d1732bf460855ca7db71c3e3242358168ad36ed35caa0687b74d16d8cd9ed5a3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d1732bf460855ca7db71c3e3242358168ad36ed35caa0687b74d16d8cd9ed5a3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bdce72362eec2108d5a45ae43e4fb1dd58eb741f9625b88b6a4f8011fefa313b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "42fb8a275ec7a602f37ae5e30b661a2a051b40b858f39b7cab4095a788385358"
-    sha256 cellar: :any,                 x86_64_linux:  "3a7a767f4c655d34e5a67152195a2273ebefcf5f017e6dc2554e42e48c0cecdf"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "4918f1d9e8d48764954a4933fddd3b0d574b5da5cc17256ee57d52fd07045301"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4918f1d9e8d48764954a4933fddd3b0d574b5da5cc17256ee57d52fd07045301"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "4918f1d9e8d48764954a4933fddd3b0d574b5da5cc17256ee57d52fd07045301"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "bb2676385f13b49ce621a1d626556ac683118ebb075bf980ce8f347172d322bd"
+    sha256 cellar: :any,                 x86_64_linux:      "7dc0791083dc2bf419f3d3be1db0452940e7f828d8ad05605f227ce84cecf41f"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}")
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}")
   end
 
   test do

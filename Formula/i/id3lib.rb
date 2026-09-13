@@ -9,12 +9,13 @@ class Id3lib < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "c32250cc13c45be4e25507819ad3fb788b3031ad781d97b61bb721c95e6001f3"
-    sha256 cellar: :any,                 arm64_sequoia: "dd2afb2b4e882de0fbdc279c2a993064a6b07527f0dd67298ffa568d1b445dca"
-    sha256 cellar: :any,                 arm64_sonoma:  "53c2b06123a0c4b17047798d199891a38be8808265bc5e3d265e2aa3e58d942c"
-    sha256 cellar: :any,                 sonoma:        "9cdc748bec10b52b864e3201a1ab0d1660fb92827b1587610e008b85a272b495"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b2fc13b429cf5142874639c62498f0311474c8d09ff3aaed76843704359d82d6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6b2b224334a73c8dd5e56bf5b8ff37d5e82fd02a700a62c13bc149ad5f8493f6"
+    sha256 cellar: :any,                 arm64_golden_gate: "d69d9e51d30546e2a25aa97aa226282d41195a847aaaa94ec795f0af416f7525"
+    sha256 cellar: :any,                 arm64_tahoe:       "c32250cc13c45be4e25507819ad3fb788b3031ad781d97b61bb721c95e6001f3"
+    sha256 cellar: :any,                 arm64_sequoia:     "dd2afb2b4e882de0fbdc279c2a993064a6b07527f0dd67298ffa568d1b445dca"
+    sha256 cellar: :any,                 arm64_sonoma:      "53c2b06123a0c4b17047798d199891a38be8808265bc5e3d265e2aa3e58d942c"
+    sha256 cellar: :any,                 sonoma:            "9cdc748bec10b52b864e3201a1ab0d1660fb92827b1587610e008b85a272b495"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b2fc13b429cf5142874639c62498f0311474c8d09ff3aaed76843704359d82d6"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "6b2b224334a73c8dd5e56bf5b8ff37d5e82fd02a700a62c13bc149ad5f8493f6"
   end
 
   depends_on "autoconf" => :build
@@ -26,34 +27,28 @@ class Id3lib < Formula
   end
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/id3lib-main.patch"
-    sha256 "83c8d2fa54e8f88b682402b2a8730dcbcc8a7578681301a6c034fd53e1275463"
+    file "Patches/id3lib/id3lib-main.patch"
   end
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/id3lib-vbr-overflow.patch"
-    sha256 "0ec91c9d89d80f40983c04147211ced8b4a4d8a5be207fbe631f5eefbbd185c2"
+    file "Patches/id3lib/id3lib-vbr-overflow.patch"
   end
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/no-iomanip.h.patch"
-    sha256 "da0bd9f3d17f1dd054720c17dfd15062eabdfc4d38126bb1b2ef5e8f39904925"
+    file "Patches/id3lib/no-iomanip.h.patch"
   end
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/automake.patch"
-    sha256 "c1ae2aa04baee7f92301cbed120340682e62e1f839bb61f8f6d3c459a7faf097"
+    file "Patches/id3lib/automake.patch"
   end
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/boolcheck.patch"
-    sha256 "a7881dc25665f284798934ba19092d1eb45ca515a34e5c473accd144aa1a215a"
+    file "Patches/id3lib/boolcheck.patch"
   end
 
   # fixes Unicode display problem in easytag: see Homebrew/homebrew-x11#123
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/id3lib/patch_id3lib_3.8.3_UTF16_writing_bug.diff"
-    sha256 "71c79002d9485965a3a93e87ecbd7fed8f89f64340433b7ccd263d21385ac969"
+    file "Patches/id3lib/patch_id3lib_3.8.3_UTF16_writing_bug.diff"
   end
 
   patch :DATA

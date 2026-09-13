@@ -1,21 +1,27 @@
 class Llmfit < Formula
   desc "Find what models run on your hardware"
   homepage "https://github.com/AlexsJones/llmfit"
-  url "https://static.crates.io/crates/llmfit/llmfit-0.9.31.crate"
-  sha256 "b66fba5d2108bdbad31d26c6475c45338e1621d16065ec3a9c4d68cdfbd07662"
+  url "https://static.crates.io/crates/llmfit/llmfit-1.1.15.crate"
+  sha256 "7c45bd6d52c7f492b40b68e6bf39c16baf83e2963b2ba7e25075c4e09a580a1f"
   license "MIT"
   head "https://github.com/AlexsJones/llmfit.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e2857dbb6bde322d57471ccb85681e9e4003ffba34a628bad5a90847960c8a70"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a79174fa29ac7f373e9c0934ebc2be9c2a8e9f0633cb1c59b8ad1b18aa3ffcd3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8914c6e05120402c43a4381c78e80615ecd0594a5a527ded1df0de938b2dc16b"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a76637ad63b621c192b1bec04717af8b65438e3d5914c4edecf5cd8f298f1000"
-    sha256 cellar: :any,                 arm64_linux:   "272907e290e2818ec18b6b88d3035c78733cd9390979383fc2490f3a10762a60"
-    sha256 cellar: :any,                 x86_64_linux:  "e0f2cfd1de3765bddf9370e1a2b3db49fc3b4d013d5f260df7c9933d7e112526"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "2dd20be971cdcaa23caf56edf1f08fa29178f7ae6aa47f7613d57433e8cd1556"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4b1a1c651c3dfb1e0c8240e4e66cb8a06a5af700aa489f34d666c803c94f89bd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bd79be411d9a6e10b1650ace83f487564ec332807003f1849e81ebca628647c4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2de5dd5d0a878ce3a9669c4ad6cd1f70aaabc05e68f84af03770aa2d881b083f"
+    sha256 cellar: :any,                 arm64_linux:       "5e84f289bf8a354388ec6ffa30ad062b4041ab716eab93638723b43a7ac7ef6b"
+    sha256 cellar: :any,                 x86_64_linux:      "88e6daef4535f4de64f0fe593f1006265eb080ef41c1626ef883aea76cf13a9d"
   end
 
   depends_on "rust" => :build
+
+  allow_network_access! :test
+
+  def fetch
+    system "cargo", "fetch", "--locked"
+  end
 
   def install
     system "cargo", "install", *std_cargo_args
@@ -23,6 +29,6 @@ class Llmfit < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/llmfit --version")
-    assert_match "Multiple models match", shell_output("#{bin}/llmfit info llama")
+    assert_match(/Found \d+ model\(s\)/i, shell_output("#{bin}/llmfit search llama"))
   end
 end

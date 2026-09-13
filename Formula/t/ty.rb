@@ -1,18 +1,17 @@
 class Ty < Formula
   desc "Extremely fast Python type checker, written in Rust"
   homepage "https://docs.astral.sh/ty/"
-  url "https://files.pythonhosted.org/packages/ea/fa/930ab48010e89fd1ecccc8f588afc9a79d540a1e8a379cf9cb3a41812254/ty-0.0.50.tar.gz"
-  sha256 "74b8c0df3e7d3294110e9862b7f8a3767f0e073dcb6ffa27f69fd63fd876149c"
+  url "https://files.pythonhosted.org/packages/54/b0/6d1b10e0d422736a3c439e487c950ae785f401d71ff879d5be68bccb6d90/ty-0.0.80.tar.gz"
+  sha256 "fe86bc91327e45ff5e3593b7e306e7f57a44bc0608f38d647b8d97bd99c96013"
   license "MIT"
   head "https://github.com/astral-sh/ty.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "da97e006a1e885700cb31b86ac3bfc9d03d5379e40c2d43c3d1a3eef581a7d42"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "58b696beccf94095ea12a79d5acafad865d0919e7a8f6a81ef89630d32a2c0c0"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4d652bd1c28faf8e08b65ea5c837a2e883af9870067cf20e64cd225a9b87fa49"
-    sha256 cellar: :any_skip_relocation, sonoma:        "222d5685fe5a613138797868c287bdd4703469f2346c371dfae10b50431e3e9b"
-    sha256 cellar: :any,                 arm64_linux:   "2f66c07cd557ce97af16d4961ed65716a9fad3ea81462fc0ccceaaea70186552"
-    sha256 cellar: :any,                 x86_64_linux:  "d14f4aa99e886d0366026daf32c1950b11184540395136ee1a4dbc6a6bd5786c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "caf1a22a80858b000f89dfc4048ae828be66244027b78f4cf02ccc5fd65e73fb"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e67ec830a954af10e8aa922d04c505ae02bebaff92507cfa5bb1df3e9c4df298"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d89d9e5860d8d26f5b87a2d84235e0c2bd460470b528886e0d1f701780ac2475"
+    sha256 cellar: :any,                 arm64_linux:       "4a2a97cb62c5c9b8fe4ab865aad7f0b2de3dcf7b763c03bf1471ab9de06aa2d3"
+    sha256 cellar: :any,                 x86_64_linux:      "c8338008ff23c402d02b862e25e0aadb45a231bdcac7ecca1be6a2529ffe2078"
   end
 
   depends_on "rust" => :build

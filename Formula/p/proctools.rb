@@ -11,17 +11,17 @@ class Proctools < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:    "a04c37c6e995cbce8ff70386029b5b3a00c61cbd1e9c7399cbb177670035df8d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:  "f9cc18c0b6d9837cad062ce69de2544bf534d4bcc7380230b81ac126dc2ca4be"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:   "5be8d4a80309fe84a132613a2338daa436e041b98569d0846648fc6e35e3d452"
-    sha256 cellar: :any_skip_relocation, arm64_ventura:  "954a65be7f21a18e1defc733342a049bef559402c5b14b8fb8879cff05cb7af5"
-    sha256 cellar: :any_skip_relocation, arm64_monterey: "e7616c8fd8dae9c8eed3686b7bf76cf2ecd46b44ba8b0cfed12c22c9f3f18c69"
-    sha256 cellar: :any_skip_relocation, arm64_big_sur:  "526b231a9b0d8e8d2a4155507bc77e2cc3dab60a6905c44c3371839b391e0b74"
-    sha256 cellar: :any_skip_relocation, sonoma:         "05aed8b98b5faf6ac1e0026998e7ab30de66318c9165bd4efb78ff35eecb7473"
-    sha256 cellar: :any_skip_relocation, ventura:        "7beaae2873e1c6c390b4a9471ea9bc4f16cb4a4f591a7ba5119546ab46169132"
-    sha256 cellar: :any_skip_relocation, monterey:       "9bdbe7d4b78f52517f8c215c2aea77a49e988d9fb473d6277b5dbe1cc4b737e4"
-    sha256 cellar: :any_skip_relocation, big_sur:        "3a8ffd535edba47371a0617666b6eced7b0b13c4b27b4303b483d71f07de2e04"
-    sha256 cellar: :any_skip_relocation, catalina:       "f0fe70530d22c270ac3d5a105f2dbbbb0dc6a664acd03f3ad7da3f86255fd548"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "15f6eeb76eefea31f038840eba32af9518e9617e45c8390ad9279a4fe8d3613d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a04c37c6e995cbce8ff70386029b5b3a00c61cbd1e9c7399cbb177670035df8d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f9cc18c0b6d9837cad062ce69de2544bf534d4bcc7380230b81ac126dc2ca4be"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "5be8d4a80309fe84a132613a2338daa436e041b98569d0846648fc6e35e3d452"
+    sha256 cellar: :any_skip_relocation, arm64_ventura:     "954a65be7f21a18e1defc733342a049bef559402c5b14b8fb8879cff05cb7af5"
+    sha256 cellar: :any_skip_relocation, arm64_monterey:    "e7616c8fd8dae9c8eed3686b7bf76cf2ecd46b44ba8b0cfed12c22c9f3f18c69"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur:     "526b231a9b0d8e8d2a4155507bc77e2cc3dab60a6905c44c3371839b391e0b74"
+    sha256 cellar: :any_skip_relocation, sonoma:            "05aed8b98b5faf6ac1e0026998e7ab30de66318c9165bd4efb78ff35eecb7473"
+    sha256 cellar: :any_skip_relocation, ventura:           "7beaae2873e1c6c390b4a9471ea9bc4f16cb4a4f591a7ba5119546ab46169132"
+    sha256 cellar: :any_skip_relocation, monterey:          "9bdbe7d4b78f52517f8c215c2aea77a49e988d9fb473d6277b5dbe1cc4b737e4"
+    sha256 cellar: :any_skip_relocation, big_sur:           "3a8ffd535edba47371a0617666b6eced7b0b13c4b27b4303b483d71f07de2e04"
   end
 
   # Last release on 2003-12-07. macOS has included pgrep/pkill since OS X Mountain Lion 10.8
@@ -32,18 +32,18 @@ class Proctools < Formula
   depends_on :macos
 
   # Patches via MacPorts
-  {
-    "pfind-Makefile"        => "d3ee204bbc708ee650b7310f58e45681c5ca0b3c3c5aa82fa4b402f7f5868b11",
-    "pfind-pfind.c"         => "88f1bc60e3cf269ad012799dc6ddce27c2470eeafb7745bc5d14b78a2bdfbe96",
-    "pgrep-Makefile"        => "f7f2bc21cab6ef02a89ee9e9f975d6a533d012b23720c3c22e66b746beb493fb",
-    "pkill-Makefile"        => "bac12837958bc214234d47abe204ee6ad0da2d69440cf38b1e39ab986cc39d29",
-    "proctools-fmt.c"       => "1a95516de3b6573a96f4ec4be933137e152631ad495f1364c1dd5ce3a9c79bc8",
-    "proctools-proctools.c" => "1d08e570cc32ff08f8073308da187e918a89a783837b1ea20735ea25ae18bfdb",
-    "proctools-proctools.h" => "7c2ee6ac3dc7b26fb6738496fbabb1d1d065302a39207ae3fbacb1bc3a64371a",
-  }.each do |name, sha|
+  [
+    "pfind-Makefile",
+    "pfind-pfind.c",
+    "pgrep-Makefile",
+    "pkill-Makefile",
+    "proctools-fmt.c",
+    "proctools-proctools.c",
+    "proctools-proctools.h",
+  ].each do |name|
     patch :p0 do
-      url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/proctools/patch-#{name}.diff"
-      sha256 sha
+      file "Patches/proctools/patch-#{name}.diff"
+      type :unofficial
     end
   end
 

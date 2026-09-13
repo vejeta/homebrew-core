@@ -1,24 +1,32 @@
 class OsvScanner < Formula
   desc "Vulnerability scanner which uses the OSV database"
   homepage "https://google.github.io/osv-scanner/"
-  url "https://github.com/google/osv-scanner/archive/refs/tags/v2.4.0.tar.gz"
-  sha256 "407ceeb62b2a1f3fb8260bf527f2d61d1079f440e23c8c94a9796791d7edd565"
+  url "https://github.com/google/osv-scanner/archive/refs/tags/v2.5.1.tar.gz"
+  sha256 "9a81d802aa0c0f667f8a80a045d4bab058fb9d9a6fb21f5cf2f1ea2007f73eef"
   license "Apache-2.0"
   head "https://github.com/google/osv-scanner.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b75b90725c65fe1349481753e799e337f261ee6258db26d8fe1ea31f17970654"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b28f33af36aca65b00df57fa07530ce209caf3b8cca07308f00cbb6196a1e220"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ed12cc7e08f7fa4a1c37642d235b40ce4e9d19f75e28a5b89e4007d0de09ba2f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "35ff19678efaabadf1a834c5a88b40d8e5f733d3c13eed33237bcb3c2ace36b8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8e4fe2bf70188e205ff791bc4d300e077c2162505fb28c96bd4918c40fc53c12"
-    sha256 cellar: :any,                 x86_64_linux:  "7c2b5c1209ae5bb6e458aef523c5f9fe2ddf14848e393e3b5f36e3da09d6cbc0"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "61de294db297aba27ce76864abb5573d98131af3eb226d5534095de261679a92"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b38c086e61a754e96a622895d606b532c4b88dacf08553c4397a36b241412203"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "8c48d63bc1288511250d84248dc1c409f16f3fa6568f0c345289ecbffb8d2132"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ef1d7724dd85cf6a8fa94a79f5af8d5e732d5a77245bd042c0b8ab7b5f73873b"
+    sha256 cellar: :any_skip_relocation, sonoma:            "7ea2b74c31474db07378f4d30d841645f8f7548fde9f8bccea63036f57ffa982"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "667c29723932c0f2c0c34a280f9623b5ca366aa84d1cf4acd041418bd90e70d7"
+    sha256 cellar: :any,                 x86_64_linux:      "6c33873116d524514d81be26ab404601dbbbc8b658fa773ee86378fa9d2d8630"
   end
 
   depends_on "go" => [:build, :test]
 
+  # `test do` block queries api.osv.dev
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w"), "./cmd/osv-scanner"
+    system "go", "build", *std_go_args, "./cmd/osv-scanner"
   end
 
   test do

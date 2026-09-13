@@ -3,29 +3,25 @@ class LlamaCpp < Formula
   homepage "https://llama.app"
   # CMake uses Git to generate version information.
   url "https://github.com/ggml-org/llama.cpp.git",
-      tag:      "b9700",
-      revision: "9724f664e803e70eb8d046a3fac411122ad42ff7"
+      tag:      "v0.4.0",
+      revision: "5266f24da75dc449bd56cbed7addb9c8e4a6a73e"
   license "MIT"
+  version_scheme 1
   compatibility_version 1
   head "https://github.com/ggml-org/llama.cpp.git", branch: "master"
 
-  # llama.cpp publishes new tags too often
-  # Having multiple updates in one day is not very convenient
-  # Update formula only after 10 new tags (1 update per ≈2 days)
-  #
-  # `throttle 10` doesn't work
   livecheck do
     url :stable
-    regex(/^v?b(\d+(?:\.\d+)*0)$/i)
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "98b5178f4f89d73f9e0b10bd7b829caf46b830395c631ff9aa5fd3cc76b647fd"
-    sha256 cellar: :any, arm64_sequoia: "f1dcbd25ce51d635681f14b47e1d9e37881c9736b5e3b11b820c613721d220b1"
-    sha256 cellar: :any, arm64_sonoma:  "bf4ae3de46178bc376438be38433055a4613c115671b2e10b03aa63868d128cc"
-    sha256 cellar: :any, sonoma:        "9095dc7f76120d1d44b5bf70d350ef454b0baeae50afed9bc393f24cd40b0101"
-    sha256 cellar: :any, arm64_linux:   "62ca5bb76e7f718b40a91c2201b9aa3ede72109bed4feaec77a242d2c0a6889d"
-    sha256 cellar: :any, x86_64_linux:  "53d3e244ac56d0a69ca361e835569f088b8a94d3cdfaf8b206a7a8538e67fb40"
+    sha256 cellar: :any, arm64_golden_gate: "4d2445d97f12dae9db3352c29f90fa5b0ce75166250917efaece2203e7f77405"
+    sha256 cellar: :any, arm64_tahoe:       "4e3ac097b141610834953af81d51853eb9789a610c6716f92c1e943ce3ce516f"
+    sha256 cellar: :any, arm64_sequoia:     "833b54b17f4c6551840d2d68ac2b967321f1f8d18352c53c01812b12dcdb33e0"
+    sha256 cellar: :any, arm64_sonoma:      "48508e16acf8be88dc1146f380ffac9ce746a8b8e422798d570d08350a83ecde"
+    sha256 cellar: :any, arm64_linux:       "a110c6211650fae41fab33aad96795c78e5ca6b45871b4ddd42bc8a8a62bbe6e"
+    sha256 cellar: :any, x86_64_linux:      "acecd0797b0619b3e4a6ac5e51d34e8cb0905c06f1827f0c4466f82272d28770"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -41,6 +37,7 @@ class LlamaCpp < Formula
       -DLLAMA_OPENSSL=ON
       -DLLAMA_USE_SYSTEM_GGML=ON
     ]
+    args << "-DLLAMA_BUILD_IS_DEV=OFF" if build.stable?
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"

@@ -1,8 +1,8 @@
 class Wstunnel < Formula
   desc "Tunnel all your traffic over Websocket or HTTP2"
   homepage "https://github.com/erebe/wstunnel"
-  url "https://github.com/erebe/wstunnel/archive/refs/tags/v10.5.5.tar.gz"
-  sha256 "c4b675bad8668cb86a99e96b6e343a8bce3c6382f54c266875333aaca209b1f9"
+  url "https://github.com/erebe/wstunnel/archive/refs/tags/v10.7.1.tar.gz"
+  sha256 "016cc051c48159cbd7a2b172024ae70ca7e3db298022828fdcc6b7324aa62d85"
   license "BSD-3-Clause"
   head "https://github.com/erebe/wstunnel.git", branch: "main"
 
@@ -15,12 +15,12 @@ class Wstunnel < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e88e304b357698f00953a7fe92b066fdd98bea0168cf912c798ab9d34fa8b2e0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8fcc186e59354940f7b80c1f355506b9cab495746ca02cf9433174894c2f27e1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4c11c08f73beea8ca67e6818a712a42aaa0aa7f0d5ca441d1195add3963cf1d0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d6521bb8d08428cb9bc58d609af0c926d83a0856b3e9aa7bd28726eaf4c9b0e5"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "38db0fb6258a45e6156597ad28cf166a2e498cb7481618762d89de9e5f243982"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c13f8518ac96dd33787b1bc6d0caf99bf7a17f3733e22ddd88cca76fdfc37319"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "3639615eaf7cd2d7e218dc3de254be37e3419540bbb381fc4cdc7d7ad5040571"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "da6e243d21ecd91e7ed8e377ac2d71340fce9f959f2939b958333e8ef86f23fd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "24db473b1fa6b0587a17a8a299b6e938fe2a7cea19f919f2c097016771e577f2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ec33cc4edfc72971f8c2aca7755c8dc69b58e0c24b57cf60cc431076d70cbcbe"
+    sha256 cellar: :any,                 arm64_linux:       "cf99f39da63e674d7662f24e77aee225592133f81456d64d8f0674db4e6c1dd0"
+    sha256 cellar: :any,                 x86_64_linux:      "e32bbbe4a06fc6bef324e0f6f18eb34b9073bb1775d1a66d6a111e8f4e097085"
   end
 
   depends_on "rust" => :build
@@ -30,10 +30,8 @@ class Wstunnel < Formula
   end
 
   test do
-    ENV["NO_COLOR"] = "1"
-
     port = free_port
-    pid = spawn bin/"wstunnel", "server", "ws://[::]:#{port}"
+    pid = spawn bin/"wstunnel", "server", "ws://[::]:#{port}", "--no-color"
     sleep 2
 
     output = shell_output("curl -sI http://localhost:#{port}")

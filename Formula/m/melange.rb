@@ -1,8 +1,8 @@
 class Melange < Formula
   desc "Build APKs from source code"
   homepage "https://github.com/chainguard-dev/melange"
-  url "https://github.com/chainguard-dev/melange/archive/refs/tags/v0.54.0.tar.gz"
-  sha256 "9c8032f18f3927518a55bacdbdc29e2276f50d0c3713727f3de8402a10d3f08f"
+  url "https://github.com/chainguard-dev/melange/archive/refs/tags/v0.59.5.tar.gz"
+  sha256 "e53daa5ce969a90d40aaffca739015ab78ac7cc12330d66b6b61a4e381a42b21"
   license "Apache-2.0"
   head "https://github.com/chainguard-dev/melange.git", branch: "main"
 
@@ -12,19 +12,18 @@ class Melange < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e6ef0b3b29277138329d72e12f9f15ecc309c4e5dcf2de521e8d58c6fd62b285"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "62a538539e8259a7ad583f6a8ab18a6972999f4d3252df3607c103f77cb22a33"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "62561c48b573e36a73ee46b52384995cc5e21d590e1c8cc4ce0a3760c58c0105"
-    sha256 cellar: :any_skip_relocation, sonoma:        "4a7afe58b4295daaaa0c98ee9a002d88948a8b5f617df4e6b99a01bcaee65044"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "38b44eb1c6883f7e4cd58c07f88e8d7e2355a129b7862a8a9a671978dcb452c3"
-    sha256 cellar: :any,                 x86_64_linux:  "f9d62873b66614133a7f75297da9ef368fb80b4eda3c9f52eea297632c08ad61"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b67bc783de67a3dd869d7f15916bfe1d479560a4a353317e5e21a2b73486b209"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "dc7f1855b833c8ab7f22b8d78600812c904fdbb152f48d922d72f7907f7c4b6b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "1b69e39751cbe31a12886f90d14f5e9f8532eb60332e828e30b2d2ef89638aae"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "542048625c491f2aec0aa9ac8c0e9a63ea093a1c0c3427a86e62a656ba4b511b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "312ef99405c9c8c5e8759d303d1c4c609ff06e29d978928b6b7d47a436bad27d"
+    sha256 cellar: :any,                 x86_64_linux:      "df8b4a330fcc6e743a598235cdc4697062173878337ab4943446983d8c2abfa9"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X sigs.k8s.io/release-utils/version.gitVersion=#{version}
       -X sigs.k8s.io/release-utils/version.gitCommit=#{tap.user}
       -X sigs.k8s.io/release-utils/version.gitTreeState=clean

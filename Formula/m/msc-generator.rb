@@ -2,8 +2,9 @@ class MscGenerator < Formula
   desc "Draws signalling charts from textual description"
   homepage "https://gitlab.com/msc-generator/msc-generator"
   url "https://gitlab.com/api/v4/projects/31167732/packages/generic/msc-generator/8.6.4/msc-generator-8.6.4.tar.gz"
-  sha256 "4f9b44f5439c512f95b686755526fd8772aa9df8c52e7e13bd60276a2d558557"
+  sha256 "499d8e234dae13ae6b551cb8991b6f4db980bb0f69705501e7505aad01ca5e95"
   license "AGPL-3.0-or-later"
+  revision 1
 
   livecheck do
     url "https://gitlab.com/api/v4/projects/31167732/packages"
@@ -17,12 +18,12 @@ class MscGenerator < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "77320a8ba2d8b05c1bb4accb40bb8d8c2863326056916faebd02ec5d6baf7f1e"
-    sha256 arm64_sequoia: "d9edc1a402e83f259f311d7b9820ae2d2f25a15aaf2a71fbcab55ad826054823"
-    sha256 arm64_sonoma:  "443bfcb59db4bf1b282fd5a3805c16e60026ffd6d2ebeb40fbd67250dfce8d4b"
-    sha256 sonoma:        "aaf99db5b0360a364b215c53df1b5976a86afde615ccd62f4453fa779d2fb964"
-    sha256 arm64_linux:   "bcf697f0dad4b80dbac6bf30f4de6d20723f0fdacb502eb7d7c3ee61c175df9e"
-    sha256 x86_64_linux:  "c4cd3b10cf1a761607bce952b2ce0a67bf003dfee4027feba19ff2c20bb3bb62"
+    sha256 arm64_golden_gate: "791cf09e9ae47908933dddc7a4fd781362f6c3aed18dcae8456a933e787de271"
+    sha256 arm64_tahoe:       "9863a4e3cf0c45e8ff8a6978cc9dd3e63cab38ec15df9c4fc9ac6dac7a40081a"
+    sha256 arm64_sequoia:     "5c8f6d9d99c3f6d845700894e19a190016a8a4a3b8e6eb34cbe3c097c2e495c7"
+    sha256 arm64_sonoma:      "9d462970ade1e232f9625e5423b1ce607d2a57a99ac54d733513d21b61a31fe1"
+    sha256 arm64_linux:       "91c5165105dd4a78f2ee7ab12dc3e29e78d75e59787ded3e1607ed538ae62d6f"
+    sha256 x86_64_linux:      "86c897515b9745f57ef86b8bfe46c9296d708c7ca97cfbcff31f0d4f1d250443"
   end
 
   depends_on "autoconf" => :build
@@ -69,7 +70,7 @@ class MscGenerator < Formula
     if OS.mac?
       args << "OBJCXX=/usr/bin/clang++"
       ENV.append_to_cflags "-DNDEBUG"
-      ENV.prepend_path "PATH", Formula["gnu-sed"].opt_libexec/"gnubin"
+      ENV.prepend_path "PATH", formula_opt_libexec("gnu-sed")/"gnubin"
       ENV["MAKE"] = make = "gmake"
     end
 

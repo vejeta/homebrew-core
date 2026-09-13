@@ -1,10 +1,10 @@
 class Qtmultimedia < Formula
   desc "Provides APIs for playing back and recording audiovisual content"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.11/6.11.1/submodules/qtmultimedia-everywhere-src-6.11.1.tar.xz"
-  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.1/submodules/qtmultimedia-everywhere-src-6.11.1.tar.xz"
-  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.1/submodules/qtmultimedia-everywhere-src-6.11.1.tar.xz"
-  sha256 "390f8e52ddee3aca5c4de7eead900c84c4fa61ff6d1f0ebea9c7543365c09b0a"
+  url "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtmultimedia-everywhere-src-6.11.2.tar.xz"
+  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.2/submodules/qtmultimedia-everywhere-src-6.11.2.tar.xz"
+  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.2/submodules/qtmultimedia-everywhere-src-6.11.2.tar.xz"
+  sha256 "967b5e02ec6b793cdb360622cd6e703132836af983208d678dae4b50f109cd9f"
   license all_of: [
     { any_of: ["LGPL-3.0-only", "GPL-2.0-only", "GPL-3.0-only"] },
     { all_of: ["MPL-2.0", "BSD-3-Clause"] }, # bundled eigen
@@ -21,12 +21,12 @@ class Qtmultimedia < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "2af68cbebbb2bb8babe819343cb284f3ff08587f69180d0f889c769f2e4f1eea"
-    sha256 cellar: :any,                 arm64_sequoia: "ed53cf4393ae04cc5dbcdf29e649cb8a966170c0200b9b1185dfdc64e2706c38"
-    sha256 cellar: :any,                 arm64_sonoma:  "99e1ae4a0ca5e8d7f8d1eb0fab56c86083d7d51c255bd9e41ccff0815dbfbe76"
-    sha256 cellar: :any,                 sonoma:        "614b3b3840f64968fc3a0bdb39936e92b26cb9311048cdad89e46ce1d313254e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "115c580ad70d0e64394d5cbb49c297c98cb61391a82419196a95a0521540abfd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2888625da63c9befe8e790d6ae6bbedd4282a9b3457c9500bb98fa2e50faa17f"
+    sha256 cellar: :any, arm64_golden_gate: "82d149af2b040160a867486bd1b179dc102d5da37975dc3da5fe71584bca8ecd"
+    sha256 cellar: :any, arm64_tahoe:       "1518365e69788eec239f0265c3d4b30e5f80e7d46be7d8694a27ec2aec332668"
+    sha256 cellar: :any, arm64_sequoia:     "156078210836f3ae76f2a86ef4a946d78e3261a15ec3721dbf1983bcec00a461"
+    sha256 cellar: :any, arm64_sonoma:      "baccc48e49ebcdebc1a23491a85d2cf55880e53309b53f68d9f3e7a352da9827"
+    sha256 cellar: :any, arm64_linux:       "fa48d476a7bc900e898e6280bc1af10c01e1a812cafee3128748fad21463cb45"
+    sha256 cellar: :any, x86_64_linux:      "77316cdb36209765dac3d3a585142350445a6453a6e12024a78cab3845cde902"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -62,6 +62,11 @@ class Qtmultimedia < Formula
   conflicts_with "qt@5", because: "both link conflicting binaries"
 
   def install
+    # Allow -march options to be passed through, as Qt builds
+    # arch-specific code with runtime detection of capabilities:
+    # https://bugreports.qt.io/browse/QTBUG-113391
+    ENV.runtime_cpu_detection
+
     args = ["-DCMAKE_STAGING_PREFIX=#{prefix}"]
     if OS.mac?
       args << "-DQT_FEATURE_ffmpeg=OFF"
@@ -122,7 +127,7 @@ class Qtmultimedia < Formula
 
     ENV.delete "CPATH" if OS.mac?
     mkdir "qmake" do
-      system Formula["qtbase"].bin/"qmake", testpath/"test.pro"
+      system formula_opt_bin("qtbase")/"qmake", testpath/"test.pro"
       system "make"
       system "./test"
     end

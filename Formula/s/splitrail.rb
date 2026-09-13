@@ -1,18 +1,18 @@
 class Splitrail < Formula
   desc "Real-time token usage tracker and cost monitor for CLI coding agents"
   homepage "https://splitrail.dev/"
-  url "https://github.com/Piebald-AI/splitrail/archive/refs/tags/v3.5.7.tar.gz"
-  sha256 "2bc33866fa53eea70e647aff200b71e7f07f8bba5c679c14a1749e3dc6a4d882"
+  url "https://github.com/Piebald-AI/splitrail/archive/refs/tags/v3.9.1.tar.gz"
+  sha256 "17e77d4505cad0377ed880fcbfbed9ca03d7a02dc4dddfca5477d2dbf592764b"
   license "MIT"
   head "https://github.com/Piebald-AI/splitrail.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "fa589e09635d1b89e99eee19ee6b0ec0e1e7635d24d6fb3d40c254a0ae09b213"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "965cd7216979d1ba9a015539cf9aa017ad012fda0140352c64166e011b538573"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "af8395a4d0a97f93fc0b5a83fe958c100683b90ea1980cd6cd5ffa675b42ae38"
-    sha256 cellar: :any_skip_relocation, sonoma:        "88407f032eb54a1d49f18c07eee6aae6391f4bcc2424ade4664089826876ed88"
-    sha256 cellar: :any,                 arm64_linux:   "8d2108dcda0181b85a6dd93e482d4c108ee7c1e449b20a1f4e9a78fab78c673f"
-    sha256 cellar: :any,                 x86_64_linux:  "5832c6943fa5c254ddaa81762a130cd150ab83a847ad61d56908f934479a9573"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "29199a00c8f3fdf1a2da2ae2c5cecf21b0eb99da8c7bdf2ae979a92ae0102522"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7af28960ef62069b28c538bd6713156d2195e892e662f28e35e7e38ab8224d64"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d48365d075a9fa0a22982e4998d0cc3e616cf636e4a839257f27eb048eaf6ae2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e9d756b359ac1e41cdaa1f090e0a015dd5918b59e9f2b73f553bddda95c9d893"
+    sha256 cellar: :any,                 arm64_linux:       "37f336a869e09acb5aa9c28a7c19265c8ebc036c0128c9f540127953f0a04477"
+    sha256 cellar: :any,                 x86_64_linux:      "c8653e70915bc1490676a54390f0536739e9b0b6d505d6585c0eebe3b042a9eb"
   end
 
   depends_on "rust" => :build

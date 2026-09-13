@@ -7,12 +7,13 @@ class Tenere < Formula
 
   bottle do
     rebuild 2
-    sha256 cellar: :any,                 arm64_tahoe:   "c38603fac8a4260aa58239dd60db6e0022749b1900c9162c8e8446c8147004a9"
-    sha256 cellar: :any,                 arm64_sequoia: "421869a74b7a05778db1ff54c259378e9820626ec6b52958809de541456b8148"
-    sha256 cellar: :any,                 arm64_sonoma:  "646fd6a0a9a6dbcda15941833cd9a1fd6cb474fd8dede32ff999c1bd832f2a4e"
-    sha256 cellar: :any,                 sonoma:        "d564c7b38a91c93378324ff974d52ee2778886b10259a25f171d170317fdbe31"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "15da638b1771ce1b364619ed5315649b9cc396e42eb48acfc9520d23be3ebf14"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f8b4eb67044e1c04716e143ab3b72285519147f658d678aff35fa67c4e0084b8"
+    sha256 cellar: :any,                 arm64_golden_gate: "74ad8108311fac759bff5ed6fe5e15facca48ae02f899c4f95c6d237fa35f0ae"
+    sha256 cellar: :any,                 arm64_tahoe:       "c38603fac8a4260aa58239dd60db6e0022749b1900c9162c8e8446c8147004a9"
+    sha256 cellar: :any,                 arm64_sequoia:     "421869a74b7a05778db1ff54c259378e9820626ec6b52958809de541456b8148"
+    sha256 cellar: :any,                 arm64_sonoma:      "646fd6a0a9a6dbcda15941833cd9a1fd6cb474fd8dede32ff999c1bd832f2a4e"
+    sha256 cellar: :any,                 sonoma:            "d564c7b38a91c93378324ff974d52ee2778886b10259a25f171d170317fdbe31"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "15da638b1771ce1b364619ed5315649b9cc396e42eb48acfc9520d23be3ebf14"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "f8b4eb67044e1c04716e143ab3b72285519147f658d678aff35fa67c4e0084b8"
   end
 
   depends_on "pkgconf" => :build
@@ -28,10 +29,12 @@ class Tenere < Formula
   patch do
     url "https://github.com/pythops/tenere/commit/2cf22cc3b669c1f2be2c5e9e2c495ed8ab1c95fb.patch?full_index=1"
     sha256 "61759013e19e930e8183df312f5980f5ccfdbd27320dff58c2da943064e1b9d6"
+    type :backport
   end
   patch do
     url "https://github.com/pythops/tenere/commit/f6e1ba6734258e3fb0d81778d5ed7d9685ed5bbb.patch?full_index=1"
     sha256 "fa2fef89c41669dd304366bd3e1a5ea85625a09a12096b83c1bb81deffbdf7e4"
+    type :backport
   end
 
   def install

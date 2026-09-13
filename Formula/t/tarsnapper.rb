@@ -10,12 +10,13 @@ class Tarsnapper < Formula
 
   bottle do
     rebuild 8
-    sha256 cellar: :any,                 arm64_tahoe:   "32c13f98b225238a1c36beb4aea44cc7aa9fc5f0ea6916836e9f24c9009a759a"
-    sha256 cellar: :any,                 arm64_sequoia: "aede490b7d29991225df23efd94e0c740fc0a179b2625a54e026865ac4916f78"
-    sha256 cellar: :any,                 arm64_sonoma:  "4a553095ec22748abec5bdab416bd67fc74865d373b20d36befb36afe40ba08f"
-    sha256 cellar: :any,                 sonoma:        "4368cf715ad3a98e93ae54bcd6df1532199927753a4bb5915155141a183ea5a0"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4a08f2b3ac06f061600d9a402ac6ffca74de70f9e973699fbf14e9f3dfaa7a08"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ba5eacaf4328d52c8277a96a4befdcac0570cb99372882717562683797c677c5"
+    sha256 cellar: :any,                 arm64_golden_gate: "c9aab494352e609a83ab55aac80409ddd0ac4708656736ed9fa6d46245481b5d"
+    sha256 cellar: :any,                 arm64_tahoe:       "32c13f98b225238a1c36beb4aea44cc7aa9fc5f0ea6916836e9f24c9009a759a"
+    sha256 cellar: :any,                 arm64_sequoia:     "aede490b7d29991225df23efd94e0c740fc0a179b2625a54e026865ac4916f78"
+    sha256 cellar: :any,                 arm64_sonoma:      "4a553095ec22748abec5bdab416bd67fc74865d373b20d36befb36afe40ba08f"
+    sha256 cellar: :any,                 sonoma:            "4368cf715ad3a98e93ae54bcd6df1532199927753a4bb5915155141a183ea5a0"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "4a08f2b3ac06f061600d9a402ac6ffca74de70f9e973699fbf14e9f3dfaa7a08"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "ba5eacaf4328d52c8277a96a4befdcac0570cb99372882717562683797c677c5"
   end
 
   depends_on "libyaml"
@@ -47,10 +48,12 @@ class Tarsnapper < Formula
     sha256 "ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
   end
 
-  # Drop unneeded argparse requirement: https://github.com/miracle2k/tarsnapper/pull/72
+  # Drop unneeded argparse requirement
   patch do
     url "https://github.com/miracle2k/tarsnapper/commit/def72ae8499b38ab4726d826d7363490de6564fb.patch?full_index=1"
     sha256 "927ff17243b2e751afc7034b059365ca0373db74dcc8d917b8489058a66b2d1c"
+    type :unofficial
+    resolves "https://github.com/miracle2k/tarsnapper/pull/72"
   end
 
   def install

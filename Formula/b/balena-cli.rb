@@ -1,8 +1,8 @@
 class BalenaCli < Formula
   desc "Command-line tool for interacting with the balenaCloud and balena API"
   homepage "https://docs.balena.io/reference/balena-cli/latest/"
-  url "https://registry.npmjs.org/balena-cli/-/balena-cli-25.1.9.tgz"
-  sha256 "dfdebd70b689620a80b79677b57b3deb2a8f4997890103980d496b3256c74661"
+  url "https://registry.npmjs.org/balena-cli/-/balena-cli-25.2.6.tgz"
+  sha256 "ed446eb845831c9f3ac9cacd82faf8f82fc73300e8ed8bc9c756be8ca74f6118"
   license "Apache-2.0"
 
   livecheck do
@@ -13,12 +13,13 @@ class BalenaCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "34bc4d72cbb4935c734f8aad63fb4aa4a5b50fcc08ee2841afd31a50635d5571"
-    sha256 cellar: :any, arm64_sequoia: "6c7a4ef4dc1fa198be66b572e6901527110e9ea66c5c6f506a35c758de8bd6a8"
-    sha256 cellar: :any, arm64_sonoma:  "6c7a4ef4dc1fa198be66b572e6901527110e9ea66c5c6f506a35c758de8bd6a8"
-    sha256 cellar: :any, sonoma:        "9f8d2b3ec5a4d83c7f1f1a92a4264b4c0e0c97a554eee71fb29a0d549befbb7a"
-    sha256 cellar: :any, arm64_linux:   "245cb4c06ddbdbb5966fb9588244d66a4a3f401d7f16da259c1c098d2b0b61b4"
-    sha256 cellar: :any, x86_64_linux:  "8508fff523b6e76a230ca3f82f8c9495e820bb816639ab453bb753ebac62fbbd"
+    sha256 cellar: :any, arm64_golden_gate: "ce1d32ddb40cca93ca4b5a5bb79032ed919c3ea169e0ce5f9876311233d59f27"
+    sha256 cellar: :any, arm64_tahoe:       "9cbed214ac628793c53d6c583c4a19e9e0d3f0ec874f02d784429f3979186ead"
+    sha256 cellar: :any, arm64_sequoia:     "9cbed214ac628793c53d6c583c4a19e9e0d3f0ec874f02d784429f3979186ead"
+    sha256 cellar: :any, arm64_sonoma:      "9cbed214ac628793c53d6c583c4a19e9e0d3f0ec874f02d784429f3979186ead"
+    sha256 cellar: :any, sonoma:            "349816da35ae442bc7108d590b6b1a8e812661f318ed5017a91604281b079892"
+    sha256 cellar: :any, arm64_linux:       "3e0d8fd83014686e3b09010ae5537183264df744d936da49f1f3dc3eccaee1dc"
+    sha256 cellar: :any, x86_64_linux:      "82e04044a449b6244b7764c5a62687d42a273f164e435714e178a3946527cc3b"
   end
 
   depends_on "go" => :build
@@ -48,6 +49,7 @@ class BalenaCli < Formula
     modules = %w[
       bare-fs
       bare-os
+      bare-path
       bare-url
       bcrypt
       lzma-native

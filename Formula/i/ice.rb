@@ -1,8 +1,8 @@
 class Ice < Formula
   desc "Comprehensive RPC framework"
   homepage "https://zeroc.com"
-  url "https://github.com/zeroc-ice/ice/archive/refs/tags/v3.8.2.tar.gz"
-  sha256 "d350ebbcdd7971fafccebfdf1e99db139dc6d121f5a5dcdc4036256206735078"
+  url "https://github.com/zeroc-ice/ice/archive/refs/tags/v3.8.3.tar.gz"
+  sha256 "62240ed349317f72269ebf1b26e8b3629a09ad9a915031e942e83f75e9fb6971"
   # See https://github.com/zeroc-ice/ice/blob/main/ICE_LICENSE for a special
   # exception to combine Ice with the OpenSSL library and Apache-2.0 libraries
   license "GPL-2.0-only"
@@ -13,12 +13,12 @@ class Ice < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "e5531b89902400d1d4c92be7fba9f2f23d698cf1d294c7df5acbccd4560973d4"
-    sha256 cellar: :any, arm64_sequoia: "0e908f79827033d24305469f2e446aaee91cd7cec82f4e5340a49de087f6ee5c"
-    sha256 cellar: :any, arm64_sonoma:  "554344817bb31eba6bf45a8ca40f545612eb22bbabdbe2dd86bd4f9302125420"
-    sha256 cellar: :any, sonoma:        "0f68d166703bf0a112710432b7f366334d4d781a8ebc0dffb19a3c2871246e1c"
-    sha256 cellar: :any, arm64_linux:   "89bb7e85d0ea9aaca429730a46207589bfbd9dfc8f749c9226646a446eaa8d75"
-    sha256 cellar: :any, x86_64_linux:  "dd11f21ce440a415e2652185e6cea0e8e8dde2eba6d365da127a70289f1de9c3"
+    sha256 cellar: :any, arm64_golden_gate: "0eeaff7d05edcda23dfc69a6ca0cdb6a579fa186d428bfbb5516a1af61ac3863"
+    sha256 cellar: :any, arm64_tahoe:       "e3a93f5d3f46074fe78b962ee60cb01750016120a25894a2699a2508de0fecc2"
+    sha256 cellar: :any, arm64_sequoia:     "a3af5ff17d867aadfd1f4938daee712f1a352158f5405edd4b2b7e07740f4ead"
+    sha256 cellar: :any, arm64_sonoma:      "1a5688b1352d43fd82d5e5750eb76a47e364753084e198336de3f1dde53c16ea"
+    sha256 cellar: :any, arm64_linux:       "89ba380f6d5b9e05f011c61b99558e71f2649e6a8ef039f6e4c0b95efbfdd113"
+    sha256 cellar: :any, x86_64_linux:      "b5f4194d6114e3264fed48972c2c4334ac4e20a1ec6265e84fd7fd5be91daedf"
   end
 
   depends_on "lmdb"
@@ -42,8 +42,8 @@ class Ice < Formula
       "prefix=#{prefix}",
       "V=1",
       "USR_DIR_INSTALL=yes", # ensure slice and man files are installed to share
-      "MCPP_HOME=#{Formula["mcpp"].opt_prefix}",
-      "LMDB_HOME=#{Formula["lmdb"].opt_prefix}",
+      "MCPP_HOME=#{formula_opt_prefix("mcpp")}",
+      "LMDB_HOME=#{formula_opt_prefix("lmdb")}",
       "CONFIGS=all",
       "PLATFORMS=all",
       "LANGUAGES=cpp",

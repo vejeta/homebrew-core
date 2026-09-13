@@ -1,8 +1,8 @@
 class Lazygit < Formula
   desc "Simple terminal UI for git commands"
   homepage "https://github.com/jesseduffield/lazygit/"
-  url "https://github.com/jesseduffield/lazygit/archive/refs/tags/v0.62.2.tar.gz"
-  sha256 "0bd1cdbaf1a584d2eb2fd14f068a8eaaeaeb80d3e2713c72005de9e4feaf6844"
+  url "https://github.com/jesseduffield/lazygit/archive/refs/tags/v0.65.1.tar.gz"
+  sha256 "df30ec1a5032b3c5672a30090fe787fb32d4122fd996d6d85e1d10135acfbc89"
   license "MIT"
   head "https://github.com/jesseduffield/lazygit.git", branch: "master"
 
@@ -12,19 +12,20 @@ class Lazygit < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5df0a87934488219163f45627d9de7d5153affd152bddba6daff9f4ca60c6b60"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5df0a87934488219163f45627d9de7d5153affd152bddba6daff9f4ca60c6b60"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5df0a87934488219163f45627d9de7d5153affd152bddba6daff9f4ca60c6b60"
-    sha256 cellar: :any_skip_relocation, sonoma:        "4f76fd6ddd80ad91511e4d4f30d6310a61fc7ebfe0a5143d4294574ed379aa68"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7e2c383d1716d57072f2436a06f5ff48d46c4fd8286b9f35e8b672f32b6236cf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7f19fb1ddb8e7c9f620c5a598080213a10621e185234f15a8141253a736e432e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d11be3739cf20672d4fb83938ce3e86e27160f239dea4228148d2254121bf18f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d11be3739cf20672d4fb83938ce3e86e27160f239dea4228148d2254121bf18f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d11be3739cf20672d4fb83938ce3e86e27160f239dea4228148d2254121bf18f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d3557238f14e512d8ed7942e77fd8ad8e944d2f17c0d6cf95808bb4d6c6740ad"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "b3a456cd371d4402d16e088e2967b1dabf2a7038149e0e0b57f0495ff25bc776"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
-    ldflags = "-s -w -X main.version=#{version} -X main.buildSource=#{tap.user}"
+    ldflags = "-X main.version=#{version} -X main.buildSource=#{tap.user}"
     system "go", "build", "-mod=vendor", *std_go_args(ldflags:)
   end
 

@@ -1,8 +1,8 @@
 class KosliCli < Formula
   desc "CLI for managing Kosli"
   homepage "https://docs.kosli.com"
-  url "https://github.com/kosli-dev/cli/archive/refs/tags/v2.28.0.tar.gz"
-  sha256 "b4a3181ba7395133e2a36bade1c49cb2f45431c4a80f76d582f88da018ef994e"
+  url "https://github.com/kosli-dev/cli/archive/refs/tags/v2.40.1.tar.gz"
+  sha256 "af484e41da4fe3750aef121eb5350d9f585fd4b1a31209f47ba833ffca999b75"
   license "MIT"
   head "https://github.com/kosli-dev/cli.git", branch: "main"
 
@@ -12,19 +12,17 @@ class KosliCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d51e76eb345d0e1c8d7e1a33aebccde2c15a77a77447301d6c531cb0ac015422"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "db82617c3c56ed3472f214ef33bc2eea6447ac4ca1d7da3da63760de11a6353c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "33fc93dde860523cc36afcc629736567d1ac162069e30fed1840467d5d1f3f7c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bb59d5b35f30b68ef6bd1d2f970ed657808481f4b38179f1f770fb9a2f9fe1b4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d9395b77e27e4bf6dc7a91255b4de496309349856cf4360fbb7bb95351a719d7"
-    sha256 cellar: :any,                 x86_64_linux:  "9f29fb90a5834a1cf9b76d86480c2d5936cdc37dce1f614757ea94ffc571a7ef"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "11300023b8e529ddd55055240d0f789538856014ab9a3e2a9be7239faf080309"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "27439dc0cd3a75e6f2f558113b9395aeee971531ae42b465a89055de7ed87679"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "a4519e3a524af9a3fd3b9f430b544980d47137bc7e495c7599ddd98d39339cc6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "bd3307481b6268476c21b1c450a9c774b9858f7f815f78ee579f1259c42b251d"
+    sha256 cellar: :any,                 x86_64_linux:      "c25efd8a126781dcf10222a8a914f793cb74264ad0b1943f5080e4d52c2859e5"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/kosli-dev/cli/internal/version.version=#{version}
       -X github.com/kosli-dev/cli/internal/version.gitCommit=#{tap.user}
       -X github.com/kosli-dev/cli/internal/version.gitTreeState=clean

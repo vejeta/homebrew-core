@@ -2,8 +2,8 @@ class Goreleaser < Formula
   desc "Deliver Go binaries as fast and easily as possible"
   homepage "https://goreleaser.com/"
   url "https://github.com/goreleaser/goreleaser.git",
-      tag:      "v2.16.0",
-      revision: "d76fb400136f96af3aaa7202776257885c9a6097"
+      tag:      "v2.18.1",
+      revision: "9fa2a65578f357f21fc3f3035ff96ba9e2890ad9"
   license "MIT"
   head "https://github.com/goreleaser/goreleaser.git", branch: "main"
 
@@ -13,19 +13,24 @@ class Goreleaser < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5cec2ba08030226cc034c3d8961a862b20b01f7f749176acf047d5c6a3aa467a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3a319bfff81a1cae3f9c14b1d9497783370dd93c220595c325a22bfedcc2b32e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4621ff1cdfa8a75227b6f358ec99a7e0698c72699aef0dc239f4f9b090fb12af"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ed200ba76725cb40472e58429cfad196d4b4dc3f17bc322173b5d1a9df4f0362"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6cde000760bddfeca58bf974fb30b389a54350c0120ea2feae44d03e02bfb727"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "18399388e05b0cab2a8769c86046c48c7cb23c1339fe06bdd4a67ed94cb3abab"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7370caba84a1da059a9af202ba09d544832d26454eb5700798635424b3b20bc1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "0abfe03d9686cd6cb94fb38c030d212a012e242fbcf342187454c666e784c147"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "28a5fa890321ca8fedfc31e0998c0e1fa00a644787d48a420b8b902723a04ad3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "1087c3bf0dc9e08a0f0e9c97ed5936d2a479cbff244a640173fe1f551ff1d325"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "1727f276e2ba8ce7c6e475d8c0dad0c3d0db5e2c5735f9c16f3b5f8db5c22ed7"
+    sha256 cellar: :any,                 x86_64_linux:      "7fabc937a70d3b4fc153da55f5c5eeee3cd01cafe2cf84737426c516af90feeb"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{Utils.git_head} -X main.builtBy=#{tap.user}"
-    system "go", "build", *std_go_args(ldflags:)
+    system "go", "build", *std_go_args(ldflags: :goreleaser)
 
     generate_completions_from_executable(bin/"goreleaser", shell_parameter_format: :cobra)
   end

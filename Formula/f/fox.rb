@@ -17,12 +17,13 @@ class Fox < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "91240fb02b90a3c3efdaa73e6deca2662ec50404014dd405762adcaf17db7ec9"
-    sha256 cellar: :any,                 arm64_sequoia: "36e79082d471128dac96dc31fcff7fff98a4b8a0656872cd130c0fb24e8b2597"
-    sha256 cellar: :any,                 arm64_sonoma:  "036570ec8faf4ace5e79bf8b14e87c7b937555326802fa13277a91ee1680c232"
-    sha256 cellar: :any,                 sonoma:        "1d251b692e7f74a95c853d492dd1a54714372ee61c4ee8bd94fc5b23feb49d5a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d411539e13366056c6597b528c53bec28e3fdaecfef3fbdb4e410c2f2a500ba6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f7c54833495b786ec99c5cd9b5e40794471d9caf3e531173c63b2d4fc2f28bc"
+    sha256 cellar: :any,                 arm64_golden_gate: "fa36048d6f26bb0e3e1578336a0c0bc5e426e14a480180b7309278c52928e793"
+    sha256 cellar: :any,                 arm64_tahoe:       "91240fb02b90a3c3efdaa73e6deca2662ec50404014dd405762adcaf17db7ec9"
+    sha256 cellar: :any,                 arm64_sequoia:     "36e79082d471128dac96dc31fcff7fff98a4b8a0656872cd130c0fb24e8b2597"
+    sha256 cellar: :any,                 arm64_sonoma:      "036570ec8faf4ace5e79bf8b14e87c7b937555326802fa13277a91ee1680c232"
+    sha256 cellar: :any,                 sonoma:            "1d251b692e7f74a95c853d492dd1a54714372ee61c4ee8bd94fc5b23feb49d5a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d411539e13366056c6597b528c53bec28e3fdaecfef3fbdb4e410c2f2a500ba6"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "4f7c54833495b786ec99c5cd9b5e40794471d9caf3e531173c63b2d4fc2f28bc"
   end
 
   depends_on "fontconfig"
@@ -52,13 +53,12 @@ class Fox < Formula
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-big_sur.diff"
-    sha256 "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
+    file "Patches/libtool/configure-big_sur.diff"
   end
 
   def install
     # Needed for libxft to find ftbuild2.h provided by freetype
-    ENV.append "CPPFLAGS", "-I#{Formula["freetype"].opt_include}/freetype2"
+    ENV.append "CPPFLAGS", "-I#{formula_opt_include("freetype")}/freetype2"
 
     system "./configure", "--enable-release",
                           "--with-x",

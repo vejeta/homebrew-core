@@ -1,20 +1,19 @@
 class Container < Formula
   desc "Create and run Linux containers using lightweight virtual machines"
   homepage "https://apple.github.io/container/documentation/"
-  url "https://github.com/apple/container/archive/refs/tags/1.0.0.tar.gz"
-  sha256 "9f5379d400d23b6f296b7bae8f71f982dfdc1d52bf072ac81318472a734d21f7"
+  url "https://github.com/apple/container/archive/refs/tags/1.4.1.tar.gz"
+  sha256 "6d868bae4409d2043ee334b0c4658d621bd707d932ee147a1e145b0b08c4cade"
   license "Apache-2.0"
-  revision 1
   head "https://github.com/apple/container.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "371fc0f685b7ca0499117a9a0b9d28498bc3bd178918f7bd79c233a7fb0674e8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3bf19c9addbff90135818cadbd3bcc6fcbb76a22a886706888538e6f57ca3f5d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d50e56245230d3fe88aeee62b83b08af828acf1fe00c379bf463e579fdfbd666"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "cc26e588495f5f68b971d8684f4887f2722d048fc2e80acf10023315fc5e3e41"
   end
 
   depends_on xcode: ["26.0", :build]
   depends_on arch: :arm64
-  depends_on macos: :sequoia
+  depends_on macos: :tahoe
 
   def install
     if build.head?
@@ -23,7 +22,7 @@ class Container < Formula
       ENV["RELEASE_VERSION"] = version
     end
 
-    system "swift", "build", "--disable-sandbox", "--configuration", "release"
+    system "swift", "build", *std_swift_args
 
     release_dir = buildpath/".build/release"
 
@@ -41,6 +40,8 @@ class Container < Formula
       "container-runtime-linux" => { source: "RuntimeLinux",     entitlements: true  },
       "machine-apiserver"       => { source: "MachineAPIServer", entitlements: false,
                                      resources: ["init", "create-user.sh"] },
+      "k8s"                     => { source: "K8s",              entitlements: false,
+                                     resources: ["kindnet.yaml"] },
     }
     plugins.each do |bin_name, opts|
       plugin_dir = libexec/"container-plugins/#{bin_name}"
@@ -76,13 +77,20 @@ class Container < Formula
   # container APIs aren't guaranteed to be backward compatible,
   # so we stop the system service to ensure no components are out of sync.
   # Ref: https://github.com/apple/container/issues/551#issuecomment-3246928923
-  def post_install
-    system libexec/"ensure-container-stopped.sh", "-a"
+  post_install_steps do
+    run "ensure-container-stopped.sh", args: ["-a"], base: :libexec
+  end
+
+  def caveats
+    <<~EOS
+      When starting container with `brew services`, no kernel is installed
+      automatically. Install the recommended kernel before running containers:
+        container system kernel set --recommended
+    EOS
   end
 
   service do
-    run [opt_bin/"container", "system", "start"]
-    keep_alive true
+    run [opt_bin/"container", "system", "start", "--disable-kernel-install"]
     working_dir var
     log_path var/"log/container.log"
     error_log_path var/"log/container.log"
@@ -92,7 +100,7 @@ class Container < Formula
     # Cannot fully test, as it needs to write outside testpath
     assert_match version.to_s, shell_output("#{bin}/container --version")
 
-    assert_match(/Error: (?:interrupted: ")?internalError: "failed to list containers"/,
+    assert_match(/Error: (?:(?:interrupted: ")?internalError: ")?failed to list containers/,
                  shell_output("#{bin}/container list 2>&1", 1))
   end
 end

@@ -1,25 +1,24 @@
 class DdnsGo < Formula
   desc "Simple and easy-to-use DDNS"
   homepage "https://github.com/jeessy2/ddns-go"
-  url "https://github.com/jeessy2/ddns-go/archive/refs/tags/v6.17.2.tar.gz"
-  sha256 "d7a8b098797171e715a20a1581b3f44c5c3a8514d93fe64e52ccde92f129bca3"
+  url "https://github.com/jeessy2/ddns-go/archive/refs/tags/v6.17.7.tar.gz"
+  sha256 "f7001004e092d9641aad5a94158e0b4cae4a53a7f5c7d96d5c6af3d246c56fcc"
   license "MIT"
   head "https://github.com/jeessy2/ddns-go.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f0b3fd5c630bce613c257f150194c7d326817eb4bb0e14afd62541708090823a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f0b3fd5c630bce613c257f150194c7d326817eb4bb0e14afd62541708090823a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f0b3fd5c630bce613c257f150194c7d326817eb4bb0e14afd62541708090823a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a0fc1313e654b8d6017b9f094c5722f6f8911b9b8d2676e6de4f613b0112ab0a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "76b73b4d3f3d3b0c9c29854cea05801223bc259a576f2254bfd623c0a2c3d435"
-    sha256 cellar: :any,                 x86_64_linux:  "e8dac432bcce18358d07c4c4e852e0c53f9036eb682678e139eeb7057b3c433f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f76decf7b0199f757b948e250f42fbb38cb69f50a9dd151d3c3932353dbc31a2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "f76decf7b0199f757b948e250f42fbb38cb69f50a9dd151d3c3932353dbc31a2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f76decf7b0199f757b948e250f42fbb38cb69f50a9dd151d3c3932353dbc31a2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "f76decf7b0199f757b948e250f42fbb38cb69f50a9dd151d3c3932353dbc31a2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f1aafdbc92d8ee5fa87bd74580c76c5f739b27a7902cf0cfa8420b7e32a7f158"
+    sha256 cellar: :any,                 x86_64_linux:      "03a695e963b63059980085d3cbef9a1d74c8a78f71cbc76d58194e73133dcbf0"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X main.version=v#{version}
       -X main.buildTime=#{time.iso8601}
     ]

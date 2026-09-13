@@ -7,21 +7,22 @@ class Pachi < Formula
     "GPL-2.0-only",
     "BSD-2-Clause", # `caffe`
   ]
-  revision 1
+  revision 5
   head "https://github.com/pasky/pachi.git", branch: "master"
 
   bottle do
-    sha256 arm64_tahoe:   "1bc55f25057fc75c31a45d3887c455d6f74809460ff50695c402ace6a044c7e4"
-    sha256 arm64_sequoia: "0f2b0239a24f99166fc25832f2464d75fd762fd3f220b469a777162de0d7a828"
-    sha256 arm64_sonoma:  "4a9bdbac1671bb9d336a527e3d6b2a3818d9ecbdc6f8971c8dd97cff1c4055c3"
-    sha256 sonoma:        "a874beecf09e5e832bdaca0fe0e11fb42f6c95e22af45e7cdd361c6e240641cd"
-    sha256 arm64_linux:   "52ec8533efb4237bdf8df80b2039dffd5bb3e3a2b4ea4f1b53d51f125e62f9c2"
-    sha256 x86_64_linux:  "5d5825090f41fb5f6df6bb0cad64e52c84459169e16b72ba00e00e7a04cea2c8"
+    sha256 arm64_golden_gate: "1adb2c5a9f9cc7f9602a602329a597dc9abc5312833eec81b124fe4cb93ce498"
+    sha256 arm64_tahoe:       "734625ac6d675722426e52eaaf7e1e563b4f8d146c4b03fad7157b1a46d56a83"
+    sha256 arm64_sequoia:     "e2b2f3ac17be9b585a4f23951c150d0fa38c4e852c3807acefde1e6e3da8c5cf"
+    sha256 arm64_sonoma:      "f52dd39d2b20068be6a16840ed41b2b061df4f3e42efe1857d3f9d5f2712fa94"
+    sha256 arm64_linux:       "12ca150737445d171efc9e7fdd8e1431435720af44193ff9d30fb36d92b6f95a"
+    sha256 x86_64_linux:      "f06d9c3a2fc42db7f8ea8711a09b63be9f83863d24e0976ed73c4710d3a8d65d"
   end
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
   depends_on "wget" => :build
+  depends_on "abseil" # For caffe
   depends_on "boost" # For caffe
   depends_on "gflags" # For caffe
   depends_on "glog" # For caffe
@@ -37,8 +38,8 @@ class Pachi < Formula
     # Modern-toolchain fixes: drop header-only boost::system, update
     # SetTotalBytesLimit for protobuf 3.6+, replace std::random_shuffle.
     patch do
-      url "https://raw.githubusercontent.com/Homebrew/homebrew-core/ea0b351d/Patches/pachi/caffe-modern-toolchain.patch"
-      sha256 "47c872c831ca1bcabe102fd2a68842d2c80086c9f295328e785814fae189d7a4"
+      file "Patches/pachi/caffe-modern-toolchain.patch"
+      type :unofficial
     end
   end
 
@@ -49,8 +50,17 @@ class Pachi < Formula
     caffe_prefix = libexec/"caffe"
 
     resource("caffe").stage do
+      # Caffe's legacy protobuf discovery drops protobuf's transitive Abseil targets.
+      inreplace "cmake/ProtoBuf.cmake" do |s|
+        s.sub! "find_package( Protobuf REQUIRED )",
+               "find_package( Protobuf REQUIRED )\nfind_package(absl CONFIG REQUIRED)"
+        s.sub! "list(APPEND Caffe_LINKER_LIBS PUBLIC ${PROTOBUF_LIBRARIES})",
+               "list(APPEND Caffe_LINKER_LIBS PUBLIC ${PROTOBUF_LIBRARIES} " \
+               "absl::absl_check absl::absl_log)"
+      end
+
       # Abseil (via protobuf) is not on Caffe's default include path.
-      ENV.append_to_cflags "-I#{Formula["abseil"].opt_include}"
+      ENV.append_to_cflags "-I#{formula_opt_include("abseil")}"
 
       # Caffe's legacy FindGlog doesn't propagate modern glog's compile
       # definitions, leaving GLOG_EXPORT undefined in <glog/flags.h>.

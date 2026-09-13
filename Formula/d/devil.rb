@@ -15,36 +15,42 @@ class Devil < Formula
     patch do
       url "https://github.com/DentonW/DevIL/commit/41fcabbe.patch?full_index=1"
       sha256 "324dc09896164bef75bb82b37981cc30dfecf4f1c2386c695bb7e92a2bb8154d"
+      type :backport
     end
 
     # jpeg 9 compatibility
     # Upstream commit from 7 Jan 2017 "Fixing boolean compilation errors under
-    # Linux / MacOS, issue #48 at https://github.com/DentonW/DevIL/issues/48"
+    # Linux / MacOS"
     patch do
       url "https://github.com/DentonW/DevIL/commit/4a2d7822.patch?full_index=1"
       sha256 "7e74a4366ef485beea1c4285f2b371b6bfa0e2513b83d4d45e4e120690c93f1d"
+      type :backport
+      resolves "https://github.com/DentonW/DevIL/issues/48"
     end
 
     # allow compiling against jasper >= 2.0.17
     patch do
       url "https://github.com/DentonW/DevIL/commit/42a62648.patch?full_index=1"
       sha256 "b3a99c34cd7f9a5681f43dc0886fe360ba7d1df2dd1eddd7fcdcae7898f7a68e"
+      type :backport
+      resolves "https://github.com/DentonW/DevIL/pull/91"
     end
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:    "b38672c3417c92fde8b5cca2a59f14c31201f9a5f043a1bb5d7d04c4983d5398"
-    sha256 cellar: :any,                 arm64_sequoia:  "06f0d3689766e92e01e492d9abbceeac345df99fa96a018cf74963ff4b6c9cca"
-    sha256 cellar: :any,                 arm64_sonoma:   "80cb4184d2621711c7ebfce994578930a3f8dce0c1f9e0c1115b1de2ea1fa174"
-    sha256 cellar: :any,                 arm64_ventura:  "83917219939802394eed0c286c61eb01f54621d97fe434838286a2ec5f92e939"
-    sha256 cellar: :any,                 arm64_monterey: "f653e1ed04c2c3e1c4d00e9c9f9e237e2cd062ba1a9bd12417f4081c572b4ab5"
-    sha256 cellar: :any,                 arm64_big_sur:  "543768d33075adb7d3301fff8a8376a0ebf014401783f10ae68bf896e2996b36"
-    sha256 cellar: :any,                 sonoma:         "98d8eaf39ca55e189b6add8d199d4527adbba229a7eaf170d5d21b7b41848dc2"
-    sha256 cellar: :any,                 ventura:        "41c4a55d025dbe6bb13fe38575289bca95014da52ecebb5d06091521eba82598"
-    sha256 cellar: :any,                 monterey:       "e981eb27631eb67d08126eee9daef0de6f30223bf69f4cc497e6d258d84d4714"
-    sha256 cellar: :any,                 big_sur:        "1bf545866859e8ed264015e2e0c9f88e8379f7ec175ef40ade2e1039ce933262"
-    sha256 cellar: :any_skip_relocation, arm64_linux:    "35dca23ab5cbd470f6dfe8744a7ed0f7a414366215d0350c89819ca0b03d083e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "39cfc26d4075c7e2be8b1fcc8ae762bd8897dca6460c632e1b63f3df69888a56"
+    sha256 cellar: :any,                 arm64_golden_gate: "857198733f91d996a227c7732e7fa868a58d3971ecd3bb5e918266322a1f4f64"
+    sha256 cellar: :any,                 arm64_tahoe:       "b38672c3417c92fde8b5cca2a59f14c31201f9a5f043a1bb5d7d04c4983d5398"
+    sha256 cellar: :any,                 arm64_sequoia:     "06f0d3689766e92e01e492d9abbceeac345df99fa96a018cf74963ff4b6c9cca"
+    sha256 cellar: :any,                 arm64_sonoma:      "80cb4184d2621711c7ebfce994578930a3f8dce0c1f9e0c1115b1de2ea1fa174"
+    sha256 cellar: :any,                 arm64_ventura:     "83917219939802394eed0c286c61eb01f54621d97fe434838286a2ec5f92e939"
+    sha256 cellar: :any,                 arm64_monterey:    "f653e1ed04c2c3e1c4d00e9c9f9e237e2cd062ba1a9bd12417f4081c572b4ab5"
+    sha256 cellar: :any,                 arm64_big_sur:     "543768d33075adb7d3301fff8a8376a0ebf014401783f10ae68bf896e2996b36"
+    sha256 cellar: :any,                 sonoma:            "98d8eaf39ca55e189b6add8d199d4527adbba229a7eaf170d5d21b7b41848dc2"
+    sha256 cellar: :any,                 ventura:           "41c4a55d025dbe6bb13fe38575289bca95014da52ecebb5d06091521eba82598"
+    sha256 cellar: :any,                 monterey:          "e981eb27631eb67d08126eee9daef0de6f30223bf69f4cc497e6d258d84d4714"
+    sha256 cellar: :any,                 big_sur:           "1bf545866859e8ed264015e2e0c9f88e8379f7ec175ef40ade2e1039ce933262"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "35dca23ab5cbd470f6dfe8744a7ed0f7a414366215d0350c89819ca0b03d083e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "39cfc26d4075c7e2be8b1fcc8ae762bd8897dca6460c632e1b63f3df69888a56"
   end
 
   depends_on "cmake" => :build

@@ -1,36 +1,43 @@
 class Vitess < Formula
   desc "Database clustering system for horizontal scaling of MySQL"
   homepage "https://vitess.io"
-  url "https://github.com/vitessio/vitess/archive/refs/tags/v24.0.1.tar.gz"
-  sha256 "272ea5406c50265cc88d5ff1b36da1869bb914cb1bc482a70df1c51389ea65dc"
+  url "https://github.com/vitessio/vitess/archive/refs/tags/v24.0.3.tar.gz"
+  sha256 "c8a118f1b67cd29d04e5795cd3802682dea2445a5389723ca9c4fc7979df0e56"
   license "Apache-2.0"
+  head "https://github.com/vitessio/vitess.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c43113dce825328b95b2039c605a3631108ecf150ace6453f39da23702fefbab"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "25db5916f12030b60818a7b5769d3a1251cf314dd46433e8c663c71471a5e620"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5bd5490b0377e5a979d5a2836389af806cf6b52275dc1c98eb3db1d19d27ec23"
-    sha256 cellar: :any_skip_relocation, sonoma:        "767934518ea6e6255391ac02956d46eb8155b354985a01ecb92b9dca00f72ed8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b3e8e7b40d0e0d93803c21df11fc9fe9c112a9b0b17851437b226e6616f44974"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "53d4696432f973f4338b981818d2ca69d7548f0c0631f7a385bf30a447a6a9db"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7110a8d0188868cde972192fbfa9e430206a29a0970e359c21116a5bf5be5d99"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7110a8d0188868cde972192fbfa9e430206a29a0970e359c21116a5bf5be5d99"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7110a8d0188868cde972192fbfa9e430206a29a0970e359c21116a5bf5be5d99"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "7110a8d0188868cde972192fbfa9e430206a29a0970e359c21116a5bf5be5d99"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f71c00fda71cdeadc2f3d5c7238b06e968eb4d6ffb347a2fbef93a91a464ceb5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "0e62f944d347415bf24c530dc94b38ca0581d6590e7aeb5309e9f359d2933399"
   end
 
   depends_on "go" => :build
   depends_on "etcd"
 
   def install
-    # -buildvcs=false needed for build to succeed on Go 1.18.
-    # It can be removed when this is no longer the case.
-    system "make", "install-local", "PREFIX=#{prefix}", "VTROOT=#{buildpath}", "VT_EXTRA_BUILD_FLAGS=-buildvcs=false"
+    ENV["CGO_ENABLED"] = "0"
+    bin.mkpath
+    ldflags = %W[
+      -X vitess.io/vitess/go/vt/servenv.buildUser=#{tap.user}
+      -X "vitess.io/vitess/go/vt/servenv.buildTime=#{time.strftime("%a %b %e %H:%M:%S %Z %Y")}"
+    ]
+    system "go", "build", *std_go_args(ldflags:), "-o", bin, "./go/cmd/..."
     pkgshare.install "examples"
   end
 
   test do
+    assert_match version.to_s, shell_output("#{bin}/vtctl --version")
+
     ENV["ETCDCTL_API"] = "3"
     etcd_server = "localhost:#{free_port}"
     peer_port = free_port
     cell = "testcell"
 
-    spawn Formula["etcd"].opt_bin/"etcd",
+    spawn formula_opt_bin("etcd")/"etcd",
           "--name=vitess_test",
           "--data-dir=#{testpath}/etcd",
           "--listen-client-urls=http://#{etcd_server}",
@@ -43,13 +50,13 @@ class Vitess < Formula
     sleep 3
 
     # Test etcd is responding before continuing
-    system Formula["etcd"].opt_bin/"etcdctl", "--endpoints", "http://#{etcd_server}", "endpoint", "health"
+    system formula_opt_bin("etcd")/"etcdctl", "--endpoints", "http://#{etcd_server}", "endpoint", "health"
 
     # Create necessary directory structure using etcd v3 API
-    system Formula["etcd"].opt_bin/"etcdctl", "--endpoints", "http://#{etcd_server}",
+    system formula_opt_bin("etcd")/"etcdctl", "--endpoints", "http://#{etcd_server}",
            "put", "/vitess/global", ""
 
-    system Formula["etcd"].opt_bin/"etcdctl", "--endpoints", "http://#{etcd_server}",
+    system formula_opt_bin("etcd")/"etcdctl", "--endpoints", "http://#{etcd_server}",
            "put", "/vitess/#{cell}", ""
 
     # Run vtctl with etcd2 implementation but using etcd v3 API

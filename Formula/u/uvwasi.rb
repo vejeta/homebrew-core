@@ -9,22 +9,24 @@ class Uvwasi < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "c2742f168c40ecdcf97566b4bbca3419dc010995edbd25fd2805c45cccbe11fd"
-    sha256 cellar: :any,                 arm64_sequoia: "3bbe2380eb184f540f5b23a9cd2f92ef21a4779b04ff6068b6c3a0b4e7865c7e"
-    sha256 cellar: :any,                 arm64_sonoma:  "923e457efe87a95fd53031ca80440ce09ab3862a9ac7df374b3fe634c7001c23"
-    sha256 cellar: :any,                 sonoma:        "74534d557b0603f0fac5d6b4e98257bee2f372c55e0eabf97b0ac5ccbd10415d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "bc607f16b816da2d32a2d8a3eec770c64f8a497524dd1a33d5b6f252db0ac44d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2befd108f0cf4fffab4832dc834e0b7c4b8aec470ad95994435792c6b3ab9bcc"
+    sha256 cellar: :any,                 arm64_golden_gate: "f39d7c2ad27a65646e153490e9176b92caff28421e9408893d042b1cd07a5c2b"
+    sha256 cellar: :any,                 arm64_tahoe:       "c2742f168c40ecdcf97566b4bbca3419dc010995edbd25fd2805c45cccbe11fd"
+    sha256 cellar: :any,                 arm64_sequoia:     "3bbe2380eb184f540f5b23a9cd2f92ef21a4779b04ff6068b6c3a0b4e7865c7e"
+    sha256 cellar: :any,                 arm64_sonoma:      "923e457efe87a95fd53031ca80440ce09ab3862a9ac7df374b3fe634c7001c23"
+    sha256 cellar: :any,                 sonoma:            "74534d557b0603f0fac5d6b4e98257bee2f372c55e0eabf97b0ac5ccbd10415d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "bc607f16b816da2d32a2d8a3eec770c64f8a497524dd1a33d5b6f252db0ac44d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "2befd108f0cf4fffab4832dc834e0b7c4b8aec470ad95994435792c6b3ab9bcc"
   end
 
   depends_on "cmake" => :build
   depends_on "libuv"
 
-  # Apply open PR to remove find_dependency in CMake configuration file
-  # PR ref: https://github.com/nodejs/uvwasi/pull/313
+  # Remove find_dependency for a not-installed module in CMake config
   patch do
     url "https://github.com/nodejs/uvwasi/commit/fcc0be004867939389aba3cc715ea90b86ab869c.patch?full_index=1"
     sha256 "4a3a388e9831709089270b7c6bc779d86257857192dee247d32ec360cd7819cc"
+    type :unofficial
+    resolves "https://github.com/nodejs/uvwasi/pull/313"
   end
 
   def install
@@ -82,7 +84,7 @@ class Uvwasi < Formula
       }
     C
 
-    ENV.append_to_cflags "-I#{include} -I#{Formula["libuv"].opt_include}"
+    ENV.append_to_cflags "-I#{include} -I#{formula_opt_include("libuv")}"
     ENV.append "LDFLAGS", "-L#{lib}"
     ENV.append "LDLIBS", "-luvwasi"
 

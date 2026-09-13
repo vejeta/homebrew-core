@@ -1,8 +1,8 @@
 class Grokj2k < Formula
   desc "JPEG 2000 Library"
   homepage "https://github.com/GrokImageCompression/grok"
-  url "https://github.com/GrokImageCompression/grok/releases/download/v20.3.5/source-full.tar.gz"
-  sha256 "6f44c581aa195a7e0110a07e29572fab2f89736669d7ea410b5e29eaa5b02f61"
+  url "https://github.com/GrokImageCompression/grok/releases/download/v20.4.8/source-full.tar.gz"
+  sha256 "a9c1651398bebe214dc4b3c19ba0cb5d4b615c8b743d15742f9be6aa16bcd2f9"
   license "AGPL-3.0-or-later"
   head "https://github.com/GrokImageCompression/grok.git", branch: "master"
 
@@ -12,16 +12,14 @@ class Grokj2k < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "0525aa8d2884f4af33b3d549ceb8e456617d827b8163a4423bf7d7604a4b4c23"
-    sha256 cellar: :any, arm64_sequoia: "487ff6cc35daa0e3f6197911432c17ebb8cf4cad6ac9a1ec3703b79518d794cc"
-    sha256 cellar: :any, arm64_sonoma:  "dc2a20f298cfbc4dd54231de2bdfec42ed8600529effc9c643c935312b14e029"
-    sha256 cellar: :any, sonoma:        "4a0c16902ba6f95dc2ac5005937d5b51940975bd48def2f8166c068dd9fa2d9c"
-    sha256 cellar: :any, arm64_linux:   "794c75c852a722c421811cc5fac3d9a93011f302127db64e07eca9cce43d4a3c"
-    sha256 cellar: :any, x86_64_linux:  "bcc27fde3fc0d32c6c02add938deca77cbcf38a0f1862cdca436b7f8e3d6644d"
+    sha256 cellar: :any, arm64_golden_gate: "1b869e1b0ff921e7d02d5de65a5fbc4276019c37173e2f80c70d2dfe36210a70"
+    sha256 cellar: :any, arm64_tahoe:       "9b685350c46a355d297d5aba1fc90d688381422dffcef1b0b920fa2712e060be"
+    sha256 cellar: :any, arm64_sequoia:     "59b29bbaefcddd88067a5ca1aa86beb83e7a3a249e419012e586ee51af9d0eee"
+    sha256 cellar: :any, arm64_linux:       "a00eafbe8dbb9265d314f410124f230cc13adf7827713702ea258373fe4a00d2"
+    sha256 cellar: :any, x86_64_linux:      "65ee8032b7a14dec2eb634b83f8c36cc0ba8342cb356e679890388e86a7793f9"
   end
 
   depends_on "cmake" => :build
-  depends_on "doxygen" => :build
   depends_on "pkgconf" => :build
   depends_on "exiftool" => :test
   depends_on "fmt"
@@ -56,18 +54,14 @@ class Grokj2k < Formula
     %w[liblcms2 libpng libtiff libz].each { |l| rm_r(buildpath/"thirdparty"/l) }
 
     args = %w[
-      -DGRK_BUILD_DOC=ON
+      -DGRK_BUILD_CORE_EXAMPLES=OFF
+      -DGRK_BUILD_DOC=OFF
       -DGRK_BUILD_JPEG=OFF
       -DGRK_BUILD_LCMS2=OFF
       -DGRK_BUILD_LIBPNG=OFF
       -DGRK_BUILD_LIBTIFF=OFF
       -DSPDLOG_FMT_EXTERNAL=ON
     ]
-
-    if OS.mac? && MacOS.version <= :catalina
-      # Workaround Perl 5.18 issues with C++11: pad.h:323:17: error: invalid suffix on literal
-      ENV.append "CXXFLAGS", "-Wno-reserved-user-defined-literal"
-    end
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"

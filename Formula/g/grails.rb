@@ -1,8 +1,8 @@
 class Grails < Formula
   desc "Web application framework for the Groovy language"
   homepage "https://grails.apache.org/"
-  url "https://github.com/apache/grails-core/releases/download/v7.1.1/apache-grails-7.1.1-bin.zip"
-  sha256 "60ab117f91a25161fd57024d5020c8a76d6a62961e3a3e32c6ebcea0b08e1107"
+  url "https://github.com/apache/grails-core/releases/download/v7.2.3/apache-grails-7.2.3-bin.zip"
+  sha256 "b783636ef557ece34bc82415d4d8e31e1d24568336c7626f3e79e1781ccf34cc"
   license "Apache-2.0"
 
   livecheck do
@@ -11,7 +11,7 @@ class Grails < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "85fe82fe921df61d410e744b7418038f8a82739897983a61bd97f90fde44b8cc"
+    sha256 cellar: :any_skip_relocation, all: "d54a74a7befcd6dd376afe4e670c5ec311da479a307529ed4bdcdb29cdd9035c"
   end
 
   depends_on "openjdk@21"
@@ -62,7 +62,6 @@ class Grails < Formula
       pid = spawn "./gradlew", "--no-daemon", "bootRun", "-Dgrails.server.port=#{port}"
       begin
         sleep 20
-        sleep 20 if OS.mac? && Hardware::CPU.intel?
         assert_equal "Hello Homebrew", shell_output("curl --silent http://localhost:#{port}/greeting/index")
       ensure
         Process.kill "TERM", pid

@@ -1,30 +1,25 @@
 class Openapi < Formula
   desc "CLI tools for working with OpenAPI, Arazzo and Overlay specifications"
   homepage "https://www.speakeasy.com"
-  url "https://github.com/speakeasy-api/openapi/archive/refs/tags/v1.23.2.tar.gz"
-  sha256 "1cf2557a1825408ebcc9c51f2a03d45f636a8be585c9792ad4c801e5600984e3"
+  url "https://github.com/speakeasy-api/openapi/archive/refs/tags/v1.25.1.tar.gz"
+  sha256 "114bc52eb1087ff99bba8a6900d35c24543b9feecf5db42798df3813f9de51af"
   license "MIT"
   head "https://github.com/speakeasy-api/openapi.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d1bd3862bb7186968487b0830cd8d4cc2f6e5c9e5f9749ee77d540bc061b9c20"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d1bd3862bb7186968487b0830cd8d4cc2f6e5c9e5f9749ee77d540bc061b9c20"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d1bd3862bb7186968487b0830cd8d4cc2f6e5c9e5f9749ee77d540bc061b9c20"
-    sha256 cellar: :any_skip_relocation, sonoma:        "79bda633edf8f003963e34c29c6f417172e8e40767d193ea0c62a170459db93e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "194967a3c7d459788d9bc3a7bcbb266352a04188b47f16e7fb553a7d3990f32b"
-    sha256 cellar: :any,                 x86_64_linux:  "d67cef4d57dfe96b3f152a85b7b6cfc06ee02599652a555b18ab062e21209949"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cc7fb93ae1f331357c87e3cea78cf3a4f1eb6d65d46081ca868ee71b2cdb3474"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "91837ee2e43c8a13dda8b9fc480caa4bbea8fac0db6901297af7702428573939"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "91837ee2e43c8a13dda8b9fc480caa4bbea8fac0db6901297af7702428573939"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "91837ee2e43c8a13dda8b9fc480caa4bbea8fac0db6901297af7702428573939"
+    sha256 cellar: :any_skip_relocation, sonoma:            "03a38268210808559e6a6438b270ac6cc3bee37ab768e269b5d303e71c526eb9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "42b5434052f4f1eb8f114e6b716f3422da443cca1cc888e944fbecf5edd0f1a0"
+    sha256 cellar: :any,                 x86_64_linux:      "3a968c2b66351619c4a7bb7f294b9a1582fddce41ac165bd4bcd8625d84e420e"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-      -X main.commit=#{tap.user}
-      -X main.date=#{time.iso8601}
-    ]
-    system "go", "build", *std_go_args(ldflags:), "./cmd/openapi"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/openapi"
 
     generate_completions_from_executable(bin/"openapi", shell_parameter_format: :cobra)
   end

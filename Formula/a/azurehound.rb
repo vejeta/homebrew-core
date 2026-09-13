@@ -1,8 +1,8 @@
 class Azurehound < Formula
   desc "Azure Data Exporter for BloodHound"
   homepage "https://github.com/SpecterOps/AzureHound"
-  url "https://github.com/SpecterOps/AzureHound/archive/refs/tags/v2.12.2.tar.gz"
-  sha256 "391306c47d9b9a132bc71283d9e03ef3b63b9ffbe1cc4cbd4b0b0efb5f6788b2"
+  url "https://github.com/SpecterOps/AzureHound/archive/refs/tags/v3.1.1.tar.gz"
+  sha256 "e8b487e2fa894e6f492a6213f814db946aed9d9f9fa30f0b8f9f127c630aa6b6"
   license "GPL-3.0-or-later"
   head "https://github.com/SpecterOps/AzureHound.git", branch: "main"
 
@@ -12,18 +12,24 @@ class Azurehound < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "184096bc43e1318305cc01d2179a3cfcd02d372c1455cd93ac757a5070f3ddc3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "184096bc43e1318305cc01d2179a3cfcd02d372c1455cd93ac757a5070f3ddc3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "184096bc43e1318305cc01d2179a3cfcd02d372c1455cd93ac757a5070f3ddc3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1ad2cdb15b5742da12b04c697bf26663d25f314e39c5f542047e7ce3258a7aa5"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c31a889b1018fc02156800d0c62af7de4016ede04503cab5341a2c9da628e072"
-    sha256 cellar: :any,                 x86_64_linux:  "93c75362cd5b2ef4d8a1141514122bcd0efa9ab8808d5e92b8b0cef868d6376b"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b451499d6f4066007c4dc4c1939ff6c59e9c8b56121a84fef5d2987cc90331c7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b451499d6f4066007c4dc4c1939ff6c59e9c8b56121a84fef5d2987cc90331c7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b451499d6f4066007c4dc4c1939ff6c59e9c8b56121a84fef5d2987cc90331c7"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "b451499d6f4066007c4dc4c1939ff6c59e9c8b56121a84fef5d2987cc90331c7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "f0c79b9b2df8f36336e0ccad2aa30381184f2ab74a2fa2d17215585ac5c74ea5"
+    sha256 cellar: :any,                 x86_64_linux:      "d21113350ac49a63fdfc644f8e4a65407ebd8c2b905c70269420c7673264a59a"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X github.com/bloodhoundad/azurehound/v2/constants.Version=#{version}")
+    system "go", "build", *std_go_args(ldflags: "-X github.com/SpecterOps/AzureHound/v2/constants.Version=#{version}")
 
     generate_completions_from_executable(bin/"azurehound", shell_parameter_format: :cobra)
   end

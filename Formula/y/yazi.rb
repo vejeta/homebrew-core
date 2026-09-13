@@ -1,8 +1,8 @@
 class Yazi < Formula
   desc "Blazing fast terminal file manager written in Rust, based on async I/O"
   homepage "https://yazi-rs.github.io"
-  url "https://github.com/sxyazi/yazi/archive/refs/tags/v26.5.6.tar.gz"
-  sha256 "a18445df86a20068f7b17609d12d6f635de488958579ae7a2b143a244ba7e63f"
+  url "https://github.com/sxyazi/yazi/archive/refs/tags/v26.9.1.tar.gz"
+  sha256 "66857f1b670469daf258edd0bb2ea51d9ad3e2cab4eea9684028c80059fd6862"
   license "MIT"
   head "https://github.com/sxyazi/yazi.git", branch: "main"
 
@@ -15,12 +15,12 @@ class Yazi < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b31572f1b22a938079f658e5b9fce190dcbba90aec41b052cddfa8950d883605"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "19349642822262d015014fb68ffa11927f5eed6b60ce01da5f91282e9d0b7d60"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "fa9938e057c497ad4be2e7012d93133266b970e3aa0e763fa2be8bfa35d3e7d9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "0e8278a478e91973b686f46b2543a4ded02fcdcebdc8b05793e85782107de2dc"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "981c7ef81931fce515159a9360b6127d025d66aeaa1db5f607157ada64585be6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b9a80c02b0a7d6e5f3e22415cba4fc5914c7f5f5956985d7b44869c487799e55"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "67237c64fca1f36bce0820b8a23d6fc8e777282aab39574cac47f05cbbded607"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "76799ac47d8b4241630c66113d180dd5583ad71b4bec16f064e9799bec7ec57e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e5a5a2ca56ef283bf4ae969214c57899db22a676a9cf0471c3649eed375e2b42"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "71fdd1049f3bfa6c23a5ea521c0a688b29119b9b73bfb6c199797b0dc8114d56"
+    sha256 cellar: :any,                 arm64_linux:       "53cbe7ca6aa579b260dfc4ebd495ffa8d69534fc233abdf08b6af6e538d24bfb"
+    sha256 cellar: :any,                 x86_64_linux:      "d4dd65419e6717043914ea0467b68cb8a10e400419b242c05ecb899a3d1557d7"
   end
 
   depends_on "rust" => :build
@@ -42,6 +42,6 @@ class Yazi < Formula
 
   test do
     # yazi is a GUI application
-    assert_match "Yazi #{version}", shell_output("#{bin}/yazi --version").strip
+    assert_match version.to_s, shell_output("#{bin}/yazi --version").strip
   end
 end

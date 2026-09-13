@@ -1,18 +1,17 @@
 class Nx < Formula
   desc "Smart, Fast and Extensible Build System"
   homepage "https://nx.dev"
-  url "https://registry.npmjs.org/nx/-/nx-23.0.0.tgz"
-  sha256 "86f2229624923fd1c0f97822cf86da133f8ae57feca070847ac50eb5c12bb251"
+  url "https://registry.npmjs.org/nx/-/nx-23.2.1.tgz"
+  sha256 "9da5b6ea573fb377221e13ede170c8a2576bd0819791193a09a55d52c8cfd28d"
   license "MIT"
   version_scheme 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "b1b57cf9817203dd0fd7602ad29a69b68a02b89a4f44879b1f38ab754205b318"
-    sha256 cellar: :any,                 arm64_sequoia: "b7f477b2109b851dc9cba8acc51eaac8b8f11d0f8d54aab5cb60c65ae68a97d7"
-    sha256 cellar: :any,                 arm64_sonoma:  "b7f477b2109b851dc9cba8acc51eaac8b8f11d0f8d54aab5cb60c65ae68a97d7"
-    sha256 cellar: :any,                 sonoma:        "080c4820cd08cd338678ff55f7bbc5fd528c09170db65e15b2fda8d8f77f6bcb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7ff900764f1ad76e12e157c1bcd2d85d1e5f3d4f8dc7593bc9b73367834cca8f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "141170a6283bc032e4ce0783d5c61f05777a10a87db15b35ffd9f6d06bd0f23c"
+    sha256 cellar: :any,                 arm64_golden_gate: "4acdadaa3fd1eaf9a3114dec39cf5ccf46670584ed70608f7e872c5b55f726a8"
+    sha256 cellar: :any,                 arm64_tahoe:       "4acdadaa3fd1eaf9a3114dec39cf5ccf46670584ed70608f7e872c5b55f726a8"
+    sha256 cellar: :any,                 arm64_sequoia:     "4acdadaa3fd1eaf9a3114dec39cf5ccf46670584ed70608f7e872c5b55f726a8"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "fefeff6f9f5c15b8c2b36c0f4eea6a3fbaba9f0a707c224f2fd36ef9e3fb23d4"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "0dcc03262fa46dd356e04954e6e57e060258b9b5d3b755e5d0a2b8687a3176e2"
   end
 
   depends_on "node"
@@ -23,6 +22,10 @@ class Nx < Formula
   end
 
   test do
+    # Avoid daemon and plugin worker sockets in the test sandbox.
+    ENV["NX_DAEMON"] = "false"
+    ENV["NX_ISOLATE_PLUGINS"] = "false"
+
     (testpath/"package.json").write <<~JSON
       {
         "name": "@acme/repo",

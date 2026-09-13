@@ -1,25 +1,16 @@
 class Httrack < Formula
   desc "Website copier/offline browser"
   homepage "https://www.httrack.com/"
-  # Always use mirror.httrack.com when you link to a new version of HTTrack, as
-  # link to download.httrack.com will break on next HTTrack update.
-  url "https://mirror.httrack.com/historical/httrack-3.49.2.tar.gz"
-  sha256 "3477a0e5568e241c63c9899accbfcdb6aadef2812fcce0173688567b4c7d4025"
+  url "https://github.com/xroche/httrack/releases/download/3.50.2/httrack-3.50.2.tar.gz"
+  sha256 "bde231415a42adf793e5272ce436a5c22377dab94b0b2e395e3cee7c298343f0"
   license "GPL-3.0-or-later" => { with: "openvpn-openssl-exception" }
-  revision 2
-
-  livecheck do
-    url "https://mirror.httrack.com/historical/"
-    regex(/href=.*?httrack[._-]v?(\d+(?:\.\d+)+)\./i)
-  end
 
   bottle do
-    sha256 arm64_tahoe:   "b32f52b8a3d7c29bc4ef8786a5d7442b989d007c92ed205bd8e2fce3d7d9e7c3"
-    sha256 arm64_sequoia: "c490f41b189c3f0627d2430c16657c2789ef61fe533d90ed72ab5c5e0869fd9e"
-    sha256 arm64_sonoma:  "896935f765df6afd7676c0b3e582ae66ce4052a097b20e78200aadef15be4268"
-    sha256 sonoma:        "58af4297d8cdebb0c20de947610b3f473f5081ac81fbd75a253c27c570362c2c"
-    sha256 arm64_linux:   "548edf68271f1856edf0f9c34153043ece5575d8b97f1e3373cbabde82f93cff"
-    sha256 x86_64_linux:  "4425d23c7e0fc3fbae36a0201b1519e4fb2ad3f6789caa4cf1b58b43e8c826cc"
+    sha256 arm64_golden_gate: "58dcc90893bb43a0bdcb9d82c25cec62a2514ec6f2f53f19ad1e233de53ee95d"
+    sha256 arm64_tahoe:       "8fea08c20e53a046161e8238e1b589b6462c699320167c5fd51ddedb22a8649c"
+    sha256 arm64_sequoia:     "87dcd04f345d0362be2d02be4a24f23f1bea6c5a947b3fbb9c0fb4e60231c887"
+    sha256 arm64_linux:       "fe3ce8273c5c561d75926fde367d23cfcd61c70c6a0068f0347b35418b0e4fa1"
+    sha256 x86_64_linux:      "5da51ae26f7b2ded9bf4a5e7b9b53e4e2efd498dd6047e4c619956f110fa05f5"
   end
 
   depends_on "openssl@4"
@@ -28,14 +19,10 @@ class Httrack < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # Fix -flat_namespace being used on Big Sur and later.
-  patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
-  end
-
   def install
     ENV.deparallelize
+    ENV.append "LDFLAGS", "-Wl,-rpath,#{lib}" if OS.mac?
+
     system "./configure", "--disable-dependency-tracking", "--prefix=#{prefix}"
     system "make", "install"
     # Don't need Gnome integration

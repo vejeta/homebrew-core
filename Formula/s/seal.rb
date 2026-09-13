@@ -1,17 +1,16 @@
 class Seal < Formula
   desc "Easy-to-use homomorphic encryption library"
   homepage "https://github.com/microsoft/SEAL"
-  url "https://github.com/microsoft/SEAL/archive/refs/tags/v4.3.3.tar.gz"
-  sha256 "423e5fde0e49c761785ebd849dc0c71fcd94ce2c663f1d52e0fe01a60e0fea80"
+  url "https://github.com/microsoft/SEAL/archive/refs/tags/v4.4.4.tar.gz"
+  sha256 "0661a0dc5f385e44c9a69136c841985c2cd47e165aeab7be8aebecf58470b9ad"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "984e5056c0a6736305e17314a92dd77c5de75ae22eb5e34e61304f42ca495f63"
-    sha256 cellar: :any, arm64_sequoia: "b99c98995432c85a949cbf43934d101e87064c6076bc99df3460278227a4b9aa"
-    sha256 cellar: :any, arm64_sonoma:  "b4ce4c5e8119e79ebff24947a9510fc07824bfcdaad572736a2640343e6a2f57"
-    sha256 cellar: :any, sonoma:        "f3c078db119d69b70478cf73c77b09afa066ac956845ce1fe3dc1b69ab12049f"
-    sha256 cellar: :any, arm64_linux:   "7a1b3f8102144a3c8b2e53d956e59345a283ac98500cfd097ad078f4f64ce303"
-    sha256 cellar: :any, x86_64_linux:  "dd4e85e7c5ed184de3ee85118b7677675b2fc479f119f867574ca68cd158744b"
+    sha256 cellar: :any, arm64_tahoe:   "3d73269761305e2011c338a56c1f153ae97d4ae83ebf399a9e96155a27589d45"
+    sha256 cellar: :any, arm64_sequoia: "ca0eaf2aa6b65f8d74c55a9b772e5a5bbe49dc8d398d8ce616c56b5c2ce3e583"
+    sha256 cellar: :any, arm64_sonoma:  "aeb068675001e3fdb3ba1e8c6c1c3a0a3f78e95f58ff143a3a0e0fab1fe3d8c3"
+    sha256 cellar: :any, arm64_linux:   "7ba142e344ff66f105bea858510dc5ca0c28fd6c7a5a5087efc480dc1ce8a870"
+    sha256 cellar: :any, x86_64_linux:  "40d94ec3d3b2d8abfcb8f0df846dd94ca8936c96b8bf07e43da3aed2426f4319"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -28,6 +27,9 @@ class Seal < Formula
   end
 
   def install
+    # Support Microsoft GSL 5.x, which upstream has not widened its version request to yet
+    inreplace "CMakeLists.txt", "Microsoft.GSL 4 CONFIG", "Microsoft.GSL 5 CONFIG"
+
     if Hardware::CPU.intel?
       resource("hexl").stage do
         hexl_args = %w[

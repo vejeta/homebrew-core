@@ -8,12 +8,13 @@ class Ykpers < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "926db3e02f205b9e785c45dd758876a906c0892c0bb3c3d3dae64067adb3972e"
-    sha256 cellar: :any,                 arm64_sequoia: "55b5c0412c66507bcc30d4fad0b66787aa34ae962ad6ce088a4500d7c330f94c"
-    sha256 cellar: :any,                 arm64_sonoma:  "0c8854edfb7647c2a3f8cc27d38b8e6ef7ba6c61cc964341e738c3690f6092e4"
-    sha256 cellar: :any,                 sonoma:        "88d61b40ef7bcd1f6a7989af01b4ebbd8de1a15750b24a2203a1bd007e319c72"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c25183feab444d3d2850280b40eafdb86da032c75b1313c9302ab1e6bfb8e374"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "aaf5715c54695f9f87a4a0a8b9e185a4985434ae5ab08abef60c95a91b292347"
+    sha256 cellar: :any,                 arm64_golden_gate: "7c82f7160107fa48e22f417544ae6e80ef27bb8648909c8ec260f795274b06ea"
+    sha256 cellar: :any,                 arm64_tahoe:       "926db3e02f205b9e785c45dd758876a906c0892c0bb3c3d3dae64067adb3972e"
+    sha256 cellar: :any,                 arm64_sequoia:     "55b5c0412c66507bcc30d4fad0b66787aa34ae962ad6ce088a4500d7c330f94c"
+    sha256 cellar: :any,                 arm64_sonoma:      "0c8854edfb7647c2a3f8cc27d38b8e6ef7ba6c61cc964341e738c3690f6092e4"
+    sha256 cellar: :any,                 sonoma:            "88d61b40ef7bcd1f6a7989af01b4ebbd8de1a15750b24a2203a1bd007e319c72"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c25183feab444d3d2850280b40eafdb86da032c75b1313c9302ab1e6bfb8e374"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "aaf5715c54695f9f87a4a0a8b9e185a4985434ae5ab08abef60c95a91b292347"
   end
 
   # https://www.yubico.com/support/terms-conditions/yubico-end-of-life-policy/eol-products/
@@ -32,11 +33,15 @@ class Ykpers < Formula
   patch do
     url "https://github.com/Yubico/yubikey-personalization/commit/0aa2e2cae2e1777863993a10c809bb50f4cde7f8.patch?full_index=1"
     sha256 "349064c582689087ad1f092e95520421562c70ff4a45e411e86878b63cf8f8bd"
+    type :backport
+    resolves "https://github.com/Yubico/yubikey-personalization/pull/159"
   end
   # Fix device access issues on macOS Catalina and later. Remove with the next release.
   patch do
     url "https://github.com/Yubico/yubikey-personalization/commit/7ee7b1131dd7c64848cbb6e459185f29e7ae1502.patch?full_index=1"
     sha256 "bf3efe66c3ef10a576400534c54fc7bf68e90d79332f7f4d99ef7c1286267d22"
+    type :backport
+    resolves "https://github.com/Yubico/yubikey-personalization/pull/165"
   end
 
   def install
@@ -45,7 +50,7 @@ class Ykpers < Formula
 
     args = %W[
       --disable-silent-rules
-      --with-libyubikey-prefix=#{Formula["libyubikey"].opt_prefix}
+      --with-libyubikey-prefix=#{formula_opt_prefix("libyubikey")}
     ]
     args << if OS.mac?
       "--with-backend=osx"

@@ -5,14 +5,15 @@ class Libpulsar < Formula
   mirror "https://archive.apache.org/dist/pulsar/pulsar-client-cpp-4.2.0/apache-pulsar-client-cpp-4.2.0.tar.gz"
   sha256 "cc48a168dc44dc2f89122edd692c2919736c794564c8a71c6a7acff86ca2d315"
   license "Apache-2.0"
+  revision 3
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "10b77f3b2de1503b6ed4901500e643da512055065093c797622f416f20f5cd7d"
-    sha256 cellar: :any, arm64_sequoia: "67f4a12da7f33099f9e7825f04045e3116da365e46546db3e38120fdeee7c8f4"
-    sha256 cellar: :any, arm64_sonoma:  "7a78eeffd3df24270fd1973d7f39f491c64d833685acdc7219deab85934eb7ce"
-    sha256 cellar: :any, sonoma:        "60482a07fb6acf85e7965896bfd09da66f214cab5146f5ab647369a509797d98"
-    sha256 cellar: :any, arm64_linux:   "3d238a86ea5fe22b75245f23ca940d818fb551ef7c25316421e22b32c2b802f9"
-    sha256 cellar: :any, x86_64_linux:  "be1b6a41d3178ab8186d0cd8438c30eef27e3188a972894d08e34c95aa290fb6"
+    sha256 cellar: :any, arm64_golden_gate: "0ae10ffabd2ea72427985f9ca927712a2129751072a0cf48b3e7823d57de396f"
+    sha256 cellar: :any, arm64_tahoe:       "56e8b731e0e47ed8e83525da0ee6b2aeade1d9100e5795ba2320b47a8f10df1d"
+    sha256 cellar: :any, arm64_sequoia:     "5c376c4585c70a28641d0c69ef04af16d99c1f3641c61166c030f452dc95d708"
+    sha256 cellar: :any, arm64_sonoma:      "43be9beba30dd8e0cf02628be400c332d5ce0b6741322d757d0c1b3b982c6acc"
+    sha256 cellar: :any, arm64_linux:       "f5d215b744e9b56cea0aa36ed7d373a87d6054da78bf25f646aaa42bbc5a4091"
+    sha256 cellar: :any, x86_64_linux:      "5ada6d94b2adcca97d988561c991fc5b962cca7a7c8ab3851cee3852c0465675"
   end
 
   depends_on "boost" => :build
@@ -34,7 +35,7 @@ class Libpulsar < Formula
     args = %W[
       -DBUILD_TESTS=OFF
       -DCMAKE_CXX_STANDARD=17
-      -DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}
+      -DOPENSSL_ROOT_DIR=#{formula_opt_prefix("openssl@3")}
       -DUSE_ASIO=OFF
     ]
     # Avoid over-linkage to `abseil`.

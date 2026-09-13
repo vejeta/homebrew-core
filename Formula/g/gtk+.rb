@@ -6,28 +6,31 @@ class Gtkx < Formula
   license "LGPL-2.0-or-later"
   revision 2
 
+  bottle do
+    sha256 arm64_golden_gate: "574cb52fd43a2200c4275d4e108a7f62c810d7680471ed9876d86c0b84360ddf"
+    sha256 arm64_tahoe:       "50bf4d48f706e87bc7bff60b97ea41bc0ca1d4616390be8fe2781360531244c2"
+    sha256 arm64_sequoia:     "a431feb1110a7b24050d4115bf8a0701eefb6ea735c276acc99c23a9260f72e8"
+    sha256 arm64_sonoma:      "659b62a2677b7e945221ab78abfab6919d7a4ac7c635de52417ab96eb4970a92"
+    sha256 arm64_ventura:     "140729098a62031c80b8e43c29314f84a5d0152b1348612f83d01331251ba02c"
+    sha256 arm64_monterey:    "88b226c05abe1a848ee8ab7d98e7b0388383b3cdd003dff8448aa9d1901202c3"
+    sha256 sonoma:            "2f73f9eafd45eef1e37f3e795d1cb086988fcba1cc374be9c4bc124744bc561a"
+    sha256 ventura:           "e1724dfbff3e12dfc41c91d4ea850c52fbc716d30cae80308f55afaeaa887e42"
+    sha256 monterey:          "29944de5a2598f393c086c1b9284dee31f94309826780204065d91de38c0a14d"
+    sha256 arm64_linux:       "2738367a37a58ce253544f191877c5b653c3f6db7cbe3fd5ed3b3288b3bd243f"
+    sha256 x86_64_linux:      "a73d8262778cf3541249d2ce04dbe9c2e545cc46401c695a77a893f812f35920"
+  end
+
   # From https://blog.gtk.org/2020/12/16/gtk-4-0/:
   # "It does mean, however, that GTK 2 has reached the end of its life.
   # We will do one final 2.x release in the coming days, and we encourage
   # everybody to port their GTK 2 applications to GTK 3 or 4."
   #
-  # TODO: Deprecate and remove livecheck once `gtk+` has no active dependents
-  livecheck do
-    skip "GTK 2 was declared end of life in 2020-12"
-  end
-
-  bottle do
-    sha256 arm64_tahoe:    "50bf4d48f706e87bc7bff60b97ea41bc0ca1d4616390be8fe2781360531244c2"
-    sha256 arm64_sequoia:  "a431feb1110a7b24050d4115bf8a0701eefb6ea735c276acc99c23a9260f72e8"
-    sha256 arm64_sonoma:   "659b62a2677b7e945221ab78abfab6919d7a4ac7c635de52417ab96eb4970a92"
-    sha256 arm64_ventura:  "140729098a62031c80b8e43c29314f84a5d0152b1348612f83d01331251ba02c"
-    sha256 arm64_monterey: "88b226c05abe1a848ee8ab7d98e7b0388383b3cdd003dff8448aa9d1901202c3"
-    sha256 sonoma:         "2f73f9eafd45eef1e37f3e795d1cb086988fcba1cc374be9c4bc124744bc561a"
-    sha256 ventura:        "e1724dfbff3e12dfc41c91d4ea850c52fbc716d30cae80308f55afaeaa887e42"
-    sha256 monterey:       "29944de5a2598f393c086c1b9284dee31f94309826780204065d91de38c0a14d"
-    sha256 arm64_linux:    "2738367a37a58ce253544f191877c5b653c3f6db7cbe3fd5ed3b3288b3bd243f"
-    sha256 x86_64_linux:   "a73d8262778cf3541249d2ce04dbe9c2e545cc46401c695a77a893f812f35920"
-  end
+  # This aligns with major Linux distros:
+  # * Arch Linux and RHEL 10 have already removed it
+  # * Debian is planning to remove in Forky, https://bugs.debian.org/947713
+  # * Gentoo is also working on removal, https://bugs.gentoo.org/768993
+  deprecate! date: "2026-08-28", because: :unsupported
+  disable! date: "2027-08-28", because: :unsupported
 
   depends_on "gobject-introspection" => :build
   depends_on "pkgconf" => [:build, :test]
@@ -58,8 +61,7 @@ class Gtkx < Formula
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-big_sur.diff"
-    sha256 "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
+    file "Patches/libtool/configure-big_sur.diff"
   end
 
   # Patch to allow Eiffel Studio to run in Cocoa / non-X11 mode, as well as Freeciv's freeciv-gtk2 client
@@ -73,6 +75,8 @@ class Gtkx < Formula
   patch do
     url "https://gitlab.gnome.org/GNOME/gtk/uploads/2a194d81de8e8346a81816870264b3bf/gdkimage.patch"
     sha256 "ce5adf1a019ac7ed2a999efb65cfadeae50f5de8663638c7f765f8764aa7d931"
+    type :unofficial
+    resolves "https://gitlab.gnome.org/GNOME/gtk/-/issues/580"
   end
 
   def backend

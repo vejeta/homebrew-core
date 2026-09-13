@@ -1,8 +1,8 @@
 class GithubMcpServer < Formula
   desc "GitHub Model Context Protocol server for AI tools"
   homepage "https://github.com/github/github-mcp-server"
-  url "https://github.com/github/github-mcp-server/archive/refs/tags/v1.4.0.tar.gz"
-  sha256 "1cf05d7ffa73e43e7d35cbee0dbafcc3722d451926e4cb87c231acbd6a943c40"
+  url "https://github.com/github/github-mcp-server/archive/refs/tags/v1.12.1.tar.gz"
+  sha256 "a826cff7ea6d895ace93836c5f3d453fed86ecfb607abf3957e235bcf391ae28"
   license "MIT"
   head "https://github.com/github/github-mcp-server.git", branch: "main"
 
@@ -12,19 +12,24 @@ class GithubMcpServer < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "83b0e0b4f5e92d2ef59ceaa2c66a683b2ddacb0098c1c78fce557f9f31ad150e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "83b0e0b4f5e92d2ef59ceaa2c66a683b2ddacb0098c1c78fce557f9f31ad150e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "83b0e0b4f5e92d2ef59ceaa2c66a683b2ddacb0098c1c78fce557f9f31ad150e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ff78b9951490e6ce99771b8c20b33290891967680721d2c47f0094297199cb1b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a09a43d19412ac208cc4c16bd39d2185f9bc5885d0371d085ea178a163346ff1"
-    sha256 cellar: :any,                 x86_64_linux:  "31dbfa5c885b1da1d10333ba4557b06134461a0a3d84856cee9a492da11913aa"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "07c71078fcdd7dd02b1d65fd5b9a959f8ed8e22ecc42869d89f57916a78b1d2b"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "07c71078fcdd7dd02b1d65fd5b9a959f8ed8e22ecc42869d89f57916a78b1d2b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "07c71078fcdd7dd02b1d65fd5b9a959f8ed8e22ecc42869d89f57916a78b1d2b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "07c71078fcdd7dd02b1d65fd5b9a959f8ed8e22ecc42869d89f57916a78b1d2b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "52c8560fd04eb640a118fb56e403c541f38a9f30617d4743cb0d79bb8e148603"
+    sha256 cellar: :any,                 x86_64_linux:      "b90515b620bd3b77f74d36d09da208234e118fe65de8edd36c4d00ce2a126043"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user} -X main.date=#{time.iso8601}"
-    system "go", "build", *std_go_args(ldflags:), "./cmd/github-mcp-server"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/github-mcp-server"
 
     generate_completions_from_executable(bin/"github-mcp-server", shell_parameter_format: :cobra)
   end

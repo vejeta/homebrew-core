@@ -1,10 +1,10 @@
 class Gping < Formula
   desc "Ping, but with a graph"
   homepage "https://github.com/orf/gping"
-  url "https://github.com/orf/gping/archive/refs/tags/gping-v1.20.1.tar.gz"
-  sha256 "0df965111429d5fcef832a4ff23b452a1ec8f683d51ed31ce9b10902c0a18a9c"
+  url "https://github.com/orf/gping/archive/refs/tags/gping-v1.21.0.tar.gz"
+  sha256 "350c091923f67fdc72847e12368b2f207015be200ea1d781bce422a2a884d1c6"
   license "MIT"
-  head "https://github.com/orf/gping.git", branch: "master"
+  head "https://github.com/orf/gping.git", branch: "main"
 
   # The GitHub repository has a "latest" release but it can sometimes point to
   # a release like `v1.2.3-post`, `v1.2.3-post2`, etc. We're checking the Git
@@ -15,15 +15,15 @@ class Gping < Formula
     regex(/^gping[._-]v?(\d+(?:\.\d+)+)$/i)
   end
 
+  no_autobump! because: :bumped_by_upstream
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2ea7c7e96a88df4ee9e8cf12a47849a778eabdd015c2c56e0ac1b46dba8b329f"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e4b724bca246855e7c11aa972489d8a99fff3b1775ee68832ce55b645d219210"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a9e5e2357d554380b42514cc043dfca7e24dbd00eed6c49640aa984a5dd8d551"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "c3825f08e0158e83a76fc27c7103364db82d748010c72f1afb1d607f8aa79fa8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "88b15ad904d11c0353fb62c62a0e8aef8cbe054275324d281fcb1c36d2ca4882"
-    sha256 cellar: :any_skip_relocation, ventura:       "f042f035aa83f1ac2a29ef5e3f7437fba693a50fb14c939e6b4fc08a9e100f86"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a071b10dbf714a17277fc3d007876025e8eeb7ccd8233871cec335845c2b15e8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "773e0bb37bb0a63656ad1ff05f8f135054b5bb935440b58936f22726392aef09"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "20fcfe6677455e589630a9de9fd1e4b8c89bb9f49baacaef6e37300ed0db26b9"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "793bbcdfab111fbef18dc6361980e3026d7ef753ab21b94dca43caaa1670e702"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "90472e76aa23d33ae21abc5f119af31ab385cfe3412361e6cf8698fcb16c1a62"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "02c57f65adf4cfaa2f92fdfdeadbfa0b9a119b2015e25f3aac1fa805c2dbcaa7"
+    sha256 cellar: :any,                 arm64_linux:       "931440b195ea3374f82aa66b52c2e69cc5250a9554b3db136949799d72f08703"
+    sha256 cellar: :any,                 x86_64_linux:      "8e7c6d532789ecec2f3eec048fd4462997950592377b1799d5abc7a07eebe7cf"
   end
 
   depends_on "pkgconf" => :build

@@ -1,8 +1,8 @@
 class ScmManager < Formula
   desc "Manage Git, Mercurial, and Subversion repos over HTTP"
   homepage "https://www.scm-manager.org"
-  url "https://packages.scm-manager.org/repository/releases/sonia/scm/packaging/unix/3.11.10/unix-3.11.10.tar.gz"
-  sha256 "3ce4518d40501ebf19e99ba3d48a8f58547a393f374165e998f586c213b0cfe7"
+  url "https://packages.scm-manager.org/repository/releases/sonia/scm/packaging/unix/3.12.1/unix-3.12.1.tar.gz"
+  sha256 "08807903ee797bc76ad2aecd8f5369f0677ea413376c0685ceea9093ef96348d"
   license all_of: ["Apache-2.0", "MIT"]
 
   livecheck do
@@ -11,7 +11,7 @@ class ScmManager < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "7600133c1cf17dec096e153066803f30c3dfbb637a4a7db944e60f2da95ec3e8"
+    sha256 cellar: :any_skip_relocation, all: "4a5261a31df5130384f3ce7c4155b86a81f4a0df28360f96f635de9161e8dcf3"
   end
 
   depends_on "jsvc"
@@ -19,7 +19,7 @@ class ScmManager < Formula
 
   def install
     # Replace pre-built `jsvc` with formula to add Apple Silicon support
-    inreplace "bin/scm-server", %r{ \$BASEDIR/libexec/jsvc-.*"}, " #{Formula["jsvc"].opt_bin}/jsvc\""
+    inreplace "bin/scm-server", %r{ \$BASEDIR/libexec/jsvc-.*"}, " #{formula_opt_bin("jsvc")}/jsvc\""
     rm Dir["libexec/jsvc-*"]
     libexec.install Dir["*"]
 

@@ -1,10 +1,10 @@
 class Cppcheck < Formula
   desc "Static analysis of C and C++ code"
   homepage "https://sourceforge.net/projects/cppcheck/"
-  url "https://github.com/danmar/cppcheck/archive/refs/tags/2.21.0.tar.gz"
+  url "https://github.com/cppcheck-opensource/cppcheck/archive/refs/tags/2.21.0.tar.gz"
   sha256 "f028ff75ca5372738f3737c8b3e8611426a6526b6aea2ef01301ab0f5902f044"
   license "GPL-3.0-or-later"
-  head "https://github.com/danmar/cppcheck.git", branch: "main"
+  head "https://github.com/cppcheck-opensource/cppcheck.git", branch: "main"
 
   # There can be a notable gap between when a version is tagged and a
   # corresponding release is created, so we check the "latest" release instead
@@ -15,12 +15,13 @@ class Cppcheck < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "e7aa9fd6d8b26b46f2aa1c0a9ad725b441879f015bc9ea00f74897e70f174ade"
-    sha256 arm64_sequoia: "a4fcdca779d6a6816a96dca58cc116633559386f7c93be6aa9a35f98bd65e8c8"
-    sha256 arm64_sonoma:  "405485182f62e046556e95528496913ca5f88378f5d182ca1581b90832d6f66a"
-    sha256 sonoma:        "6c75ce3a821d3fe3e829551ad0132fddf532cc2df96d3d2ab54d78b8aaaa60b2"
-    sha256 arm64_linux:   "e0f23d00ee3ab5f90b22eb72b4d2f8c54c2e5493072fc4e16163369e75921433"
-    sha256 x86_64_linux:  "92afc58d79bf245bfeef31e25ea99eba731899d094e1bdb35be36964796af85a"
+    sha256 arm64_golden_gate: "4fc176e76fbe3e5d97569790e8692312bd75cd50746026b275acf9f5e36c5064"
+    sha256 arm64_tahoe:       "e7aa9fd6d8b26b46f2aa1c0a9ad725b441879f015bc9ea00f74897e70f174ade"
+    sha256 arm64_sequoia:     "a4fcdca779d6a6816a96dca58cc116633559386f7c93be6aa9a35f98bd65e8c8"
+    sha256 arm64_sonoma:      "405485182f62e046556e95528496913ca5f88378f5d182ca1581b90832d6f66a"
+    sha256 sonoma:            "6c75ce3a821d3fe3e829551ad0132fddf532cc2df96d3d2ab54d78b8aaaa60b2"
+    sha256 arm64_linux:       "e0f23d00ee3ab5f90b22eb72b4d2f8c54c2e5493072fc4e16163369e75921433"
+    sha256 x86_64_linux:      "92afc58d79bf245bfeef31e25ea99eba731899d094e1bdb35be36964796af85a"
   end
 
   depends_on "cmake" => :build
@@ -29,10 +30,6 @@ class Cppcheck < Formula
 
   uses_from_macos "libxml2" => :build
 
-  def python3
-    which("python3.14")
-  end
-
   def install
     ENV.deparallelize
 
@@ -40,7 +37,7 @@ class Cppcheck < Formula
     # Feature can be re-enabled if upstream adds support for std::regex[^2] or `pcre2`.
     #
     # [^1]: https://salsa.debian.org/reichel/cppcheck/-/commit/82df7e7d2aaa717eb594d69861f10d2e4d383ad7
-    # [^2]: https://github.com/danmar/cppcheck/pull/7893
+    # [^2]: https://github.com/cppcheck-opensource/cppcheck/pull/7893
     args = %W[
       -DHAVE_RULES=OFF
       -DUSE_BUNDLED_TINYXML2=OFF
@@ -106,7 +103,7 @@ class Cppcheck < Formula
 
     sample_addon_file = testpath/"sampleaddon.py"
     sample_addon_file.write <<~PYTHON
-      #!/usr/bin/env #{python3}
+      #!/usr/bin/env #{python3.basename}
       """A simple test addon for #{name}, prints function names and token count"""
       import sys
       from importlib import machinery, util

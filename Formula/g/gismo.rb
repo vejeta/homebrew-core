@@ -16,12 +16,13 @@ class Gismo < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "fd7006fc0945d60cb2d347a09f019f801c1527730b40730165c06ae76a88c842"
-    sha256 cellar: :any,                 arm64_sequoia: "300458041bc09d87f28ef16f0071c0cc1b0024b87cda3da9c9ef65640c92019d"
-    sha256 cellar: :any,                 arm64_sonoma:  "12eea2c988fcbdf05ca9dfeefbe47febab751e7c0fc6d7c90d79149f60bf90eb"
-    sha256 cellar: :any,                 sonoma:        "ba784d2ae9dcca467f6d9e861669791ff1ec1fe366e5427da632c9af96ba5bdd"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "71a85158fdc809bceb5bee05754ffa396d4b25c6d4899138121b29447f559656"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0a427d0bff623017d3cd0d7572ef898df0a0bef277788019c08a0a7c89a1a294"
+    sha256 cellar: :any,                 arm64_golden_gate: "4d9939d6a5c3e80d1b93e1be0e3951501d3180ae4f1ae9a7f0bf75cc28fde808"
+    sha256 cellar: :any,                 arm64_tahoe:       "fd7006fc0945d60cb2d347a09f019f801c1527730b40730165c06ae76a88c842"
+    sha256 cellar: :any,                 arm64_sequoia:     "300458041bc09d87f28ef16f0071c0cc1b0024b87cda3da9c9ef65640c92019d"
+    sha256 cellar: :any,                 arm64_sonoma:      "12eea2c988fcbdf05ca9dfeefbe47febab751e7c0fc6d7c90d79149f60bf90eb"
+    sha256 cellar: :any,                 sonoma:            "ba784d2ae9dcca467f6d9e861669791ff1ec1fe366e5427da632c9af96ba5bdd"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "71a85158fdc809bceb5bee05754ffa396d4b25c6d4899138121b29447f559656"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "0a427d0bff623017d3cd0d7572ef898df0a0bef277788019c08a0a7c89a1a294"
   end
 
   depends_on "cmake" => :build
@@ -41,16 +42,16 @@ class Gismo < Formula
     args = %W[
       -DGISMO_BUILD_EXAMPLES=OFF
       -DBLA_VENDOR=OpenBLAS
-      -DSUPERLUDIR=#{Formula["superlu"].opt_prefix}
+      -DSUPERLUDIR=#{formula_opt_prefix("superlu")}
       -DGISMO_WITH_SUPERLU=ON
-      -DUMFPACKDIR=#{Formula["suite-sparse"].opt_prefix}
+      -DUMFPACKDIR=#{formula_opt_prefix("suite-sparse")}
       -DGISMO_WITH_UMFPACK=ON
       -DGISMO_WITH_OPENMP=ON
       -DTARGET_ARCHITECTURE=none
     ]
 
     # Tweak clang to compile OpenMP parallelized source code
-    args << "-DOpenMP_CXX_FLAGS=-Xpreprocessor -fopenmp -I#{Formula["libomp"].opt_include}" if OS.mac?
+    args << "-DOpenMP_CXX_FLAGS=-Xpreprocessor -fopenmp -I#{formula_opt_include("libomp")}" if OS.mac?
 
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args, *args
     system "cmake", "--build", "build"

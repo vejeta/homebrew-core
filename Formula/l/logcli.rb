@@ -1,8 +1,8 @@
 class Logcli < Formula
   desc "Run LogQL queries against a Loki server"
-  homepage "https://grafana.com/loki"
-  url "https://github.com/grafana/loki/archive/refs/tags/v3.7.2.tar.gz"
-  sha256 "f91b7737cc0ca352dfb99e9307bc2f6a67135d6827922374ab4a31676d280790"
+  homepage "https://grafana.com/oss/loki"
+  url "https://github.com/grafana/loki/archive/refs/tags/v3.7.7.tar.gz"
+  sha256 "e2e8863c15ad97a4649a6f0795d549a8977e44f4413e2b001e6eb0c12c22eb9c"
   license "AGPL-3.0-only"
   head "https://github.com/grafana/loki.git", branch: "main"
 
@@ -11,20 +11,26 @@ class Logcli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c7bb7e4bfd4c57ebaa6d2a61d3d8c31e84a1e893d4898b0b989f7883b3c56a4d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8c9d6d13aac45ed7c176525727fc201bf0d9c674962cafeef432daa6d1de7e04"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "91266473d3b8d9e346f44d60963a1bfb9ff66ff58d9fae52cbf21ae794f6d62c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1a176ef53c33f1939fa3281dd6b16e97d5546702de7e35c98cdf4a3398d275ea"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a25ea9011f312f19e74db7488b1dd7b73d876532671f91293e145f8b60442a5d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "60158271c85ca816e64c98caedf00b693435a21c512ef61c7c08ffe404161e97"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "742d68ae76b41e2924268532bd1d54860dad77392f7f5a2d35b7b81ff56da230"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "4b684ea41575dfcd24408d5e31def521be4aef604ceae8120aba7f482c7c2d60"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "dbe3979cb8530c6c914c7d892a2530faaeab8523d8d60f0faf2deae3796a2e04"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3450cba9e453a6978d86fe44dc4b973f427384477f7a1b284b1fd014223b55b8"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "162ee00d38cd7b3cc161488b66cea64e53dd8845d422a25799824d3ca316eece"
+    sha256 cellar: :any,                 x86_64_linux:      "1d55b28c1f9207d3cac3afbb8282891612c4c538e07db16b184dd294e01c6203"
   end
 
   depends_on "go" => :build
   depends_on "loki" => :test
 
+  # `test do` block runs a local loki server
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ldflags = %W[
-      -s -w
       -X github.com/grafana/loki/pkg/util/build.Branch=main
       -X github.com/grafana/loki/pkg/util/build.Version=#{version}
       -X github.com/grafana/loki/pkg/util/build.BuildUser=#{tap.user}

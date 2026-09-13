@@ -1,8 +1,8 @@
 class Kumactl < Formula
   desc "Kuma control plane command-line utility"
   homepage "https://kuma.io/"
-  url "https://github.com/kumahq/kuma/archive/refs/tags/v2.14.0.tar.gz"
-  sha256 "66a2713459122b5c0450c4f410fb47f44e1ffad8aefc1e063a841721f820a682"
+  url "https://github.com/kumahq/kuma/archive/refs/tags/v2.14.4.tar.gz"
+  sha256 "a7669804aa41eebb1f23e9c1d25f740b758ac1b1aafc1fc2e08b6a6a47e208b2"
   license "Apache-2.0"
   head "https://github.com/kumahq/kuma.git", branch: "master"
 
@@ -12,19 +12,18 @@ class Kumactl < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a6332966b6d678046ca2d200119c0ff0770978492b958cc0291f49a3701c0b56"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9c2ea4866beb9d2e5a7f87e58ba731f833698189742e077238c16aa41ac0ecbd"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5d54984d8dc87fae602a3e6f3c9d656e8173ceb7ce1fe750e8e635edb7094e96"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ade9a9179ed6c4ddfb254f13a2f7ae30c3e3a9d69a3b1433028ec1d7e40b0765"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "9c35994613bcdf93882e0ea41a4b18bfe537a66c58413071a555ee2468bd4898"
-    sha256 cellar: :any,                 x86_64_linux:  "cf55053fa5c58e41934a211ab19f114b85d046783c6c174afba2168ea890aa6c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5a48350e5cee124a800c6665baafef2d75a5b4abd38c79436d6a620942a8c54d"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "21dad164e64b668c6c0aaac0936cbe71bf2f8077474d9f237f2464ee5d5b0c77"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6b2af81cf838943537ec924856974b6c8168190cab93fcf520e57f5856c613ea"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "8b9a7d7dc14544fedf0944d2e869ca2476ac42210cec93d4af6cd9c608d7573f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0cc6e55bffcfe8f95e011fb7508dc1880c35bcd75fb3de2f00858c8190c76fe3"
+    sha256 cellar: :any,                 x86_64_linux:      "c5da0c1fccd604b479ccbb999eaf803cdce7ed35a2507e036c239ac00ebd8880"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/kumahq/kuma/v2/pkg/version.version=#{version}
       -X github.com/kumahq/kuma/v2/pkg/version.gitTag=#{version}
       -X github.com/kumahq/kuma/v2/pkg/version.buildDate=#{time.strftime("%F")}

@@ -1,27 +1,31 @@
 class DockerAgent < Formula
   desc "Agent Builder and Runtime by Docker Engineering"
   homepage "https://docker.github.io/docker-agent/"
-  url "https://github.com/docker/docker-agent/archive/refs/tags/v1.83.0.tar.gz"
-  sha256 "a9507a791f439c672a4320b2ca13221221663924e9899cbf683d13ed6db2d7dd"
+  url "https://github.com/docker/docker-agent/archive/refs/tags/v1.138.1.tar.gz"
+  sha256 "7c2873e2f41813b3b47fda014ba2950cca75bc0ffecf84f4a74e7308e601671a"
   license "Apache-2.0"
   head "https://github.com/docker/docker-agent.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0e4633c731460534392aee37fe3825b387e704db8f3ee8654a3d199c0dbb08d2"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5a45b6d72c06d524f13e322f37bb478c7d04ab2fedc6a2377e05f49df7454ec1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "db27fc2c25442d4ed2670a6714966b8548660e999e61b5aa7c08dece1c3e8492"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f2a114eb4809a91219950f90e1ca467fefbbb57df51a6cfd68d37a1e0c044d45"
-    sha256 cellar: :any,                 arm64_linux:   "3f7a612acf405eac8ac8c7b448666ce5b82c3e61bbbccd53770b50abc743208f"
-    sha256 cellar: :any,                 x86_64_linux:  "4f8942a240c04ea07b788ad0e836f997cc7c091ad471af2f632b3f06fd780ccd"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "d9f64591b0fa8a9bcec77408c6f06b20032bf8d5dd065818043b925a49557f93"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a74f2af011391a858659b6b1e705977cde0475d9a5bfda9657ff071a0fe57fc9"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b85dd3582a2e86bc39f89481ddbe86d4f9966e60dab4b44acc95e3a2853e2368"
+    sha256 cellar: :any,                 arm64_linux:       "35ce41070d835550ffde64fa1a24c21a7f0835756392a51f6e7f7e13dd2f37c4"
+    sha256 cellar: :any,                 x86_64_linux:      "5f58585d0bc1ced866a8661bf367dc530ade7dfe9bac8720235e703125ec0cf5"
   end
 
   depends_on "go" => :build
+
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     ENV["CGO_ENABLED"] = "1" if OS.linux? && Hardware::CPU.arm?
 
     ldflags = %W[
-      -s -w
       -X github.com/docker/docker-agent/pkg/version.Version=v#{version}
       -X github.com/docker/docker-agent/pkg/version.Commit=#{tap.user}
     ]

@@ -1,8 +1,8 @@
 class BareosClient < Formula
   desc "Client for Bareos (Backup Archiving REcovery Open Sourced)"
   homepage "https://www.bareos.com/"
-  url "https://github.com/bareos/bareos/archive/refs/tags/Release/25.0.3.tar.gz"
-  sha256 "3c4d942612dde94b0bc36a339049c90650c846837f1c035c96bb71cc7b40d9b2"
+  url "https://github.com/bareos/bareos/archive/refs/tags/Release/25.1.1.tar.gz"
+  sha256 "158aba5941fcd1921292d2fe283bce1fe9122b5c81106267cb352678f76af83b"
   license "AGPL-3.0-only"
 
   livecheck do
@@ -11,12 +11,12 @@ class BareosClient < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "aa4783a6060df41588447d5fdf4c3fceb089a1ed8be1aaf45dfecdba46c0452c"
-    sha256 arm64_sequoia: "ca3749cc0af8439520f15fd8c7655f3175ecb33cfaaa9ba982af6ec53302a1d8"
-    sha256 arm64_sonoma:  "d10af53f7033b3db03b05f0859a2dfb795d5922f9c859df7e1239c8cc6d77316"
-    sha256 sonoma:        "2018f586d097accce2cdb7c9848facb2d7524174694775b98c500f0013cb2a46"
-    sha256 arm64_linux:   "d44341dbecfc47a9b581f06d03f63b81d8cf6b73128ede5ff304b05405ed84ab"
-    sha256 x86_64_linux:  "47da9a0b939866c852556b1005aac5710edf0eae08c551b835410cbe9294d2f8"
+    sha256 arm64_golden_gate: "46b05620a62979cfb1dcd2945b6044559e21613db510bcd2ccd07fe43d03770d"
+    sha256 arm64_tahoe:       "0ba3b439d35d6f31e17bd023a05037add87ecd314a455f4285dde9c16c0b37b1"
+    sha256 arm64_sequoia:     "0fd15bd4147f8bb27618ce68277ef184e9e5b123158114bd2a5104eb4340b404"
+    sha256 arm64_sonoma:      "54018b0d88edbf6057b1920a8a854c1932edfe72c234473f598468ccac20a654"
+    sha256 arm64_linux:       "6e42ac0b846ed8cc4d7232ed9c73ff25d4fa2229c9892663a3bdb5f6c8c89fe0"
+    sha256 x86_64_linux:      "a82a3525625a5f90822d40fb8a7ed7cd3cb4503034ef47694252dbdc26dc3e73"
   end
 
   depends_on "cli11" => :build
@@ -58,6 +58,11 @@ class BareosClient < Formula
               "bareos-fd PROPERTIES INSTALL_RPATH \"@loader_path/../${libdir}\"",
               "bareos-fd PROPERTIES INSTALL_RPATH \"${libdir}\""
 
+    # `cpp-gsl` is 5.x and GSL's config is SameMajorVersion, so CPM's 4.0.0 request would fetch instead
+    inreplace "cmake/BareosCpmPackages.cmake",
+              "  NAME Microsoft.GSL\n  VERSION \"4.0.0\"",
+              "  NAME Microsoft.GSL\n  VERSION \"5.0.0\""
+
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args,
                     "-DENABLE_PYTHON=OFF",
                     "-Dworkingdir=#{var}/lib/bareos",
@@ -76,13 +81,11 @@ class BareosClient < Formula
     system "cmake", "--install", "build"
   end
 
-  def post_install
-    (var/"lib/bareos").mkpath
-    # If no configuration files are present,
-    # deploy them (copy them and replace variables).
-    unless (etc/"bareos/bareos-fd.d").exist?
-      system lib/"bareos/scripts/bareos-config", "deploy_config", "bareos-fd"
-      system lib/"bareos/scripts/bareos-config", "deploy_config", "bconsole"
+  post_install_steps do
+    mkdir_p "lib/bareos", base: :var
+    unless_path_exists "{{etc}}/bareos/bareos-fd.d" do
+      run "bareos/scripts/bareos-config", args: ["deploy_config", "bareos-fd"], base: :lib
+      run "bareos/scripts/bareos-config", args: ["deploy_config", "bconsole"], base: :lib
     end
   end
 

@@ -1,25 +1,24 @@
 class Kargo < Formula
   desc "Multi-Stage GitOps Continuous Promotion"
   homepage "https://kargo.io/"
-  url "https://github.com/akuity/kargo/archive/refs/tags/v1.10.7.tar.gz"
-  sha256 "6d1394ff03b8d8690aaa8aac7afb1e23c138b093031c77a97d8fab935ad8776e"
+  url "https://github.com/akuity/kargo/archive/refs/tags/v1.11.4.tar.gz"
+  sha256 "06af0413397fbf482b311e11e016dde82626fcc7f35f39b933c20a45b214825c"
   license "Apache-2.0"
   head "https://github.com/akuity/kargo.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5d08f4c7c06f862c038ae85c02068ae349328d11502291770c2f374634136e15"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "032bf581a17844e4bafb69c2f34647752940780238516b17fe71176debeb9a3c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4a53fbc642baf51e3939bb94fae1592843b7cad769f68f8a73597ed1b30363ea"
-    sha256 cellar: :any_skip_relocation, sonoma:        "23fc241bc318d6330287bfd27820ed0b4f1dd099311b916698cbd34aa964f6cb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "69278ec08ebc0f32a7bad3322ef265c1ef2ce0b071a37937f66b20eb0b0f7bdc"
-    sha256 cellar: :any,                 x86_64_linux:  "cc50d29f9c9cdd2dbf78b83e8330623c3b4209ef57e0ba220da826b47786a64c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5f32b105b164385bafedd02f7fbd317d2252f002c09866aec46de25eb9e86734"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "30f8f3fbcc253ff74a595c76a4a6619d81f120e3b2d7acb1573f15fc85741034"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "7f3820e8540106defa5596054ba43c73bf0337174f13a0ba5650cc3023a51648"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4e3d0e7da62be01ba44cb3c341338c6127c078c1ac345db8107722c155c58587"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0e602f1fb01f97f13db61e08b03c1a115b4c27007294909d6a291d1e986b232f"
+    sha256 cellar: :any,                 x86_64_linux:      "2ee9d525e22706edaeea6f0eba00a03e66ca408e8f32aaa4feef49749353e223"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/akuity/kargo/pkg/x/version.version=#{version}
       -X github.com/akuity/kargo/pkg/x/version.buildDate=#{time.iso8601}
       -X github.com/akuity/kargo/pkg/x/version.gitCommit=#{tap.user}

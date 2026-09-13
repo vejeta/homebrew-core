@@ -1,8 +1,8 @@
 class Qemu < Formula
   desc "Generic machine emulator and virtualizer"
   homepage "https://www.qemu.org/"
-  url "https://download.qemu.org/qemu-11.0.1.tar.xz"
-  sha256 "0d235f5820278d914a3155ec27af8e4258d697ea892895570807d69c0cb8cd64"
+  url "https://download.qemu.org/qemu-11.1.1.tar.xz"
+  sha256 "079ffbff8a7111bbc89022107cbabf3bbfd614d5fc9d7cc675991196aca12482"
   license "GPL-2.0-only"
   compatibility_version 1
   head "https://gitlab.com/qemu-project/qemu.git", branch: "master"
@@ -13,14 +13,15 @@ class Qemu < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "6a0f89371967043340a580de702754712b1e2e8d9183dca6ca2779197f902c5f"
-    sha256 arm64_sequoia: "8cd2c6455866a55235e153f04a018412c268b64e303044581f9c2d731316cff7"
-    sha256 arm64_sonoma:  "86302e0b426c394540134ebc9bdad6d842fc9a6730840bd315e10f037effb7fd"
-    sha256 sonoma:        "19b2870aac0173eec062f18deb3e6815b180192ae86c31b71e776936c2b991cd"
-    sha256 arm64_linux:   "14a2962495de3bddb7cdd216b007b4bbc5919f34af52c00558c09fb0a07a2485"
-    sha256 x86_64_linux:  "ce60922f08cd53b4178893baba1ba4818c2aac9274d46ea8a714c4041d52a1e9"
+    sha256 arm64_golden_gate: "7d44c9254d15991c90d5c5955029971ed921fd7a06091dfa1225d1a2e6cdcfd0"
+    sha256 arm64_tahoe:       "9ccc238fe40ca1a563b515f89fc78b569344ec943d3905a37f9012ee9d79cb99"
+    sha256 arm64_sequoia:     "1fe8d43ce8ffc27303b74c9c8147226d83e1389e3093446ac91684bda8f057df"
+    sha256 arm64_sonoma:      "45f006f7c258c31ef43d5040302d26e2705d41c5743f83b664ac9d480fb86bef"
+    sha256 arm64_linux:       "d576c361d8b97253089493ef884b5aae81a60663e2330f3a18dc74e3a2844efc"
+    sha256 x86_64_linux:      "c15e969bc809551fa701da09112be237c970a7d79fc8fa3109ac829723664fb5"
   end
 
+  depends_on "bison" => :build # >= 3.0
   depends_on "libtool" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
@@ -45,7 +46,6 @@ class Qemu < Formula
   depends_on "vde"
   depends_on "zstd"
 
-  uses_from_macos "bison" => :build
   uses_from_macos "flex" => :build
   uses_from_macos "bzip2"
 
@@ -99,6 +99,16 @@ class Qemu < Formula
     # Samba installations from external taps.
     args << "--smbd=#{HOMEBREW_PREFIX}/sbin/samba-dot-org-smbd"
 
+    # The arm64 HVF backend needs the macOS 15 SDK for its EL2 sysregs and vGIC
+    args << "--disable-hvf" if OS.mac? && Hardware::CPU.arm? && MacOS.version <= :sonoma
+
+    # Starting in Golden Gate, ParavirtualizedGraphics.framework is present but
+    # largely unusable. Remove once QEMU configure script is able to correctly
+    # handle this.
+    #
+    # See https://patchew.org/QEMU/20260826203700.39057-1-dude@angrygoose.dev/.
+    args << "--disable-pvg" if OS.mac? && MacOS.version >= :golden_gate
+
     args += if OS.mac?
       ["--disable-gtk", "--enable-cocoa"]
     else
@@ -110,13 +120,6 @@ class Qemu < Formula
   end
 
   test do
-    # 820KB floppy disk image file of FreeDOS 1.2, used to test QEMU
-    # NOTE: Keep outside test block so that `brew fetch` is able to handle slow download/retries
-    resource "homebrew-test-image" do
-      url "https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.2/official/FD12FLOPPY.zip"
-      sha256 "81237c7b42dc0ffc8b32a2f5734e3480a3f9a470c50c14a9c4576a2561a35807"
-    end
-
     archs = %w[
       aarch64 alpha arm avr hppa i386 loongarch64 m68k microblaze mips
       mips64 mips64el mipsel or1k ppc ppc64 riscv32 riscv64 rx
@@ -126,8 +129,11 @@ class Qemu < Formula
       assert_match version.to_s, shell_output("#{bin}/qemu-system-#{guest_arch} --version")
     end
 
-    resource("homebrew-test-image").stage testpath
-    assert_match "file format: raw", shell_output("#{bin}/qemu-img info FLOPPY.img")
+    system bin/"qemu-img", "create", "-f", "qcow2", "test.qcow2", "1440k"
+    assert_match "file format: qcow2", shell_output("#{bin}/qemu-img info test.qcow2")
+
+    system bin/"qemu-img", "convert", "-O", "raw", "test.qcow2", "test.img"
+    assert_match "file format: raw", shell_output("#{bin}/qemu-img info test.img")
 
     # On macOS, verify that we haven't clobbered the signature on the qemu-system-x86_64 binary
     if OS.mac?

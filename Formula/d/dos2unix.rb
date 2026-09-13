@@ -1,23 +1,22 @@
 class Dos2unix < Formula
   desc "Convert text between DOS, UNIX, and Mac formats"
-  homepage "https://waterlan.home.xs4all.nl/dos2unix.html"
-  url "https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.5.5.tar.gz"
-  mirror "https://fossies.org/linux/misc/dos2unix-7.5.5.tar.gz"
-  sha256 "75f692b8484c8c24579a2ffd87df16b9c9428ed95497e3393a21d1ba0697ac33"
+  homepage "https://waterlander.net/dos2unix/"
+  url "https://waterlander.net/dos2unix/files/dos2unix-7.5.7.tar.gz"
+  sha256 "669ee27120ae71589f638fe3a167d6ea54f8633f5ab1b282551bd7a7c9510dfa"
   license "BSD-2-Clause"
 
   livecheck do
-    url "https://waterlan.home.xs4all.nl/dos2unix/"
+    url :homepage
     regex(/href=.*?dos2unix[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a477b3382ab9313f2d7633766dd6c569f8cfc106a075490aa066cc78b523832a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d5440cff453f035c62da937754098661bd8cec168b321266db8095419db4c5c2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "fbeca6ca69352db22604724207e1016958ed1fcc4dd7764a588870a3ad9ae2dc"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f3886a2b73c66dbb7022830abed547bbb7cda9bc792a83ffe1063efbb8504401"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c93c6f2b3419d3f36f0bf9db9640e2670a484345e2a505537aac063f6e910ec6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "18a491699d80991dddeaab7f582db01d26287efe6d23e93b259d1cf0685ddb81"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "7daae03638d9fcef0cd8bde6ea3b66af9611036d1349168a2152d6bda0506fdb"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9f5c3269baaa4692d28c8764c330d7b57a211793f27d410a07a5dc64ef050fa4"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "8fcff72222089be3e3015f6b02d980bf81725390237c27d824d2a1ca6b9790e6"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "33227a27d265055063f103eb3503ca93d90546cc52417503b60565caa30396d6"
+    sha256 cellar: :any,                 arm64_linux:       "ea643ad8db6b38be94b9c67ec1bfd1ef664067569df61745a040cdaa508472c0"
+    sha256 cellar: :any,                 x86_64_linux:      "16bdc27badba287098103e6b6f772e433e8191903d3beb4e662df3ee97695866"
   end
 
   def install

@@ -1,27 +1,29 @@
 class Render < Formula
   desc "Command-line interface for Render"
   homepage "https://render.com/docs/cli"
-  url "https://github.com/render-oss/cli/archive/refs/tags/v2.20.0.tar.gz"
-  sha256 "ad45606b04d94499867067436e5bb93be1185b79d72725fd3da5b9aa0e686ba9"
+  url "https://github.com/render-oss/cli/archive/refs/tags/v2.28.0.tar.gz"
+  sha256 "5bf7d3317315b288446f22b6f6b23f2b1a576578179c26ae435068bd8864a063"
   license "Apache-2.0"
   head "https://github.com/render-oss/cli.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b50d72c02a7fbb94cac34728fb0a7a405235907775f3d54719909858305d4ccb"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b50d72c02a7fbb94cac34728fb0a7a405235907775f3d54719909858305d4ccb"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b50d72c02a7fbb94cac34728fb0a7a405235907775f3d54719909858305d4ccb"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5c9e152dc705f54c363ec3ae42f483580b4cfd3290cd6192a4a55ca277332b39"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "230a1b91de3879a086605f9acc7aa953e7ae0302e11d8c50d59f4e16edda76a6"
-    sha256 cellar: :any,                 x86_64_linux:  "79275792f9003992e623adff525d99db94d3a89532a9717018eac8fad87c4d34"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8049a93217e75b6835d31ccf98289d8b317ae253c4ddf285300f1c96678e252b"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "8049a93217e75b6835d31ccf98289d8b317ae253c4ddf285300f1c96678e252b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "8049a93217e75b6835d31ccf98289d8b317ae253c4ddf285300f1c96678e252b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "8f47a38da0b76e96f26e7ef968ffb929faaa2fefa1990c29a3b6921bf593156c"
+    sha256 cellar: :any,                 x86_64_linux:      "5ece1f02cdaa9a25dcd433b8ad00427ab9703ce1f639cd868033107b96b30b42"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = %W[
-      -s -w
-      -X github.com/render-oss/cli/pkg/cfg.Version=#{version}
-    ]
+    ldflags = %W[-X github.com/render-oss/cli/pkg/cfg.Version=#{version}]
     system "go", "build", *std_go_args(ldflags:)
   end
 

@@ -1,10 +1,10 @@
 class Herdr < Formula
   desc "Agent multiplexer that lives in your terminal"
   homepage "https://herdr.dev"
-  url "https://github.com/ogulcancelik/herdr/archive/refs/tags/v0.7.0.tar.gz"
-  sha256 "6c7e7b1eaefc50a63a66fdeae681df994b528511ce5e1aa2ac611f8119231946"
-  license "AGPL-3.0-or-later"
-  head "https://github.com/ogulcancelik/herdr.git", branch: "master"
+  url "https://github.com/herdrdev/herdr/archive/refs/tags/v0.9.0.tar.gz"
+  sha256 "1e83bff4b05834ed8281e16f1680e8f3e58375a94b2e3f2b3d021e28e293ef9a"
+  license "Apache-2.0"
+  head "https://github.com/herdrdev/herdr.git", branch: "master"
 
   livecheck do
     url :stable
@@ -12,21 +12,22 @@ class Herdr < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5eb89dac512e28dbaa1857c23d4a80575bded2cab75cf2c7c1ecd79c41e998cc"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a87df814f8d91ddeea7d838b6b454945de57ddfdb609277e7138ab44da020f08"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "01525f161f76fb8c74a9ea630aa29f95063e9637777f35f7b3760fda90889a29"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c8d7c5a7fceed4c4b5d7620a10a8573f6b2b236aec6e44928b6af0fc30ee4719"
-    sha256 cellar: :any,                 arm64_linux:   "3b0be1442fecb6273b58e224ab5b1417f35d1b229e3ec77285ee227391eea260"
-    sha256 cellar: :any,                 x86_64_linux:  "7b0e043228194718794b6019c69c13624bd7640f739ca1c76416bb19a4fb4998"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c9c8778478c3e47edc2f944374fd444fcb736ce6f5884d89e131d74eb41242f5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ff3b064d1591a07ad16c14c76d89fd4d6f1c21735dd2363f5a26d37f5f9d052d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "fda947866b0d96e8a204902338e8c6fc2c5355e7aa04d716c681d8dda7df8a70"
+    sha256 cellar: :any,                 arm64_linux:   "dc2940a96359fab617cf1c18881cd3fd8a6fd156a11f040a85ceef0fea12e0fc"
+    sha256 cellar: :any,                 x86_64_linux:  "93237c69194d2332df2ed8fd38bee203e25c56ba2d76198d192c8301b114660c"
   end
 
   depends_on "rust" => :build
-  depends_on "zig@0.15" => :build # upstream issue, https://github.com/ogulcancelik/herdr/issues/285
+  depends_on "zig@0.15" => :build # upstream issue, https://github.com/herdrdev/herdr/issues/285
 
   def install
-    ENV.prepend_path "PATH", Formula["zig@0.15"].opt_bin
+    ENV.prepend_path "PATH", formula_opt_bin("zig@0.15")
 
     system "cargo", "install", *std_cargo_args
+
+    generate_completions_from_executable(bin/"herdr", "completion")
   end
 
   service do

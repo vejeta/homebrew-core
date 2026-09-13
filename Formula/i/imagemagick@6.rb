@@ -1,8 +1,8 @@
 class ImagemagickAT6 < Formula
   desc "Tools and libraries to manipulate images in many formats"
   homepage "https://legacy.imagemagick.org/"
-  url "https://github.com/ImageMagick/ImageMagick6/releases/download/6.9.13-50/ImageMagick-6.9.13-50.7z"
-  sha256 "aa50ed87df37ee447a7eb3a526e0191ed443b33dc3e2f62cc0d875924f5852e4"
+  url "https://github.com/ImageMagick/ImageMagick6/releases/download/6.9.13-56/ImageMagick-6.9.13-56.7z"
+  sha256 "bb879c2b4173ccac9db1e4e5d0965ba9eed12a9a2e149a2949d12319e979282c"
   license "ImageMagick"
   head "https://github.com/imagemagick/imagemagick6.git", branch: "main"
 
@@ -13,12 +13,12 @@ class ImagemagickAT6 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "532b61791f97d55b0676d3a947b3e39e9aeb0c659108142adffa37f1f57f8722"
-    sha256 arm64_sequoia: "2d0ee23c473484e3910191567459d68426e6ca136d6df9ee4cd592e399d52c82"
-    sha256 arm64_sonoma:  "72faf5220bd0599bb211eed8ee86f331d8f0345021b422c83e360a8dad3b26b3"
-    sha256 sonoma:        "840d3a2405a94fb095bdb56b3c055c1ea61213c4958c5649e74b4f80605ce30d"
-    sha256 arm64_linux:   "dbae808e55f23a83685a3ce59dbc14762540dcf5b69235f13902521a1e44ab02"
-    sha256 x86_64_linux:  "53a0030f9ae4fcff282436ad7cf82e0e06109920405f1cf70d51f1ef7877749d"
+    sha256 arm64_golden_gate: "d1ccd2b7f7c743f0954de920a808d791881195dd256603a4689b8c05cefe979f"
+    sha256 arm64_tahoe:       "9dfa1d643d0da7c0d1cb2e5da46c41dd6cef27a416b9050247e0f3f4c5e2d6df"
+    sha256 arm64_sequoia:     "fdb9810b70582c7156e5155ab7be6d4bc3e96328628bffe4eb69bbfe493f6331"
+    sha256 arm64_sonoma:      "e31d2c0b77e0f2186fa0a456672ea4b4f45d023b6c064e79d901de1092daf1bf"
+    sha256 arm64_linux:       "a8b0a7a70ea75ed5f79ec077aa09805f2214643e4ff8e6d22af1bd0ce9f38e5a"
+    sha256 x86_64_linux:      "b21b7dc069897294690d21fb56d7e0fa0a7d4e6d1feb5880f947c827698ac52e"
   end
 
   keg_only :versioned_formula
@@ -50,7 +50,7 @@ class ImagemagickAT6 < Formula
 
   def install
     # Avoid references to shim
-    inreplace Dir["**/*-config.in"], "@PKG_CONFIG@", Formula["pkg-config"].opt_bin/"pkg-config"
+    inreplace Dir["**/*-config.in"], "@PKG_CONFIG@", formula_opt_bin("pkg-config")/"pkg-config"
     # versioned stuff in main tree is pointless for us
     inreplace "configure", "${PACKAGE_NAME}-${PACKAGE_BASE_VERSION}", "${PACKAGE_NAME}"
 

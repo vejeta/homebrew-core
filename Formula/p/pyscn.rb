@@ -1,18 +1,17 @@
 class Pyscn < Formula
   desc "Intelligent Python Code Quality Analyzer"
   homepage "https://ludo-technologies.github.io/pyscn/"
-  url "https://github.com/ludo-technologies/pyscn/archive/refs/tags/v1.24.2.tar.gz"
-  sha256 "926ff62e1ac7403f74daac2f98b426fe25cb64bada5ac930bd18ded815e3994c"
+  url "https://github.com/ludo-technologies/pyscn/archive/refs/tags/v1.31.3.tar.gz"
+  sha256 "5046c13392fa66f70b6a840c4060303217c38cda2abd3701ff7b5fe3fbf39a13"
   license "MIT"
   head "https://github.com/ludo-technologies/pyscn.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "b6dc4bcde9e3d1a7096cc0c49a5a8491a4e9a67d6d51bd7d8317a97a00a0e84d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3268870666777d118e16f8a20c40fa543b79539fe62078af57be7d34fc698149"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "331c8d641446545b837b3bcdb4b22efb225055da8804cb2a491ace350cb104fc"
-    sha256 cellar: :any_skip_relocation, sonoma:        "9973657f4f6bd484c66ccc80ec20ed4c998982792e9637eccbac7b04e7263517"
-    sha256 cellar: :any,                 arm64_linux:   "7be9621e3bf7412ccd55038fb7f3db1d69e61c6dbab61b2ea88ee42b6fe662db"
-    sha256 cellar: :any,                 x86_64_linux:  "520f877e7108378506ffcd60b52b0bebfea725bb9ede17fda1b4947ae8dc2a02"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "57804750e91ab5337e40517c1ee24d645034d30768687b3548e5f96ca01d218c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a49896d8a9ab95fc5b70e5de919829951b4023b3f4ce93e917d614da465f6294"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ed1baa88234d69a66d116e11ce4a1aa87975195554ffe6477c1194847bf417f8"
+    sha256 cellar: :any,                 arm64_linux:       "cdfabd5c11849bcfdd51a6e4fd4671b577ee330925e78e2909820b00d48bc748"
+    sha256 cellar: :any,                 x86_64_linux:      "1302889f964bb2b13360e43b51f584ee7916d224dc4bae5474f44a50ff560df4"
   end
 
   depends_on "go" => :build
@@ -21,7 +20,6 @@ class Pyscn < Formula
     ENV["CGO_ENABLED"] = "1"
 
     ldflags = %W[
-      -s -w
       -X github.com/ludo-technologies/pyscn/internal/version.Version=#{version}
       -X github.com/ludo-technologies/pyscn/internal/version.Commit=#{tap.user}
       -X github.com/ludo-technologies/pyscn/internal/version.Date=#{time.iso8601}

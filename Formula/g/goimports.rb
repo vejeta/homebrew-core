@@ -1,8 +1,8 @@
 class Goimports < Formula
   desc "Go formatter that additionally inserts import statements"
   homepage "https://pkg.go.dev/golang.org/x/tools/cmd/goimports"
-  url "https://github.com/golang/tools/archive/refs/tags/v0.46.0.tar.gz"
-  sha256 "edef352ee709b80c2fcfaaebfbc04ce1dc20ead4dc34a325b6b1f5563ef36d38"
+  url "https://github.com/golang/tools/archive/refs/tags/v0.50.0.tar.gz"
+  sha256 "22d397e6b0a3040aae4fbc6fccb7738b31575a86b754b8604892353f195368a2"
   license "BSD-3-Clause"
   head "https://github.com/golang/tools.git", branch: "master"
 
@@ -12,12 +12,12 @@ class Goimports < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0962ccc833f9e3730942a9b049af3b4e86af9bdc1f6166c3f0fd1e90a267c89c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0962ccc833f9e3730942a9b049af3b4e86af9bdc1f6166c3f0fd1e90a267c89c"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0962ccc833f9e3730942a9b049af3b4e86af9bdc1f6166c3f0fd1e90a267c89c"
-    sha256 cellar: :any_skip_relocation, sonoma:        "54d1dfac9e4e61bd73e1f3981bc6cafe90a5945070a471674e24e638c5ebfcc1"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "56373b9d357c8fb7de4a1b9040477fcb8582381994acc9bf995d202a681d13c6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7da3a632bb7db4a5e2deed824c1467cc28b63aae8a1920b6e8a7302508eed9e1"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "31425572d724f31ad831a6b38968087d0e6fa77b98baf3bf1ab7d16cd3e1a8dc"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "31425572d724f31ad831a6b38968087d0e6fa77b98baf3bf1ab7d16cd3e1a8dc"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "31425572d724f31ad831a6b38968087d0e6fa77b98baf3bf1ab7d16cd3e1a8dc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "31425572d724f31ad831a6b38968087d0e6fa77b98baf3bf1ab7d16cd3e1a8dc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d37c612b3995b69b87d8a95295872b631c657cb88f8386d1fc62ac439419d25e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "9e7bd3bc6361e6106bec622e95c57d726e330239124b14909228a58aec5a3e39"
   end
 
   depends_on "go"

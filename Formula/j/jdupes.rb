@@ -1,8 +1,8 @@
 class Jdupes < Formula
   desc "Duplicate file finder and an enhanced fork of 'fdupes'"
   homepage "https://codeberg.org/jbruchon/jdupes"
-  url "https://codeberg.org/jbruchon/jdupes/archive/v1.31.1.tar.gz"
-  sha256 "c80d4c1deb03cc891a7e938f886952cfc480b8a0bc48baf21b312d350b62d8e3"
+  url "https://codeberg.org/jbruchon/jdupes/archive/v1.31.2.tar.gz"
+  sha256 "a003ba9c57f2fbfc30f5af5a886b12423e0a0eba008429a48506d0c31a807c17"
   license "MIT"
 
   livecheck do
@@ -11,23 +11,17 @@ class Jdupes < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "ec259561869b02c328d62bfe624a1edfb0952222fcb3f9c02013c545cfc299cc"
-    sha256 cellar: :any,                 arm64_sequoia: "97eadd05850f36865713dd989f6d8aa59103adba496c82337dc46a0e558073ba"
-    sha256 cellar: :any,                 arm64_sonoma:  "7f5bfb653d6bf5c768ab9a71e562ae05e93d31a96ef855c28856f32f52ec7307"
-    sha256 cellar: :any,                 sonoma:        "7d143118f5d529d58b96dbdf7cdaf969214fc51ee38b216824019fb73cc6f0c8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "96d668e71e1be10f6039352d2e613d9a55f9eb193df013cb56bfb58194d99490"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fe8d8dbf09f5b79df229d4cc2d12cb2895a4eea6351d395c20d50129cbf40e31"
+    sha256 cellar: :any, arm64_golden_gate: "6971c695f7813826f058f2adc6658a92ee03e53e23839771a7e3e1924193656b"
+    sha256 cellar: :any, arm64_tahoe:       "264d71e93a0a3e1ea22093322ab654ffb7232dedae490e873b7d7dd05da1eb5a"
+    sha256 cellar: :any, arm64_sequoia:     "f62c55b84332a06d253662b529927e0791692f06820ac379e48e8eb3c7a20fd5"
+    sha256 cellar: :any, arm64_sonoma:      "2b364bc664fb82e7a31fe294cfbe9de328ac8b7f362e491597bf2d8d2c0dd67f"
+    sha256 cellar: :any, arm64_linux:       "4ad03192f72fd2a0c27c7a5b47b880da451c6276e18a87ec6ef9f8cd7624178a"
+    sha256 cellar: :any, x86_64_linux:      "1d99ec4ecc50abc0a82fd2447cb610a971b4782ff190a3917449e33ab0e542e5"
   end
 
   depends_on "libjodycode"
 
   def install
-    # error: no member named 'st_mtim' in 'struct stat'
-    inreplace "filestat.c" do |s|
-      s.gsub! "st_mtim.tv_sec", "st_mtime"
-      s.gsub! "st_atim.tv_sec", "st_atime"
-    end
-
     system "make", "ENABLE_DEDUPE=1"
     system "make", "install", "PREFIX=#{prefix}"
   end
@@ -36,7 +30,7 @@ class Jdupes < Formula
     touch "a"
     touch "b"
     (testpath/"c").write("unique file")
-    dupes = shell_output("#{bin}/jdupes --zero-match .").strip.split("\n").sort
+    dupes = shell_output("#{bin}/jdupes --zero-match .").strip.split("\n").map { |f| File.basename(f) }.sort
     assert_equal ["a", "b"], dupes
   end
 end

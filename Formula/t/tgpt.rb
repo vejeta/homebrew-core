@@ -1,18 +1,17 @@
 class Tgpt < Formula
   desc "AI Chatbots in terminal without needing API keys"
   homepage "https://github.com/aandrew-me/tgpt"
-  url "https://github.com/aandrew-me/tgpt/archive/refs/tags/v2.11.1.tar.gz"
-  sha256 "e7a02a0d40b7a6761e5e4550210db04baca7c6113430c3efc9643b9ebca01e32"
+  url "https://github.com/aandrew-me/tgpt/archive/refs/tags/v2.14.0.tar.gz"
+  sha256 "2dd4e1e5c51243e2a373eebaaf85441f4d418def0a962325ff6784bed2aa874d"
   license "GPL-3.0-only"
   head "https://github.com/aandrew-me/tgpt.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9f170adfc7e221f022662f3890ce7c4e65096a54e89f0e299154a17783ee0666"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3447294392f618efd80f2d311c29cf4a886e31809d1444e60ded6ae2ad153a73"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c9ed0c74f7448afc363ad31c9c12acc7ac39210d70638b93c025319a55c457f6"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e53e5ff3d4f95e69cae009c4d8bbfad4b7bc4962146bddd153fea7f49883010a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "b806032f331d56a4f7cdf09d9dff1b84940f5f03537e73270ba6519814a55e5b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e9f5022eceab6be3bfdd87b0a5784b1df7b52de614ce3f78472631fa0f4ba2e0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "78c7d0721e5e5715ec1e41f6a87cf138fa2b3c144dbcc1eb8324af8577ea303c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9ae0c0ef235c31c2a94a2fce8683f0e4c4f094d9898b90ec29a544ad5d68efbf"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "652b5fb211516a4c504523c2c5f2357474b8ba60fa1633c6786fa9a0615d31d2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "77a6ce761d4d14d661752457f7c7126eb5399a04a2bf1b429a51e16eb4edd7c5"
+    sha256 cellar: :any,                 x86_64_linux:  "f65ed57eae124140dd732d5c0a5fe1a3b7657b53893777c9760689f116be1a0e"
   end
 
   depends_on "go" => :build
@@ -22,13 +21,13 @@ class Tgpt < Formula
   end
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w")
+    system "go", "build", *std_go_args
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/tgpt --version")
 
-    output = shell_output("#{bin}/tgpt --quiet --provider pollinations \"What is 1+1\"")
-    assert_match("1 + 1 = 2", output)
+    output = shell_output("#{bin}/tgpt \"What is 1+1\"")
+    assert_match("2", output.strip)
   end
 end

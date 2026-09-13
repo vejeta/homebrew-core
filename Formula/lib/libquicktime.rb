@@ -8,12 +8,13 @@ class Libquicktime < Formula
 
   bottle do
     rebuild 1
-    sha256 arm64_tahoe:   "5f0134430e06269fcef851532addb2e837cf60ef41c44ad3dd9155c1d5df6b50"
-    sha256 arm64_sequoia: "aa6f973349d6fa176f4078a6f7c7f256ecad756d6f0cdc82b7bb9f43063cb5fa"
-    sha256 arm64_sonoma:  "9a6054232de1d537092af3dfe35a2cdf19bddcc8afd7d55728201cd59a554615"
-    sha256 sonoma:        "70a9ec36aaed0263037bfd108e0da0c092432f6861d0ff17fb8730de135c3f70"
-    sha256 arm64_linux:   "370790e912c171ed805ef864de5823c80c849a8e2169547a6fb4eb3bb06990f4"
-    sha256 x86_64_linux:  "9ec46f428d1f6724ff976a745df2d3e967f5e4158e5782d345501b0269392929"
+    sha256 arm64_golden_gate: "8bb983fb399d51ef30b373ce1084ed1ebc728ad7996f840348d9e700a0f54001"
+    sha256 arm64_tahoe:       "5f0134430e06269fcef851532addb2e837cf60ef41c44ad3dd9155c1d5df6b50"
+    sha256 arm64_sequoia:     "aa6f973349d6fa176f4078a6f7c7f256ecad756d6f0cdc82b7bb9f43063cb5fa"
+    sha256 arm64_sonoma:      "9a6054232de1d537092af3dfe35a2cdf19bddcc8afd7d55728201cd59a554615"
+    sha256 sonoma:            "70a9ec36aaed0263037bfd108e0da0c092432f6861d0ff17fb8730de135c3f70"
+    sha256 arm64_linux:       "370790e912c171ed805ef864de5823c80c849a8e2169547a6fb4eb3bb06990f4"
+    sha256 x86_64_linux:      "9ec46f428d1f6724ff976a745df2d3e967f5e4158e5782d345501b0269392929"
   end
 
   depends_on "pkgconf" => :build
@@ -32,14 +33,18 @@ class Libquicktime < Formula
   patch do
     url "https://deb.debian.org/debian/pool/main/libq/libquicktime/libquicktime_1.2.4-12.debian.tar.xz"
     sha256 "e5b5fa3ec8391b92554d04528568d04ea9eb5145835e0c246eac7961c891a91a"
+    type :backport
+    resolves "CVE-2016-2399",
+             "CVE-2017-9122", "CVE-2017-9123", "CVE-2017-9124", "CVE-2017-9125",
+             "CVE-2017-9126", "CVE-2017-9127", "CVE-2017-9128"
     apply "patches/CVE-2016-2399.patch"
     apply "patches/CVE-2017-9122_et_al.patch"
   end
 
   # Fix -flat_namespace being used on Big Sur and later.
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
-    sha256 "83af02f2aa2b746bb7225872cab29a253264be49db0ecebb12f841562d9a2923"
+    file "Patches/libtool/configure-pre-0.4.2.418-big_sur.diff"
+    type :unofficial
   end
 
   def install

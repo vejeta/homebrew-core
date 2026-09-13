@@ -1,17 +1,17 @@
 class Typedb < Formula
   desc "Strongly-typed database with a rich and logical type system"
   homepage "https://typedb.com/"
-  url "https://github.com/typedb/typedb/archive/refs/tags/3.11.5.tar.gz"
-  sha256 "adfd2f8c2aeb92cd58352761b87c3c8eff1f7b0c042270e63856ffcd5c1322d6"
+  url "https://github.com/typedb/typedb/archive/refs/tags/3.13.0.tar.gz"
+  sha256 "2424648f4c95a75274e133435d4fc106c808fc266663953b933dd315266a94e5"
   license "MPL-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "6f40ab42fb579de0911c8f830f1a517009aa4b58a0eaea8ac8a2b87599c214e6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3173ffd56d056751919d07c07dc37fac3e84d964fdd933526945451f3a0edbfc"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "dbe2b09f5c5dda056a52d1dd06e122cd3e0d86513e9896e28c6b5644e9945394"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e8796f3bacf7b4d2299cd1d0acb9117ec58a8a765be3358097afd622965feef3"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d85e8384fedd34e621f2df3ab5440ac275e0ed33243991a52c791219f697d348"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2c53abcbfd45a6274d921fc934b0b28c9b5dc8bc703d5016561b7f049448569d"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "568678f058e993f1a4d34e16a1fddc1139e3497a25a90451aa9f0ff9b27448ad"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "eb0c7e33117933ecf7623250b8bdba248f25ec34da75888bd71c2e62fb61cea2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "26e340b390c297c6e8e78fabb4b45570f205ebae47daecc07c9ccb8ddba4b162"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6eb698e00b9e5b0027bd3a2ce12bff750d0f797c9e0e754f479a1cbc7ead48f7"
+    sha256 cellar: :any,                 arm64_linux:       "9c5c342eaad1058539dd454ed7c602a2d786c8b0a5907b1aabeb91a4cf0413b1"
+    sha256 cellar: :any,                 x86_64_linux:      "8d5a931e92b95fddc71e2aac37d18a20f06a29f2d24dad350549fc44a2778233"
   end
 
   depends_on "protobuf" => :build
@@ -65,7 +65,7 @@ class Typedb < Formula
 
     output = log_path.read
     assert_match "Running TypeDB", output
-    assert_match "Serving:\n  gRPC:  0.0.0.0:#{server_port}", output
+    assert_match(/Serving:\n\s+gRPC:\s+0.0.0.0:#{server_port}/i, output)
     assert_match "TLS: disabled", output
   ensure
     Process.kill("TERM", pid)

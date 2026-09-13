@@ -1,10 +1,9 @@
 class Ddclient < Formula
   desc "Update dynamic DNS entries"
   homepage "https://ddclient.net/"
-  url "https://github.com/ddclient/ddclient/archive/refs/tags/v4.0.0.tar.gz"
-  sha256 "4b37c99ac0011102d7db62f1ece7ff899b06df3d4b172e312703931a3c593c93"
+  url "https://github.com/ddclient/ddclient/releases/download/v4.0.0/ddclient-4.0.0.tar.gz"
+  sha256 "15c73d4b61e8e4974707379df1dbf15ab9f933835c6968947d2b56173388c6f0"
   license "GPL-2.0-or-later"
-  head "https://github.com/ddclient/ddclient.git", branch: "main"
 
   livecheck do
     url :stable
@@ -13,21 +12,26 @@ class Ddclient < Formula
 
   bottle do
     rebuild 3
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
-    sha256 cellar: :any_skip_relocation, sonoma:        "fd6b4f96c529a8bd8540e0963f1e349bff91348e9f74bd52e78d1ec6f188ff1b"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f452dee0510455eded074cfe4cc37598ae00d73f1c5bffe11fde686a7776540c"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
+    sha256 cellar: :any_skip_relocation, sonoma:            "fd6b4f96c529a8bd8540e0963f1e349bff91348e9f74bd52e78d1ec6f188ff1b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "d963690c63fb5f28fe5729c3a98d43dc3822508658b4f5e9a335bd19b6956903"
   end
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
+  head do
+    url "https://github.com/ddclient/ddclient.git", branch: "main"
+
+    depends_on "autoconf" => :build
+    depends_on "automake" => :build
+  end
 
   uses_from_macos "perl"
 
   def install
-    system "./autogen"
+    system "./autogen" if build.head?
     system "./configure", "--sysconfdir=#{etc}", "--localstatedir=#{var}", "CURL=curl", *std_configure_args
     system "make", "install", "CURL=curl"
 

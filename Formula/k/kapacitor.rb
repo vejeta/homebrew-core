@@ -13,15 +13,18 @@ class Kapacitor < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "7c3bb986375c4e6ad9f6a2ff2f9bd2f4b9498037ce8dcac1386173ddebcd35a5"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "976a2f80f1773a2f7cf1fb0ba7070e306764deb43b7d2decef53185ed7b8016f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0f2baf08a8efad92ac0ba6badf160dd7816a5017f218a6ec97d3f0ee0e1a1210"
-    sha256 cellar: :any_skip_relocation, sonoma:        "49247f7c6d705941c141f864dbc946349d0c3b560b9a41e495e3e4d6386d67fc"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a6d78e06c5a2426d6f9d40e2cccaed1d529d95c0266481d90e107eb07c800b9f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6561b70701cb82e1390bf52d2eaf674cdce8c8b529c3358f6cadababce7950e5"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "1cb04cba298a9296816f104c57f246a3d494ca9d67ca0e97862882a0410aee79"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "7c3bb986375c4e6ad9f6a2ff2f9bd2f4b9498037ce8dcac1386173ddebcd35a5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "976a2f80f1773a2f7cf1fb0ba7070e306764deb43b7d2decef53185ed7b8016f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "0f2baf08a8efad92ac0ba6badf160dd7816a5017f218a6ec97d3f0ee0e1a1210"
+    sha256 cellar: :any_skip_relocation, sonoma:            "49247f7c6d705941c141f864dbc946349d0c3b560b9a41e495e3e4d6386d67fc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a6d78e06c5a2426d6f9d40e2cccaed1d529d95c0266481d90e107eb07c800b9f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "6561b70701cb82e1390bf52d2eaf674cdce8c8b529c3358f6cadababce7950e5"
   end
 
-  depends_on "go" => :build
+  # TODO: unpin go@1.26 when kapacitor supports go 1.27
+  # ref: https://github.com/influxdata/kapacitor/pull/2902
+  depends_on "go@1.26" => :build
   depends_on "pkgconf" => :build # for `pkg-config-wrapper`
   depends_on "rust" => :build
 
@@ -57,14 +60,8 @@ class Kapacitor < Formula
     end
     ENV.prepend_path "PATH", buildpath/"bootstrap"
 
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-      -X main.commit=#{Utils.git_head}
-    ]
-
-    system "go", "build", *std_go_args(ldflags:), "./cmd/kapacitor"
-    system "go", "build", *std_go_args(ldflags:, output: bin/"kapacitord"), "./cmd/kapacitord"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/kapacitor"
+    system "go", "build", *std_go_args(ldflags: :goreleaser, output: bin/"kapacitord"), "./cmd/kapacitord"
 
     inreplace "etc/kapacitor/kapacitor.conf" do |s|
       s.gsub! "/var/lib/kapacitor", "#{var}/kapacitor"

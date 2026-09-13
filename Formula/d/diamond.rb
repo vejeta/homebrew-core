@@ -1,17 +1,17 @@
 class Diamond < Formula
   desc "Accelerated BLAST compatible local sequence aligner"
   homepage "https://github.com/bbuchfink/diamond"
-  url "https://github.com/bbuchfink/diamond/archive/refs/tags/v2.2.2.tar.gz"
-  sha256 "35cb389dad7326515267b21a04256382853754d32b48eae6fd8a56fbb191e1c6"
+  url "https://github.com/bbuchfink/diamond/archive/refs/tags/v2.2.6.tar.gz"
+  sha256 "4be3298f3331bece6a5a436987f2c9965b3807ade89fb808b89d905b6f6291e4"
   license "GPL-3.0-or-later"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "6be0c5e9e6eedbd68126df203f78a95b5580300e147d3e6233c6eba21ac2b5a9"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a3d5e98b8dd0a1f5f7db15b78704580a3299f79a12240ba952f895bdf18875bb"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "7ed60e2a8113f1e55207649beb3bacc595b16f85c51a1da555c467e8dd159085"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e0c0bb6dca7de16f47469c28f3f95ac2399ce3f76dba137d9c13c59063ace17d"
-    sha256 cellar: :any,                 arm64_linux:   "d88d04a35ddb1df409c596115a02a5c6d9c8424b8552755a8a66f0818c2b0047"
-    sha256 cellar: :any,                 x86_64_linux:  "ab638c9dece8de7f060cd760f8db94d0541f8e8fb6b2ff52d71088f1cbb41c78"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6f8ac6402e6567201dcec88163ea2812210323d228bf62322ead84d6142aeb0a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "9a89de766ef1c2a2fd7415b5a8aae00648b6fd3d18968f10591ccac0199980a3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "092c6e283318d945f7d013f4a6ecb3e06b0adaa112e5c3623fc5625f9af9e751"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3fa3fcd741b2b7c60456e80445648aea04f1df88d12cd83830f1d7c71d900d8b"
+    sha256 cellar: :any,                 arm64_linux:       "5b9bbc9a0f1fa2da55e2029ca414567b502b9b02042536541ea5debc9d7543c9"
+    sha256 cellar: :any,                 x86_64_linux:      "8182397ce6b7f598d6a889b50b8774a897efa1b37c442193555593c277e020e5"
   end
 
   depends_on "cmake" => :build

@@ -12,12 +12,13 @@ class Postgis < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "637de6faada08ae27145297d3d94d630e171d90bb8d67620713e58bfb593589e"
-    sha256 cellar: :any, arm64_sequoia: "bf6dd20ac38e4d74c8375a5201918ee3ef4e63e0d855a76f82bebae731b78424"
-    sha256 cellar: :any, arm64_sonoma:  "787dc636eb2c94e894b13149e8b3f44104abdea3f7c7df84ddc1888871465e29"
-    sha256 cellar: :any, sonoma:        "4521f98cd466216438b9c75d4ff227cbc487ea9b302b19f06824d7747378d2f4"
-    sha256 cellar: :any, arm64_linux:   "036c0694f6d771035e2bcd2429d94f8e3017fef7b9e69faf80643c29fe66003d"
-    sha256 cellar: :any, x86_64_linux:  "97abab90cc0c00d566d74927e13d47987831972a91864f285d20c95586419f76"
+    sha256 cellar: :any, arm64_golden_gate: "60968e8f80eda7a1b866533ada9a934648e73efb8ed0aaa1a375b21cd590ac2b"
+    sha256 cellar: :any, arm64_tahoe:       "637de6faada08ae27145297d3d94d630e171d90bb8d67620713e58bfb593589e"
+    sha256 cellar: :any, arm64_sequoia:     "bf6dd20ac38e4d74c8375a5201918ee3ef4e63e0d855a76f82bebae731b78424"
+    sha256 cellar: :any, arm64_sonoma:      "787dc636eb2c94e894b13149e8b3f44104abdea3f7c7df84ddc1888871465e29"
+    sha256 cellar: :any, sonoma:            "4521f98cd466216438b9c75d4ff227cbc487ea9b302b19f06824d7747378d2f4"
+    sha256 cellar: :any, arm64_linux:       "036c0694f6d771035e2bcd2429d94f8e3017fef7b9e69faf80643c29fe66003d"
+    sha256 cellar: :any, x86_64_linux:      "97abab90cc0c00d566d74927e13d47987831972a91864f285d20c95586419f76"
   end
 
   head do
@@ -78,14 +79,14 @@ class Postgis < Formula
       bin.install_symlink postgresql.opt_bin/"postgres"
 
       mkdir "build-pg#{postgresql.version.major}" do
-        system "../configure", "--with-projdir=#{Formula["proj"].opt_prefix}",
-                               "--with-jsondir=#{Formula["json-c"].opt_prefix}",
+        system "../configure", "--with-projdir=#{formula_opt_prefix("proj")}",
+                               "--with-jsondir=#{formula_opt_prefix("json-c")}",
                                "--with-pgconfig=#{postgresql.opt_bin}/pg_config",
-                               "--with-protobufdir=#{Formula["protobuf-c"].opt_bin}",
+                               "--with-protobufdir=#{formula_opt_bin("protobuf-c")}",
                                *std_configure_args
         # Force `bin/pgsql2shp` to link to `libpq`
-        system "make", "PGSQL_FE_CPPFLAGS=-I#{Formula["libpq"].opt_include}",
-                       "PGSQL_FE_LDFLAGS=-L#{Formula["libpq"].opt_lib} -lpq"
+        system "make", "PGSQL_FE_CPPFLAGS=-I#{formula_opt_include("libpq")}",
+                       "PGSQL_FE_LDFLAGS=-L#{formula_opt_lib("libpq")} -lpq"
         # Override the hardcoded install paths set by the PGXS makefiles
         system "make", "install", "bindir=#{bin}",
                                   "docdir=#{doc}",
@@ -111,8 +112,7 @@ class Postgis < Formula
 
   test do
     ENV["LC_ALL"] = "C"
-    require "base64"
-    (testpath/"brew.shp").write ::Base64.decode64 <<~EOS
+    (testpath/"brew.shp").write <<~EOS.unpack1("m")
       AAAnCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoOgDAAALAAAAAAAAAAAAAAAA
       AAAAAADwPwAAAAAAABBAAAAAAAAAFEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       AAAAAAAAAAAAAAAAAAEAAAASCwAAAAAAAAAAAPA/AAAAAAAA8D8AAAAAAAAA
@@ -122,7 +122,7 @@ class Postgis < Formula
       AAAAAAAAAAAABQAAABILAAAAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACJAAAAA
       AAAAAEA=
     EOS
-    (testpath/"brew.dbf").write ::Base64.decode64 <<~EOS
+    (testpath/"brew.dbf").write <<~EOS.unpack1("m")
       A3IJGgUAAABhAFsAAAAAAAAAAAAAAAAAAAAAAAAAAABGSVJTVF9GTEQAAEMA
       AAAAMgAAAAAAAAAAAAAAAAAAAFNFQ09ORF9GTEQAQwAAAAAoAAAAAAAAAAAA
       AAAAAAAADSBGaXJzdCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
@@ -137,7 +137,7 @@ class Postgis < Formula
       ICAgICAgICAgICAgICAgICBQb2ludCAgICAgICAgICAgICAgICAgICAgICAg
       ICAgICAgICAgICAg
     EOS
-    (testpath/"brew.shx").write ::Base64.decode64 <<~EOS
+    (testpath/"brew.shx").write <<~EOS.unpack1("m")
       AAAnCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARugDAAALAAAAAAAAAAAAAAAA
       AAAAAADwPwAAAAAAABBAAAAAAAAAFEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       AAAAAAAAAAAAAAAAADIAAAASAAAASAAAABIAAABeAAAAEgAAAHQAAAASAAAA
@@ -164,10 +164,11 @@ class Postgis < Formula
 
         shared_preload_libraries = 'postgis-3'
         port = #{port}
+        unix_socket_directories = '#{testpath}'
       CONF
       system pg_ctl, "start", "-D", datadir, "-l", testpath/"log-#{postgresql.name}"
       begin
-        system psql, "-p", port.to_s, "-c", "CREATE EXTENSION \"postgis\";", "postgres"
+        system psql, "-h", testpath, "-p", port.to_s, "-c", "CREATE EXTENSION \"postgis\";", "postgres"
       ensure
         system pg_ctl, "stop", "-D", datadir
       end

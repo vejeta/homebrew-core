@@ -1,19 +1,20 @@
 class Harfbuzz < Formula
   desc "OpenType text shaping engine"
   homepage "https://github.com/harfbuzz/harfbuzz"
-  url "https://github.com/harfbuzz/harfbuzz/releases/download/14.2.1/harfbuzz-14.2.1.tar.xz"
-  sha256 "a54a5d8e9380a41fbb762ce367bcbf7704792dfca0d93f1bbca86c5a57902e0e"
+  url "https://github.com/harfbuzz/harfbuzz/releases/download/14.4.0/harfbuzz-14.4.0.tar.xz"
+  sha256 "2357ed966c6ced7bfa720b0640c0231065af01158fbea215093ffa15aed44371"
   license "MIT"
   compatibility_version 1
   head "https://github.com/harfbuzz/harfbuzz.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "45b392b3a078f7def1b927dc46806df3d2768ddd584160d9c0769b20abba7525"
-    sha256 cellar: :any, arm64_sequoia: "ac55d60ed36ae9c9665ccde1c37146e3e66c08e787b71bac0feb6c89beba72cf"
-    sha256 cellar: :any, arm64_sonoma:  "6d26207e10e25f8cae13d9187c1be54d2766462d19e647f6b7880a1ee0599eb3"
-    sha256 cellar: :any, sonoma:        "67892c739f7afcdce9a024308cd7e185cf45eb72449aec76c4973e1b2612fea7"
-    sha256               arm64_linux:   "25dc9f78df602c63571229d8678c32a02f4f3cfc417eb33f5addbd5fc5765d19"
-    sha256               x86_64_linux:  "58e0e73a9c8a0c5d5225818f7ffb956095f109152c49a34d98e3b4fbf8c8eced"
+    sha256 cellar: :any, arm64_golden_gate: "766c25a5a53902125c5ead52b2cfbf903f56974763814bfc34534dff63a7a0e6"
+    sha256 cellar: :any, arm64_tahoe:       "05cf5776d8e75b155c6630532b8018a37a2fb56321ade7d46b70804ee23357a6"
+    sha256 cellar: :any, arm64_sequoia:     "673d5f7f753ec7529960f06366adfb4b6f896e7eff6ce7fe8ab2626f8b5c3a57"
+    sha256 cellar: :any, arm64_sonoma:      "7beae4366dbd6d7ea9422263d0e9c916fdd1e6ff0ac9fea9219f8137b6685f1a"
+    sha256 cellar: :any, sonoma:            "f8d05176830f2a7dc5aa1c3a4e271515f798353cf2891c7d33b1717b543482d1"
+    sha256 cellar: :any, arm64_linux:       "2602b71e3df29d5a80f0885b8ba3f49707e1987733939e8231d307d8c2300c95"
+    sha256 cellar: :any, x86_64_linux:      "600ff248f89101b59d77be239bcac2a8262e32a0d4175bd99ec18b566391907f"
   end
 
   depends_on "gobject-introspection" => :build
@@ -32,6 +33,9 @@ class Harfbuzz < Formula
   on_linux do
     depends_on "zlib-ng-compat"
   end
+
+  # downloads test resources
+  allow_network_access! :test
 
   def install
     args = %w[
@@ -62,6 +66,6 @@ class Harfbuzz < Formula
       shape = pipe_output("#{bin}/hb-shape 270b89df543a7e48e206a2d830c0e10e5265c630.ttf", "സ്റ്റ്").chomp
       assert_equal "[glyph201=0+1183|U0D4D=0+0]", shape
     end
-    system "python3.14", "-c", "from gi.repository import HarfBuzz"
+    system python3, "-c", "from gi.repository import HarfBuzz"
   end
 end

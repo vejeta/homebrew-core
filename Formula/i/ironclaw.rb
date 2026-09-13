@@ -1,20 +1,27 @@
 class Ironclaw < Formula
   desc "Security-first personal AI assistant with WASM sandbox channels"
   homepage "https://www.ironclaw.com"
-  url "https://github.com/nearai/ironclaw/archive/refs/tags/ironclaw-v0.29.1.tar.gz"
-  sha256 "6ba95fd3b4718648b5be271056baa2e48fa77de35dc491f22b2cb0445b6b5a42"
+  url "https://github.com/nearai/ironclaw/archive/refs/tags/ironclaw-v1.4.0.tar.gz"
+  sha256 "6d9152c10d06e15b1178375ca6bed3a872e59b3e6370a0af74afe19b330b79c6"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/nearai/ironclaw.git", branch: "main"
 
-  bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "55e037d9c4e175b52fb93ce7456c2ecabaae040bc536d2032740d0044ca37135"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "02e4f4ff3cbb3172a2dc267256bb401ff1c95540ce8e469eadbc27ab8abbab4d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "aeca00e67c5554d5f72e4cfa05eab42a462aa339cca8dd00c3639e85d934d81e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1e62589ed8da4223d89f55a8c8a2697984bddb1c2c962bf08df37017031711f7"
-    sha256 cellar: :any,                 arm64_linux:   "26bb099cb32186989f197949fab3f11e5700f61b0951cb03f3d302790fee108d"
-    sha256 cellar: :any,                 x86_64_linux:  "fc4e030ef4ee2598088babf34f837813c38ff8e8ecae1e86d33fcbd28cad27b9"
+  livecheck do
+    url :stable
+    regex(/^ironclaw-v?(\d+(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "951d1fa3501fa37bc0a657fd10371461dac5187eb619432d67e85b01549cccb6"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "893f45d1cc3be920f7a22a6a271eeff2b33f483a4896df8e9ec3954261292d5a"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "073aadb441de78b77766cae83b80b69874bdcb8e9eac849cc4ba638f1cb5b006"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "592f1115a92114004d1a9776b139dc6ed05a5dae33e50ffe2ac384c8a49be3d6"
+    sha256 cellar: :any,                 arm64_linux:       "50b759e3ef51c910cb4cdeb95a9fa16219fcd4278494699df04f7eee6ada8d82"
+    sha256 cellar: :any,                 x86_64_linux:      "ff7b5450b6457f6485f9416a803d930ae3cd7c6fa6457d445cd766dc9e6736ed"
+  end
+
+  depends_on "corepack" => :build
+  depends_on "node" => :build
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "openssl@3"
@@ -22,16 +29,20 @@ class Ironclaw < Formula
   uses_from_macos "python" => :build
 
   def install
-    system "cargo", "install", *std_cargo_args
+    ENV["COREPACK_ENABLE_DOWNLOAD_PROMPT"] = "0"
+
+    system "cargo", "install", *std_cargo_args(path: "crates/app/ironclaw_cli")
   end
 
   service do
-    run [opt_bin/"ironclaw", "run"]
+    run [opt_bin/"ironclaw", "serve"]
     keep_alive true
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/ironclaw --version")
-    assert_match "Missing required configuration: DATABASE_URL", shell_output("#{bin}/ironclaw config list 2>&1", 1)
+
+    ENV["IRONCLAW_REBORN_HOME"] = testpath/"home"
+    assert_match "IronClaw Reborn config", shell_output("#{bin}/ironclaw config list")
   end
 end

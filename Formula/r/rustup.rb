@@ -1,20 +1,19 @@
 class Rustup < Formula
   desc "Rust toolchain installer"
   homepage "https://rust-lang.github.io/rustup/"
-  url "https://github.com/rust-lang/rustup/archive/refs/tags/1.29.0.tar.gz"
-  sha256 "de73d1a62f4d5409a2f6bdb1c523d8dc08aa6d9d63588db62493c19ca8f8bf55"
+  url "https://github.com/rust-lang/rustup/archive/refs/tags/1.29.1.tar.gz"
+  sha256 "00f79a02275fd0252be6928d7a44f96bfba706a0cc47a0c85557aa4a875d1181"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 2
   compatibility_version 1
   head "https://github.com/rust-lang/rustup.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "64be4eda51e96b7372ca85f1e9c224a46ed3ff45c1fd6a5f4ec75400d2123841"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "359c352d6b02d76d4a8d7499d12cd887a599432af5b99f334125aa2d7109fe99"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1d751f814b493e7ef4412512219aceaccc4a16974ba88118a35b2734f7641dc7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e68c9a5c36eb99862049114b415a2502aff64fb11e815c4f441e3d21a646c2a5"
-    sha256 cellar: :any,                 arm64_linux:   "5f6d0fa5e4cf9be2d1e4e784072a1d54f165e2188c2af262b4d7a889b2dbbb70"
-    sha256 cellar: :any,                 x86_64_linux:  "59486bb4ea00d23c54817e5f28220058ae8525deff4d839ee0cf19192541077f"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "b4397d25e9397419b22cb2cfcf72d4b8653bb538c73c40b37696d43a4b3c1ab3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "964b345d066613eb1fc70c174c101505361db44d206e0e53adc5d05a45fccd94"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "86a5e25e13d485d49880a059a436a6f295d03d1538c7a8801c61615651c23c07"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "76b66db2b3dd40b7e3f8c609e40179bfceaae90e9304b827fed61899c329a1e2"
+    sha256 cellar: :any,                 arm64_linux:       "ecbda8ac95f9a8f6588f0f215808e130c2f32dfee677c5d6b41e0585f70c6580"
+    sha256 cellar: :any,                 x86_64_linux:      "cdc068158d4d273168c914b9cf6cdba97b223718d3ee03babb8278ae7771a6fb"
   end
 
   keg_only "it conflicts with rust"
@@ -56,23 +55,22 @@ class Rustup < Formula
     end
   end
 
-  def post_install
-    (HOMEBREW_PREFIX/"bin").install_symlink bin/"rustup"
-    (HOMEBREW_PREFIX/"etc/bash_completion.d").install_symlink bash_completion/"rustup"
-    (HOMEBREW_PREFIX/"share/zsh/site-functions").install_symlink zsh_completion/"_rustup"
-    (HOMEBREW_PREFIX/"share/fish/vendor_completions.d").install_symlink fish_completion/"rustup.fish"
-    (HOMEBREW_PREFIX/"share/pwsh/completions").install_symlink pwsh_completion/"_rustup.ps1"
-
-    # Remove the old Homebrew-created symlink during upgrades, but leave any
-    # user-managed `rustup-init` file alone.
-    rustup_init = HOMEBREW_PREFIX/"bin/rustup-init"
-    rustup_init.unlink if rustup_init.symlink? && rustup_init.readlink.to_s.match?(%r{(?:Cellar|opt)/rustup/})
+  post_install_steps do
+    symlink "{{bin}}/rustup", "{{HOMEBREW_PREFIX}}/bin/rustup", overwrite: true
+    symlink "{{bash_completion}}/rustup", "{{HOMEBREW_PREFIX}}/etc/bash_completion.d/rustup", overwrite: true
+    symlink "{{zsh_completion}}/_rustup", "{{HOMEBREW_PREFIX}}/share/zsh/site-functions/_rustup", overwrite: true
+    symlink "{{fish_completion}}/rustup.fish", "{{HOMEBREW_PREFIX}}/share/fish/vendor_completions.d/rustup.fish",
+            overwrite: true
+    symlink "{{pwsh_completion}}/_rustup.ps1", "{{HOMEBREW_PREFIX}}/share/pwsh/completions/_rustup.ps1",
+            overwrite: true
+    remove "{{HOMEBREW_PREFIX}}/bin/rustup-init", symlink_target_contains: "Cellar/rustup/"
+    remove "{{HOMEBREW_PREFIX}}/bin/rustup-init", symlink_target_contains: "opt/rustup/"
   end
 
   def caveats
     <<~EOS
       To use rustup, ensure you have "$(brew --prefix rustup)/bin" in your $PATH:
-        #{Formatter.url("https://rust-lang.github.io/rustup/installation/already-installed-rust.html")}
+        https://rust-lang.github.io/rustup/installation/already-installed-rust.html
 
       This formula no longer provides `rustup-init`.
     EOS

@@ -1,8 +1,8 @@
 class NewrelicCli < Formula
   desc "Command-line interface for New Relic"
   homepage "https://github.com/newrelic/newrelic-cli"
-  url "https://github.com/newrelic/newrelic-cli/archive/refs/tags/v0.112.13.tar.gz"
-  sha256 "3bc00d7636020206d6fb49a3f8bed883aa3a3b5724930942941afd96b06b4cd7"
+  url "https://github.com/newrelic/newrelic-cli/archive/refs/tags/v0.113.15.tar.gz"
+  sha256 "b1fb09cebef08621fbc5c6ecb15d2be45cfcad034095b4d8ca2dc4a4b5b77d3f"
   license "Apache-2.0"
   head "https://github.com/newrelic/newrelic-cli.git", branch: "main"
 
@@ -12,12 +12,12 @@ class NewrelicCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "52a128a18347d02f53826f9cbd72d4c087851e2ba07ef330821bb523df3d54df"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b242d1fee73bc6bd194b8fbcd6bb1a8f4fb10c6fc17033f128fa5a789a3e7247"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "de5e6a7815f7194ac9b42481ab9c4ce2c47d1c69c0f532419a973a24aae122bf"
-    sha256 cellar: :any_skip_relocation, sonoma:        "82025c066c922ce36919b537ce7caa5a360a4d5ef08ce459516c9012be91b6ed"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "413bfc2425eb461ac95570599f86957c8ce92fea60fd0097e1d29ce85b63768c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d97c1c0cb779ee9f72ad40b01aa2bcd26b19cdb3dbeb7b7ff8feffbc3365226e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "c0ba3296230d4110d96f09f63be8c17cb3c85a0cac5cd71ce5eb4a99beae1eb2"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "5fb2d1a55a6bef09a1feb9cc4deb2a976b3e384dc581900c93269594ab3071bb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6f4255f698dcc63373c8a147da99fe9b734a43d8dfb5ccbaf7df5760d695eaef"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "87afd2debc58456d6386e34952d4b3980672e1b866a8e303980d117e593b6400"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c3b36527b8d5aef3d831ffe65c60516bc2045f93897541e2fcbaaca1bd7a8d34"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "ac66c1758c8ec61455f22566eaf0f808a9fa58c32e3990c63472d5d056c3807b"
   end
 
   depends_on "go" => :build

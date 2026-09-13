@@ -1,12 +1,13 @@
 class FfmpegFull < Formula
   desc "Play, record, convert, and stream many audio and video codecs"
   homepage "https://ffmpeg.org/"
-  url "https://ffmpeg.org/releases/ffmpeg-8.1.2.tar.xz"
-  sha256 "464beb5e7bf0c311e68b45ae2f04e9cc2af88851abb4082231742a74d97b524c"
+  url "https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz"
+  sha256 "cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635"
   # None of these parts are used by default, you have to explicitly pass `--enable-gpl`
   # to configure to activate them. In this case, FFmpeg's license changes to GPL v2+.
   # Passing `--enable-version3` changes the license to GPL v3+.
   license "GPL-3.0-or-later"
+  revision 1
   head "https://github.com/FFmpeg/FFmpeg.git", branch: "master"
 
   livecheck do
@@ -14,12 +15,12 @@ class FfmpegFull < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "42e06c5c69a479ff177865fc6032bf3d434b061fb5411550bae4e72fbec5f18d"
-    sha256 arm64_sequoia: "a7b8693c2fffcb7d867157d6415c0a535dd5d244d01340e20817cb25e8d1a730"
-    sha256 arm64_sonoma:  "5913c385ef9eabc78f21daeb47ff21f849f28b5ac08214301a99c864bdab0e5e"
-    sha256 sonoma:        "83a68daa1c7829069f29a96930a4c334d53313d92d14e342a97d0c9301b7385b"
-    sha256 arm64_linux:   "81d82d1d6c5f65322a1625cf58d8a272be9ce98b31a9835e542c952c2fa124fa"
-    sha256 x86_64_linux:  "c2d68670535d2603bf0b746845408b3867f4c44ce67fe59dba9eb6ef555f5311"
+    rebuild 1
+    sha256 arm64_golden_gate: "dd314eb9d409d64d59be1a7b9ee9f913fd46f5a16d1518875e71030b598b6f53"
+    sha256 arm64_tahoe:       "98498d5769b784377d222b14bc356d75f2453c9a12e39ed8631f45f02db7db8c"
+    sha256 arm64_sequoia:     "317d40a043505506ba84b50a7cf04ddd1faf00ee42f0ffe03587a780b14edacc"
+    sha256 arm64_linux:       "8e4e4239c91f143f2782e4c322ae3f17b0d38d42a7d1acc54c75f1ddf4ceadff"
+    sha256 x86_64_linux:      "d8f4e17e6324ff387ff7bb01c5e23541d2fa6951d9d669b1b179ac422ff56260"
   end
 
   keg_only :versioned_formula
@@ -51,6 +52,7 @@ class FfmpegFull < Formula
   depends_on "opencore-amr"
   depends_on "openjpeg"
   depends_on "opus"
+  depends_on "qrencode"
   depends_on "rav1e"
   depends_on "rubberband"
   depends_on "sdl2-compat"
@@ -61,7 +63,7 @@ class FfmpegFull < Formula
   depends_on "tesseract"
   depends_on "theora"
   depends_on "webp"
-  depends_on "whisper-cpp"
+  depends_on "whisper.cpp"
   depends_on "x264"
   depends_on "x265"
   depends_on "xvid"
@@ -113,6 +115,7 @@ class FfmpegFull < Formula
       --enable-libmp3lame
       --enable-libopus
       --enable-libplacebo
+      --enable-libqrencode
       --enable-librav1e
       --enable-librist
       --enable-librubberband

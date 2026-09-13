@@ -1,8 +1,8 @@
 class Oxen < Formula
   desc "Data VCS for structured and unstructured machine learning datasets"
   homepage "https://www.oxen.ai/"
-  url "https://github.com/Oxen-AI/Oxen/archive/refs/tags/v0.50.5.tar.gz"
-  sha256 "66850f5adaf99f1365d8bd9996a45813ebe3b35c535a1144ee937e04dcc8cb08"
+  url "https://github.com/Oxen-AI/Oxen/archive/refs/tags/v0.56.1.tar.gz"
+  sha256 "daa72b36788fe0f36495434f519d2d66e48f9c6842e2c9bd5c17c1f83e556152"
   license "Apache-2.0"
   head "https://github.com/Oxen-AI/Oxen.git", branch: "main"
 
@@ -11,17 +11,18 @@ class Oxen < Formula
   livecheck do
     url :stable
     regex(/^v?(\d+(?:\.\d+)+)$/i)
+    strategy :github_latest
   end
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "7a1567115e1dc88dc32b8cd0f9b2a8c6badbcf958c1c1afbee0eea3c00e3b1a5"
-    sha256 cellar: :any, arm64_sequoia: "26d71e9673e8a9007d37ba8b4d523cefb817b626c53b4ca918ecb9166889d696"
-    sha256 cellar: :any, arm64_sonoma:  "3d0f1d508195d61dee952a9d334d39c28ae268c188b5367edfffb250896e78f7"
-    sha256 cellar: :any, sonoma:        "dadcee4d4c4f330606c0cfec32ff4e2d710c9275ae9baba4dc310f6e6e75a051"
-    sha256 cellar: :any, arm64_linux:   "a1fb3214bf38bc471012f5a2843b172c0dcab2cd495b332d3a711301110570a9"
-    sha256 cellar: :any, x86_64_linux:  "ae8bd3fb0d90f23fd7c6960887a208fbe4ce55fd52cd0c67f70b98ab84ad393b"
+    sha256 cellar: :any, arm64_golden_gate: "9b3bb8275ac221cb24f060328263bdc97ddbbb4f1a565228385810842e774e06"
+    sha256 cellar: :any, arm64_tahoe:       "1bc50faa75e7458bc5d2fd86f70fee9a3c41a6461d842f55dad7317e59b8145c"
+    sha256 cellar: :any, arm64_sequoia:     "a68d0f3bea053be859a498e9375cbda6e5c909369d1727948b65c23afb651c4d"
+    sha256 cellar: :any, arm64_sonoma:      "a221996f2a8ff134ed7e57605c373678e6c6724ae78e6104c8f69fc5f91563ba"
+    sha256 cellar: :any, arm64_linux:       "c139e1d072a5366cdffe21ab9a50698d94ef50c06a66b9f1b6739683e34fcf3b"
+    sha256 cellar: :any, x86_64_linux:      "d8e65fd0cb0606a311d9e93152f53bae1ee83f4b7c20b1256df024d21ff4b488"
   end
 
   depends_on "cmake" => :build # for libz-ng-sys
@@ -31,7 +32,7 @@ class Oxen < Formula
   uses_from_macos "llvm" => :build # for libclang
 
   def install
-    ENV["ROCKSDB_LIB_DIR"] = Formula["rocksdb"].opt_lib
+    ENV["ROCKSDB_LIB_DIR"] = formula_opt_lib("rocksdb")
     system "cargo", "install", *std_cargo_args(path: "crates/oxen-cli")
   end
 

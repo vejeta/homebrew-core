@@ -1,13 +1,14 @@
 class Apfel < Formula
   desc "Apple Intelligence from the command-line, with OpenAi-compatible API server"
   homepage "https://apfel.franzai.com"
-  url "https://github.com/Arthur-Ficial/apfel/archive/refs/tags/v1.6.0.tar.gz"
-  sha256 "d10be2811bbbfaeeca35ccda967c7750d78b0f66c2b3e6b23502e5129d463fd0"
+  url "https://github.com/Arthur-Ficial/apfel/archive/refs/tags/v1.10.0.tar.gz"
+  sha256 "23849397e41983317ab9f8dd38e8b0a52d9ec4d9f71d4a2857e93dfbfbccb20e"
   license "MIT"
   head "https://github.com/Arthur-Ficial/apfel.git", branch: "main"
 
   bottle do
-    sha256 arm64_tahoe: "f49535882fd6e489850ee313a36ed6164a89c0a6df9cef22b264d9f6184918a9"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ae17988a0f266b18dce6508c728292b7ca3e9705bf3bcdf7798089643a854264"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "a9777330925574c23208c815e8808475c8a5d51a0559e58ec22c2854a39790df"
   end
 
   depends_on xcode: ["26.4", :build]
@@ -15,7 +16,7 @@ class Apfel < Formula
   depends_on macos: :tahoe
 
   def install
-    system "swift", "build", "--disable-sandbox", "--configuration", "release"
+    system "swift", "build", *std_swift_args
     bin.install ".build/release/apfel"
   end
 

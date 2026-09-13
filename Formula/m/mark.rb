@@ -1,25 +1,30 @@
 class Mark < Formula
   desc "Sync your markdown files with Confluence pages"
   homepage "https://samizdat.dev"
-  url "https://github.com/kovetskiy/mark/archive/refs/tags/v16.4.0.tar.gz"
-  sha256 "86c0314ebbd18512120c06950d80ec3126bbcc4b62f4f561c7ad4523ffd78b0a"
+  url "https://github.com/kovetskiy/mark/archive/refs/tags/v16.19.0.tar.gz"
+  sha256 "2fc172fe466510778437de38b94385226089f8a44243913a63b578bb382c163b"
   license "Apache-2.0"
   head "https://github.com/kovetskiy/mark.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "79d3ad843e52bcc2eb6585d7edac0296655553ef1ab835f4b1f83e0df907b7c8"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "79d3ad843e52bcc2eb6585d7edac0296655553ef1ab835f4b1f83e0df907b7c8"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "79d3ad843e52bcc2eb6585d7edac0296655553ef1ab835f4b1f83e0df907b7c8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c5bc862ef72259beb035fa7a1b0f98cadf16ca7f2da9b17260a601a7e1c27292"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e96c80870e02d8f4f925f2e84962149cc3b13047a1566d4e4f8fd9b42b58272b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b5d4bbb66c5885b2e0dc326e1a752136d622e7b5d54ec11e3061ec64e69a9c4c"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "2ca320e473618f5de7aa0be3d671e77241d4fb4d02f39a6d51f7972fdce97e26"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "2ca320e473618f5de7aa0be3d671e77241d4fb4d02f39a6d51f7972fdce97e26"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "2ca320e473618f5de7aa0be3d671e77241d4fb4d02f39a6d51f7972fdce97e26"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "2ca320e473618f5de7aa0be3d671e77241d4fb4d02f39a6d51f7972fdce97e26"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a8641b51475e7bf45d916cddcf79c4a03a810a6ced21659e718a16039845f38f"
+    sha256 cellar: :any,                 x86_64_linux:      "85cacfcfacbda3833c1d91ea29c3bca86019e62072e98b93c20213733d101811"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{tap.user}"
-    system "go", "build", *std_go_args(ldflags:), "./cmd/mark"
+    system "go", "build", *std_go_args(ldflags: :goreleaser), "./cmd/mark"
   end
 
   test do
@@ -29,7 +34,8 @@ class Mark < Formula
       # Hello Homebrew
     MARKDOWN
 
-    output = shell_output("#{bin}/mark --config nonexistent.yaml sync 2>&1", 1)
-    assert_match "confluence password should be specified", output
+    touch testpath/"mark.toml"
+    output = shell_output("#{bin}/mark --config mark.toml sync 2>&1", 1)
+    assert_match "confluence base URL should be specified", output
   end
 end

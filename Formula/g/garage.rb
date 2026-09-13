@@ -1,18 +1,23 @@
 class Garage < Formula
   desc "S3 object store so reliable you can run it outside datacenters"
   homepage "https://garagehq.deuxfleurs.fr/"
-  url "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.3.0.tar.gz"
-  sha256 "b83a981677676b35400bbbaf20974c396f32da31c7c7630ce55fc3e62c0e2e01"
+  url "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.4.1.tar.gz"
+  sha256 "9149931f0e567a66cd96c33b6349e8f1900279ec6ae57c60bfd29d450104c553"
   license "AGPL-3.0-or-later"
   head "https://git.deuxfleurs.fr/Deuxfleurs/garage.git", branch: "main-v2"
 
+  livecheck do
+    url :head
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0ce66d3ad9ebe1048f0204180cf99b5412b8df4d0bc0f20e90005d774779b402"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3159b0141b055b1db39db05a31e82ed49ef890dca34483c409ca2b7fccf74ef2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8a5e6402a6dedd2ea5d1cdca4821be2619a4abf46b6ce758cbaf34c7015d618f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b444c9a1cb4692a260c5e4e71a8071c0474ab0470d09d307a408f48b3ac30bcb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3ff5c34f181cdf64ec1cd1d79e1804419a45b38eb6df6cac5e8aa99c7ebc6e89"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a68e2ff3276a10d859a9ddaa7c900e01f2068324954f41b94e1fa04efbf3a951"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a960407c0cc8fbb58cd23f32a225b282d80620c5799c001450a7a1ad718437f3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "12bf8bdb0895706e0bef7f435d28b744e88d7aa443c21d2da81a06e9008fcfbc"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "97e03a93d459bd674adf22edf7e0f04d32d794e9a1b78a8b3b98d23d4037000b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "32c84f14cecc9b51640a91d598d0514b560e4f3349588fea8b690c78cced810c"
+    sha256 cellar: :any,                 arm64_linux:       "612adee4790abf1af4678890164b2a66f7416ec33579f0ecdc5ceb36d6f69a32"
+    sha256 cellar: :any,                 x86_64_linux:      "7d18525ba94590a8660a67d864e1b2520cdf6ac48adf8138c6e9331985744ffc"
   end
 
   depends_on "rust" => :build

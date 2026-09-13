@@ -15,7 +15,6 @@ class Veraxx < Formula
     sha256 cellar: :any_skip_relocation, ventura:        "4e2cb9ea3299ad6bd01536e167272eb9e8a90b8a1e90f70f0ad69c70075f0cfc"
     sha256 cellar: :any_skip_relocation, monterey:       "52eb0f8c9c1faee12df61ff3419d4a168c589fd05c2370f918a2b8e72ffb1d56"
     sha256 cellar: :any_skip_relocation, big_sur:        "f28290171b8cc68f972b3cdbf811c1491d4be7dd8307fe1551dbfbdbc38269ba"
-    sha256 cellar: :any_skip_relocation, catalina:       "985e75bcd4c9a559fd2e2841d10d0cb3d73fdc940a76aa3d3050514017d61560"
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "ad710a6d70551b2d74732c9774a926f8a3c63f2db1aa87373701cfc90039d996"
   end
 
@@ -66,7 +65,7 @@ class Veraxx < Formula
       args = std_cmake_args
       args << "-DBUILD_SHARED_LIBS:BOOL=OFF"
       args << "-DCMAKE_INSTALL_PREFIX:PATH=#{buildpath}/3rdParty"
-      system "cmake", ".", *args
+      system "cmake", "-S", ".", "-B", ".", *args
       system "make", "install"
     end
 
@@ -77,7 +76,7 @@ class Veraxx < Formula
       args << "-DLUA_LIBRARIES:PATH=#{buildpath}/3rdParty/lib/liblua.a"
       args << "-DBOOST_ROOT:PATH=#{buildpath}/3rdParty"
       args << "-DCMAKE_INSTALL_PREFIX:PATH=#{buildpath}/3rdParty"
-      system "cmake", ".", *args
+      system "cmake", "-S", ".", "-B", ".", *args
       system "make", "install"
     end
 
@@ -98,7 +97,7 @@ class Veraxx < Formula
       # Revisit on release with Python 3: https://bitbucket.org/verateam/vera/issues/108/migrate-to-python-3
       args << "-DVERA_PYTHON=OFF"
     end
-    system "cmake", ".", *args
+    system "cmake", "-S", ".", "-B", ".", *args
     system "make", "install"
 
     resource("doc").stage do

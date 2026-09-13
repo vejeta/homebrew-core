@@ -1,30 +1,31 @@
 class AwsCCal < Formula
   desc "AWS Crypto Abstraction Layer"
   homepage "https://github.com/awslabs/aws-c-cal"
-  url "https://github.com/awslabs/aws-c-cal/archive/refs/tags/v0.9.14.tar.gz"
-  sha256 "0e96e0067fa921768e07b5b4ebad82011ccf474903e9286419ef428d68f317ea"
+  url "https://github.com/awslabs/aws-c-cal/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "9c6d424d206dd7822aa44fa39ce31575dcbaa83133620abdac8e56e4cea9667c"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "2d74b61308b5039c19dfdfc58c871374fb809a16999c7740c48d4052fa7e4bd0"
-    sha256 cellar: :any,                 arm64_sequoia: "248f055eb7cd3d71820fd0dcb2ba820e20fa211c82006681faf0a1c8bd2daf2e"
-    sha256 cellar: :any,                 arm64_sonoma:  "8073af4dc8791f3bf1d1455c83162500ac87dce60a90938bb4f42cc8161df5cc"
-    sha256 cellar: :any,                 sonoma:        "259a059e7c9bc79348ec9ca45c8d3c87cccc4adb890d580eba3b371d92e29de3"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d7f7556b8df2c13d3cafac080c2fa4ea189a28e736ec1700946a4d8b52b9aefb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "475d84c4fdd16664d923876937c3336fe0713563f380789a97a0c159b31f8b94"
+    sha256 cellar: :any, arm64_golden_gate: "d7821ac3d8ed669240fc120c47a75f9e53ff96efbd07de2f7a339d9e1444875b"
+    sha256 cellar: :any, arm64_tahoe:       "dc874725a0fa415bd235f852c353f8d90de9e2e12c3fd3783ec9a79152d5be8c"
+    sha256 cellar: :any, arm64_sequoia:     "f7bbcb8758802234d9d4003752cbc591f09a150dba7d57f0dba5df3fa3381ff1"
+    sha256 cellar: :any, arm64_sonoma:      "c767d2ed71a3268381bc1f5a2640f00de3c8d5b10505605e622ec171a079acad"
+    sha256 cellar: :any, arm64_linux:       "412c8abcfd0db18ae6d906e68041eda604588a85542b77a0c132954107da3be2"
+    sha256 cellar: :any, x86_64_linux:      "af1708f85c64e44c42c66b6087b42930f919758d18013f4a6f257093736b5ad4"
   end
 
   depends_on "cmake" => :build
   depends_on "aws-c-common"
-
-  on_linux do
-    depends_on "openssl@3"
-  end
+  depends_on "openssl@3"
 
   def install
-    args = ["-DBUILD_SHARED_LIBS=ON"]
-    args << "-DUSE_OPENSSL=ON" if OS.linux?
+    # ed25519 is needed by awscli
+    args = %w[
+      -DAWS_USE_LIBCRYPTO_TO_SUPPORT_ED25519_EVERYWHERE=ON
+      -DBUILD_SHARED_LIBS=ON
+      -DUSE_OPENSSL=ON
+    ]
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
@@ -73,7 +74,7 @@ class AwsCCal < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-cal",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

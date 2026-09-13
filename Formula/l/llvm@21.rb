@@ -13,12 +13,13 @@ class LlvmAT21 < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "e3a3579a56ca64c479040de7eb4d0748efe369338216e81af2e59e3aed608c58"
-    sha256 cellar: :any,                 arm64_sequoia: "71f4ead77d52d42da9dd7f34441b45304474837b7ace887c7669048f830df6e6"
-    sha256 cellar: :any,                 arm64_sonoma:  "1d8422fcaacee615ff78ba5ac530b8a141ce127087b3e861ba1faf972dc88256"
-    sha256 cellar: :any,                 sonoma:        "e58f968196af2f0db01f546cae78792d0b0cf885641c380ec3efa10817f52d13"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "faaf642e58e4d98e64681beeaa811f269a88eeddeae4d53bc0626311f659d459"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3e924cb91a56d752a2fb9ea4a01d02838df973611f59ff51747b60c4d67bf82b"
+    sha256 cellar: :any,                 arm64_golden_gate: "46e365b50a5f6f02543f610b7d0b86b6d8a0aa1ab437a615acc753720a6cc73d"
+    sha256 cellar: :any,                 arm64_tahoe:       "e3a3579a56ca64c479040de7eb4d0748efe369338216e81af2e59e3aed608c58"
+    sha256 cellar: :any,                 arm64_sequoia:     "71f4ead77d52d42da9dd7f34441b45304474837b7ace887c7669048f830df6e6"
+    sha256 cellar: :any,                 arm64_sonoma:      "1d8422fcaacee615ff78ba5ac530b8a141ce127087b3e861ba1faf972dc88256"
+    sha256 cellar: :any,                 sonoma:            "e58f968196af2f0db01f546cae78792d0b0cf885641c380ec3efa10817f52d13"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "faaf642e58e4d98e64681beeaa811f269a88eeddeae4d53bc0626311f659d459"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "3e924cb91a56d752a2fb9ea4a01d02838df973611f59ff51747b60c4d67bf82b"
   end
 
   keg_only :versioned_formula
@@ -39,14 +40,37 @@ class LlvmAT21 < Formula
   end
 
   # Fix triple config loading for clang-cl
-  # https://github.com/llvm/llvm-project/pull/111397
   patch do
     url "https://github.com/llvm/llvm-project/compare/1381ad497b9a6d3da630cbef53cbfa9ddf117bb6...40a8c7c0ff3f688b690e4c74db734de67f0f89e9.diff"
     sha256 "f6dafd762737eb79761ab7ef814a9fc802ec4bb8d20f46691f07178053b0eb36"
+    type :unofficial
+    resolves "https://github.com/llvm/llvm-project/pull/111397"
   end
 
-  def python3
-    "python3.14"
+  # Apply MacPorts backports of upstream commits needed to fix macOS 27
+  patch do
+    url "https://raw.githubusercontent.com/macports/macports-ports/437657215603f3ec4801195efa6b80e47b9faeab/lang/llvm-21/files/0140-llvm-no-cmp-spec.patch"
+    sha256 "215d00d5ce5854806092dfad4749ff2cb9b061967c481357ac946293c5f01628"
+    type :backport
+    resolves "https://github.com/llvm/llvm-project/pull/160804"
+  end
+  patch do
+    url "https://raw.githubusercontent.com/macports/macports-ports/437657215603f3ec4801195efa6b80e47b9faeab/lang/llvm-21/files/0141-infinity_nan.patch"
+    sha256 "eb483ded080dac022fd2852631ac990549021fb3a525f0f602c5ec84ece93cc0"
+    type :backport
+    resolves "https://github.com/llvm/llvm-project/pull/164348"
+  end
+
+  # Backport commits for macOS 27 SDK
+  patch do
+    url "https://github.com/llvm/llvm-project/commit/477a65a051ce151895193f8dede1262fdc251132.patch?full_index=1"
+    sha256 "4bbdb4ab0eaefce2403fdfa96929026940f153f8e7421feba288cbc3dd8fe6e2"
+    type :backport
+  end
+  patch do
+    file "Patches/llvm/21.x-arm64e.x1-support.patch"
+    type :backport
+    resolves "https://github.com/llvm/llvm-project/pull/222721"
   end
 
   def clang_config_file_dir
@@ -92,6 +116,7 @@ class LlvmAT21 < Formula
       -DLLVM_ENABLE_EH=OFF
       -DLLVM_ENABLE_FFI=ON
       -DLLVM_ENABLE_RTTI=ON
+      -DLLVM_INCLUDE_BENCHMARKS=OFF
       -DLLVM_INCLUDE_DOCS=OFF
       -DLLVM_INCLUDE_TESTS=OFF
       -DLLVM_INSTALL_UTILS=ON
@@ -120,7 +145,7 @@ class LlvmAT21 < Formula
     builtins_cmake_args = []
 
     if OS.mac?
-      macos_sdk = MacOS.sdk_path_if_needed
+      macos_sdk = MacOS.sdk_path
       args << "-DFFI_INCLUDE_DIR=#{macos_sdk}/usr/include/ffi"
       args << "-DFFI_LIBRARY_DIR=#{macos_sdk}/usr/lib"
 
@@ -141,15 +166,15 @@ class LlvmAT21 < Formula
       clt_sdk_support_flags = %w[I WATCH TV].map { |os| "-DCOMPILER_RT_ENABLE_#{os}OS=OFF" }
       builtins_cmake_args += clt_sdk_support_flags
     else
-      args << "-DFFI_INCLUDE_DIR=#{Formula["libffi"].opt_include}"
-      args << "-DFFI_LIBRARY_DIR=#{Formula["libffi"].opt_lib}"
+      args << "-DFFI_INCLUDE_DIR=#{formula_opt_include("libffi")}"
+      args << "-DFFI_LIBRARY_DIR=#{formula_opt_lib("libffi")}"
 
       # Disable `libxml2` which isn't very useful.
       args << "-DLLVM_ENABLE_LIBXML2=OFF"
       args << "-DLLVM_ENABLE_LIBCXX=OFF"
       args << "-DCLANG_DEFAULT_CXX_STDLIB=libstdc++"
       # Enable llvm gold plugin for LTO
-      args << "-DLLVM_BINUTILS_INCDIR=#{Formula["binutils"].opt_include}"
+      args << "-DLLVM_BINUTILS_INCDIR=#{formula_opt_include("binutils")}"
       # Parts of Polly fail to correctly build with PIC when being used for DSOs.
       args << "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
       runtimes_cmake_args += %w[
@@ -247,42 +272,18 @@ class LlvmAT21 < Formula
   # We use the extra layer of indirection in `arch` because the FormulaAudit/OnSystemConditionals
   # doesn't want to let us use `Hardware::CPU.arch` outside of `install` or `post_install` blocks.
   def write_config_files(macos_version, kernel_version, arch)
-    clang_config_file_dir.mkpath
+    require "utils/clang"
 
-    arches = Set.new([:arm64, :x86_64, :aarch64])
-    arches << arch
-
-    sysroot = if macos_version.blank? || MacOS.version > macos_version
-      "#{MacOS::CLT::PKG_PATH}/SDKs/MacOSX.sdk"
-    else
-      "#{MacOS::CLT::PKG_PATH}/SDKs/MacOSX#{macos_version}.sdk"
-    end
-
-    {
-      darwin: kernel_version,
-      macosx: macos_version,
-    }.each do |system, version|
-      arches.each do |target_arch|
-        config_file = "#{target_arch}-apple-#{system}#{version}.cfg"
-        (clang_config_file_dir/config_file).atomic_write <<~CONFIG
-          -isysroot #{sysroot}
-        CONFIG
-      end
-    end
+    Utils::Clang.write_system_config_files(
+      config_dir:     clang_config_file_dir,
+      macos_version:,
+      kernel_version:,
+      arch:,
+    )
   end
 
-  def post_install
-    return unless OS.mac?
-
-    config_files = {
-      darwin: OS.kernel_version.major,
-      macosx: MacOS.version,
-    }.map do |system, version|
-      clang_config_file_dir/"#{Hardware::CPU.arch}-apple-#{system}#{version}.cfg"
-    end
-    return if config_files.all?(&:exist?)
-
-    write_config_files(MacOS.version, OS.kernel_version.major, Hardware::CPU.arch)
+  post_install_steps do
+    configure_clang_system
   end
 
   def caveats

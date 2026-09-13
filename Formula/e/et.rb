@@ -1,23 +1,23 @@
 class Et < Formula
   desc "Remote terminal with IP roaming"
   homepage "https://mistertea.github.io/EternalTerminal/"
-  url "https://github.com/MisterTea/EternalTerminal/archive/refs/tags/et-v6.2.11.tar.gz"
-  sha256 "e8e80800babc026be610d50d402a8ecbdfbd39e130d1cfeb51fb102c1ad63b0f"
+  url "https://github.com/MisterTea/EternalTerminal/archive/refs/tags/et-v7.0.0.tar.gz"
+  sha256 "3580962861589c0b69efd6b385ff92ad8fdf688c91d1a0edc1a83278205e28e8"
   license "Apache-2.0"
-  revision 1
+  revision 4
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "f24772b0029f9afaf49228c803b30806a172f855039adfea1cdae81b99ff2c31"
-    sha256 cellar: :any,                 arm64_sequoia: "bedd1da9c634807b28da0fcc3374a39823361372f6c460818a09cffa7c18ba07"
-    sha256 cellar: :any,                 arm64_sonoma:  "895de284311361692fd09d16e81222cc6e7d2ad36b3d1d41798dc22a298c0e60"
-    sha256 cellar: :any,                 sonoma:        "ef29493b51025930178b0b080be9cd1de0d17a3655ebd5e8ce2a7022baf8688a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a7003beb617a854cde0e18a7b4482517300fb01476a44e6a99a06906f51216b2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "20d6cc89670d8bdd1c657c101fe7b582a6986d4e267e59bdd3eb160f3f3208a8"
+    sha256 cellar: :any, arm64_golden_gate: "eddc21662f8595ebdb71eecd455b1c9ba50ed187851892b2732803bd1b733582"
+    sha256 cellar: :any, arm64_tahoe:       "c28c26b015d0b77d02bac6bae81d1299dba2e64e13ee023dfac43e171b7eae38"
+    sha256 cellar: :any, arm64_sequoia:     "52fe4ba015f8de290ead5490592adc1011c203107cb5f1c58945cdb08d2379b0"
+    sha256 cellar: :any, arm64_sonoma:      "db84a5f9fa63b6137a05941dad5763ec4b48d5ef7d8b54ba0db957246e61a014"
+    sha256 cellar: :any, arm64_linux:       "13efc4e454b6b210d59a999485383344cf81042b047665f3f47b800bb6454144"
+    sha256 cellar: :any, x86_64_linux:      "288543ab52e1bd23bd5986f9f617ba611ff2ddb21bf88a2e7b98ced6cf4305b9"
   end
 
   depends_on "cmake" => :build
   depends_on "pkgconf" => :build
-
+  depends_on "abseil"
   depends_on "libsodium"
   depends_on "openssl@4"
   depends_on "protobuf"

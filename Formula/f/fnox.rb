@@ -1,18 +1,17 @@
 class Fnox < Formula
   desc "Fort Knox for your secrets - flexible secret management tool"
   homepage "https://fnox.jdx.dev/"
-  url "https://github.com/jdx/fnox/archive/refs/tags/v1.27.1.tar.gz"
-  sha256 "17fbd495ad626ecd2bc7eb85a632d5e6875a49a6effa7a7aa6fafb9359ae7640"
+  url "https://github.com/jdx/fnox/archive/refs/tags/v1.35.2.tar.gz"
+  sha256 "04167c32ba742727f5ea5b674b1120b34fa87776f9c63f90d68a0e7ad9b3511a"
   license "MIT"
   head "https://github.com/jdx/fnox.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "60c36a55120e4b1ee70395c4eee10c6cdccd3131a3fed2edd6b551a807e6a560"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "995efb448a07e8d8afb1292a83512c4d344174296224644ac3da1c8858d3a955"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "261496d20a9d4d5e60758734339b6bcbdce881ead424e4db1ec572a78a83121f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2bd0f5761a6cc8983d7fee8c6c812c68f6ea08b778b3a5bff290fe3eca075853"
-    sha256 cellar: :any,                 arm64_linux:   "225ec48a32220082201008e8c696cb8110998f150756607b3926f9e8b36e41bc"
-    sha256 cellar: :any,                 x86_64_linux:  "f0d21dfb6dd9e2b7cefbcf697bf8d27ac3c14c6d28d47b20c0dcaccf8826b90e"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "cb4a0428aa80ea72eb6065dc3072e5408e7690e1163d2aa49e929e558a66f04a"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "2b0d98f11372b7b3c1e1ea8e41d80853b255220216c472cb000824c089975678"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f67fb7f7adb425026e4d5e8cfa8593a33c6b4ee505a78efd3c5d26eb1190d340"
+    sha256 cellar: :any,                 arm64_linux:       "8808687d14fbd5ec5556dde9c793f2bea3a970287371bb089699f2846cbe2a0f"
+    sha256 cellar: :any,                 x86_64_linux:      "94c5f0064a5d511e656bfa2adfd0e2163317c1988f5ab67524befffa7e0a87fb"
   end
 
   depends_on "pkgconf" => :build
@@ -27,7 +26,7 @@ class Fnox < Formula
 
   def install
     # Ensure that the `openssl` crate picks up the intended library.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@3")
 
     system "cargo", "install", *std_cargo_args
 

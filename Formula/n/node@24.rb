@@ -1,8 +1,8 @@
 class NodeAT24 < Formula
   desc "Open-source, cross-platform JavaScript runtime environment"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v24.17.0/node-v24.17.0.tar.xz"
-  sha256 "a7ab562ed2369a29c68b72fa00e3103bcdfe37063dff799c6acc8e404e275fcd"
+  url "https://nodejs.org/dist/v24.21.0/node-v24.21.0.tar.xz"
+  sha256 "a6f54defb6fd7c84f41dba13d61e78e9b4e0961712cf61f29715c05f5ced94fc"
   license "MIT"
   compatibility_version 1
 
@@ -12,12 +12,11 @@ class NodeAT24 < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "3848d1d8ded8c2a314793be335a2ff009426bfd8a69a4f446b9d11b4ee983f2e"
-    sha256 cellar: :any, arm64_sequoia: "107a243667b44ff520411808d1de3ceeafbd1eaee57622ad49f947e12dd3041a"
-    sha256 cellar: :any, arm64_sonoma:  "220de3a0bcb40c59a884e5f488a00e36af28eea7849129fb3f728d7363c6ba3d"
-    sha256 cellar: :any, sonoma:        "4bf84731154f21c5be01918c8c766d4049cccc38f87c572fb7c39c6eba29f241"
-    sha256 cellar: :any, arm64_linux:   "daca2b97dae26d5b99b18510525568981e8db399de4dfd31a80eea6d9b489724"
-    sha256 cellar: :any, x86_64_linux:  "9c3cb5a617e2bed0644040d6d1d86332ab6b3c4da5726928294e79b24556b5ae"
+    sha256 arm64_golden_gate: "fec35e264d01c612effcf698fa886cd477d418f321412815c536d576c29c2db0"
+    sha256 arm64_tahoe:       "741853d7f41ce0d5669ebf3c17e1b74ae84d77c0a7f988fde187a9ccb96a5296"
+    sha256 arm64_sequoia:     "045d390c8e8ab70cf448e4832b63dfaa69413783d46b2a89c1c406bbf1b0e395"
+    sha256 arm64_linux:       "8ab2913cd2a77b975dfec937173f1e84f94353e80fbf24aad5687a991a654ccc"
+    sha256 x86_64_linux:      "09f5e0a1035f051525d28e97aef5bc35503e608e23735a3067c7201e81ffff8e"
   end
 
   keg_only :versioned_formula
@@ -67,7 +66,7 @@ class NodeAT24 < Formula
 
   def install
     # make sure subprocesses spawned by make are using our Python 3
-    ENV["PYTHON"] = which("python3.13")
+    ENV["PYTHON"] = python3
 
     # Ensure Homebrew deps are used
     %w[brotli icu-small nghttp2 ngtcp2 simdjson sqlite uvwasi zstd].each do |dep|

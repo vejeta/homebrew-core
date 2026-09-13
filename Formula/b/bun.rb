@@ -3,8 +3,8 @@ class Bun < Formula
   homepage "https://bun.com/"
   # Need git checkout to build. Alternatively could set GIT_SHA if we extract the commit.
   url "https://github.com/oven-sh/bun.git",
-      tag:      "bun-v1.3.14",
-      revision: "0d9b296af33f2b851fcbf4df3e9ec89751734ba4"
+      tag:      "bun-v1.4.2",
+      revision: "744846f844374847c902b5e7fd59b4342a51ef99"
   license all_of: [
     "MIT",
     "LGPL-2.0-or-later", # JavaScriptCore
@@ -26,18 +26,17 @@ class Bun < Formula
   end
 
   bottle do
-    sha256                               arm64_tahoe:   "d2dec7e845cbfb74c96e0f7b8a06a85d555fb36275744036df71cbe81c4b3e35"
-    sha256                               arm64_sequoia: "ef73f22cd191639a8a951421c823a59aa648e0c01c75eec83089fa8b788ac4a5"
-    sha256                               arm64_sonoma:  "b25c23f3ab10fe268dc705cebaea79e803fe7cf53abd0ea123178b88730715d1"
-    sha256 cellar: :any_skip_relocation, sonoma:        "830c03414478f7edea283d58a32783385a6462aa4c5ef29ef7877b30ce458c9a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5a1bae01b22520515d132f3b5b208e7666ec9251bb2848f8a84452a0ae69c6bb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a7f23ed0cc52b0ddc553a9d95af48bc030146f965639d9c03ed811c96757dc28"
+    sha256 arm64_golden_gate: "1e749a65e17ad90e1fdad40a19481915366771a53d2548a0de1802d0e7c29c16"
+    sha256 arm64_tahoe:       "0c138912583eb9fa6ed12a1cf84e6d78ee51c65bd3291fb9a758bf220469b52d"
+    sha256 arm64_sequoia:     "a547f6f128597ded6bfe3f467ce46606bae741b8b9ef32d0736650a07584cf51"
+    sha256 arm64_linux:       "d110a88f1f69a128605c07064d8c3d3484ce650f52304d18a4fa51c49a52b8dd"
+    sha256 x86_64_linux:      "823f9cfe182892e3df144e6406a6677e3c83eb299e1468ec70352b1d5f8ac97f"
   end
 
   depends_on "cmake" => :build
-  depends_on "llvm@21" => :build
+  depends_on "llvm@21" => :build # LLVM 22 PR: https://github.com/oven-sh/bun/pull/34299
   depends_on "ninja" => :build
-  depends_on "rust" => :build
+  depends_on "rustup" => :build # needs nightly as uses `-Z` flags and unstable `#![feature(...)]`
 
   uses_from_macos "llvm" => :build
   uses_from_macos "perl" => :build # for webkit
@@ -46,12 +45,12 @@ class Bun < Formula
   uses_from_macos "unzip" => :build
 
   on_linux do
-    # We use a workaround to prevent patchelf of the `bun` binary but this
-    # means brew cannot rewrite paths for users on non-default prefix
-    pour_bottle? only_if: :default_prefix
-
     depends_on "lld@21" => :build
     depends_on "icu4c@78"
+  end
+
+  on_intel do
+    depends_on "nasm" => :build
   end
 
   fails_with :gcc do
@@ -85,6 +84,10 @@ class Bun < Formula
     end
   end
 
+  # Build patches for clang 23 and the macOS 27 SDK,
+  # https://github.com/oven-sh/bun/issues/41141
+  patch :DATA
+
   # Performing a manual shallow git clone since a full clone of WebKit repo is ~18GB in size
   # and brew's unpack strategy will duplicate a resource requiring over 36GB of disk space.
   # This exceeds limit of GitHub-hosted runners. A shallow git clone is instead ~7GB.
@@ -99,6 +102,12 @@ class Bun < Formula
       --depth=1
     ]
     system "git", "clone", *clone_args, "https://github.com/oven-sh/WebKit.git", "vendor/WebKit"
+
+    # Homebrew's swiftc shim causes misconfiguration as Apple expects a valid installation
+    on_linux do
+      inreplace "vendor/WebKit/Source/cmake/WebKitFeatures.cmake",
+                "find_program(_WEBKIT_PROBE_SWIFTC NAMES swiftc)", ""
+    end
   end
 
   # Based on https://github.com/oven-sh/bun/blob/main/CONTRIBUTING.md#building-webkit-locally--debug-mode-of-jsc
@@ -106,21 +115,23 @@ class Bun < Formula
     bootstrap_version = File.read(".buildkite/Dockerfile")[/OLD_BUN_VERSION="v?(\d+(?:\.\d+)+)"/i, 1]
     odie "Update bootstrap to #{bootstrap_version}" if resource("bootstrap").version != bootstrap_version
 
-    # Avoid `rustup` dependency by removing usage of nightly Rust features
-    # TODO: Try removing in the next release
-    inreplace "scripts/build/deps/lolhtml.ts", "if (cfg.release && canBuildStdImmediateAbort)", "if (false)"
-
-    zig_cpu = case ENV.effective_arch
-    when :arm_vortex_tempest then "apple_m1" # See `zig targets`.
-    when :armv8 then "xgene1" # Closest to `-march=armv8-a`
-    else ENV.effective_arch
-    end
-
     # Upstream only allows building for specific microarchitectures they support
     # so we need to patch build scripts to be compatible with our CPU targets
     # as part of compilation occurs outside of our superenv.
-    inreplace "scripts/build/zig.ts", "-Dcpu=${zigCpu(cfg)}", "-Dcpu=#{zig_cpu}"
-    inreplace "scripts/build/flags.ts", "-march=nehalem", "-march=#{ENV.effective_arch}" if Hardware::CPU.intel?
+    if Hardware::CPU.intel?
+      inreplace "scripts/build/flags.ts", "-march=nehalem", ENV["HOMEBREW_OPTFLAGS"].to_s
+      # 1.4.1 raised libspng's x64 SIMD floor from SSE2 to SSE4.1 to match the
+      # nehalem target replaced above. Our baseline has no SSE4.1, and the
+      # defilter paths are `always_inline`, so drop back to the 1.4.0 level.
+      inreplace "scripts/build/deps/libspng.ts", "{ SPNG_SSE: 4 }", "{ SPNG_SSE: 1 }"
+    elsif OS.linux? && Hardware::CPU.arm64?
+      inreplace "scripts/build/flags.ts", "-march=armv8-a+crc", ENV["HOMEBREW_OPTFLAGS"].to_s
+    end
+
+    # Nested dep builds run `cmake --build` without `--parallel`, four at a time
+    # (the `dep` ninja pool), so each one spawns its own core-count worth of
+    # compilers on top of the outer build and Homebrew's job limit is ignored.
+    ENV["CMAKE_BUILD_PARALLEL_LEVEL"] = ENV.make_jobs.to_s
 
     fetch_webkit
     resource("bootstrap").stage("bootstrap")
@@ -128,6 +139,9 @@ class Bun < Formula
 
     args = ["--canary=off"]
     args << "--baseline=on" if Hardware::CPU.intel?
+    # Unless it detects CI, bun takes the deployment target from the SDK's major
+    # version, so Xcode 27 on macOS 26 would build everything `minos 27.0`.
+    args << "--osx-deployment-target=#{MacOS.version}" if OS.mac?
 
     system "bun", "run", "build:release:local", *args
     bin.install "build/release-local/bun"
@@ -136,26 +150,6 @@ class Bun < Formula
     bash_completion.install "completions/bun.bash" => "bun"
     fish_completion.install "completions/bun.fish"
     zsh_completion.install "completions/bun.zsh" => "_bun"
-
-    # Work around patchelf corrupting the binary and causing segfault.
-    # FIXME: Add a DSL to skip patchelf
-    if OS.linux? && build.bottle?
-      prefix.install bin/"bun"
-      Utils::Gzip.compress(prefix/"bun")
-      (bin/"bun").write <<~SHELL
-        #!/bin/bash
-        echo 'ERROR: Need to run `brew postinstall #{name}`' >&2
-        exit 1
-      SHELL
-    end
-  end
-
-  def post_install
-    if (prefix/"bun.gz").exist?
-      system "gunzip", prefix/"bun.gz"
-      (prefix/"bun").chmod 0755
-      bin.install prefix/"bun"
-    end
   end
 
   test do
@@ -184,3 +178,116 @@ class Bun < Formula
     assert_equal '[ "Sue", "Tim", "Bob" ]', shell_output("#{bin}/bun run db.ts").chomp
   end
 end
+
+__END__
+diff --git a/src/jsc/bindings/JSCommonJSModule.cpp b/src/jsc/bindings/JSCommonJSModule.cpp
+index 484a719..7d43b31 100644
+--- a/src/jsc/bindings/JSCommonJSModule.cpp
++++ b/src/jsc/bindings/JSCommonJSModule.cpp
+@@ -1568,7 +1568,7 @@ static JSC::SourceCode commonJSModuleSyntheticSourceCode(const SourceOrigin& sou
+ 
+                 JSValue keyValue = identifierToJSValue(vm, moduleKey);
+                 JSValue entry = globalObject->requireMap()->get(globalObject, keyValue);
+-                RETURN_IF_EXCEPTION(scope, {});
++                RETURN_IF_EXCEPTION(scope, void());
+ 
+                 if (entry) {
+                     if (auto* moduleObject = dynamicDowncast<JSCommonJSModule>(entry)) {
+@@ -1587,7 +1587,7 @@ static JSC::SourceCode commonJSModuleSyntheticSourceCode(const SourceOrigin& sou
+                                 // On error, remove the module from the require map
+                                 // so that it can be re-evaluated on the next require.
+                                 globalObject->requireMap()->remove(globalObject, moduleObject->filename());
+-                                RETURN_IF_EXCEPTION(scope, {});
++                                RETURN_IF_EXCEPTION(scope, void());
+ 
+                                 scope.throwException(globalObject, exception);
+                                 return;
+@@ -1595,7 +1595,7 @@ static JSC::SourceCode commonJSModuleSyntheticSourceCode(const SourceOrigin& sou
+                         }
+ 
+                         moduleObject->toSyntheticSource(globalObject, moduleKey, exportNames, exportValues);
+-                        RETURN_IF_EXCEPTION(scope, {});
++                        RETURN_IF_EXCEPTION(scope, void());
+                     }
+                 } else {
+                     // require map was cleared of the entry
+diff --git a/src/jsc/bindings/JSMockFunction.cpp b/src/jsc/bindings/JSMockFunction.cpp
+index bc8f149..dfe5e15 100644
+--- a/src/jsc/bindings/JSMockFunction.cpp
++++ b/src/jsc/bindings/JSMockFunction.cpp
+@@ -897,7 +897,7 @@ JSC_DEFINE_HOST_FUNCTION(jsMockFunctionCall, (JSGlobalObject * lexicalGlobalObje
+     auto setReturnValue = [&](JSC::JSValue value) -> void {
+         if (auto* returnValuesArray = fn->returnValues.get()) {
+             returnValuesArray->push(globalObject, value);
+-            RETURN_IF_EXCEPTION(scope, {});
++            RETURN_IF_EXCEPTION(scope, void());
+             returnValueIndex = returnValuesArray->length() - 1;
+         } else {
+             JSC::ObjectInitializationScope object(vm);
+diff --git a/src/jsc/bindings/JSNodePerformanceHooksHistogram.cpp b/src/jsc/bindings/JSNodePerformanceHooksHistogram.cpp
+index 0f72fd6..7ab0c64 100644
+--- a/src/jsc/bindings/JSNodePerformanceHooksHistogram.cpp
++++ b/src/jsc/bindings/JSNodePerformanceHooksHistogram.cpp
+@@ -172,13 +172,13 @@ int64_t JSNodePerformanceHooksHistogram::getMax() const
+ 
+ double JSNodePerformanceHooksHistogram::getMean() const
+ {
+-    if (!m_histogramData.histogram) return NAN;
++    if (!m_histogramData.histogram) return std::numeric_limits<double>::quiet_NaN();
+     return hdr_mean(m_histogramData.histogram);
+ }
+ 
+ double JSNodePerformanceHooksHistogram::getStddev() const
+ {
+-    if (!m_histogramData.histogram) return NAN;
++    if (!m_histogramData.histogram) return std::numeric_limits<double>::quiet_NaN();
+     return hdr_stddev(m_histogramData.histogram);
+ }
+ 
+diff --git a/src/jsc/bindings/c-bindings.cpp b/src/jsc/bindings/c-bindings.cpp
+index 481ccdd..1ff80f1 100644
+--- a/src/jsc/bindings/c-bindings.cpp
++++ b/src/jsc/bindings/c-bindings.cpp
+@@ -1143,6 +1143,11 @@ extern "C" const char* BUN_DEFAULT_PATH_FOR_SPAWN = "/usr/bin:/bin";
+ #include <os/signpost.h>
+ #include "generated_perf_trace_events.h"
+ 
++// The SDK applies an Apple-clang-only attribute here, unguarded.
++// https://github.com/oven-sh/bun/issues/41141
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wunknown-attributes"
++
+ // The event names have to be compile-time constants.
+ // So we trick the compiler into thinking they are by using a macro.
+ extern "C" void Bun__signpost_emit(os_log_t log, os_signpost_type_t type, os_signpost_id_t spid, int trace_event_id)
+@@ -1160,6 +1165,8 @@ extern "C" void Bun__signpost_emit(os_log_t log, os_signpost_type_t type, os_sig
+     }
+ }
+ 
++#pragma clang diagnostic pop
++
+ #undef EMIT_SIGNPOST
+ #undef FOR_EACH_TRACE_EVENT
+ 
+diff --git a/src/jsc/modules/ObjectModule.cpp b/src/jsc/modules/ObjectModule.cpp
+index 5505408..4311d5b 100644
+--- a/src/jsc/modules/ObjectModule.cpp
++++ b/src/jsc/modules/ObjectModule.cpp
+@@ -47,7 +47,7 @@ generateObjectModuleSourceCodeForJSON(JSC::JSGlobalObject* globalObject,
+         PropertyNameArrayBuilder properties(vm, PropertyNameMode::Strings,
+             PrivateSymbolMode::Exclude);
+         object->getPropertyNames(globalObject, properties, DontEnumPropertiesMode::Exclude);
+-        RETURN_IF_EXCEPTION(scope, {});
++        RETURN_IF_EXCEPTION(scope, void());
+         gcUnprotectNullTolerant(object);
+ 
+         exportNames.append(vm.propertyNames->defaultKeyword);
+@@ -61,7 +61,7 @@ generateObjectModuleSourceCodeForJSON(JSC::JSGlobalObject* globalObject,
+             exportNames.append(entry);
+ 
+             JSValue value = object->get(globalObject, entry);
+-            RETURN_IF_EXCEPTION(scope, {});
++            RETURN_IF_EXCEPTION(scope, void());
+             exportValues.append(value);
+         }
+     };

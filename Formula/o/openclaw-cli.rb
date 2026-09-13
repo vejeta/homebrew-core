@@ -1,17 +1,16 @@
 class OpenclawCli < Formula
   desc "Your own personal AI assistant"
   homepage "https://openclaw.ai/"
-  url "https://registry.npmjs.org/openclaw/-/openclaw-2026.6.8.tgz"
-  sha256 "3200e398b731104fe34e50d198adc45f329b90d0aa944ccb1a912ca53bd44554"
+  url "https://registry.npmjs.org/openclaw/-/openclaw-2026.9.4.tgz"
+  sha256 "4f1f656770461d4677dea755b1899cba12b912b06798c89a59e2f0c18688b761"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "456a423b3351a324d7cd4ff61073c3c5775ad537f00448566c66b1e698419745"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "456a423b3351a324d7cd4ff61073c3c5775ad537f00448566c66b1e698419745"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "456a423b3351a324d7cd4ff61073c3c5775ad537f00448566c66b1e698419745"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ed7ab6a30a6b5a19a88e3081f405f227808b9e0f10edb85ce3a2f3f0dc463ae8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c99aa0caf26af9de39d707cb392792e4b46a6a504e5f0210d18523f0b7bc82ad"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b2e848b5e57a8b95dc5cab6801446876fabace16da1068e8266310a9c31030fd"
+    sha256                               arm64_golden_gate: "6ff019f87688584316ae3a357c7d394faca6b8a2314fcd5f5c98ed54b9cc4d77"
+    sha256                               arm64_tahoe:       "6ff019f87688584316ae3a357c7d394faca6b8a2314fcd5f5c98ed54b9cc4d77"
+    sha256                               arm64_sequoia:     "6ff019f87688584316ae3a357c7d394faca6b8a2314fcd5f5c98ed54b9cc4d77"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "3a5d3d7971c2ea314c03a7489e7d0067c58f390bd412bacf2e2b3b940de48207"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "271bcbbb2221bfb2702cf5820e332611db22f3f6687d3b7569d6baf76df31167"
   end
 
   depends_on "node"
@@ -19,6 +18,9 @@ class OpenclawCli < Formula
   def install
     system "npm", "install", *std_npm_args
     bin.install_symlink libexec.glob("bin/*")
+
+    # `--ignore-scripts` leaves a marker that makes the launcher write into the read-only keg
+    system "node", libexec/"lib/node_modules/openclaw/scripts/postinstall-bundled-plugins.mjs"
 
     node_modules = libexec/"lib/node_modules/openclaw/node_modules/"
 
@@ -50,9 +52,13 @@ class OpenclawCli < Formula
       rm_r(dir) if basename != "#{os}-#{arch}"
     end
 
-    node_modules.glob("koffi/build/koffi/*").each do |dir|
-      rm_r(dir) if dir.basename.to_s != "#{os}_#{arch}"
+    # koffi binaries moved to `@koromix/koffi-*`, which also ships a musl build
+    node_modules.glob("@koromix/koffi-*/*").each do |dir|
+      rm_r(dir) if dir.directory? && dir.basename.to_s != "#{os}_#{arch}"
     end
+
+    # Unusable prebuilt: patching it for X11 rpaths or thinning the fat Mach-O breaks its pinned digest
+    node_modules.glob("@trycua/cua-driver-*").each { |dir| rm_r(dir) }
   end
 
   test do

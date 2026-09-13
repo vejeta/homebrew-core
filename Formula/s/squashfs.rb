@@ -14,12 +14,13 @@ class Squashfs < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "4457ab0b11eff5278270c2bcf8de450879d4e8d9d3b6b3c2aac3d3aef822e5db"
-    sha256 cellar: :any,                 arm64_sequoia: "279c65c00b406c9bff6a6db0ea2d2912502cabae119acb12f1ca1d0702645e28"
-    sha256 cellar: :any,                 arm64_sonoma:  "67388efdf366eb667070a2a3c89259f0bd94ddc358b89fa3da9db3b54d5acbe3"
-    sha256 cellar: :any,                 sonoma:        "d0946ffe57592ee0837e4f9930c6af5fa5944054e1cc7ad19b4375c03a7537f1"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "72d51e9a40472471e870fbf47e31f77bdb2dcd58848a0575c6f46e4824045226"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "931a2bcc184485cc0b1d449de2a3e8bfbb128c655194648915d9638469f1f16c"
+    sha256 cellar: :any,                 arm64_golden_gate: "3f4e02c404ea30a85146fbbbd378c6188a8a66ae9a24938a8ab143373f1b460b"
+    sha256 cellar: :any,                 arm64_tahoe:       "4457ab0b11eff5278270c2bcf8de450879d4e8d9d3b6b3c2aac3d3aef822e5db"
+    sha256 cellar: :any,                 arm64_sequoia:     "279c65c00b406c9bff6a6db0ea2d2912502cabae119acb12f1ca1d0702645e28"
+    sha256 cellar: :any,                 arm64_sonoma:      "67388efdf366eb667070a2a3c89259f0bd94ddc358b89fa3da9db3b54d5acbe3"
+    sha256 cellar: :any,                 sonoma:            "d0946ffe57592ee0837e4f9930c6af5fa5944054e1cc7ad19b4375c03a7537f1"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "72d51e9a40472471e870fbf47e31f77bdb2dcd58848a0575c6f46e4824045226"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "931a2bcc184485cc0b1d449de2a3e8bfbb128c655194648915d9638469f1f16c"
   end
 
   depends_on "gnu-sed" => :build
@@ -35,23 +36,24 @@ class Squashfs < Formula
   end
 
   # Fix Darwin `struct stat` field selection (`st_atimespec` vs `st_atim`).
-  # Upstream PR ref: https://github.com/plougher/squashfs-tools/pull/356
   patch do
     url "https://github.com/plougher/squashfs-tools/commit/f88f4a659d6ab432a57e90fe2f6191149c6b343f.patch?full_index=1"
     sha256 "3f3f568514c57fd50f508fef67e0e293a9668067801f42d4471b429a79bd1575"
+    type :backport
+    resolves "https://github.com/plougher/squashfs-tools/pull/356"
   end
 
   def install
     args = %W[
       EXTRA_CFLAGS=-std=gnu99
-      LZ4_DIR=#{Formula["lz4"].opt_prefix}
+      LZ4_DIR=#{formula_opt_prefix("lz4")}
       LZ4_SUPPORT=1
-      LZO_DIR=#{Formula["lzo"].opt_prefix}
+      LZO_DIR=#{formula_opt_prefix("lzo")}
       LZO_SUPPORT=1
-      XZ_DIR=#{Formula["xz"].opt_prefix}
+      XZ_DIR=#{formula_opt_prefix("xz")}
       XZ_SUPPORT=1
       LZMA_XZ_SUPPORT=1
-      ZSTD_DIR=#{Formula["zstd"].opt_prefix}
+      ZSTD_DIR=#{formula_opt_prefix("zstd")}
       ZSTD_SUPPORT=1
       XATTR_SUPPORT=1
     ]
@@ -63,7 +65,7 @@ class Squashfs < Formula
       bin.install commands
     end
 
-    ENV.prepend_path "PATH", Formula["gnu-sed"].opt_libexec/"gnubin"
+    ENV.prepend_path "PATH", formula_opt_libexec("gnu-sed")/"gnubin"
     mkdir_p man1
     cd "squashfs-tools/generate-manpages" do
       commands.each do |command|

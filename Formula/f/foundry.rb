@@ -4,9 +4,10 @@ class Foundry < Formula
   # `build.rs` in `common` crate requires `.git` repository
   # https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/common/build.rs#L9-L12
   url "https://github.com/foundry-rs/foundry.git",
-      tag:      "v1.7.1",
-      revision: "4072e48705af9d93e3c0f6e29e93b5e9a40caed8"
+      tag:      "v1.8.1",
+      revision: "982849d3140c01fd3b72905759581a132df7aa98"
   license any_of: ["MIT", "Apache-2.0"]
+  revision 1
   head "https://github.com/foundry-rs/foundry.git", branch: "master"
 
   livecheck do
@@ -15,12 +16,12 @@ class Foundry < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "119bb98930237ad9d2e9ad01f43681e5f77db1a7bbaa22e6c151430b26e1dfce"
-    sha256 cellar: :any,                 arm64_sequoia: "8770d61a8b838e17e09ab9bf79cc597f8218469231e4ce29e9e89f762b071459"
-    sha256 cellar: :any,                 arm64_sonoma:  "e38cf2ed6246727f90875be95b3fd0571cf7d7cc63c2b02a90969ddc8bbf40c8"
-    sha256 cellar: :any,                 sonoma:        "9f089ce540310c86282e349921859da3025fbb2ec4b4341e407a4266171a31dc"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "7b910d388c08e13fa833c4784d0064faf15373d259ec5f64878e776cbe6804fa"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8606052819eb6057fcd57918c79a4e53203eaf3f7dc783b1d0e32e38757f738c"
+    sha256 cellar: :any, arm64_golden_gate: "4ccfccf8eb42342ec23984cf1a6dbab5b80762cba789b71cf993204208ecf9cc"
+    sha256 cellar: :any, arm64_tahoe:       "9acb882e4d603375b01d15efc86dfb5e9e5d344534ee29caa96acb0b1ae7979d"
+    sha256 cellar: :any, arm64_sequoia:     "7fa4bd804bfc661f485d03d9649030a2704ddcc10621161fbdf592d210c3f1e7"
+    sha256 cellar: :any, arm64_sonoma:      "96e4a7296c13d9ce0f1c4c0a80ddf82cdd934fcc362f3c5ba66729d66c7a06b6"
+    sha256 cellar: :any, arm64_linux:       "5f5dd31240f6320adce2b0a77a42346e6578aae57c08a4f8aff72efab6f5c1ea"
+    sha256 cellar: :any, x86_64_linux:      "17c890376be9c85d8d806d244fceefe1021a0501b7336723c0e8567406eb4f8e"
   end
 
   depends_on "help2man" => :build
@@ -36,8 +37,20 @@ class Foundry < Formula
   def install
     ENV["TAG_NAME"] = tap.user
 
+    # matches features from the official foundry release workflow
+    # https://github.com/foundry-rs/foundry/blob/61ae26af36320d4fa1020f7db53785885e29eeb5/.github/workflows/release.yml#L18-L24
+    features = %w[aws-kms gcp-kms turnkey cli asm-keccak js-tracer monad optimism]
+    features << "touch-id" if OS.mac? && Hardware::CPU.arm?
+    features << "jemalloc" if OS.mac? || Hardware::CPU.intel?
+
+    build_args = %w[build --release --bins --no-default-features]
+    build_args += ["--features", features.join(",")]
+
+    cargo_args = std_cargo_args.reject { |arg| arg.start_with?("--root=", "--path=") }
+    system "cargo", *build_args, *cargo_args
+
     %w[forge cast anvil chisel].each do |binary|
-      system "cargo", "install", *std_cargo_args(path: "crates/#{binary}")
+      bin.install "target/release/#{binary}"
 
       # https://book.getfoundry.sh/config/shell-autocompletion
       generate_completions_from_executable(bin/binary.to_s, "completions") if binary != "chisel"

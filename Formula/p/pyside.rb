@@ -1,9 +1,9 @@
 class Pyside < Formula
   desc "Official Python bindings for Qt"
   homepage "https://wiki.qt.io/Qt_for_Python"
-  url "https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.11.1-src/pyside-setup-everywhere-src-6.11.1.tar.xz"
-  mirror "https://cdimage.debian.org/mirror/qt.io/qtproject/official_releases/QtForPython/pyside6/PySide6-6.11.1-src/pyside-setup-everywhere-src-6.11.1.tar.xz"
-  sha256 "6ffd9835bb0dd2c56f061d62f1616bb1707cfc0202b80e3165d6be087f3965e2"
+  url "https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.11.2-src/pyside-setup-everywhere-src-6.11.2.tar.xz"
+  mirror "https://cdimage.debian.org/mirror/qt.io/qtproject/official_releases/QtForPython/pyside6/PySide6-6.11.2-src/pyside-setup-everywhere-src-6.11.2.tar.xz"
+  sha256 "cba47efbaad1bedd529725cbc14e21f156c7a19366f07b3edfbb076ffd7afdf8"
   # NOTE: We omit some licenses even though they are in SPDX-License-Identifier or LICENSES/ directory:
   # 1. LicenseRef-Qt-Commercial is removed from "OR" options as non-free
   # 2. GFDL-1.3-no-invariants-only is only used by not installed docs, e.g. sources/{pyside6,shiboken6}/doc
@@ -21,20 +21,18 @@ class Pyside < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256                               arm64_tahoe:   "40ff0f1512616c63d6ff801cfc05e44f27363758b43c81f7cb01a20479ef7eb8"
-    sha256                               arm64_sequoia: "b7831da4844f001e7319dfe0851214cc0b72a4c12c996731062d0800953c2383"
-    sha256                               arm64_sonoma:  "bc985bbb691bde5fce6bcd8187acf16ce5039dbf04922cd58204d92c1c78499f"
-    sha256 cellar: :any,                 sonoma:        "f17ce084ece6ce84e3f0fc0cf3ba1a2ae98f23bbffaee3e8c9faa8d0e5606e79"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "a116c536daafc08fdb8aa97083a9899d589a469d9d15bb40a9a2c0f04e91374f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e6ed1e8f3b82c4cf92ecbdba2efd968c546d0f1f93144224cba37a8622ab217f"
+    sha256 cellar: :any, arm64_golden_gate: "ee480640f99968ceb6084c705df5d2d2a5f791ba0bfb6c3fa1f15a05a91aefee"
+    sha256 cellar: :any, arm64_tahoe:       "b7dcb58efb3226e80b4dad6f9a476660b65ddbbd6e69a01fa798a84640b71dba"
+    sha256 cellar: :any, arm64_sequoia:     "05226fca68c99f43432c745a116e6a827c026604552623e7f0d4f6afbc4baf3f"
+    sha256 cellar: :any, arm64_sonoma:      "80a8f86deca23c5a2a1e79e42046f02d0e7e17cf47594446e95be2631063aaa3"
+    sha256 cellar: :any, arm64_linux:       "d57644558b0c8a9af2be24f66117568fb1c4ec1c7c86eca7ca7fd052d8b69626"
+    sha256 cellar: :any, x86_64_linux:      "4741e75b22fb2e9d4837653baabb73914003f8a1b2bd375501f9881c7f46341d"
   end
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
   depends_on "python-setuptools" => :build
   depends_on "qtshadertools" => :build
-  depends_on xcode: :build
   depends_on "pkgconf" => :test
 
   depends_on "llvm"
@@ -71,29 +69,19 @@ class Pyside < Formula
     depends_on "qtshadertools"
   end
 
-  on_sonoma :or_newer do
+  on_system :linux, macos: :sonoma_or_newer do
     depends_on "qtwebengine"
     depends_on "qtwebview"
   end
 
   on_linux do
     depends_on "mesa"
-
-    # TODO: Add dependencies on all Linux when `qtwebengine` is bottled on arm64 Linux
-    on_intel do
-      depends_on "qtwebengine"
-      depends_on "qtwebview"
-    end
-  end
-
-  def python3
-    "python3.14"
   end
 
   def install
     ENV.append_path "PYTHONPATH", buildpath/"build/sources"
 
-    extra_include_dirs = [Formula["qttools"].opt_include]
+    extra_include_dirs = [formula_opt_include("qttools")]
 
     # upstream issue: https://bugreports.qt.io/browse/PYSIDE-1684
     inreplace "sources/pyside6/cmake/Macros/PySideModules.cmake",
@@ -110,7 +98,7 @@ class Pyside < Formula
 
     system "cmake", "-S", ".", "-B", "build",
                     "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath,#{rpath(source: shiboken6_module)}",
-                    "-DPython_EXECUTABLE=#{which(python3)}",
+                    "-DPython_EXECUTABLE=#{python3}",
                     "-DBUILD_TESTS=OFF",
                     "-DNO_QT_TOOLS=yes",
                     # Limited API (maybe combined with keg relocation) breaks the Linux bottle
@@ -134,7 +122,7 @@ class Pyside < Formula
       Widgets
       Xml
     ]
-    modules << "WebEngineCore" if (OS.linux? && Hardware::CPU.intel?) || (OS.mac? && MacOS.version >= :sonoma)
+    modules << "WebEngineCore" if !OS.mac? || MacOS.version >= :sonoma
     modules.each { |mod| system python3, "-c", "import PySide6.Qt#{mod}" }
 
     pyincludes = shell_output("#{python3}-config --includes").chomp.split
@@ -143,7 +131,7 @@ class Pyside < Formula
     if OS.linux?
       pyver = Language::Python.major_minor_version python3
       pylib += %W[
-        -Wl,-rpath,#{Formula["python@#{pyver}"].opt_lib}
+        -Wl,-rpath,#{formula_opt_lib("python@#{pyver}")}
         -Wl,-rpath,#{lib}
       ]
     end

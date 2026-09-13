@@ -1,18 +1,18 @@
 class AwsCCompression < Formula
   desc "C99 implementation of huffman encoding/decoding"
   homepage "https://github.com/awslabs/aws-c-compression"
-  url "https://github.com/awslabs/aws-c-compression/archive/refs/tags/v0.3.2.tar.gz"
-  sha256 "f93f5a5d8b3fee3a6d97b14ba279efacd4d4016ef9cc7dc4be7d43519ecfbe93"
+  url "https://github.com/awslabs/aws-c-compression/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "d8e934da2086bfec41f97a0cff749d926f66ccb90f2052f1d70841916c1bf4d7"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "2f21b6ad21619121cdafdc6cab4fe62b71cf845b7a281211a5099dd02b49f12a"
-    sha256 cellar: :any,                 arm64_sequoia: "a5331bcd673f255c1aa6a40444f650bf8bd14ff8426fd70059ab3897ab445bbe"
-    sha256 cellar: :any,                 arm64_sonoma:  "3d3710eda9b726d9129d7299699dc76c13078a69d35a7a458e892976ac74289c"
-    sha256 cellar: :any,                 sonoma:        "90624e8c8471e6d1922b9bfe4e215a42e1b938fc2d13f14ad65a04db0d2c1baf"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "30c32bddc0dc1bda08c68edf91cd62444b265e09ce00d0fc772efeea627a93d0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "12443c30024526e9902b8bc57bc22dd8bd950d7e7b5dab799cc7fae31a895f49"
+    sha256 cellar: :any, arm64_golden_gate: "1184715015c20e58d899f72a3d0f14b4bd82b21bbf730372ab9b293d21c24ac9"
+    sha256 cellar: :any, arm64_tahoe:       "a2c53e81a0a8f5295ec41f79a5db591c1eea53b8eeac19b6c8649cdc2c676b46"
+    sha256 cellar: :any, arm64_sequoia:     "688a0f79a1afe8229ccd16d7e08c4d6305769b97a95553ddfa0d4c16822d529b"
+    sha256 cellar: :any, arm64_sonoma:      "cf70d1c2341589cb2a83ea8921e25daa26576bca77f4deafac44b8cc72cb7a0c"
+    sha256 cellar: :any, arm64_linux:       "4833565f88f12bd9c6bf691625276b2f29490d698a498338a56705986428f103"
+    sha256 cellar: :any, x86_64_linux:      "ee4a9b37eb62286239c49703c84c71362c6e792460e7d042544191d27b8566b8"
   end
 
   depends_on "cmake" => :build
@@ -47,7 +47,7 @@ class AwsCCompression < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-compression",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

@@ -9,12 +9,13 @@ class Cpprestsdk < Formula
   head "https://github.com/microsoft/cpprestsdk.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "b3490b01defba37b82b788cef763a32d394ac72a3036fb80f7c85b717cf3e9e4"
-    sha256 cellar: :any,                 arm64_sequoia: "326dec0d7be0b1004f74ee9b4909445a519412778ca302ce9b1c21273c1e1494"
-    sha256 cellar: :any,                 arm64_sonoma:  "53d492f25bbae3750a7ceae18b47273988b261b038af74946728def83eb54957"
-    sha256 cellar: :any,                 sonoma:        "d7304db7e5240b7cbacde6ae229c233ccb89bb77d5b7756d48ea662c8448a7d8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6241e1c9cccd4b2ecc7bdb739a3c90aaafb0823455b1348d093db9f6270ea500"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "810d1b3b84f31d6a55dc8fa8f2b757a97dd4d2f2479a7a1d34da7b0069dce398"
+    sha256 cellar: :any,                 arm64_golden_gate: "7e20659e07f56149bdbb2f64f33d2d3496bdc26a7c2f001b7cae6b6652d468e6"
+    sha256 cellar: :any,                 arm64_tahoe:       "b3490b01defba37b82b788cef763a32d394ac72a3036fb80f7c85b717cf3e9e4"
+    sha256 cellar: :any,                 arm64_sequoia:     "326dec0d7be0b1004f74ee9b4909445a519412778ca302ce9b1c21273c1e1494"
+    sha256 cellar: :any,                 arm64_sonoma:      "53d492f25bbae3750a7ceae18b47273988b261b038af74946728def83eb54957"
+    sha256 cellar: :any,                 sonoma:            "d7304db7e5240b7cbacde6ae229c233ccb89bb77d5b7756d48ea662c8448a7d8"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "6241e1c9cccd4b2ecc7bdb739a3c90aaafb0823455b1348d093db9f6270ea500"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "810d1b3b84f31d6a55dc8fa8f2b757a97dd4d2f2479a7a1d34da7b0069dce398"
   end
 
   # https://github.com/microsoft/cpprestsdk/commit/7c3f8782e36303c896d1b75a9d23160d4e76b4c7
@@ -27,23 +28,30 @@ class Cpprestsdk < Formula
   depends_on "openssl@3"
 
   # Apply FreeBSD patches for libc++ >= 19 needed in Xcode 16.3
-  # https://github.com/microsoft/cpprestsdk/pull/1829
   on_sequoia :or_newer do
     patch do
       url "https://github.com/microsoft/cpprestsdk/commit/d17f091b5a753b33fb455e92b590fc9f4e921119.patch?full_index=1"
       sha256 "bc68dd08310ba22dc5ceb7506c86a6d4c8bfefa46581eea8cd917354a8b8ae34"
+      type :unofficial
+      resolves "https://github.com/microsoft/cpprestsdk/pull/1829"
     end
     patch do
       url "https://github.com/microsoft/cpprestsdk/commit/6df13a8c0417ef700c0f164bcd0686ad46f66fd9.patch?full_index=1"
       sha256 "4205e818f5636958589d2c1e5841a31acfe512eda949d63038e23d8c089a9636"
+      type :unofficial
+      resolves "https://github.com/microsoft/cpprestsdk/pull/1829"
     end
     patch do
       url "https://github.com/microsoft/cpprestsdk/commit/4188ad89b2cf2e8de3cc3513adcf400fbfdc5ce7.patch?full_index=1"
       sha256 "3bc72590cbaf6d04e3e5230558647e5b38e7f494cd0e5d3ea5c866ac25f9130a"
+      type :unofficial
+      resolves "https://github.com/microsoft/cpprestsdk/pull/1829"
     end
     patch do
       url "https://github.com/microsoft/cpprestsdk/commit/32b322b564e5e540ff02393ffe3bd3bade8d299c.patch?full_index=1"
       sha256 "737567e533405f7f6ef0a83bafef7fdeea95c96947f66be0973e5f362e1b82f5"
+      type :unofficial
+      resolves "https://github.com/microsoft/cpprestsdk/pull/1829"
     end
   end
 
@@ -52,11 +60,12 @@ class Cpprestsdk < Formula
   end
 
   # Apply vcpkg patch to support Boost 1.87.0+
-  # Issue ref: https://github.com/microsoft/cpprestsdk/issues/1815
-  # Issue ref: https://github.com/microsoft/cpprestsdk/issues/1323
   patch do
     url "https://raw.githubusercontent.com/microsoft/vcpkg/566f9496b7e00ee0cc00aca0ab90493d122d148a/ports/cpprestsdk/fix-asio-error.patch"
     sha256 "8fa4377a86afb4cdb5eb2331b5fb09fd7323dc2de90eb2af2b46bb3585a8022e"
+    type :unofficial
+    resolves "https://github.com/microsoft/cpprestsdk/issues/1815",
+             "https://github.com/microsoft/cpprestsdk/issues/1323"
   end
 
   # Workaround to build with Boost 1.89.0
@@ -69,7 +78,7 @@ class Cpprestsdk < Formula
                     # Disable websockets feature due to https://github.com/zaphoyd/websocketpp/issues/1157
                     # Needs upstream response and fix in `websocketpp` formula (do not use bundled copy)
                     "-DCPPREST_EXCLUDE_WEBSOCKETS=ON",
-                    "-DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}",
+                    "-DOPENSSL_ROOT_DIR=#{formula_opt_prefix("openssl@3")}",
                     *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"

@@ -1,30 +1,30 @@
 class Trivy < Formula
   desc "Vulnerability scanner for container images, file systems, and Git repos"
   homepage "https://trivy.dev/"
-  url "https://github.com/aquasecurity/trivy/archive/refs/tags/v0.71.2.tar.gz"
-  sha256 "a4f4187644f6bdfba393c3c194b9ef8acc3891933c6faeeac8715a057db33785"
+  url "https://github.com/aquasecurity/trivy/archive/refs/tags/v0.74.0.tar.gz"
+  sha256 "04268af574690b84bc3474a5f19e002cd6da3e16899fac9fd39c6e84e7843940"
   license "Apache-2.0"
   compatibility_version 1
   head "https://github.com/aquasecurity/trivy.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "965c1bdfb3a3925200038df442641e700a5beb6417fe7563426b3a06fa01ca23"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "41a8f928ec0c97577a23b346b19b8f228f3a595c94251efff464c39b8b4169a1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "187c8d05f4412b827a471ee199624f64ce8679d9cd45f89810f8698270272006"
-    sha256 cellar: :any_skip_relocation, sonoma:        "16b4751d07d001ad64a28a7b01e754b1b2777dcc78f2f3371e47eb2449a6f822"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ff75f907b6f89cb430d0c56820432cf3fd754b3965b2acc5b9ed82af6a53aaf7"
-    sha256 cellar: :any,                 x86_64_linux:  "2248b4b8b2e8c2a507fc16e9313d98fb938c0f41fcbae6bb31a1af17ba09f4b4"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "f8b8405453fce7ce15788906c6a26415605d2f201a157eedca0ea53068d4cbce"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e2d5390bfd71240ba47eb2ef480d95b172d7379ff2a7d7c74024efa44ecad4b4"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "dac4c732a6accc32250b680c47c84a4f5c66bed80405c0ccc30526586581d080"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "e0163b35fb42cca43a4b1bd813ed0138d10e91a5942e20fa0d7d2489f2ed3c5c"
+    sha256 cellar: :any_skip_relocation, sonoma:            "94ef7d1e238b3f48415445be41799b5e229495e57192665fdf569e09f82d38c9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "7db8a5e8c1cadbc46fead3c842d3bcdcd883c4d0013c9a61febdd20239721ebd"
+    sha256 cellar: :any,                 x86_64_linux:      "3ff0409831540fa6fdb8208be7bfb2e4d5acd45cdba93849e815bfd8242d9322"
   end
 
-  depends_on "go" => :build
+  # TODO: unpin go@1.26 when trivy supports go 1.27
+  # ref: https://github.com/aquasecurity/trivy/pull/11127
+  depends_on "go@1.26" => :build
 
   def install
     ENV["GOEXPERIMENT"] = "jsonv2"
 
-    ldflags = %W[
-      -s -w
-      -X github.com/aquasecurity/trivy/pkg/version/app.ver=#{version}
-    ]
+    ldflags = %W[-X github.com/aquasecurity/trivy/pkg/version/app.ver=#{version}]
     system "go", "build", *std_go_args(ldflags:), "./cmd/trivy"
     (pkgshare/"templates").install Dir["contrib/*.tpl"]
 

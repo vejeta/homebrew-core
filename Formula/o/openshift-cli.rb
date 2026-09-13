@@ -1,9 +1,9 @@
 class OpenshiftCli < Formula
   desc "OpenShift command-line interface tools"
   homepage "https://www.openshift.com/"
-  url "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.22.0/openshift-client-src.tar.gz"
+  url "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.22.12/openshift-client-src.tar.gz"
   # This project employs synchronized versioning so the sha256 may not change on version bumps
-  sha256 "ccdc948c24ff7a48b59f19cbccf26a342d2156eaef864f26a336af803eb6dfe9"
+  sha256 "38e70ffd03ad17aff9202426e1f87e6da7964ed7b1134a6ee9c6ec1fc377221f"
   license "Apache-2.0"
   head "https://github.com/openshift/oc.git", shallow: false, branch: "main"
 
@@ -13,16 +13,23 @@ class OpenshiftCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a78ed11277de0fca1646859bf9d89decbfb797a75daf224e29f9c800d147247d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c2c799820a7520ccba61242e504cf5ccef124c57a002d0390e9c271aecb402a2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4a1b93abddc5de1daaa92f440ee42108c1f7660c5304d322e74d84aae82df9d5"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d87f8c25ad96b25bf09922a9c1abd8049fe4e65c840d94e20a247386f07ca0a6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "2a06dd482173b2be052c11d11b13b017c53c5154ddf9fe1ad1495aa44a4d74e7"
-    sha256 cellar: :any,                 x86_64_linux:  "377a6a538f6a2a6eb25ab78f762f443c330d2cbcbe1b9b9669bdb6481e0f9a16"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "fcea4ccc3604816ea120d73fe54feef0d1912e18f935cb7bf809f02c94024724"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "450d3bc1cc3f933dcbf97afe2903cb8cab215005e69efd0765212740b81fcd45"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "a78c52c272d4990be7e30914573a0899a1550e9aa30b5fc3465c36832cd96ae0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "825adc05ab5f1670688bfcb8c1188fd755aac1ce10050667bf538917d1f8371f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "aac1e03d7594615d0869f946621dadd8f88349fbe4c4b35d7ad089f4e226f006"
+    sha256 cellar: :any,                 x86_64_linux:      "c6f464921cd328cbf1bfa16f6b29b77cfa9fea41f24d463b2d71651b73adffe4"
   end
 
   depends_on "go" => :build
   uses_from_macos "krb5"
+
+  # `test do` block connects to api.openshift.com
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     arch = Hardware::CPU.intel? ? "amd64" : Hardware::CPU.arch.to_s

@@ -2,15 +2,23 @@
 
 module PortableFormulaMixin
   if OS.mac?
-    if Hardware::CPU.arm?
-      TARGET_MACOS = :big_sur
-      TARGET_DARWIN_VERSION = Version.new("20.1.0").freeze
+    TARGET_MACOS = if ENV["HOMEBREW_FAKE_MACOS"].present?
+      OS::Mac.version.to_sym
     else
-      TARGET_MACOS = :catalina
-      TARGET_DARWIN_VERSION = Version.new("19.0.0").freeze
-    end
+      :big_sur
+    end.freeze
+    TARGET_MACOS_VERSION = MacOSVersion.from_symbol(TARGET_MACOS).freeze
+    TARGET_DARWIN_VERSION = if TARGET_MACOS == :big_sur
+      Version.new("20.1.0")
+    else
+      Version.new("#{MacOSVersion.kernel_major_version(TARGET_MACOS_VERSION)}.0.0")
+    end.freeze
 
     CROSS_COMPILING = OS.kernel_version.major != TARGET_DARWIN_VERSION.major
+  end
+
+  def portable_macos_flags
+    "-arch #{Hardware::CPU.arch} -mmacosx-version-min=#{TARGET_MACOS_VERSION}"
   end
 
   def portable_configure_args
@@ -35,13 +43,23 @@ module PortableFormulaMixin
       if OS::Mac.version > TARGET_MACOS
         target_macos_humanized = TARGET_MACOS.to_s.tr("_", " ").split.map(&:capitalize).join(" ")
 
-        opoo <<~EOS
+        message = <<~EOS
           You are building portable formula on #{OS::Mac.version}.
-          As result, formula won't be able to work on older macOS versions.
+          As a result, formula won't be able to work on older macOS versions.
           It's recommended to build this formula on macOS #{target_macos_humanized}
           (the oldest version that can run Homebrew).
         EOS
+
+        if ENV["HOMEBREW_GITHUB_ACTIONS"]
+          odie message
+        else
+          opoo message
+        end
       end
+
+      ENV.permit_arch_flags
+      ENV.append_to_cflags portable_macos_flags
+      ENV.append "LDFLAGS", portable_macos_flags
 
       # Always prefer to linking to portable libs.
       ENV.append "LDFLAGS", "-Wl,-search_paths_first"

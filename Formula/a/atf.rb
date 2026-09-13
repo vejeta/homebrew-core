@@ -1,8 +1,8 @@
 class Atf < Formula
   desc "Automated testing framework"
   homepage "https://github.com/freebsd/atf"
-  url "https://github.com/freebsd/atf/releases/download/atf-0.23/atf-0.23.tar.gz"
-  sha256 "a64e2427d021297f25b3f2e1798f8ec4dc3061ffb01a1cd3f66cc4cee486b10f"
+  url "https://github.com/freebsd/atf/releases/download/atf-0.25/atf-0.25.tar.gz"
+  sha256 "a52be96b5565733e71df8d0ecc8a4255a495e45183de7e3657491e0a8069423f"
   license "BSD-2-Clause"
   head "https://github.com/freebsd/atf.git", branch: "master"
 
@@ -12,14 +12,12 @@ class Atf < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "acbf43372e23b1ec798d9220e6035f76a8d42d61af90ab40c43b32dc90b22745"
-    sha256 arm64_sequoia: "14d17d25d50313d4fbd2794874b972925f23c67dea567ae1ec692efd32c2647f"
-    sha256 arm64_sonoma:  "b8f3e848fb9147744c021fae004abe9cb8ac262c94d6bcd4a487b79ea73e6cee"
-    sha256 arm64_ventura: "b0e02364b9ab0b317420b1ed1045e9c701ad002653b9180832a18e29c5c542ec"
-    sha256 sonoma:        "9cd739eb6f0f1ec5c7a7718c66fea9ea8a3435ffd3506da93d60393f0bda5f0d"
-    sha256 ventura:       "f454fa5d1f845261d605e9d94a926b6cd4e3a120a6782fe0f93776ab01697df6"
-    sha256 arm64_linux:   "5b259959f57b981567bc83a2889401ef8224bc504e46428a62569cb3eebb054a"
-    sha256 x86_64_linux:  "9e2c5311676f2350c618ba8b2092a67df2fa2300c1212d1f25bd70f4650ea934"
+    sha256 arm64_golden_gate: "4ff1a81c19dcea8c135f3b1de6a53e63724e330114973121477943148358d66c"
+    sha256 arm64_tahoe:       "fb483a4bfb905030f23acc52a4d22688ff59fc01274f85522b94b79d4d60272f"
+    sha256 arm64_sequoia:     "934ba19c92a9f651894a6cd0a5fac1aebea671dccc715545a20abf10c561bb18"
+    sha256 arm64_sonoma:      "01d599530b6d95f2bf45736dcdab54f2e6fc9c3742f9d8d5bf4d7ea87a4649f3"
+    sha256 arm64_linux:       "50061091613fbeabe2648a321a54d6d12bf7819975c18b0fd91bb3231552e7e8"
+    sha256 x86_64_linux:      "ad68b17ba5aa3c92fe7999ab71686e77e57806d6b211473531825221856015b2"
   end
 
   depends_on "autoconf" => :build

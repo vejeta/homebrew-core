@@ -1,17 +1,18 @@
 class Minibwa < Formula
   desc "Successor of BWA-MEM for short-read alignment"
   homepage "https://github.com/lh3/minibwa"
-  url "https://github.com/lh3/minibwa/archive/refs/tags/v0.2.tar.gz"
-  sha256 "aacb2dabe78874923b1eea6197919c0f75e12de87bdf906fa4adf58a6ab1b25a"
+  url "https://github.com/lh3/minibwa/archive/refs/tags/v0.7.tar.gz"
+  sha256 "8a1129bcba045e4af4b6fbf73b3fc6b42208afbab870c774c5f0cd2716d748ae"
   license all_of: ["MIT", "Apache-2.0"]
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "37fb061fb4ee940cc65b28c1eb25e17c1ee6e543b0c9e1f1fe4199649deb034c"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fae74ab3ead14ac7e4e79cacceb6397b54df086ff181741f66e744eebd565c3b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6e2fef3c67f4907a42c75f3cd3d3af8e69705848dda40ec2e711676b38681425"
-    sha256 cellar: :any_skip_relocation, sonoma:        "df90a1b244214530d9a9412a67376b8a25c38cbde3ce40ed61c723f9ed254edf"
-    sha256 cellar: :any,                 arm64_linux:   "4fa08244c9b50c0b4fed0ebe28a4a2aefb5a85064abf6464c76c4fa9b19a8ec0"
-    sha256 cellar: :any,                 x86_64_linux:  "3dbd92838e8e2253b336c9571ed25630646f27ce043b99bdd3868852c12983fb"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "23f0965faca4eac9b6344cd7166d6a2b95c9729e0d99b3704fa3eb929a257bac"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "5e3eca6bb22984e2f53701d6a567bc0da1f483471b877c10e3f6ddd8b0cbeadd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "2da3ab5ffbdf523d8fa6db56acff2edd542557c5353e7053c3bfd6b9670cee3c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "65b011253c8c52060e8c54a92f2ea979988d9b681f26203767df6a2060fdd51d"
+    sha256 cellar: :any_skip_relocation, sonoma:            "c75d8c6707aac2f754ff8a1d217ecf4cf62948fde8e6272a9cef851abea4579e"
+    sha256 cellar: :any,                 arm64_linux:       "a8b132924d38e13b2cc7c31bab25e4a6457b8baeb0d6cfe4d414a7e7b8e73959"
+    sha256 cellar: :any,                 x86_64_linux:      "9f3800b0328330637487a5ed08ab8aeeb5f9d767c4f0d5ca73efce6abf5a1715"
   end
 
   on_linux do

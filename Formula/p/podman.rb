@@ -1,11 +1,11 @@
 class Podman < Formula
   desc "Tool for managing OCI containers and pods"
   homepage "https://podman.io/"
-  url "https://github.com/containers/podman/archive/refs/tags/v5.8.3.tar.gz"
-  sha256 "c54a2ec4b4fb5577288992aaa78684397ec3552fb2d1234d910ec50097d05c0f"
+  url "https://github.com/podman-container-tools/podman/archive/refs/tags/v6.1.1.tar.gz"
+  sha256 "3646384ab6eff7b3d4473e1a0c1e34b6a8001e5a89600af44cc12376da77bccc"
   license all_of: ["Apache-2.0", "GPL-3.0-or-later"]
   compatibility_version 1
-  head "https://github.com/containers/podman.git", branch: "main"
+  head "https://github.com/podman-container-tools/podman.git", branch: "main"
 
   # There can be a notable gap between when a version is tagged and a
   # corresponding release is created and upstream uses GitHub releases to
@@ -18,12 +18,12 @@ class Podman < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "29d3053b9c67d3e63203a0afe97ed2195c91a3ea4b40d99b4704f83992dde4d9"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4365062dd00d48a4fc783e6a04a32193b2b70aaab6f25f6076baf58accdf87a6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "674252c7a46da83c4ef225d6fbb317952c5a0b42ce1bc5c91b455d4df5284980"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b9a706618dc6cb4d56a2fc332ca3477d7898daeed6ffa86b4561cd7030faa122"
-    sha256                               arm64_linux:   "db908705db4d7ed2bf13f23071783255a5eb39ee9093a806dd0009d8eda127be"
-    sha256                               x86_64_linux:  "56bf57b8f5e2b22d76e687096a122bbafb3f63011b5faaf1c9ae4c8ecd3bd053"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "75bde4bca752c2ba9270432ce7274e8862deae099d68965e40496b03f9aefd85"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1b5eddf74e17b0be5c420f18cd7cf7d699185e5e46b23e823d7707675dafc651"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "f8f01f2596990de27cc68b9f4875c8d2951a37a7826687ad32b1c04b3c863ba2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "815ae65b713798863793326d426dfcda15dcb6a27cad73f99d1af6ecf6e93f2a"
+    sha256                               arm64_linux:       "57c8a1c7d19bba3adeb7a087d949c4c20b4c71416981e0d5f977db830e3c0dc9"
+    sha256                               x86_64_linux:      "bc1448a1b168505091c9d398a33f72032584c39977e13ccf7e001a68dadb78c9"
   end
 
   depends_on "go" => :build
@@ -33,6 +33,7 @@ class Podman < Formula
 
   on_macos do
     depends_on "make" => :build
+    depends_on arch: :arm64
     depends_on macos: :ventura # see discussions in https://github.com/containers/podman/issues/22121
   end
 
@@ -49,26 +50,35 @@ class Podman < Formula
     depends_on "gpgme"
     depends_on "libseccomp"
     depends_on "passt"
-    depends_on "slirp4netns"
     depends_on "sqlite"
     depends_on "systemd"
   end
 
   # Bump these resources versions to match those in the corresponding version-tagged Makefile
-  # at https://github.com/containers/podman/blob/#{version}/contrib/pkginstaller/Makefile
+  # at https://github.com/podman-container-tools/podman/blob/#{version}/contrib/pkginstaller/Makefile
   #
   # More context: https://github.com/Homebrew/homebrew-core/pull/205303
   resource "gvproxy" do
     on_macos do
-      url "https://github.com/containers/gvisor-tap-vsock/archive/refs/tags/v0.8.8.tar.gz"
-      sha256 "4f7c4885225d71b21f6b547b94d92fc6da4a4fef9d382fdd19c8ea67f67be839"
+      url "https://github.com/containers/gvisor-tap-vsock/archive/refs/tags/v0.8.9.tar.gz"
+      sha256 "6cbcb7959a5d90b59253ea6d8bdf0285e2cfbc3b301398704b41e3069293f4fb"
+
+      livecheck do
+        url :url
+        regex(/^v?(\d+(?:\.\d+)+)$/i)
+      end
     end
   end
 
   resource "vfkit" do
     on_macos do
-      url "https://github.com/crc-org/vfkit/archive/refs/tags/v0.6.3.tar.gz"
-      sha256 "bb2a7f9d1bf41d2f823412ca20912bade606ae30b41afcd1366d32e3d100a09e"
+      url "https://github.com/crc-org/vfkit/archive/refs/tags/v0.6.4.tar.gz"
+      sha256 "ff496bd6ee6772ed070f286c4282a8a2e2f5231d4f8e98b2255b883ba69af42d"
+
+      livecheck do
+        url :url
+        regex(/^v?(\d+(?:\.\d+)+)$/i)
+      end
     end
   end
 
@@ -76,21 +86,47 @@ class Podman < Formula
     on_linux do
       url "https://github.com/openSUSE/catatonit/archive/refs/tags/v0.2.1.tar.gz"
       sha256 "771385049516fdd561fbb9164eddf376075c4c7de3900a8b18654660172748f1"
+
+      livecheck do
+        url :url
+        regex(/^v?(\d+(?:\.\d+)+)$/i)
+      end
     end
   end
 
   resource "netavark" do
     on_linux do
-      url "https://github.com/containers/netavark/archive/refs/tags/v1.17.2.tar.gz"
-      sha256 "284faa7cc525b869cbac4053e0a4127ac743ca7da1457c49fffb35558ea9c78d"
+      url "https://github.com/containers/netavark/archive/refs/tags/v2.1.0.tar.gz"
+      sha256 "96677048168ddd1abe313e4c2e17f1cace72b60ee1bac8ca12a4bd7dfcadfbbb"
+
+      livecheck do
+        url :url
+        regex(/^v?(\d+(?:\.\d+)+)$/i)
+      end
     end
   end
 
   resource "aardvark-dns" do
     on_linux do
-      url "https://github.com/containers/aardvark-dns/archive/refs/tags/v1.17.0.tar.gz"
-      sha256 "42556bf547c435a8f0ccb586b4f5000da3106a58c26f82e22d9db81ee5bd7eb2"
+      url "https://github.com/containers/aardvark-dns/archive/refs/tags/v2.1.0.tar.gz"
+      sha256 "daf871488603e659b0501224cf0731ac317809b1d1701fc061cb4f6ae39a894f"
+
+      livecheck do
+        url :url
+        regex(/^v?(\d+(?:\.\d+)+)$/i)
+      end
     end
+  end
+
+  # Starting in podman 6.0.0, libkrun (via krunkit) is the default machine
+  # driver on macOS. krunkit is not yet available in homebrew-core, so continue
+  # using the previous default driver applehv.
+  #
+  # See https://github.com/Homebrew/homebrew-core/issues/291552
+  # Remove once krunkit is available in homebrew-core.
+  patch do
+    file "Patches/podman/revert-libkrun-default.patch"
+    type :unofficial
   end
 
   def install
@@ -211,6 +247,12 @@ class Podman < Formula
       # See https://github.com/Homebrew/homebrew-core/pull/166471
       out = shell_output("#{bin}/podman-remote machine init homebrew-testvm")
       assert_match "Machine init complete", out
+
+      # Remove once krunkit is available and we follow the upstream behavior of using it
+      # by default
+      cfg_output = shell_output("#{bin}/podman-remote machine inspect homebrew-testvm --format {{.ConfigDir.Path}}")
+      assert_equal (testpath/".config/containers/podman/machine/applehv").to_s, cfg_output.chomp
+
       system bin/"podman-remote", "machine", "rm", "-f", "homebrew-testvm"
     else
       assert_equal %w[podman podman-remote podmansh]

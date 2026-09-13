@@ -3,24 +3,47 @@ class CoreLightning < Formula
 
   desc "Lightning Network implementation focusing on spec compliance and performance"
   homepage "https://github.com/ElementsProject/lightning"
-  url "https://github.com/ElementsProject/lightning/releases/download/v26.06.1/clightning-v26.06.1.zip"
-  sha256 "22fb2b3cc7c96b6c2c8dd86818eeaa6c259d0eba4233b71490277f2e5a1253f7"
   license "MIT"
   head "https://github.com/ElementsProject/lightning.git", branch: "master"
 
+  stable do
+    url "https://github.com/ElementsProject/lightning/releases/download/v26.06.7/clightning-v26.06.7.zip"
+    sha256 "b313d207e53f1e2dbf9fbac79d5af48c352e874a653390bddb81b52795a153dc"
+
+    patch do
+      url "https://github.com/ElementsProject/lightning/commit/d384750883216e7e19e01779d06bc36295380296.patch?full_index=1"
+      sha256 "4f5c972865a57de11a420e319584710f821e68c908d861e40ed5b741b0bffa6e"
+      type :backport
+      resolves "https://github.com/ElementsProject/lightning/pull/9072"
+    end
+  end
+
+  # Upstream releases may have an embargo period between when the release is
+  # published and the source zip is provided, so we have to check multiple
+  # releases to identify the newest one providing a source archive.
   livecheck do
     url :stable
-    regex(/^v(\d+(?:\.\d+)+)$/i)
-    strategy :github_latest
+    regex(%r{/v?(\d+(?:\.\d+)+)/clightning[._-]v?\d+(?:\.\d+)+\.zip}i)
+    strategy :github_releases do |json, regex|
+      json.map do |release|
+        next if release["draft"] || release["prerelease"]
+
+        release["assets"]&.map do |asset|
+          match = asset["browser_download_url"]&.match(regex)
+          next if match.blank?
+
+          match[1]
+        end
+      end.flatten
+    end
   end
 
   bottle do
-    sha256 arm64_tahoe:   "13a5012f1103ac668c1308c8fc6a53a9fd1c6e4a9b654d34dd73436ca5b18a3a"
-    sha256 arm64_sequoia: "978409064153d2621e6bd2cdf13f32074b8be51b7e25189caa01475aa35fa4b2"
-    sha256 arm64_sonoma:  "49ef3a34805f14b77c5aa04e0b2d23c9c600dc02676f87fae4808fa06351716b"
-    sha256 sonoma:        "e45f2a85e83b1e12dd1c3e2a9f4ce1bcbc6aec022248415571d8faa70684caae"
-    sha256 arm64_linux:   "5b0903407a11056725c045d9316792cb9fb5afc39441d970079640058e91cbc3"
-    sha256 x86_64_linux:  "f63b63ce532bcf732bf9e8904d3df8a1de41766d9ab7feaf2bb9354e05b554d1"
+    sha256 arm64_golden_gate: "9b9bc17504d639b97a7a48cdd9925a04fd456cd6ee2a1213087364880ae74bfd"
+    sha256 arm64_tahoe:       "fcd29d52bfe8ac80006cf9150ca62f55d0d27f3f906f168ff2ee6dd475d6819b"
+    sha256 arm64_sequoia:     "7708cd6e6a6a9370884c6cf945703aec11547cc91f4414e36ccf57bad5bd59e8"
+    sha256 arm64_linux:       "0e5419b10ffb3d9f4e3f884ada3e2200b147d636552d65f1c0cd1a7d79ead840"
+    sha256 x86_64_linux:      "9460dcb46fb62f3e59c79aa8a379d7a3acf6eeada1cfef2a3b13a4ad0219a242"
   end
 
   depends_on "autoconf" => :build
@@ -52,8 +75,8 @@ class CoreLightning < Formula
                 extra_packages: ["mako", "setuptools"]
 
   resource "mako" do
-    url "https://files.pythonhosted.org/packages/00/62/791b31e69ae182791ec67f04850f2f062716bbd205483d63a215f3e062d3/mako-1.3.12.tar.gz"
-    sha256 "9f778e93289bd410bb35daadeb4fc66d95a746f0b75777b942088b7fd7af550a"
+    url "https://files.pythonhosted.org/packages/2a/12/b5fa2353e2754cd67fb9f83793fa48ff42c213a5da7e719869d2301f6ab8/mako-1.4.1.tar.gz"
+    sha256 "d7904710b662996425a21627710c4777c45053146942cf8a7aebf757c92b8c27"
   end
 
   resource "markupsafe" do
@@ -62,19 +85,15 @@ class CoreLightning < Formula
   end
 
   resource "setuptools" do
-    url "https://files.pythonhosted.org/packages/4f/db/cfac1baf10650ab4d1c111714410d2fbb77ac5a616db26775db562c8fab2/setuptools-82.0.1.tar.gz"
-    sha256 "7d872682c5d01cfde07da7bccc7b65469d3dca203318515ada1de5eda35efbf9"
+    url "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz"
+    sha256 "f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73"
   end
 
   def install
-    venv = virtualenv_create(buildpath/"venv", "python3.14")
+    venv = virtualenv_create(buildpath/"venv", python3)
     venv.pip_install resources
     ENV.prepend_path "PATH", venv.root/"bin"
-    ENV.prepend_path "PATH", Formula["gnu-sed"].libexec/"gnubin" if OS.mac?
-
-    # Fix `configure` to build on macOS
-    # PR ref: https://github.com/ElementsProject/lightning/pull/9072
-    inreplace "configure", "-Wl,--gc-sections -c $TMPCFILE", "-Wl,--gc-sections $TMPCFILE"
+    ENV.prepend_path "PATH", formula_opt_libexec("gnu-sed")/"gnubin" if OS.mac?
 
     system "./configure", "--prefix=#{prefix}"
     system "make", "install"

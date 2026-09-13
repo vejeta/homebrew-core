@@ -1,30 +1,30 @@
 class Bitwise < Formula
   desc "Terminal based bit manipulator in ncurses"
   homepage "https://github.com/mellowcandle/bitwise"
-  url "https://github.com/mellowcandle/bitwise/releases/download/v0.50/bitwise-v0.50.tar.gz"
-  sha256 "806271fa5bf31de0600315e8720004a8f529954480e991ca84a9868dc1cae97e"
+  url "https://github.com/mellowcandle/bitwise/releases/download/v0.70/bitwise-v0.70.tar.gz"
+  sha256 "b8f41f49b9b73ac3abb1e7533a410504f759673fc6e7f35acf56fc82e39cdf37"
   license "GPL-3.0-or-later"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:    "9f6712da2de2e93861c008540f524f5b60be33054db0acb064d82a26322c361d"
-    sha256 cellar: :any,                 arm64_sequoia:  "d7659a60e6cad87bc0dd72921475005c50340e66d7a6ba822a5769a67df1b91d"
-    sha256 cellar: :any,                 arm64_sonoma:   "923c4828ff104f940038b9d6969759b08d90a3d2c89cb1c0e31b913a2d38769e"
-    sha256 cellar: :any,                 arm64_ventura:  "85b482536f160a726ccf996c7653763a19c43b5b4926c8da4af4bb0b01ff63ca"
-    sha256 cellar: :any,                 arm64_monterey: "7b2980226d0d6d231bf41898bbadd6c18a838bee766aa62dfff1c451d8c0357a"
-    sha256 cellar: :any,                 arm64_big_sur:  "92f12631e0740195ad3cf87b0a320288d6d27523651568575d3dedb4a02a0705"
-    sha256 cellar: :any,                 sonoma:         "66b9022c3207ba8c0b9b9b3a530dfd1403d9fc3ed4c5e991ee01d7d3aafb3635"
-    sha256 cellar: :any,                 ventura:        "7b67229824c3f0e7b1ff3f3e1cfbf11f8f0b8f6dec64a75e010e81f1e8e32fce"
-    sha256 cellar: :any,                 monterey:       "5f880e578cbd7558572c25c9f5c66a674e0e0547f1bc7e8cee33e4869bb39228"
-    sha256 cellar: :any,                 big_sur:        "560ee93626732de20fa8d5ca16058c92f26383a497e8218029ecbe377cda5602"
-    sha256 cellar: :any_skip_relocation, arm64_linux:    "576e3966940ee9afff289f542a29073600a1b131c234e6ef49c0b59eb2cde5c1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "843a3614b4b1ce32529429588fbc60289bfdf91086658666c850be7f88c1baca"
+    sha256 cellar: :any, arm64_golden_gate: "87d117e28f0a2506f33cad6423e360426e83923047f14721d0fa36b1cf3b722c"
+    sha256 cellar: :any, arm64_tahoe:       "5b56a9177735b6e14880ec3e4377ca8575ae630c1e297b2536d11110467c9b45"
+    sha256 cellar: :any, arm64_sequoia:     "6e985e1b549feafa291b5ea826b372f0a327de09ea0b987cd659c9b31b5cc768"
+    sha256 cellar: :any, arm64_sonoma:      "56b38b848995288b3833def04e767744d418768b1f760bea1886f26d83135a64"
+    sha256 cellar: :any, arm64_linux:       "fa1339df7cd2f3e36b68364bbfd8fd5ff5602511c2f990ddcab90c745efc7a65"
+    sha256 cellar: :any, x86_64_linux:      "274a2a9335e2462bd85cf3f3f4d5c1257d2bce3225535d7645b13d09f5b4f013"
   end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "readline"
 
+  uses_from_macos "ncurses"
+
   def install
+    # `inc/compat.h` is missing from the release tarball; it only declares strndup/l64a fallbacks
+    # Upstream PR ref: https://github.com/mellowcandle/bitwise/pull/71
+    inreplace "inc/bitwise.h", "#include \"compat.h\"\n", ""
+
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",

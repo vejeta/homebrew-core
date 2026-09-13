@@ -1,8 +1,8 @@
 class DartSass < Formula
   desc "Reference implementation of Sass, written in Dart"
   homepage "https://sass-lang.com/dart-sass"
-  url "https://github.com/sass/dart-sass/archive/refs/tags/1.101.0.tar.gz"
-  sha256 "2af48b186eb895f5e70a2fd29e001b0dcb98d51382dd95117ad1be68f600788f"
+  url "https://github.com/sass/dart-sass/archive/refs/tags/1.104.1.tar.gz"
+  sha256 "9092c81fe13bb64eae448a10559e4b319b74d4c9d23dea2e8435403d1a831cad"
   license "MIT"
 
   # Some tags are used for sass-api/sass-parser
@@ -12,12 +12,11 @@ class DartSass < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "dd56e48f7b6b5f431eedb7748c243600561361306b4e01339c4bdfb318f11853"
-    sha256 cellar: :any,                 arm64_sequoia: "c7110799ec47c0a41d5d0a167bb0899d5627781a649778648f25a9549973e1e8"
-    sha256 cellar: :any,                 arm64_sonoma:  "ed046bf044f14c8a9e2a504e2cec9100b895a9a9aa7d8cdf3a394c958e79aaeb"
-    sha256 cellar: :any,                 sonoma:        "cff3394ae49a55ff71c01faef336a9317b5b125abb8a9161adfe83b75515d043"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "455a3e31b77d0f7d5ee22deb7a29c52787700cbe78f461ee91a57fee805b9a55"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fd7d12bbcc0fae52d46a75e50426fa9caff7060b7af14c453fd3de7b244b6eeb"
+    sha256 cellar: :any,                 arm64_golden_gate: "da04f2e9110a3fb3638ce8f92625f9a927f88e684f4ded4f344e13f387f6581f"
+    sha256 cellar: :any,                 arm64_tahoe:       "1bbfd1c2c8b57e50fea82aed6b304c253591c3179833082a9bb1ef7b516757db"
+    sha256 cellar: :any,                 arm64_sequoia:     "05f014133523ace00850f24fe96d99425bf9e7a9bae2a20258759900039eea21"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "80e78f21336ddeebab779a94a176e8a4d6bab139e8a7019ecd8dfebffb05d23d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "4a7bf93fde78dc342c748980d269806d17b3d974d2255d72e81fe95883507a21"
   end
 
   depends_on "buf" => :build
@@ -56,7 +55,7 @@ class DartSass < Formula
 
     (bin/"sass").write <<~BASH
       #!/bin/bash
-      exec "#{Formula["dartaotruntime"].opt_bin}/dartaotruntime" "#{libexec}/sass.aot" "$@"
+      exec "#{formula_opt_bin("dartaotruntime")}/dartaotruntime" "#{libexec}/sass.aot" "$@"
     BASH
   end
 

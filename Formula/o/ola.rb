@@ -2,7 +2,7 @@ class Ola < Formula
   desc "Open Lighting Architecture for lighting control information"
   homepage "https://www.openlighting.org/ola/"
   license all_of: ["GPL-2.0-or-later", "LGPL-2.1-or-later"]
-  revision 12
+  revision 17
   head "https://github.com/OpenLightingProject/ola.git", branch: "master"
 
   stable do
@@ -10,26 +10,27 @@ class Ola < Formula
     sha256 "44073698c147fe641507398253c2e52ff8dc7eac8606cbf286c29f37939a4ebf"
 
     # fix liblo 0.32 header compatibility
-    # upstream pr ref, https://github.com/OpenLightingProject/ola/pull/1954
     patch do
       url "https://github.com/OpenLightingProject/ola/commit/e083653d2d18018fe6ef42f757bc06462de87f28.patch?full_index=1"
       sha256 "1276aded269497fab2e3fc95653b5b8203308a54c40fe2dcd2215a7f0d0369de"
+      type :backport
+      resolves "https://github.com/OpenLightingProject/ola/pull/1954"
     end
 
     # Backport fix for protoc version detection
     patch do
       url "https://github.com/OpenLightingProject/ola/commit/aed518a81340a80765e258d1523b75c22a780052.patch?full_index=1"
       sha256 "7e48c0027b79e129c1f25f29fae75568a418b99c5b789ba066a4253b7176b00a"
+      type :backport
     end
   end
 
   bottle do
-    sha256 arm64_tahoe:   "f25ccdcb09d9c8bde99c4add4536faa599f609a936581333b2cc52286b5e39bb"
-    sha256 arm64_sequoia: "f860110a2848a47e43689737cb3d1a499c6ca3405bcfb1fd03e7d3fff9976cf2"
-    sha256 arm64_sonoma:  "5085aaf5d62234008a5f6d8cd80eabf695e347eff2ff2bb8a19504b0915caacd"
-    sha256 sonoma:        "4fa420560c5d6ea5ed2ffeecbbdfeb7385d3e42522b85e9d9f7ee92eb022c755"
-    sha256 arm64_linux:   "0049cfbb2cb40a897eb16d5289f5998ce574821722ffa333cb89f74ec684ab50"
-    sha256 x86_64_linux:  "0ed28dffb8cdbc2245d5f8a10d941de22c0f4e789c42e8e189913fa1f85a4dc5"
+    sha256 arm64_tahoe:   "399c1074073ae0e5899feac4e24606b8562cf31bd1d259f17a982398116c1217"
+    sha256 arm64_sequoia: "416d752ab67bf9c0a392d98ca21a39e0bd7d32f4452c5bc091c3ca09b58761c4"
+    sha256 arm64_sonoma:  "896b1db26f7652cd41408abf5f9d3b254d52fc744829dc7825f3d0a2105944ee"
+    sha256 arm64_linux:   "5a4e18359e6326fd1b6dbaf65523da165a0d06a7c776490153c43c73b4c679c5"
+    sha256 x86_64_linux:  "1a3d1798e320809dfd8d4de6aa5e9b4fe1e67f294b33886cee56478ed06daa98"
   end
 
   depends_on "autoconf" => :build
@@ -60,14 +61,17 @@ class Ola < Formula
   end
 
   # Apply open PR to support Protobuf 22+ API
-  # PR ref: https://github.com/OpenLightingProject/ola/pull/1984
   patch do
     url "https://github.com/OpenLightingProject/ola/commit/e22e9da89ba2267e6c2039e5c09adce514a93b36.patch?full_index=1"
     sha256 "d2ac5729b898fc9bb35f6cc46ce5e8ffc666835371991cebe46fb96c46d686a5"
+    type :unofficial
+    resolves "https://github.com/OpenLightingProject/ola/pull/1984"
   end
   patch do
     url "https://github.com/OpenLightingProject/ola/commit/b8c8613ebf59d0c5db0b25e9f2649c85ddf4fdf5.patch?full_index=1"
     sha256 "28cfabd2dca822dc9198c8f81ebac71b57b2984bb5d0894301665e5f7150d31c"
+    type :unofficial
+    resolves "https://github.com/OpenLightingProject/ola/pull/1984"
   end
 
   def install

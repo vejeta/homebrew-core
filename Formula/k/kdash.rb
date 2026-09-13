@@ -1,18 +1,19 @@
 class Kdash < Formula
   desc "Simple and fast dashboard for Kubernetes"
   homepage "https://kdash-rs.github.io/"
-  url "https://github.com/kdash-rs/kdash/archive/refs/tags/v2.0.1.tar.gz"
-  sha256 "81483cfcacb68ea04a278d576265eba786f44b3d1a7915efb7293e35b4d746f0"
+  url "https://github.com/kdash-rs/kdash/archive/refs/tags/v2.1.1.tar.gz"
+  sha256 "a1cd1f43eeb93623a7a66cced9952da8b92bade03804f21acbd3283ea8bd749e"
   license "MIT"
   head "https://github.com/kdash-rs/kdash.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "3e6cfd24486c1fee5a2438521f2f60f4649754602a5fd85f79e5f9389806046a"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "aa876f24dd7c7c525976f8831cdf203e73b8f6048f625f7475cbd24301c304e2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "15a76ea3e08cb0d8e6c3734076a4009a2f2872c7989c895c0a7644a8ba5d9f4f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bdfc6ad50c7f2ea413077018a950927739af5773d53391d5b044aae91a5d4014"
-    sha256 cellar: :any,                 arm64_linux:   "ec9335ac1f6f64e230ba2e0b8ff8ee6dd80d61eed229de34062b25a7079932c5"
-    sha256 cellar: :any,                 x86_64_linux:  "d0592850c0f3bf641b4b073e68ad26dcf08eacc82bc6da3773419b3ab9b920ef"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "92bfb1fa454b28fab15a199308442389acb3df1703c4cf52b13dd86e431ef54e"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "1e98f730211a8fdd7bdfb0747d78f7dc99a877dbd3a26ac6556c876f617a06de"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b637dccc9149bf2d6d8f73463a70d46613a295ebe6dddad3661ce59adeb343ff"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4e9d5737505b51b0a61fe1f53a78b8c323125f09830a8487da84dc2dd6b2f7b0"
+    sha256 cellar: :any_skip_relocation, sonoma:            "70d65c2a112cb01e4bf18d6db696abe04ba8029a76ae7c3969d952e6075a3356"
+    sha256 cellar: :any,                 arm64_linux:       "becb71c66d7abc2ff4b6fbf7e82dd06583750f1441c9b058de5a487e22d9db44"
+    sha256 cellar: :any,                 x86_64_linux:      "d4206c108ce40a6f72f155f273e9c8c558f41fcce8c40647b817201b6ac027ea"
   end
 
   depends_on "rust" => :build

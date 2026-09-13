@@ -1,25 +1,30 @@
 class Doctl < Formula
   desc "Command-line tool for DigitalOcean"
   homepage "https://docs.digitalocean.com/reference/doctl/"
-  url "https://github.com/digitalocean/doctl/archive/refs/tags/v1.162.0.tar.gz"
-  sha256 "2061a1a10f0717030997d3c083642ddb951d64d86b9476b88f0948bc4cfc4605"
+  url "https://github.com/digitalocean/doctl/archive/refs/tags/v1.168.0.tar.gz"
+  sha256 "a5c7c045d7f14a8f4e7249e07a5302520f5b3130137360047dd7964246527905"
   license "Apache-2.0"
   head "https://github.com/digitalocean/doctl.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ec899131a73acdd3eaf0836c66b405ab9e1ea40893109bb12eff7467c754ddab"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ec899131a73acdd3eaf0836c66b405ab9e1ea40893109bb12eff7467c754ddab"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ec899131a73acdd3eaf0836c66b405ab9e1ea40893109bb12eff7467c754ddab"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a9ad3ed65de182795c0c980050e76ba8a922e8360d9580d7606de994e011a167"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "d87b90384e868ac1dfbafdac7fde2a3f820cf604af9d690af57c726ef318dca5"
-    sha256 cellar: :any,                 x86_64_linux:  "29e8c6bcad7604defd98ae104d13a34655e5d67103fc04a50851ff07445923e8"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a69c63480890df19d0153b5b6c64a8b57c6818de8bb3fdaf1303671cb98ff867"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "3c2c9224345118f44bb063423a735ced2a120f95ce1993ffe2aacec0340c2138"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3c2c9224345118f44bb063423a735ced2a120f95ce1993ffe2aacec0340c2138"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "3c2c9224345118f44bb063423a735ced2a120f95ce1993ffe2aacec0340c2138"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "a2e1ad06f4d61d195a438a304fcefbcee034dc890c8f3aad3fcdc261863df3d2"
+    sha256 cellar: :any,                 x86_64_linux:      "82e535f0f76c7e3f18ce41962d7957439bb9f59922f3f6e07fdbe81c208e6fa1"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ldflags = %W[
-      -s -w
       -X github.com/digitalocean/doctl.Major=#{version.major}
       -X github.com/digitalocean/doctl.Minor=#{version.minor}
       -X github.com/digitalocean/doctl.Patch=#{version.patch}

@@ -1,18 +1,18 @@
 class AwsCEventStream < Formula
   desc "C99 implementation of the vnd.amazon.eventstream content-type"
   homepage "https://github.com/awslabs/aws-c-event-stream"
-  url "https://github.com/awslabs/aws-c-event-stream/archive/refs/tags/v0.7.1.tar.gz"
-  sha256 "334b2abfe0cb5c68d79d52525598fdd5f6052b93a17a78a4b1ada7fa1be252c0"
+  url "https://github.com/awslabs/aws-c-event-stream/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "c3817ab04bf9c70fa3582a31243666a9a643ebe45f121f58d5fef5ff4787f8e0"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "814308827636ee3eb0e11c8d0a27c8e75ce713be0ded8598e71de9d0324f5993"
-    sha256 cellar: :any,                 arm64_sequoia: "5d4e583cf3c1ada0cac9134fce473defff1ea1bbbb03ae718b8977e14978eb9a"
-    sha256 cellar: :any,                 arm64_sonoma:  "09b75c0386cb914b0b79b60fc9449e0d90d7b5f6ef082d4327ffb087491bf6c7"
-    sha256 cellar: :any,                 sonoma:        "0cb42827075adb020bbfc674ad5b6ba3bda885225204132884ee7962af329ae7"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "399b4e3f0b823672c8e2d78dc3d6e03503482965e883fa444f2222b6ab2a2503"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e6e83713aad44ec5487a487350a03488e0d5ad3d1302f38d2214ce35d921d919"
+    sha256 cellar: :any, arm64_golden_gate: "b172d78498a56d588fe3ca8bde4cfe043f1088fd85c49045075a365f3962fa5a"
+    sha256 cellar: :any, arm64_tahoe:       "3421dc29eb43b10024b9344bdbccc0cc5ab8cfd9efa2206c0383c3aa6ee87350"
+    sha256 cellar: :any, arm64_sequoia:     "eedbc91b7709177c64ffb9756c862c7c0970b807219260af9c8b24bc76aca66d"
+    sha256 cellar: :any, arm64_sonoma:      "a0c0c268dec6ab79ccceb4d56b45a96487091af29247a6fe0fcac9ebd3bd60ca"
+    sha256 cellar: :any, arm64_linux:       "a7f23e352bb33cb3c7714d974214329b901059cae6a3f5db30cec6c562926620"
+    sha256 cellar: :any, x86_64_linux:      "99ad7d1c690ce59b6bd7a48732c608d070400df5854ddf248c72347ab852cf20"
   end
 
   depends_on "cmake" => :build
@@ -55,7 +55,7 @@ class AwsCEventStream < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-event-stream",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

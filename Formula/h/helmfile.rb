@@ -1,27 +1,32 @@
 class Helmfile < Formula
   desc "Deploy Kubernetes Helm Charts"
   homepage "https://github.com/helmfile/helmfile"
-  url "https://github.com/helmfile/helmfile/archive/refs/tags/v1.5.5.tar.gz"
-  sha256 "dc400c139a506281387c0628c5fdcaf03f96c144427258555c57638412944d98"
+  url "https://github.com/helmfile/helmfile/archive/refs/tags/v1.8.0.tar.gz"
+  sha256 "acc51a53c5da30a33745c3cd0de813f2a2c9f3866ac986caac7c8b8ad01600e0"
   license "MIT"
   version_scheme 1
   head "https://github.com/helmfile/helmfile.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "9de6ed5410fb4e0051c8c40b695e8ec64a77cd121bd007cef648f525eea6b2e0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "503d6b289cb2b28e6e966e901ef1061dad883b78332b26c1dfc20735cb140e15"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "18e3a4520b7b070f4f318a0f39842beb6d441e707fa0fb110fc3b91dbd94b0b9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "7c1449b3a5596fe58fecaf4d7884a2bfa58eede0b990425b58602de122755712"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "211d34b17dc812f3c52ec98ba13bb016d4cf0cf3858393549159323b9981c344"
-    sha256 cellar: :any,                 x86_64_linux:  "ce08cf89e0d09ff073e343b0d834f47e950b946faabd98025b858803984f4799"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "a4cd3bb34e39c0648e0d3428128c1445604c4899e4471cfa55d791f38c1a7223"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "cf2bc4890401a6f96f621f4a9fac204e276e8ea5fd1ae8433e81c2d71f078f88"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "dc3664f2503cd3c2a9db4b1230043ee65f73e99593ac370981d902477d016bc0"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "b6359dd1d8f9a439adc6f68f2f6fcdc3aba9f543d189098ed3556ba53e09b5dd"
+    sha256 cellar: :any,                 x86_64_linux:      "37cc79c0a801e790479f0683a016b36796d7c5af46e2f9c2672d855ad60d8c84"
   end
 
   depends_on "go" => :build
   depends_on "helm"
 
+  # `test do` block adds a helm chart repository
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ldflags = %W[
-      -s -w
       -X go.szostok.io/version.version=v#{version}
       -X go.szostok.io/version.buildDate=#{time.iso8601}
       -X go.szostok.io/version.commit="brew"

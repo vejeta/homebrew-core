@@ -1,18 +1,18 @@
 class Egctl < Formula
   desc "Command-line utility for operating Envoy Gateway"
   homepage "https://gateway.envoyproxy.io/"
-  url "https://github.com/envoyproxy/gateway/archive/refs/tags/v1.8.1.tar.gz"
-  sha256 "7ac51c137ab22568a7e1a7e1fc03094a85214963fe488e239afae11e9e0d82aa"
+  url "https://github.com/envoyproxy/gateway/archive/refs/tags/v1.9.1.tar.gz"
+  sha256 "158d8a2d49376e9f4b273b983a33b10df4c123947552c8a928cd1077876d853f"
   license "Apache-2.0"
   head "https://github.com/envoyproxy/gateway.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "55074a05e7fa773e78ae3087715436dc6e99ae3c8670f118dff24034f376f874"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "77dea44645cbc342426511d7d499f3db53145fc632936e3b51785631e8c9e866"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d63d41da3d052e2aae419624e4ef3cf4af840a79f393cf2cf5e98eaccb9601f8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "67f4acb1d517fc9ece83f060af51f4103e02968991557701fb890db4265e14f8"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3b30fa81dc0f26d87f6f5da857e60b968d5d03fc055bb0ad239968f512f8c303"
-    sha256 cellar: :any,                 x86_64_linux:  "65093c6a16e111c0cf380aab0dfe69e63a1d0fc4680f85a89ffa6da5f4641a19"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "0c073be63365d5498e76acc53fdae17bef0462a1b870ae2b02c77095b061718f"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ff80cda9bcd22dc207e7d531fee96ad549ba25b0cea8b9b72ca7b6dc8766c92c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "3e30bdd629ed0c17c8f19e719de2bb891dce89891aaeb3df2e221a4ea2ec02be"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "fc950a1d232654afc5bace5f8f35117c6b89b03976d4ccfbb490cfe115dcb4b0"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "384028e6463964b0491d39354cc9feb0dcbf4d4df91e5b1834277911341badc9"
+    sha256 cellar: :any,                 x86_64_linux:      "155daa542df8e63c7afe9279eb0d2a07d9c7847a4533a0eb8d4c2600fcccebd8"
   end
 
   depends_on "go" => :build
@@ -25,7 +25,6 @@ class Egctl < Formula
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/envoyproxy/gateway/internal/cmd/version.envoyGatewayVersion=#{version}
       -X github.com/envoyproxy/gateway/internal/cmd/version.gitCommitID=#{tap.user}
     ]

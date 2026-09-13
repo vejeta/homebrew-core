@@ -1,8 +1,8 @@
 class Gegl < Formula
   desc "Graph based image processing framework"
   homepage "https://www.gegl.org/"
-  url "https://download.gimp.org/pub/gegl/0.4/gegl-0.4.70.tar.xz"
-  sha256 "47f50d9c3aecd375deb48c11ebfead52d162e4fc162a4b3d44618277f1faec02"
+  url "https://download.gimp.org/pub/gegl/0.4/gegl-0.4.72.tar.xz"
+  sha256 "ccbb8cdd1db56ecd4ece5dbabae0118ab2c46b5b3439c94f3cec467798ce956d"
   license all_of: ["LGPL-3.0-or-later", "GPL-3.0-or-later", "BSD-3-Clause", "MIT"]
   head "https://gitlab.gnome.org/GNOME/gegl.git", branch: "master"
 
@@ -12,12 +12,12 @@ class Gegl < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "ea7612df77e9e8694fb3568b5ca487270bc08f5cd68d3b00b187e9383adc2897"
-    sha256 arm64_sequoia: "be75599c4c4c77a7d1683aa44f4c5b05df7c273c7e6688010162ec9200abe153"
-    sha256 arm64_sonoma:  "cef51fde6564b2016506f62dd82ff01f214065b7d2a7eadbbd2273d4ce1011b9"
-    sha256 sonoma:        "b4c99b32ffa0602f60994c3de965e30f901ecf385d0b75715d452330b3ca5a07"
-    sha256 arm64_linux:   "ba52bbb8cb134e243902bc2be32b6242da2815dfe09e6bba64ef6706f0849f4c"
-    sha256 x86_64_linux:  "9686385f6f060df9c992dd4bcfdadded38affd646c6c13e73df624891aee0bd5"
+    sha256 arm64_golden_gate: "09bde0ede75cace03ec6d2365358d7a801dcaaa53c75decc4510809b2ded3e76"
+    sha256 arm64_tahoe:       "ec9ce003ad62cd27ee15e3a5ce94ce04484965f6e2081899ab187030307a17a7"
+    sha256 arm64_sequoia:     "6c2ebf4c201aff4e8b6d0d0d75ec93eac13f36900654ac4e3238609529908f8c"
+    sha256 arm64_sonoma:      "40a57e9cb75ce703824e3513dcc51e668c319a36a3f2b7eb65b39bac624c9d5d"
+    sha256 arm64_linux:       "d7d7654da633cd03a65419971bdef487c50d8f31f694a4e0b00c5672ce67e28a"
+    sha256 x86_64_linux:      "d7871949de55d05b400b7565eb78fdd8c8424128a7484272c5c8235bdc7de987"
   end
 
   depends_on "gettext" => :build
@@ -31,9 +31,11 @@ class Gegl < Formula
   depends_on "glib"
   depends_on "jpeg-turbo"
   depends_on "json-glib"
+  depends_on "libnsgif"
   depends_on "libpng"
   depends_on "libtiff"
   depends_on "little-cms2"
+  depends_on "webp"
 
   on_macos do
     depends_on "gettext"
@@ -49,7 +51,7 @@ class Gegl < Formula
       -Djasper=disabled
       -Dumfpack=disabled
       -Dlibspiro=disabled
-      --force-fallback-for=libnsgif,poly2tri-c
+      --force-fallback-for=poly2tri-c
     ]
     system "meson", "setup", "build", *args, *std_meson_args
     system "meson", "compile", "-C", "build", "--verbose"

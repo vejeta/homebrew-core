@@ -1,21 +1,26 @@
 class Cloudflared < Formula
   desc "Cloudflare Tunnel client (formerly Argo Tunnel)"
   homepage "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/"
-  url "https://github.com/cloudflare/cloudflared/archive/refs/tags/2026.6.1.tar.gz"
-  sha256 "c3619a29cc529a5bc43ba99e1b298483ac0b8d8c412f69575c089a6bd4a7867d"
+  url "https://github.com/cloudflare/cloudflared/archive/refs/tags/2026.9.1.tar.gz"
+  sha256 "e75d9a314ae07ae42564c0d3115b9e33d8a7329d99771951ab7b67144461bd84"
   license "Apache-2.0"
   head "https://github.com/cloudflare/cloudflared.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "4c912992963b9ed7a51e76c66eb484466071cda83f2899b3c3548330fe7bb64d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "96799ce2388be581e3f825bc7fbb8b74c5b833e30086802c3b48b5a022356b1d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5c5e934d8982515416b38e72d8459585255e302638ec645b1dcff44d2db43f7f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bf86fee39081042b8d9b635bde75296aa0b6a3cbf33964c11782ff45a1dd4157"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "6be21be0b7e4c06ba2870eaea19d8a36a2877f97e83d7010ddd326cb6f5ed6e7"
-    sha256 cellar: :any,                 x86_64_linux:  "e5cf1b373200ec130a1a1e3ea7c7b805b6d293658e04799bbcac5276f0181c50"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "c47676c07b9fc4f8256d3945dad0731407025649531429c21bba16e0cdbd81c1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "d798ff0e23a1bb67c4bbd29d47360490d17cf3245714c040052daca6b5913cee"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "65528d4e375d45285c55fe35837f8308b8dae95b7664fec581b796c627b8cd5d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "4d5a810ef26cec6f44a33fa4c4c9a453283205493e6e39db92810fd7aa86414a"
+    sha256 cellar: :any,                 x86_64_linux:      "3598871e09787cdfe6736d6ffc7638ce390b370c3de51199941c1acf64563ab6"
   end
 
   depends_on "go" => :build
+
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
 
   def install
     # We avoid using the `Makefile` to ensure usage of our own `go` toolchain.

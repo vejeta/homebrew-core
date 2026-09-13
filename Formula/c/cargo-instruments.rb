@@ -6,18 +6,25 @@ class CargoInstruments < Formula
   license "MIT"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "abe5a19dc7b3551007122f352de254d4ce544dc2dba35bb6efd2a6e6051325bd"
-    sha256 cellar: :any, arm64_sequoia: "6aa01e9cffc3f4f6c0fa611bbd58f69b4732e09a24a075388e8834242f935c05"
-    sha256 cellar: :any, arm64_sonoma:  "9f110ad87270e265ab8fd9590af3e28429a2b76e007b43808381e1b5175a0af1"
-    sha256 cellar: :any, sonoma:        "9e719583cf14cd5633e929007380abc8601e23d957ccd2022bfe8ba71ddf05d1"
+    sha256 cellar: :any, arm64_golden_gate: "384037c5960fe3e42653f37a661e5c8fdf53c6d169b8c1923bcdd558809567c0"
+    sha256 cellar: :any, arm64_tahoe:       "abe5a19dc7b3551007122f352de254d4ce544dc2dba35bb6efd2a6e6051325bd"
+    sha256 cellar: :any, arm64_sequoia:     "6aa01e9cffc3f4f6c0fa611bbd58f69b4732e09a24a075388e8834242f935c05"
+    sha256 cellar: :any, arm64_sonoma:      "9f110ad87270e265ab8fd9590af3e28429a2b76e007b43808381e1b5175a0af1"
+    sha256 cellar: :any, sonoma:            "9e719583cf14cd5633e929007380abc8601e23d957ccd2022bfe8ba71ddf05d1"
   end
 
   depends_on "rust" => :build
   depends_on :macos
   depends_on "openssl@4"
 
+  deny_network_access!
+
+  def fetch
+    system "cargo", "fetch", "--locked"
+  end
+
   def install
-    ENV["OPENSSL_DIR"] = Formula["openssl@4"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4")
     system "cargo", "install", *std_cargo_args
   end
 

@@ -7,12 +7,13 @@ class Gxml < Formula
   revision 2
 
   bottle do
-    sha256 arm64_tahoe:   "a3da5e42590fe64560597a9dd87d4ef7b99a7fab333a8ce2b1b307709892eab6"
-    sha256 arm64_sequoia: "371bfb0dcf652b8f7fa6f79783ca427c1228fba85314a430397080ba47aebe2a"
-    sha256 arm64_sonoma:  "440e8583de82f846393564e4e505b952250609103377dce30cc4141cdb9a5afd"
-    sha256 sonoma:        "f26bdae2e98a12878bf0266f81ead6d0d35049aac22f6d7e998dec91f4cbe1ab"
-    sha256 arm64_linux:   "a005ed52b097ee095f4ec60799afa0428ddc924a84715522d5787e5430f50448"
-    sha256 x86_64_linux:  "34f65c1d4ae3dedf814cf963ac7bcc5619bd80285d22f151a679cc1eb24e6e4b"
+    sha256 arm64_golden_gate: "791623e8ba28447a1c22d7c1d2afad720c000b74fe5d80d45dc419e64c64e082"
+    sha256 arm64_tahoe:       "a3da5e42590fe64560597a9dd87d4ef7b99a7fab333a8ce2b1b307709892eab6"
+    sha256 arm64_sequoia:     "371bfb0dcf652b8f7fa6f79783ca427c1228fba85314a430397080ba47aebe2a"
+    sha256 arm64_sonoma:      "440e8583de82f846393564e4e505b952250609103377dce30cc4141cdb9a5afd"
+    sha256 sonoma:            "f26bdae2e98a12878bf0266f81ead6d0d35049aac22f6d7e998dec91f4cbe1ab"
+    sha256 arm64_linux:       "a005ed52b097ee095f4ec60799afa0428ddc924a84715522d5787e5430f50448"
+    sha256 x86_64_linux:      "34f65c1d4ae3dedf814cf963ac7bcc5619bd80285d22f151a679cc1eb24e6e4b"
   end
 
   depends_on "gobject-introspection" => :build
@@ -29,10 +30,12 @@ class Gxml < Formula
     depends_on "gettext"
   end
 
-  # fix version comparison in gxml.pc.in, upstream pr ref, https://gitlab.gnome.org/GNOME/gxml/-/merge_requests/28
+  # fix version comparison in gxml.pc.in
   patch do
     url "https://gitlab.gnome.org/GNOME/gxml/-/commit/6551103abd5143e51814ec1dce9b36bb9a46e09f.diff"
     sha256 "b87f585ab782b2ff4f024c45c9a90791c2023e3703756f2eb799591e7978e640"
+    type :unofficial
+    resolves "https://gitlab.gnome.org/GNOME/gxml/-/merge_requests/28"
   end
 
   def install
@@ -50,7 +53,7 @@ class Gxml < Formula
         return 0;
       }
     C
-    ENV.prepend_path "PKG_CONFIG_PATH", Formula["libxml2"].opt_lib/"pkgconfig"
+    ENV.prepend_path "PKG_CONFIG_PATH", formula_opt_lib("libxml2")/"pkgconfig"
     flags = shell_output("pkgconf --cflags --libs libxml-2.0 gxml-0.20").chomp.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"

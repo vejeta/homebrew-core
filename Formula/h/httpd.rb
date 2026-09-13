@@ -8,12 +8,13 @@ class Httpd < Formula
   compatibility_version 1
 
   bottle do
-    sha256 arm64_tahoe:   "e021f36bba83fcceb2d9b7e182f81d6a5616ec23c2ce0bb4a3435bf7fa53f61c"
-    sha256 arm64_sequoia: "0549386596be75710f999a1f5e7b45804c020bec2c2347613f416e67d4cc0ba4"
-    sha256 arm64_sonoma:  "5835c1181a511b8c0eb5729dc27734669387a1c2d0dd95322ec6ae6b2a3f0bfc"
-    sha256 sonoma:        "50b619ada5467134fbd92ee54c1fed89f4f8c3b4598ae6c9c197993e40e447aa"
-    sha256 arm64_linux:   "356a06f03b55c39098fc33df6a098785a9097253afe40251f6300cb93a82a372"
-    sha256 x86_64_linux:  "a0e54338a4716e465093269159fc55bc979608755a7a09c49f3d9d5d7fcce755"
+    sha256 arm64_golden_gate: "5952d7d046179a10843676bdfe10984848f56820146322616b35f4af73558b12"
+    sha256 arm64_tahoe:       "e021f36bba83fcceb2d9b7e182f81d6a5616ec23c2ce0bb4a3435bf7fa53f61c"
+    sha256 arm64_sequoia:     "0549386596be75710f999a1f5e7b45804c020bec2c2347613f416e67d4cc0ba4"
+    sha256 arm64_sonoma:      "5835c1181a511b8c0eb5729dc27734669387a1c2d0dd95322ec6ae6b2a3f0bfc"
+    sha256 sonoma:            "50b619ada5467134fbd92ee54c1fed89f4f8c3b4598ae6c9c197993e40e447aa"
+    sha256 arm64_linux:       "356a06f03b55c39098fc33df6a098785a9097253afe40251f6300cb93a82a372"
+    sha256 x86_64_linux:      "a0e54338a4716e465093269159fc55bc979608755a7a09c49f3d9d5d7fcce755"
   end
 
   depends_on "apr"
@@ -47,16 +48,16 @@ class Httpd < Formula
     inreplace "config.layout" do |s|
       s.gsub! "${datadir}/htdocs", "${datadir}"
       s.gsub! "${htdocsdir}/manual", "#{pkgshare}/manual"
-      s.gsub! "${datadir}/error",   "#{pkgshare}/error"
-      s.gsub! "${datadir}/icons",   "#{pkgshare}/icons"
+      s.gsub! "${datadir}/error", "#{pkgshare}/error"
+      s.gsub! "${datadir}/icons", "#{pkgshare}/icons"
     end
 
     if OS.mac?
       libxml2 = "#{MacOS.sdk_for_formula(self).path}/usr"
       zlib = "#{MacOS.sdk_for_formula(self).path}/usr"
     else
-      libxml2 = Formula["libxml2"].opt_prefix
-      zlib = Formula["zlib-ng-compat"].opt_prefix
+      libxml2 = formula_opt_prefix("libxml2")
+      zlib = formula_opt_prefix("zlib-ng-compat")
     end
 
     system "./configure", "--enable-layout=Slackware-FHS",
@@ -76,14 +77,14 @@ class Httpd < Formula
                           "--with-suexec-caller=_www",
                           "--with-port=8080",
                           "--with-sslport=8443",
-                          "--with-apr=#{Formula["apr"].opt_prefix}",
-                          "--with-apr-util=#{Formula["apr-util"].opt_prefix}",
-                          "--with-brotli=#{Formula["brotli"].opt_prefix}",
+                          "--with-apr=#{formula_opt_prefix("apr")}",
+                          "--with-apr-util=#{formula_opt_prefix("apr-util")}",
+                          "--with-brotli=#{formula_opt_prefix("brotli")}",
                           "--with-libxml2=#{libxml2}",
                           "--with-mpm=prefork",
-                          "--with-nghttp2=#{Formula["libnghttp2"].opt_prefix}",
-                          "--with-ssl=#{Formula["openssl@3"].opt_prefix}",
-                          "--with-pcre=#{Formula["pcre2"].opt_prefix}/bin/pcre2-config",
+                          "--with-nghttp2=#{formula_opt_prefix("libnghttp2")}",
+                          "--with-ssl=#{formula_opt_prefix("openssl@3")}",
+                          "--with-pcre=#{formula_opt_prefix("pcre2")}/bin/pcre2-config",
                           "--with-z=#{zlib}",
                           "--disable-lua",
                           "--disable-luajit"
@@ -169,7 +170,6 @@ class Httpd < Formula
       pid = spawn bin/"httpd", "-X", "-f", testpath/"httpd.conf"
 
       sleep 3
-      sleep 2 if OS.mac? && Hardware::CPU.intel?
 
       assert_match expected_output, shell_output("curl -s 127.0.0.1:#{port}")
 

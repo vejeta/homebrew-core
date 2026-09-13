@@ -1,18 +1,18 @@
 class CcSwitchCli < Formula
   desc "All-in-one assistant tool for Claude Code, Codex, Gemini, OpenCode and OpenClaw"
   homepage "https://github.com/SaladDay/cc-switch-cli"
-  url "https://github.com/SaladDay/cc-switch-cli/archive/refs/tags/v5.8.4.tar.gz"
-  sha256 "d1c517cec98bbde45254aa7ebddc46bd80eb1cc628db5cda7983ae592f5e60f6"
+  url "https://github.com/SaladDay/cc-switch-cli/archive/refs/tags/v5.10.4.tar.gz"
+  sha256 "cb10c2742b5552bb4de4cf58663afdf8d79e96e05ea68b5533489a6ba0583dcb"
   license "MIT"
   head "https://github.com/SaladDay/cc-switch-cli.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "f3bc97831c16636f650a99be392fd6b6889e5d6691253ff7e300277d7c3bc914"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "dc27132def65b65400457ac794ca07b96a4c2db39054479c2de877a2f83708b2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "23a4b32e747fedbcabaf4127ad59b5e0b9fcbe1410559b5e96610b62b6ccf633"
-    sha256 cellar: :any_skip_relocation, sonoma:        "02d096fb9e832126423148fdaf89c1fcfe2e1236f2b58a06b805b72c77515c7b"
-    sha256 cellar: :any,                 arm64_linux:   "e73b9ad1df89844487736d16243e306b3afbe0d2ad48fcb88797af232ccb5075"
-    sha256 cellar: :any,                 x86_64_linux:  "836002e99d963f0e2ca35c5ce19302bb45607b1a77b8921fb3c9100628f62fe6"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ab7ef28e279e20d7dd82be9a26e10556c39dc0400cb4435685ca3ed1e5ae7ab5"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e8941824fae80b72650f540f17b1a2e68a93a59df6d9245eb4e629bac41ad5b7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "b58c7953277f4af0a222ab1e7f3e62c9fd36a829836b28c59eeeec92fd497a31"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "c4563cd1b0e09ddbc142bdaf23341dc7b9be3a8b96766bc6df081b7c451203e6"
+    sha256 cellar: :any,                 arm64_linux:       "f3870a7f984ff57f2db07f2ad27625be0cd3991c212b91bedfda0ef706f55d27"
+    sha256 cellar: :any,                 x86_64_linux:      "cff199d6156b81d83844cb5d67f7863d89c62529b617039e2b291e18d9cff329"
   end
 
   depends_on "rust" => :build

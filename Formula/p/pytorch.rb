@@ -3,12 +3,10 @@ class Pytorch < Formula
 
   desc "Tensors and dynamic neural networks"
   homepage "https://pytorch.org/"
-  # TODO: Restore pybind11 dependency after https://github.com/pytorch/pytorch/pull/175115
-  url "https://github.com/pytorch/pytorch/releases/download/v2.12.0/pytorch-v2.12.0.tar.gz"
-  sha256 "7cc1deb309f402ad67e9f45bbe311a40def4db19d66fddb9b01950f9bfc5ccb1"
+  url "https://github.com/pytorch/pytorch/releases/download/v2.14.0/pytorch-v2.14.0.tar.gz"
+  sha256 "e4bc64b802db095a8a53e216e5aba168eba629b99dd397cfa44e72d9c84e7657"
   license "BSD-3-Clause"
-  revision 1
-  compatibility_version 2
+  compatibility_version 3
 
   livecheck do
     url :stable
@@ -16,18 +14,17 @@ class Pytorch < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "fe4bab2d6ff953b2db268e51786b0ed45689c44512f262ac0a648501886e788e"
-    sha256 cellar: :any,                 arm64_sequoia: "31cfc14c428fb585cf25d9e036c8023f4e45828e8c32869fe901040bea446d2b"
-    sha256 cellar: :any,                 arm64_sonoma:  "4734e9f7318c09fd45ae7b56f4723d81cce70e143df0cbfbc2f6788c594cf78c"
-    sha256 cellar: :any,                 sonoma:        "64c341a1f073a5d5f913b7eff1a6795248af7c65cdb5fef0276f7f935bc62a62"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "77642916937b802ec248a187f73cf05a291027c15217fef4750862c7e58cd867"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c619b91601afa5fdd7a291c916ccfa30268e464c263487474afa10b85ff76750"
+    sha256 cellar: :any, arm64_golden_gate: "eaabaa29d44f089a09f8cc7763a447b58927ce8fb2ab29fc13fa582284f5e3bb"
+    sha256 cellar: :any, arm64_tahoe:       "56aa8be02383a8152b1c9b70f72f68eabe0622437dadb463f06071e258a5a980"
+    sha256 cellar: :any, arm64_sequoia:     "a4efdc4628a9f3ba6743438ec51ecf09af073b301bf720449397668f50216191"
+    sha256 cellar: :any, arm64_sonoma:      "b3a16db49c3c4858e49a3d15e5b1244316a001dac2c01bc69310ab714f8967c7"
+    sha256 cellar: :any, arm64_linux:       "44108e188510cba615f4c52fd013957d1d4d9f98b9bee1d345da8500b9ee013b"
+    sha256 cellar: :any, x86_64_linux:      "89a2b9c38896a23b39c70baa93446df320f3954d413fd7bc75fb1fdb6440f2f1"
   end
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
   depends_on "python@3.14" => [:build, :test]
-  depends_on xcode: :build
   depends_on "abseil"
   depends_on "eigen"
   depends_on "libuv"
@@ -36,7 +33,7 @@ class Pytorch < Formula
   depends_on "onnx"
   depends_on "openblas"
   depends_on "protobuf"
-  # TODO: depends_on "pybind11"
+  depends_on "pybind11"
   depends_on "sleef"
 
   on_macos do
@@ -45,17 +42,17 @@ class Pytorch < Formula
   end
 
   pypi_packages package_name:     "torch[opt-einsum]",
-                extra_packages:   %w[pyyaml packaging],
-                exclude_packages: "numpy"
+                extra_packages:   %w[pyyaml packaging scikit-build-core six],
+                exclude_packages: %w[cuda-bindings numpy nvidia-cublas]
 
   resource "filelock" do
-    url "https://files.pythonhosted.org/packages/b5/fe/997687a931ab51049acce6fa1f23e8f01216374ea81374ddee763c493db5/filelock-3.29.0.tar.gz"
-    sha256 "69974355e960702e789734cb4871f884ea6fe50bd8404051a3530bc07809cf90"
+    url "https://files.pythonhosted.org/packages/0a/a0/50c2c0ce5e74d7721bbb1b19a26ebd339aac5878553a6e35308c2f31f935/filelock-3.32.5.tar.gz"
+    sha256 "f6a6a28f743f9b95ce19db5abe0f376f75eb56517dff21e1a4751e2657d3e83d"
   end
 
   resource "fsspec" do
-    url "https://files.pythonhosted.org/packages/d5/8d/1c51c094345df128ca4a990d633fe1a0ff28726c9e6b3c41ba65087bba1d/fsspec-2026.4.0.tar.gz"
-    sha256 "301d8ac70ae90ef3ad05dcf94d6c3754a097f9b5fe4667d2787aa359ec7df7e4"
+    url "https://files.pythonhosted.org/packages/00/78/f34251dadb8f3921264a1d9b8946f5e542014ee2614b285261b4e40e6775/fsspec-2026.7.0.tar.gz"
+    sha256 "c803c40f4cf860b49dea58ee3e1c33cb9c790520e233537e1340049f89b82a88"
   end
 
   resource "jinja2" do
@@ -84,8 +81,13 @@ class Pytorch < Formula
   end
 
   resource "packaging" do
-    url "https://files.pythonhosted.org/packages/d7/f1/e7a6dd94a8d4a5626c03e4e99c87f241ba9e350cd9e6d75123f992427270/packaging-26.2.tar.gz"
-    sha256 "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"
+    url "https://files.pythonhosted.org/packages/7d/fa/3944b40b07da9ce895c0e6303a5ab7d53da063554f534556b134a54d6093/packaging-26.3.tar.gz"
+    sha256 "94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79"
+  end
+
+  resource "pathspec" do
+    url "https://files.pythonhosted.org/packages/5a/82/42f767fc1c1143d6fd36efb827202a2d997a375e160a71eb2888a925aac1/pathspec-1.1.1.tar.gz"
+    sha256 "17db5ecd524104a120e173814c90367a96a98d07c45b2e10c2f3919fff91bf5a"
   end
 
   resource "pyyaml" do
@@ -93,9 +95,19 @@ class Pytorch < Formula
     sha256 "d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"
   end
 
+  resource "scikit-build-core" do
+    url "https://files.pythonhosted.org/packages/8d/7c/0f69b0c7150ce4bcee78c199fe3b7e03a6e01578451bd5d5d1a58beb32f9/scikit_build_core-1.0.3.tar.gz"
+    sha256 "a4d7a05978ee37975c37743510c8991e2debce7ef83afb0a07c0c576fd4f16e8"
+  end
+
   resource "setuptools" do
-    url "https://files.pythonhosted.org/packages/0d/1c/73e719955c59b8e424d015ab450f51c0af856ae46ea2da83eba51cc88de1/setuptools-81.0.0.tar.gz"
-    sha256 "487b53915f52501f0a79ccfd0c02c165ffe06631443a886740b91af4b7a5845a"
+    url "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz"
+    sha256 "f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73"
+  end
+
+  resource "six" do
+    url "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz"
+    sha256 "ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
   end
 
   resource "sympy" do
@@ -104,26 +116,32 @@ class Pytorch < Formula
   end
 
   resource "typing-extensions" do
-    url "https://files.pythonhosted.org/packages/72/94/1a15dd82efb362ac84269196e94cf00f187f7ed21c242792a923cdb1c61f/typing_extensions-4.15.0.tar.gz"
-    sha256 "0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"
+    url "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz"
+    sha256 "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
+  end
+
+  # A Metal 4 toolchain with an older SDK trips the MPP include, which is only version-gated
+  patch do
+    url "https://github.com/pytorch/pytorch/commit/938bf9785f38e2b2b21879713ae94625aec4787e.patch?full_index=1"
+    sha256 "a89a1f1ac61776832e31865295fe388edf19bbf93be3dbff3a9910fe70cbdec3"
+    type :unofficial
+    resolves "https://github.com/pytorch/pytorch/pull/196104"
   end
 
   def install
-    python3 = "python3.14"
-
     # Avoid building AVX512 code
     inreplace "cmake/Modules/FindAVX.cmake", /^CHECK_SSE\(CXX "AVX512"/, "#\\0"
 
     # Avoid bundling libomp
-    inreplace "setup.py", /^(\s*)self\._embed_libomp\(\)$/, "\\1pass"
+    inreplace "cmake/PostBuildSteps.cmake", "if(APPLE AND BUILD_PYTHON AND USE_OPENMP AND OpenMP_FOUND)", "if(FALSE)"
 
     ENV["ATEN_NO_TEST"] = "ON"
     ENV["BLAS"] = "OpenBLAS"
     ENV["BUILD_CUSTOM_PROTOBUF"] = "OFF"
     ENV["BUILD_PYTHON"] = "ON"
     ENV["BUILD_TEST"] = "OFF"
-    ENV["OpenBLAS_HOME"] = Formula["openblas"].opt_prefix
-    ENV["PYTHON_EXECUTABLE"] = which(python3)
+    ENV["OpenBLAS_HOME"] = formula_opt_prefix("openblas")
+    ENV["PYTHON_EXECUTABLE"] = python3
     ENV["PYTORCH_BUILD_VERSION"] = version.to_s
     ENV["PYTORCH_BUILD_NUMBER"] = "1"
     ENV["USE_CCACHE"] = "OFF"
@@ -134,12 +152,12 @@ class Pytorch < Formula
     ENV["USE_OPENMP"] = "ON"
     ENV["USE_SYSTEM_EIGEN_INSTALL"] = "ON"
     ENV["USE_SYSTEM_ONNX"] = "ON"
-    ENV["USE_SYSTEM_PYBIND11"] = "OFF"
+    ENV["USE_SYSTEM_PYBIND11"] = "ON"
     ENV["USE_SYSTEM_SLEEF"] = "ON"
     ENV["USE_MPS"] = "ON" if OS.mac?
     ENV["USE_KLEIDIAI"] = "OFF"
     # Linuxbrew GCC 12 cannot compile PyTorch's SVE+BF16 path; needs GCC 14+
-    ENV["BUILD_IGNORE_SVE_UNAVAILABLE"] = "1" if OS.linux? && Hardware::CPU.arch == :arm64
+    ENV["BUILD_IGNORE_SVE_UNAVAILABLE"] = "1" if OS.linux? && Hardware::CPU.arm64?
 
     # Workaround for
     # error: a template argument list is expected after a name prefixed by the template keyword
@@ -152,7 +170,7 @@ class Pytorch < Formula
     venv.pip_install resources
 
     # PyTorch needs to pass `-march=armv8.2-a+fp16` to compile runtime detected code
-    ENV.runtime_cpu_detection if OS.linux? && Hardware::CPU.arch == :arm64
+    ENV.runtime_cpu_detection if OS.linux? && Hardware::CPU.arm64?
 
     venv.pip_install_and_link(buildpath, build_isolation: false)
 
@@ -174,7 +192,7 @@ class Pytorch < Formula
         std::cout << tensor << std::endl;
       }
     CPP
-    system ENV.cxx, "-std=c++17", "test.cpp", "-o", "test",
+    system ENV.cxx, "-std=c++20", "test.cpp", "-o", "test",
                     "-I#{include}/torch/csrc/api/include",
                     "-L#{lib}", "-ltorch", "-ltorch_cpu", "-lc10"
     system "./test"

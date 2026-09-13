@@ -1,19 +1,18 @@
 class Usage < Formula
   desc "Tool for working with usage-spec CLIs"
   homepage "https://usage.jdx.dev/"
-  url "https://github.com/jdx/usage/archive/refs/tags/v3.5.2.tar.gz"
-  sha256 "05e0ad29b451c6816e2845556c28eae46bf96f58712a8b457ef1b9907dba533f"
+  url "https://github.com/jdx/usage/archive/refs/tags/v6.9.0.tar.gz"
+  sha256 "bcb44d7e5411efd3182f7cdcc196463f9834d1106eb6fe32556595e670c456e7"
   license "MIT"
   compatibility_version 1
   head "https://github.com/jdx/usage.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5842ae4cf1e49202cac9038daa9093c906134af4cf296e8d0faae96c6b6b3355"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e2ebcc78c6fd48d956b3f2a5a4af80ebb9f8340aa1cf4718da9a4ba60cce49e6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f32adca33b9f69180c12f2e22771d944307e28f0585efba2b3dbf7b8b2540b89"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e4ece390d2d96138bd41fbdd2895806c3fbb5d3ae16ac964f18a305aeeb83249"
-    sha256 cellar: :any,                 arm64_linux:   "7591d5139a97cd3c55051f5db83af6b0022735b9cfecf5527b42c08feba57805"
-    sha256 cellar: :any,                 x86_64_linux:  "83f9b40fd25e329422f869c4f5e5856aec09593c5dafc00d6cf6839b62c70a66"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "faa14a0b779b6a4f04e822e058026c9946ba54cea2da2e0ca81afda81aadddb0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "650a815e1187db2081e2e3672302829b6d869df4b95d4f2f13f8f9aa08d0f913"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "26bd58501d00d5c3659a3893816dea6c4109e6c008d5be8c026199163ef474be"
+    sha256 cellar: :any,                 arm64_linux:       "3d32f2ed4b73f3f552286785f42a732ebbe922e7486cf9489f86bce32596c3d1"
+    sha256 cellar: :any,                 x86_64_linux:      "cbebed4260c4b844977ee476b4a9d0c9d92419916d60148bca34343e27ce1616"
   end
 
   depends_on "rust" => :build
@@ -25,7 +24,7 @@ class Usage < Formula
   end
 
   test do
-    assert_match "usage-cli", shell_output("#{bin}/usage --version").chomp
+    assert_match version.to_s, shell_output("#{bin}/usage --version").chomp
     assert_equal "--foo", shell_output("#{bin}/usage complete-word --spec 'flag \"--foo\"' -").chomp
   end
 end

@@ -1,18 +1,18 @@
 class Recc < Formula
   desc "Remote Execution Caching Compiler"
   homepage "https://buildgrid.gitlab.io/recc"
-  url "https://gitlab.com/BuildGrid/buildbox/buildbox/-/archive/1.4.10/buildbox-1.4.10.tar.gz"
-  sha256 "a3d45f508be607b6361bef504e707f8cd6cfd54aa7cc1729de14f7c5d198e8c7"
+  url "https://gitlab.com/BuildGrid/buildbox/buildbox/-/archive/1.4.24/buildbox-1.4.24.tar.gz"
+  sha256 "31b811d0e05a796b938e7371d59e23ebf888852a9a2e9dc76c9de93192cd42b7"
   license "Apache-2.0"
+  revision 1
   head "https://gitlab.com/BuildGrid/buildbox/buildbox.git", branch: "master"
 
   bottle do
-    sha256 arm64_tahoe:   "eeca3fbe8a4631f75629cdf95948f5a34d020ceaac051d32963603ed38215b7c"
-    sha256 arm64_sequoia: "786dbef8d0c27710594f16e5b41f5a4aefdf18520166928e9b4ecd2e04b0cdd0"
-    sha256 arm64_sonoma:  "c87c2ecde5ccf51c428c618af627aa454d51430223f3c952a19525857695cc93"
-    sha256 sonoma:        "898fbb411a9fc26eb0e7ce4ad71fcc31c227fee3af34457150bd8fef880992a5"
-    sha256 arm64_linux:   "30888ad04c2b581cdca02a189ed6e2d000d6f90ed91547d8c9ee8e55b194fbcd"
-    sha256 x86_64_linux:  "efac05b3cb19dd726af88b77ee933ff3f9c5741a44a8c7752608341bd936f06f"
+    sha256 arm64_golden_gate: "a21d57580b74ef4d44eb1c680ac8290739f62c7207d34b39836e50223c7e1ad2"
+    sha256 arm64_tahoe:       "d0f078ca3fed2ebc17a91652efec393df791683da59a36e1ef9789655cdf7f0c"
+    sha256 arm64_sequoia:     "1fd1a73319908dcd1dd57191232e3d7689521359f880057fe21786f342bd3c01"
+    sha256 arm64_linux:       "f17b4ffa4bf74957b60730495d956acb88146faf81b716ac83c204fa6cd40bbe"
+    sha256 x86_64_linux:      "92758806a6e8a6b41b1f4d8ceddc6a600fbdcb4780e993f1b402439b73488d8c"
   end
 
   depends_on "cmake" => :build
@@ -99,31 +99,20 @@ class Recc < Formula
   end
 
   test do
-    # Start recc server
-    recc_cache_dir = testpath/"recc_cache"
-    recc_cache_dir.mkdir
-    recc_casd_pid = spawn bin/"recc-server", "--local-server-instance", "recc-server", recc_cache_dir
-
-    # Create a source file to test caching
-    test_file = testpath/"test.c"
-    test_file.write <<~C
-      int main() {}
+    (testpath/"main.c").write <<~C
+      #include <stdio.h>
+      int main(void) { puts("recc works"); return 0; }
     C
 
-    # Wait for the server to start
-    sleep 2 unless (recc_cache_dir/"casd.sock").exist?
+    # The action digest is recc's cache key, computed without any CAS server.
+    ENV["RECC_VERBOSE"] = "1"
+    digest_regex = %r{Action Digest: (\h+/\d+)}
+    cache_key = shell_output("#{bin}/recc-cc -c main.c 2>&1")[digest_regex, 1]
+    refute_nil cache_key
+    assert_equal cache_key, shell_output("#{bin}/recc-cc -c main.c 2>&1")[digest_regex, 1]
+    refute_equal cache_key, shell_output("#{bin}/recc-cc -c -DGREETING=1 main.c 2>&1")[digest_regex, 1]
 
-    # Override default values of server and log_level
-    ENV["RECC_SERVER"] = "unix://#{recc_cache_dir}/casd.sock"
-    ENV["RECC_LOG_LEVEL"] = "info"
-    recc_test=[bin/"recc-cc", "-c", test_file]
-
-    # Compile the test file twice. The second run should get a cache hit
-    system(*recc_test)
-    output = shell_output("#{recc_test.join(" ")} 2>&1")
-    assert_match "Action Cache hit", output
-
-    # Stop the server
-    Process.kill("TERM", recc_casd_pid)
+    system bin/"recc-cc", "main.o", "-o", "main"
+    assert_equal "recc works", shell_output("./main").chomp
   end
 end

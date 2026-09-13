@@ -1,20 +1,18 @@
 class GumboParser < Formula
   desc "C99 library for parsing HTML5"
   homepage "https://codeberg.org/gumbo-parser/gumbo-parser"
-  url "https://codeberg.org/gumbo-parser/gumbo-parser/archive/0.13.2.tar.gz"
-  sha256 "dbdc159dc8e5c6f3f254e50bce689dd9e439064ff06c165d5653410a5714ab66"
+  url "https://codeberg.org/gumbo-parser/gumbo-parser/archive/0.14.0.tar.gz"
+  sha256 "eac82480b916d520e4c7938cbd593ceda34c9241cba04022a078550d0d324cfe"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 2
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "c7ea823bbc414304986e981cfc0cb322c6b2ecf13b337645f6a8615284529122"
-    sha256 cellar: :any,                 arm64_sequoia: "431e4134fa525f0c69f3ae3ee54bb7213dbbbbbaaa32921eddc0f899811f890d"
-    sha256 cellar: :any,                 arm64_sonoma:  "790c2342eda7b07cfcaf46464dea8e376b68f790cb891d6567fb58c840b3e18b"
-    sha256 cellar: :any,                 arm64_ventura: "dbd212e34262be85283b0f8f7474bb9420350005de5b751f046d9f788444a381"
-    sha256 cellar: :any,                 sonoma:        "dab4d3f868ea634f979bba453ee14b6c3adeaaad533ea6142b6c7fa78417c553"
-    sha256 cellar: :any,                 ventura:       "d752c28f0a344934860673f86fcffe5ff578a374731bc66268f7f863a7959d01"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "42003f370d87b990cea248ab82ceafc3a046a8489711ed9d2518bf974326e36b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "296ea8a9753f6d0e83ab6ac43a6f66309991e27bc65d136ece7e0368993dc066"
+    sha256 cellar: :any, arm64_golden_gate: "3b00b08e1c68226c21c327e1dc2e622c6807602a7245340ccc92bf7c50b05ec2"
+    sha256 cellar: :any, arm64_tahoe:       "aeb97dc8e078af3ca64411c25764f720da99caa323eecac8b03977e120093dc7"
+    sha256 cellar: :any, arm64_sequoia:     "c5912aa60532919751ec4b2ab685d3528c93307893d3cf8e9769f96d8fb95062"
+    sha256 cellar: :any, arm64_sonoma:      "2e1ef3ac6dab8b652948b93cedb24cce0c9d63aebcd7e91091b62cf83ec3f981"
+    sha256 cellar: :any, arm64_linux:       "3559d483ddc898a201c1be70e9a2da4eb5116537badd05dbfcd4c45c01774501"
+    sha256 cellar: :any, x86_64_linux:      "964e6729f73031fee018819b1f746092bfa6b33c64aaaf2a864981f653374ce9"
   end
 
   depends_on "autoconf" => :build

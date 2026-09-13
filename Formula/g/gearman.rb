@@ -1,18 +1,16 @@
 class Gearman < Formula
   desc "Application framework to farm out work to other machines or processes"
   homepage "https://gearman.org/"
-  url "https://github.com/gearman/gearmand/releases/download/1.1.22/gearmand-1.1.22.tar.gz"
-  sha256 "c5d18f6a13625ebdd7e514596aed39e31203358eee688dfedcedd989a2f02d7a"
+  url "https://github.com/gearman/gearmand/releases/download/2.1.0/gearmand-2.1.0.tar.gz"
+  sha256 "4d24340ab39be851b40d895687c17d6d16e730ece1fa9d9294d6b2b0a8cb1261"
   license "BSD-3-Clause"
-  revision 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "5d3c72680496377b84301a11829ce50486c4303b36e6fced1fded664a3e9e884"
-    sha256 cellar: :any,                 arm64_sequoia: "9e6adef3fb88b33c1dafc83b2836780d15ec5dbca6e85426252910d74fb1328d"
-    sha256 cellar: :any,                 arm64_sonoma:  "20e8012a0a1163aec0122be7ede14c1b67d8a9f2029c48fe4b0fd31bf6a7033f"
-    sha256 cellar: :any,                 sonoma:        "34281099e7a338e50184e5297726d0fde308c108f8324cd4c8a807c2079b8525"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "c334d173303374e69d753ac458fbb7499c3bf5b7730bf9a98c9b77f061569531"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3248cb1b494fc13da4014574ae3be3a88f592862de39ef275ed6a7824a996baf"
+    sha256 cellar: :any, arm64_tahoe:   "37777223a74886d6990baccaa7be3328158b642c456113f17885b76b91625a3e"
+    sha256 cellar: :any, arm64_sequoia: "1f86fead5d81f99d0bb1df31602cd4d08b5854f01eee1b211ad55c249e38e92c"
+    sha256 cellar: :any, arm64_sonoma:  "fe4e152aaeede12c1c2edf442510a8dae9ce07e79f7dbb5e4a5a0f5805269cb9"
+    sha256 cellar: :any, arm64_linux:   "689317e40bd208580eee3efeb6a1c50be9ecfe3d814e494ec365a2816b16e1b8"
+    sha256 cellar: :any, x86_64_linux:  "f0bfda5641a2ec601be92fecd4e6785141309e0d0bbe93866be5ddf3b3e25761"
   end
 
   depends_on "pkgconf" => :build
@@ -29,13 +27,6 @@ class Gearman < Formula
   end
 
   def install
-    # https://bugs.launchpad.net/gearmand/+bug/1368926
-    Dir["tests/**/*.cc", "libtest/main.cc"].each do |test_file|
-      next unless File.read(test_file).include?("std::unique_ptr")
-
-      inreplace test_file, "std::unique_ptr", "std::auto_ptr"
-    end
-
     args = %W[
       --prefix=#{prefix}
       --localstatedir=#{var}
@@ -48,15 +39,12 @@ class Gearman < Formula
       --disable-libtokyocabinet
       --disable-ssl
       --enable-libmemcached
-      --with-boost=#{Formula["boost"].opt_prefix}
-      --with-memcached=#{Formula["memcached"].opt_bin}/memcached
+      --with-boost=#{formula_opt_prefix("boost")}
+      --with-memcached=#{formula_opt_bin("memcached")}/memcached
       --with-sqlite3
       --without-mysql
       --without-postgresql
     ]
-
-    ENV.append_to_cflags "-DHAVE_HTONLL"
-    ENV.append "CXXFLAGS", "-std=c++14"
 
     (var/"log").mkpath
     system "./configure", *args

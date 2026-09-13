@@ -1,18 +1,18 @@
 class Getparty < Formula
   desc "Multi-part HTTP download manager"
   homepage "https://github.com/vbauerster/getparty"
-  url "https://github.com/vbauerster/getparty/archive/refs/tags/v1.26.3.tar.gz"
-  sha256 "a35626107b4217eb348cf354203011ea1e524adf014df6e59a4991d2e46a00ce"
+  url "https://github.com/vbauerster/getparty/archive/refs/tags/v1.28.1.tar.gz"
+  sha256 "1dd4e69a44f5f758b34488073469a01aaefa2e82ef53a26b6b658ba35614a900"
   license "BSD-3-Clause"
   head "https://github.com/vbauerster/getparty.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "cf958266c5840e572a2709c0791c0571b6078e3dba81749ec8893ec0bebef4b3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "cf958266c5840e572a2709c0791c0571b6078e3dba81749ec8893ec0bebef4b3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cf958266c5840e572a2709c0791c0571b6078e3dba81749ec8893ec0bebef4b3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "c83a815ac350ac6b3072e527462abcf2dbd4661c3f3dec881165754dd3bf64bd"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "61196e5b5fe7becfcf3cc401b147cf601f37b3efaf5ad9c80029234af0126f26"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "60b00014073e94cbdf7843af32102448ba544abd3884a60e076caed7aa8c620b"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "89510ba5ddec576961648efee8418c9ff2a2fcbfd240c2d147f192c34229f9f4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "6d1720ea607d150686a6f3e20993f280d8c5bc61db7ea0817cfb6223c58ad4e2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "6d1720ea607d150686a6f3e20993f280d8c5bc61db7ea0817cfb6223c58ad4e2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "6d1720ea607d150686a6f3e20993f280d8c5bc61db7ea0817cfb6223c58ad4e2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "6c8a6c5334ed84a351db3672dc5e6198f5c905596257879cd8c702d69bd74f99"
+    sha256 cellar: :any,                 x86_64_linux:      "770ca9fb8583f05acd5d478aae96d400e01402b5762b7839008f5607e6fd85dc"
   end
 
   depends_on "go" => :build
@@ -20,7 +20,6 @@ class Getparty < Formula
   def install
     # The commit variable only displays 7 characters, so we can't use #{tap.user} or "Homebrew".
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.commit=brew
     ]

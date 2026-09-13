@@ -1,8 +1,8 @@
 class Cgal < Formula
   desc "Computational Geometry Algorithms Library"
   homepage "https://www.cgal.org/"
-  url "https://github.com/CGAL/cgal/releases/download/v6.2/CGAL-6.2.tar.xz"
-  sha256 "fbc32816745e871a5cbdeb6245317e9dbf10ae1a957b0ab1edb00b4fde00ba8d"
+  url "https://github.com/CGAL/cgal/releases/download/v6.2.1/CGAL-6.2.1.tar.xz"
+  sha256 "b6be77c60765a8456335de991eeaf6ffec55256984e4a9ecc6a97c37bbfe85bf"
   license "GPL-3.0-or-later"
   compatibility_version 1
 
@@ -12,19 +12,15 @@ class Cgal < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "d1bb0e37c68a4b20edc5df7ff186b70687975f48add6c65885bbf8df0ac8e982"
+    sha256 cellar: :any_skip_relocation, all: "a630bdf209970775ad7b3b96efbff3f67d901d923c8a1c43e964353123ecd604"
   end
 
   depends_on "cmake" => [:build, :test]
   depends_on "qtbase" => :test
-  depends_on "boost"
-  depends_on "eigen"
-  depends_on "gmp"
-  depends_on "mpfr"
-
-  on_linux do
-    depends_on "openssl@3"
-  end
+  depends_on "boost" => :no_linkage
+  depends_on "eigen" => :no_linkage
+  depends_on "gmp" => :no_linkage
+  depends_on "mpfr" => :no_linkage
 
   def install
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args

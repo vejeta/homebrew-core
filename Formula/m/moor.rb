@@ -1,28 +1,34 @@
 class Moor < Formula
   desc "Nice to use pager for humans"
   homepage "https://github.com/walles/moor"
-  url "https://github.com/walles/moor/archive/refs/tags/v2.15.1.tar.gz"
-  sha256 "efef9649f11aae825423381513a44b28840a009bf928edd436068cab0fdb5551"
+  url "https://github.com/walles/moor/archive/refs/tags/v2.19.0.tar.gz"
+  sha256 "47a5da205f0af3711a164f579dfebc7c765b54cd9360a353df477c7370b88699"
   license "BSD-2-Clause"
   head "https://github.com/walles/moor.git", branch: "master"
 
   no_autobump! because: :bumped_by_upstream
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "93128bf74dc618e297d6a889ead2435214355e0260aab156fe7e0be8d2c0ae1e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "93128bf74dc618e297d6a889ead2435214355e0260aab156fe7e0be8d2c0ae1e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "93128bf74dc618e297d6a889ead2435214355e0260aab156fe7e0be8d2c0ae1e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "6688ef634b33ea82baccfaa8cea4c3faf6a184bd47d994213eef79901c5983a4"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f5f44e194906e34792c86b908ec761a15253fbb5eb80fa1da5da038848c3ce54"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "732b511951fcfc078d59af2c69dcc6e51b1d0bb31aa406507bce6a5765ba9e53"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "ddba716870db2e276dbdd591a12878faa0664911c1277f61dc592bc46a3e4ec5"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ddba716870db2e276dbdd591a12878faa0664911c1277f61dc592bc46a3e4ec5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "ddba716870db2e276dbdd591a12878faa0664911c1277f61dc592bc46a3e4ec5"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ddba716870db2e276dbdd591a12878faa0664911c1277f61dc592bc46a3e4ec5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "239a7cd4be302002ae5665e2affcd731adb41f3dd0ac15f566c774dc91570ba0"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "49b7ccfae97c522fbff01039013ad2aa090bbdbcded189b66f63ea36ce153410"
   end
 
   depends_on "go" => :build
 
   conflicts_with "moarvm", "rakudo-star", because: "both install `moar` binaries"
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
-    ldflags = "-s -w -X main.versionString=v#{version}"
+    ldflags = "-X main.versionString=v#{version}"
     system "go", "build", *std_go_args(ldflags:), "./cmd/moor"
 
     # Hint for moar users to start typing "moor" instead

@@ -1,8 +1,8 @@
 class Pay < Formula
   desc "HTTP client that automatically handles 402 Payment Required"
   homepage "https://pay.sh"
-  url "https://github.com/solana-foundation/pay/archive/refs/tags/pay-v0.20.0.tar.gz"
-  sha256 "e3b8f2b011039f2c96dfc065c3e8a513907336031838ba7204d317d848b7f501"
+  url "https://github.com/solana-foundation/pay/archive/refs/tags/pay-v0.28.0.tar.gz"
+  sha256 "63b362d454aa37496c6d5eaebaee890b47b19809e3b0fb9f60efbbc97a713160"
   license "MIT"
   head "https://github.com/solana-foundation/pay.git", branch: "main"
 
@@ -12,14 +12,16 @@ class Pay < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c33b7822020a4b447e958c26c492ca30883872e1d39758246298d2fd850ec686"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "39516030e74214fff751df270df0b2564e2c2ad637a63a61b2fb2c74af4598c8"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ca55f95ecec74e30fc58b4a9f8c0d341c13c3c98dfb903867c79c2359f63876f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "926563801a600ef679672187beaea9e8c702aa950c3166ad36d1723005bed5d6"
-    sha256 cellar: :any,                 arm64_linux:   "87223b2e0d84c1c6e922e3162c3029eccc734419cefebac14f133fdd03bf4c15"
-    sha256 cellar: :any,                 x86_64_linux:  "804f13f86c2653ac140118d1871282d4aefd9b9aa1d24b892d506d4e483bb948"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "36a764782d1bca7cfdcaa40a0a57e61d16aaef09857087ac99a6c1d9980c22c4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "05926e1921008838a4fb3477bd8fbaf3322f1775b691d111aef7f053ca39831d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "9947581e9545f365925a615496e7b22faef68b02ecb0730f72146ba6bf4afee3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "9af25cfa5123077b7f1952b570465360e472bda58fd8fb38c7595d81d6c435d6"
+    sha256 cellar: :any_skip_relocation, sonoma:            "6760ec0dfdb02a651386b0b485118fad05f1a7ba4b9c402f03975bcaf4935d6e"
+    sha256 cellar: :any,                 arm64_linux:       "67b8bf78bb617665ec7bec6d46ee57336242f96620f582474ccaec0c6a98aa54"
+    sha256 cellar: :any,                 x86_64_linux:      "9c1264450a445c9de72f1e7185477753977a6131c1e969066279476d60d0f36a"
   end
 
+  depends_on "cmake" => :build
   depends_on "just" => :build
   depends_on "node" => :build
   depends_on "pkgconf" => :build

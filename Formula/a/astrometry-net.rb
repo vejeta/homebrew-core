@@ -14,12 +14,13 @@ class AstrometryNet < Formula
 
   bottle do
     rebuild 2
-    sha256 cellar: :any,                 arm64_tahoe:   "7f4f5d8b63f56580ab8358c167b88b4935edfd89c7a1f23795dd8cc17d7f7dd0"
-    sha256 cellar: :any,                 arm64_sequoia: "92cd33a9b2b2e265f40fc41d8f3970db11b13fd5644e79bb25b59e9c35918300"
-    sha256 cellar: :any,                 arm64_sonoma:  "ed304036c98a2e5b34afd683447e9ec731da0a932f4efd4583948ffa912cd0ab"
-    sha256 cellar: :any,                 sonoma:        "5e5b7ea3ffc3f164fe4ef417ee07b3bd61635e0d013ad65a44750f949b868a39"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1f885845949e0b6399a00d2628b78b06576b2c89137ff308e1c5b708d6b36162"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7d90330bbdcaca59edfed36e5c276dbdfc4167fb0defff861fd94b23bdd28d52"
+    sha256 cellar: :any,                 arm64_golden_gate: "ef9f7aec490aaa2559f6762652a82de90c21fbbf79e2cb9f89b9259c8bef807e"
+    sha256 cellar: :any,                 arm64_tahoe:       "7f4f5d8b63f56580ab8358c167b88b4935edfd89c7a1f23795dd8cc17d7f7dd0"
+    sha256 cellar: :any,                 arm64_sequoia:     "92cd33a9b2b2e265f40fc41d8f3970db11b13fd5644e79bb25b59e9c35918300"
+    sha256 cellar: :any,                 arm64_sonoma:      "ed304036c98a2e5b34afd683447e9ec731da0a932f4efd4583948ffa912cd0ab"
+    sha256 cellar: :any,                 sonoma:            "5e5b7ea3ffc3f164fe4ef417ee07b3bd61635e0d013ad65a44750f949b868a39"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "1f885845949e0b6399a00d2628b78b06576b2c89137ff308e1c5b708d6b36162"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "7d90330bbdcaca59edfed36e5c276dbdfc4167fb0defff861fd94b23bdd28d52"
   end
 
   depends_on "pkgconf" => :build
@@ -49,10 +50,10 @@ class AstrometryNet < Formula
     ENV.deparallelize
 
     ENV["FITSIO_USE_SYSTEM_FITSIO"] = "1"
-    ENV["NETPBM_INC"] = "-I#{Formula["netpbm"].opt_include}/netpbm"
-    ENV["NETPBM_LIB"] = "-L#{Formula["netpbm"].opt_lib} -lnetpbm"
+    ENV["NETPBM_INC"] = "-I#{formula_opt_include("netpbm")}/netpbm"
+    ENV["NETPBM_LIB"] = "-L#{formula_opt_lib("netpbm")} -lnetpbm"
     ENV["SYSTEM_GSL"] = "yes"
-    ENV["PYTHON"] = python3 = which("python3.14")
+    ENV["PYTHON"] = python3
 
     venv = virtualenv_create(libexec, python3)
     venv.pip_install(resources, build_isolation: false)

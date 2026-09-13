@@ -16,7 +16,6 @@ class Fdclone < Formula
     sha256 ventura:        "77caac2a97e0b941e44f6985c618f7877d75d918cc73d90b1b7c2e87a9e647ba"
     sha256 monterey:       "6468c945d2556066eab41175891ea46918c319398a2f10767a0af4d4dc698c9f"
     sha256 big_sur:        "c1c2dcd4d0e97e717dd9444c9ac8b37d77810c8162a481106d68be3c54f999a9"
-    sha256 catalina:       "6272d033132a7a2c355ab19629241021087c606de3114e2ebe4aa301e6bee840"
     sha256 arm64_linux:    "f711ab13e2d255a899f98e9b4d1938dd8fd94236362c62a8fcdbcd3b9346dc54"
     sha256 x86_64_linux:   "b7a4047ede40d7981d2496e42cf32f2886a9bb182a2275f4697b70f20ec5f7f3"
   end
@@ -25,16 +24,18 @@ class Fdclone < Formula
   deprecate! date: "2026-01-05", because: :repo_removed
   disable! date: "2027-01-05", because: :repo_removed
 
-  depends_on maximum_macos: [:sonoma, :build]
   depends_on "nkf" => :build
 
   uses_from_macos "ncurses"
 
+  on_macos do
+    depends_on maximum_macos: [:sonoma, :build]
+  end
+
   conflicts_with "fd", because: "both install `fd` binaries"
 
   patch do
-    url "https://raw.githubusercontent.com/Homebrew/homebrew-core/1cf441a0/Patches/fdclone/3.01b.patch"
-    sha256 "c4159db3052d7e4abec57ca719ff37f5acff626654ab4c1b513d7879dcd1eb78"
+    file "Patches/fdclone/3.01b.patch"
   end
 
   def install

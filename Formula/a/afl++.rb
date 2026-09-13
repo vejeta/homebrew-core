@@ -1,9 +1,9 @@
 class Aflxx < Formula
   desc "American Fuzzy Lop++"
   homepage "https://aflplus.plus/"
-  url "https://github.com/AFLplusplus/AFLplusplus/archive/refs/tags/v5.01c.tar.gz"
-  version "5.01c"
-  sha256 "5d33fb1eb59043a0c2b72e4ef38d235cd47bfdced503d4915f74002be6c75fb3"
+  url "https://github.com/AFLplusplus/AFLplusplus/archive/refs/tags/v5.03c.tar.gz"
+  version "5.03c"
+  sha256 "07f089e8591209862898c770a569d8e2b74b459fe967db323fc6a3924dcc82b5"
   license "Apache-2.0"
 
   livecheck do
@@ -12,12 +12,12 @@ class Aflxx < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "54b9017df4bcc9086dda75eee50811b5f8e2f631079fa532d0d4023b54bca8f2"
-    sha256 arm64_sequoia: "8d90e8eec72709c1005fe217907cc1637ecfb9b7bffea0753ce15834d1f582c0"
-    sha256 arm64_sonoma:  "14941d0722efac1de4869d01ac6b9849f26826b92cb0d0be15fdfa5eb60b53c2"
-    sha256 sonoma:        "3f4b2589a59b5cc996a5e76038e2c00280d51281412c0b2d840cd89adc273155"
-    sha256 arm64_linux:   "e3c07c94a9e7b99114724611b984a513117bc05dea0f7355f3ebbe68d7509fb8"
-    sha256 x86_64_linux:  "7d19b3d80760bd0129d14db1c39e1be620f018e160f2e415bfaca25faaa082af"
+    sha256 arm64_golden_gate: "34651d4371d17caa02a4ea5e3a0706c440b7cae51001c4d911ac1be1c9f128c7"
+    sha256 arm64_tahoe:       "f33e4c13560716e131830031231cee4557d2412fdb42eb1d31e237d5bab245f2"
+    sha256 arm64_sequoia:     "6f05cfb63fc14bfe6eca002a4f739412468393a274846f37851768ad63f8b862"
+    sha256 arm64_sonoma:      "1457bb1c66fa4d79cbefa0e4e62ec8fbd5886ee708b50ffe0c656446ba155e8b"
+    sha256 arm64_linux:       "0aa2f098482dbaf1632ce5c65287280c45d501c72e6aa23d348ceb4fe1d15b98"
+    sha256 x86_64_linux:      "08a891c56269d274fd55b54c74a7587ff5540ed549032d4a9fb4724d4ba34fbf"
   end
 
   depends_on "coreutils" => :build
@@ -33,8 +33,10 @@ class Aflxx < Formula
   fails_with :clang
   fails_with :gcc
 
+  deny_network_access!
+
   def install
-    ENV.prepend_path "PATH", Formula["coreutils"].libexec/"gnubin"
+    ENV.prepend_path "PATH", formula_opt_libexec("coreutils")/"gnubin"
 
     if OS.mac?
       # Disable the in-build test runs as they require modifying system settings as root.

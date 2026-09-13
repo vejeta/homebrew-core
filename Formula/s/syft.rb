@@ -1,25 +1,31 @@
 class Syft < Formula
   desc "CLI for generating a Software Bill of Materials from container images"
   homepage "https://github.com/anchore/syft"
-  url "https://github.com/anchore/syft/archive/refs/tags/v1.45.1.tar.gz"
-  sha256 "eeae4dceb6d3efded3a7209da5d051bfcba9387dbe15722f22bde5f90eb2200d"
+  url "https://github.com/anchore/syft/archive/refs/tags/v1.51.1.tar.gz"
+  sha256 "da8d83cdca78f2c553e08a5ecb9734016a05adb904168531f582bebfbb9bb2cf"
   license "Apache-2.0"
   head "https://github.com/anchore/syft.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "e7a72bf67f4afd3c73172116ac92fab762a8fb78e1c9f8f0f7a9e37c516f3181"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4d200289f5ea3fa1a7ce795ac496afb0eb1fc967cae41d33d632dfd0fd7aa2a1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "305764231ae21b662f1148aa8f890de1363d1fcd3612e9a51328a44586a3fbe0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "087fce301b22657c00ea9c34ffd4d4cb7daa00d37e9281a09dab92ac55838bb6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8585733dfcb9991c770e256f9282126c8c776fdf581192311d1b36600ccf200f"
-    sha256 cellar: :any,                 x86_64_linux:  "69dd10bc17d4a8dcc49c8a5c33fa7ff187a13b0472dd0a72d14558b107afa306"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6e890386f407ceb408dac2b3bb19442e626ffd44e4745af48a33332b230e13c0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "953c3f99e76db3f63362fd035cf428ff75173ea858e86e321dd5eefacb210e57"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "bbb1efdf4e878ae660528329c1c7b280d77ffb172a728b628b3dcb5658b442d1"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "ea350664ee8dc144de92ac4fdb07df0aa6c0bc97b18bac7bb738bf0be6d74316"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "dc10911dd732fde0c952dd1d32b9abfdb451021fbe023427991f51dca430be63"
+    sha256 cellar: :any,                 x86_64_linux:      "d234ac2d2401ddf8fff2befb4d2e36651cf630bd8f5f0c56b23f030a6bed1546"
   end
 
   depends_on "go" => :build
 
+  # `test do` block downloads a test fixture resource
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ldflags = %W[
-      -s -w
       -X main.version=#{version}
       -X main.gitCommit=#{tap.user}
       -X main.buildDate=#{time.iso8601}
@@ -37,7 +43,8 @@ class Syft < Formula
     end
 
     testpath.install resource("homebrew-micronaut.cdx.json")
-    output = shell_output("#{bin}/syft convert #{testpath}/micronaut.json")
+    # Redirect stderr so the progress UI does not engage on the sandbox PTY and hang
+    output = shell_output("#{bin}/syft convert #{testpath}/micronaut.json 2>/dev/null")
     assert_match "netty-codec-http2  4.1.73.Final  UnknownPackage", output
 
     assert_match version.to_s, shell_output("#{bin}/syft --version")

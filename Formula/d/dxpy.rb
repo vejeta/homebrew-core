@@ -3,18 +3,17 @@ class Dxpy < Formula
 
   desc "DNAnexus toolkit utilities and platform API bindings for Python"
   homepage "https://github.com/dnanexus/dx-toolkit"
-  url "https://files.pythonhosted.org/packages/0f/c9/adbd07666a6ca61f88a33ce914a804f6fb80c082fb7b9c1e4ee8e880be29/dxpy-0.408.2.tar.gz"
-  sha256 "a7d7acef13596f63243a36243bc1d499b82d49e49a32795098b5018c545e47bb"
+  url "https://files.pythonhosted.org/packages/21/1c/674870249e045f330882e117ca25e6fc744f5b3be4c3a4d53c427546fd2c/dxpy-0.413.0.tar.gz"
+  sha256 "dd2550622399594902d922db15c676388079f3c5c421f1be2bedad1145687c84"
   license "Apache-2.0"
+  revision 1
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_tahoe:   "4269af4ee091220a5d7c448fe6ba5329aeff92aac59f6d090ee4bba063f7f21f"
-    sha256 cellar: :any,                 arm64_sequoia: "6d4640dd08daf8c47ba0dec95131f19a72fc91579b568c63bd7107fc1a03263b"
-    sha256 cellar: :any,                 arm64_sonoma:  "fa8e552b5916b630e770a92651d04c2d30c07c3eabaeef6b84e7c1b8f1bcd6e0"
-    sha256 cellar: :any,                 sonoma:        "f86802378758c5045f24882465623aa6e4063ea8ed7140ea5073db8925ff9fa6"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "5931423419e04e0fab96ada548b54bb4c548ff9b6fac1571ad7185d81ddb4783"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "66405b7df97653673a6fdbeb17d2df416986b370b6b93cdaa8f78bbcface8263"
+    sha256 cellar: :any, arm64_golden_gate: "786f7c265665199cdd2e1fbaf85e9480b8891e81a2bd403e0f67375fbcaad39c"
+    sha256 cellar: :any, arm64_tahoe:       "b78bc75ddb4bee2b1df6403e9ef92e29bf9da4dfdcac6970a2407c206f12691a"
+    sha256 cellar: :any, arm64_sequoia:     "0f4e809124db5ca6f66fa988a5a37f85e6a0c0151a1c9907fcb130ba69f92d62"
+    sha256 cellar: :any, arm64_linux:       "a64c97b2863b8ec6bfbb246f078d16941977015fd93019496f7e0beed4eb7b1c"
+    sha256 cellar: :any, x86_64_linux:      "000882119bfb0ceb6c43bf1aa570dbb59eb2c12de37c7897efc044b58cf8fede"
   end
 
   depends_on "aws-c-auth"
@@ -29,6 +28,7 @@ class Dxpy < Formula
   depends_on "certifi" => :no_linkage
   depends_on "cryptography" => :no_linkage
   depends_on "python@3.14"
+  depends_on "s2n"
 
   on_macos do
     depends_on "aws-c-compression"
@@ -41,18 +41,18 @@ class Dxpy < Formula
   pypi_packages exclude_packages: %w[cryptography certifi websocket-client]
 
   resource "argcomplete" do
-    url "https://files.pythonhosted.org/packages/38/61/0b9ae6399dd4a58d8c1b1dc5a27d6f2808023d0b5dd3104bb99f45a33ff6/argcomplete-3.6.3.tar.gz"
-    sha256 "62e8ed4fd6a45864acc8235409461b72c9a28ee785a2011cc5eb78318786c89c"
+    url "https://files.pythonhosted.org/packages/87/6f/5a73f04007ca950701765949209f068da628bd11f9c2da287278ce91e0ee/argcomplete-3.7.2.tar.gz"
+    sha256 "aad8b69a0b9969edb62db0d1752354c0d50717b10e0cbb00e2a958381b9fc6b9"
   end
 
   resource "awscrt" do
-    url "https://files.pythonhosted.org/packages/4d/4d/c2aece4af7b5537c855548f53ee077d01216a1a4adbf0fd24f23dbac52bf/awscrt-0.32.0.tar.gz"
-    sha256 "92e749fce6c61da8db1af0baa6b7e96f7acf8a5574760b3d7880d190cedee8a0"
+    url "https://files.pythonhosted.org/packages/fd/d5/7bb52ee6dfcb36abfc787d5512c8d11fb231f1a7caac7c52479d98ed8dd6/awscrt-0.36.2.tar.gz"
+    sha256 "6a6ad171cc3bb2763fb006c9c5c1c3df85d9c1d30b2ca0908ce539e5ee694629"
   end
 
   resource "crc32c" do
-    url "https://files.pythonhosted.org/packages/e3/66/7e97aa77af7cf6afbff26e3651b564fe41932599bc2d3dce0b2f73d4829a/crc32c-2.8.tar.gz"
-    sha256 "578728964e59c47c356aeeedee6220e021e124b9d3e8631d95d9a5e5f06e261c"
+    url "https://files.pythonhosted.org/packages/b8/2a/1b7eadbd3c858204a90406a2a1e0dccd1592f69b77ec278a202fa325c50f/crc32c-2.9.tar.gz"
+    sha256 "d6d2ae0299a417e5fb2e3641838cec34a23778a62fb4ce928792366476c1983b"
   end
 
   resource "psutil" do
@@ -71,8 +71,8 @@ class Dxpy < Formula
   end
 
   resource "urllib3" do
-    url "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz"
-    sha256 "1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed"
+    url "https://files.pythonhosted.org/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz"
+    sha256 "231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c"
   end
 
   # Issue ref: https://github.com/dnanexus/dx-toolkit/pull/1530

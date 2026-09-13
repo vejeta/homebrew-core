@@ -1,8 +1,8 @@
 class Ejabberd < Formula
   desc "XMPP application server"
   homepage "https://www.ejabberd.im"
-  url "https://github.com/processone/ejabberd/archive/refs/tags/26.04.tar.gz"
-  sha256 "77deb1053978ae9790f909b7b573ac61c6b94d7c465a84c5b56568292d49e47d"
+  url "https://github.com/processone/ejabberd/archive/refs/tags/26.07.tar.gz"
+  sha256 "7b2e4efe2d5c867d2ced9cb1391731c5e6b9accd6f166ec71e734a3ae97813d7"
   license "GPL-2.0-or-later"
   revision 2
   head "https://github.com/processone/ejabberd.git", branch: "master"
@@ -16,12 +16,12 @@ class Ejabberd < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "03f174dd628778ecb6301a3dfbb6da50753b0eaf54d0dbc560e25c68c5a7a7e1"
-    sha256 cellar: :any, arm64_sequoia: "e091fb3b4fe98311e3f797f3d9398536b5ab6881b0a62eedab54416776e45f7b"
-    sha256 cellar: :any, arm64_sonoma:  "6399db0bfe396459c5ebcce340eebb75d2e3387c1acd17f1ea6caecc3d67ee87"
-    sha256 cellar: :any, sonoma:        "0fc0e824efa7fae1687994fe2dc80eb9b3cb16e7711eae6eebc2e6f88cb3df65"
-    sha256 cellar: :any, arm64_linux:   "d73d165f77d6a257b906fe80288bf14c7df6b378eae281cbf9965b892fc7abb7"
-    sha256 cellar: :any, x86_64_linux:  "6bba2d33d568059eb7b91e7669b02216db9f7e46cad9226722720ca5f39e129e"
+    sha256 cellar: :any, arm64_golden_gate: "119f9e2e3fb9caf7824712fb47b6c4e183213983bce45489cc8ac1f83430f579"
+    sha256 cellar: :any, arm64_tahoe:       "7392a38aea2dbeec29d98ee5010acf9046ca0968c99014c96cdfa14f25abad9a"
+    sha256 cellar: :any, arm64_sequoia:     "8537f2664cb8e8179fd1fab136fe2e8cb68575d3b0b612ba07161268829910e3"
+    sha256 cellar: :any, arm64_sonoma:      "1dca086a9ab019f8927735ed0e2b0324ba3a1eb1f5c6ac216de9f476de2e3c62"
+    sha256 cellar: :any, arm64_linux:       "01035a43dbda58abfd1521426371fdc33356eb0c1b239ed82547c45b587b5084"
+    sha256 cellar: :any, x86_64_linux:      "cfc59032c3e8c3d7317733d6d9366b11dfb6ecd9b95770b2a8abd68b9f259424"
   end
 
   depends_on "autoconf" => :build
@@ -69,28 +69,18 @@ class Ejabberd < Formula
     # on bootstrap zip extraction in non-interactive environments.
     ENV.deparallelize
 
+    # Makefile asks `elixir` for this and gets a versioned Cellar path, which breaks on every Elixir bump
+    elixir_libdir = "ELIXIR_LIBDIR_RAW=#{formula_opt_prefix("elixir")}/lib/elixir/lib"
+
     # Set CPP to work around cpp shim issue:
     # https://github.com/Homebrew/brew/issues/5153
-    system "make", "CPP=#{ENV.cc} -E"
+    system "make", "CPP=#{ENV.cc} -E", elixir_libdir
 
-    system "make", "install"
+    system "make", "install", elixir_libdir
 
     (etc/"ejabberd").mkpath
-  end
-
-  def post_install
     (var/"lib/ejabberd").mkpath
     (var/"spool/ejabberd").mkpath
-
-    # Create the vm.args file, if it does not exist. Put a random cookie in it to secure the instance.
-    vm_args_file = etc/"ejabberd/vm.args"
-    unless vm_args_file.exist?
-      require "securerandom"
-      cookie = SecureRandom.hex
-      vm_args_file.write <<~EOS
-        -setcookie #{cookie}
-      EOS
-    end
   end
 
   def caveats
@@ -102,7 +92,7 @@ class Ejabberd < Formula
   end
 
   service do
-    run [opt_sbin/"ejabberdctl", "start"]
+    run [opt_sbin/"ejabberdctl", "foreground"]
     environment_variables HOME: var/"lib/ejabberd"
     working_dir var/"lib/ejabberd"
   end
@@ -127,7 +117,8 @@ class Ejabberd < Formula
     assert_equal "pong\n", shell_output("#{sbin}/ejabberdctl --node #{node} ping")
     refute_match(/ERROR/i, output_log.read)
   ensure
-    Process.kill "TERM", pid
+    # `ejabberdctl` execs `beam.smp`, which outlives a TERM sent to the script alone; signal the group
+    Process.kill "TERM", -pid
     Process.wait pid
   end
 end

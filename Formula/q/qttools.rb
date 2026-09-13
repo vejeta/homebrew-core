@@ -1,16 +1,17 @@
 class Qttools < Formula
   desc "Facilitate the design, development, testing and deployment of applications"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.11/6.11.1/submodules/qttools-everywhere-src-6.11.1.tar.xz"
-  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.1/submodules/qttools-everywhere-src-6.11.1.tar.xz"
-  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.1/submodules/qttools-everywhere-src-6.11.1.tar.xz"
-  sha256 "8e61835a679c93fa9c6065b142353c2071ba68e297898937c32a03777fcaf50d"
+  url "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qttools-everywhere-src-6.11.2.tar.xz"
+  mirror "https://qt.mirror.constant.com/archive/qt/6.11/6.11.2/submodules/qttools-everywhere-src-6.11.2.tar.xz"
+  mirror "https://mirrors.ukfast.co.uk/sites/qt.io/archive/qt/6.11/6.11.2/submodules/qttools-everywhere-src-6.11.2.tar.xz"
+  sha256 "9ea75af35c512f7e09e61c8c3af3997f13b4d43bb099cf43fcec470126b4041e"
   license all_of: [
     { any_of: ["LGPL-3.0-only", "GPL-2.0-only", "GPL-3.0-only"] },
     { "GPL-3.0-only" => { with: "Qt-GPL-exception-1.0" } },
     "BSD-3-Clause", # *.cmake
     "BSL-1.0", # bundled catch2
   ]
+  revision 1
   head "https://code.qt.io/qt/qttools.git", branch: "dev"
 
   livecheck do
@@ -18,12 +19,12 @@ class Qttools < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "20aecfa9eb080d4f211b712ea9615fff4402f88c1fcdd1502f19cb762aa334f3"
-    sha256 cellar: :any,                 arm64_sequoia: "462a076f64329011cbbec6812e4c591f80eb81739449fd8a5eb9e03771200b89"
-    sha256 cellar: :any,                 arm64_sonoma:  "fe241aac196a66f1506d8f30048f8ebd248095fc29963b5cd4d1820eab77ffc9"
-    sha256 cellar: :any,                 sonoma:        "9f20463c84fd13541159c9020b552629eaf328d4ae42c593f1251f552c83db47"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "bc8fa63b4cc8e2ae11b3df94f6db5852e28863fda4832cb793df9b5a5e2c9961"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3dcfd3c8fe73c6cb04ed8b85c6bf1d4b0b73e2b53c37cc96dcce15a9c6af17df"
+    sha256 cellar: :any, arm64_golden_gate: "bd09f31f569d3d0c50a9715ef48ec16901e64f9a50863b61741b444a064b442e"
+    sha256 cellar: :any, arm64_tahoe:       "bfa3b31e8c5e13163476f62302e6ca3e93d2eaca559cc7bf90b34761aa713f31"
+    sha256 cellar: :any, arm64_sequoia:     "b2ac23fcf18daa058f65806f691517cf8299bb4fab775fffdb4cfc635746596e"
+    sha256 cellar: :any, arm64_sonoma:      "ca05919b151e8e6d4b937745f09e87770207675e06751645dadd91a5904963c3"
+    sha256 cellar: :any, arm64_linux:       "761efe70e18f05fbade316d2f88e93bd2692f4623da68f60321ac4df63dc3555"
+    sha256 cellar: :any, x86_64_linux:      "9cc0642a824fbf6f8530a57652dbbce0692db9616abcc6ba608ced6ac3e0a3ef"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -40,6 +41,13 @@ class Qttools < Formula
   end
 
   conflicts_with "qt@5", because: "both link conflicting binaries"
+
+  # Backport qlitehtml's litehtml 0.10 support, which qttools has not pulled into its submodule yet.
+  patch do
+    file "Patches/qttools/litehtml-0.10.patch"
+    type :backport
+    resolves "https://code.qt.io/cgit/playground/qlitehtml.git/commit/?id=1f56cfe0a8e9a8a99072e0d325632bd8dc0e20d3"
+  end
 
   def install
     rm_r("src/assistant/qlitehtml/src/3rdparty/litehtml")
@@ -105,11 +113,14 @@ class Qttools < Formula
     XML
 
     ENV["LC_ALL"] = "en_US.UTF-8"
-    system "cmake", "."
-    system "cmake", "--build", ".", "--target", "update_translations"
+    system "cmake", "-S", ".", "-B", "build"
+    system "cmake", "--build", "build", "--target", "update_translations"
     inreplace "hellotr_la.ts", '<translation type="unfinished"></translation>',
                                "<translation>Orbis, te saluto!</translation>"
-    system "cmake", "--build", "."
-    assert_equal "Orbis, te saluto!", shell_output("./hellotr")
+    system "cmake", "--build", "build"
+    # `QTranslator` resolves the relative catalog name against the working directory
+    cd "build" do
+      assert_equal "Orbis, te saluto!", shell_output("./hellotr")
+    end
   end
 end

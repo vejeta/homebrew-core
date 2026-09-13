@@ -1,18 +1,17 @@
 class AwsCS3 < Formula
   desc "C99 library implementation for communicating with the S3 service"
   homepage "https://github.com/awslabs/aws-c-s3"
-  url "https://github.com/awslabs/aws-c-s3/archive/refs/tags/v0.12.6.tar.gz"
-  sha256 "d70061a523ee1fb6f0127e52653e7cc252347893295d675797b3d387e0e46049"
+  url "https://github.com/awslabs/aws-c-s3/archive/refs/tags/v1.1.1.tar.gz"
+  sha256 "5582f405d673db5ca59129631c4a298a501941e654dc742f0a58d4b73696d904"
   license "Apache-2.0"
-  compatibility_version 1
+  compatibility_version 4
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "441e31f41e4b85b5fa09bc829b1db9ccefef1f1f2387a5c73619dae61c0950c2"
-    sha256 cellar: :any, arm64_sequoia: "07250c4e6b0c67a7a9aefda5dc977753a538ef0f92875c366ab1150a6257b2af"
-    sha256 cellar: :any, arm64_sonoma:  "fef59de83a100641bb0bab2ee8443ac5874a5aee74c57c643b9691797d8522bb"
-    sha256 cellar: :any, sonoma:        "b7a014d3e9c3f9bca0c3bb362b41bec112caa4aabb53e5fd70434022a4b42133"
-    sha256 cellar: :any, arm64_linux:   "0162c89c71965bee639185610158e12ac15479b27245e47a326a24466adebb42"
-    sha256 cellar: :any, x86_64_linux:  "5eee8cbc532bb34a03f3e856a93f9f47228146b4d62c88f90253851e94321044"
+    sha256 cellar: :any, arm64_golden_gate: "5f9cfb3e7bb76f3f40157c5d18f68ff2d79f02a8721326bc483ca98acd71c143"
+    sha256 cellar: :any, arm64_tahoe:       "8b14ad0559e5d595ee69939c88918af45f7c9ae8dd278af54d96bbbd3f5e7939"
+    sha256 cellar: :any, arm64_sequoia:     "8fef7d23b37d85944fbf6caa8331cd9e63b17a9a80e92a9b06ae2875fcf3457e"
+    sha256 cellar: :any, arm64_linux:       "048864270a33506b8ac865cd1db576deaeb69720424f285f4cb4624de7dea120"
+    sha256 cellar: :any, x86_64_linux:      "bf3313582e052d4d67128e2cb4c679b6953aa0fbfeb7f8a12ca3d0ed4f6978a6"
   end
 
   depends_on "cmake" => :build
@@ -64,7 +63,7 @@ class AwsCS3 < Formula
       }
     C
     system ENV.cc, "test.c", "-o", "test", "-L#{lib}", "-laws-c-s3",
-                   "-L#{Formula["aws-c-common"].opt_lib}", "-laws-c-common"
+                   "-L#{formula_opt_lib("aws-c-common")}", "-laws-c-common"
     system "./test"
   end
 end

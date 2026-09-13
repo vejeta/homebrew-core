@@ -1,8 +1,8 @@
 class Yorkie < Formula
   desc "Document store for collaborative applications"
   homepage "https://yorkie.dev/"
-  url "https://github.com/yorkie-team/yorkie/archive/refs/tags/v0.7.12.tar.gz"
-  sha256 "893eadb97b8742abbb5126d4d76718dc7da363f33d704ad830423ed66aaf5b84"
+  url "https://github.com/yorkie-team/yorkie/archive/refs/tags/v0.7.21.tar.gz"
+  sha256 "22c1aa4a079723b7eac29928bc0884774088f34a2127dcf5e5cf5aa7752cfe40"
   license "Apache-2.0"
   head "https://github.com/yorkie-team/yorkie.git", branch: "main"
 
@@ -12,19 +12,17 @@ class Yorkie < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "705995f153d4cd96fd5ad9839d8a27ec2921b9a21d98a013ec57bbdd06f9b9bf"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "747b5caf9013cb2d800d6adc5f27f98edc661a09ddf830f5d85de843ceb61cd6"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ab6480a7e9469a07cb5525a54ce28b2cad2485f1f4368243033a9d57f8dd4af7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "bfc4df732cd0c795929789a94a77f6a8bba0000aceb29fc26f12e5a317e0468e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "e7d888729f4d73299d0a5976de5b2c92ee846b76e7246a8f5f2dbfe58bb45552"
-    sha256 cellar: :any,                 x86_64_linux:  "91ab65637fdc9f7f83d786a564960d22c37360d9864a37a1f5ef6bf31311b013"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "6fe8ad706bd09b3bc984d6a3c870d31c2e695d954558bb2c72649c14b657580b"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "b352d0f91117ef77e7d9c7f85cde4aba7ed2c59014d6b2c295ccd842fc91d1e8"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "2920dbec50a48518f4fe11d54b3d7ee0041c4925679bba4935d0daeec3cddf95"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "c1903fabc35072b241826aff7bb0f2446ad1d1e30d67f231d6cdd4b02f6e82a5"
+    sha256 cellar: :any,                 x86_64_linux:      "37a00b97aa57b44229ed0b0f797bf8fafdc21997f3a58e6760003e97e1b1ff7d"
   end
 
   depends_on "go" => :build
 
   def install
     ldflags = %W[
-      -s -w
       -X github.com/yorkie-team/yorkie/internal/version.Version=#{version}
       -X github.com/yorkie-team/yorkie/internal/version.BuildDate=#{time.iso8601}
     ]

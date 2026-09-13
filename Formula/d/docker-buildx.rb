@@ -1,26 +1,30 @@
 class DockerBuildx < Formula
   desc "Docker CLI plugin for extended build capabilities with BuildKit"
   homepage "https://docs.docker.com/buildx/working-with-buildx/"
-  url "https://github.com/docker/buildx/archive/refs/tags/v0.35.0.tar.gz"
-  sha256 "790e4eb0c98da49c60d2c94cebcd3f1658cd7aca3be82093fcb19b9c1d0ac06b"
+  url "https://github.com/docker/buildx/archive/refs/tags/v0.37.1.tar.gz"
+  sha256 "c8eb34392910bf18a858d4099e841deec2f7ea433bb3ed230082f55b69f19118"
   license "Apache-2.0"
   head "https://github.com/docker/buildx.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "bb8a00f55798493e9fa48fedd4b5d4fcb4e1c7b3d20451a97c88015320ae77de"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "efcd40d36bef6b8571440c893b5ff1d033b611775a8f000f61aca33ad6331a59"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2c5553eb27dd1bb4bd9e4eccbbb3aea980bb37fbf67bc60c55ba3b4fe76c4b08"
-    sha256 cellar: :any_skip_relocation, sonoma:        "cb5693bdb0145b8a9b5c2dee9a932f517f2015b0773dd26926ec7bedd12e4264"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "34cef927d09d6c710146027df24e60f5541bf00dee8e5203bbdd24c624bdca63"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e7b1a422409c3112066c3cdb904afc5d9848b11e3ba57b290d73a6924e9d06e5"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "5bd47c9bf1d207737ebcd770e39defcd7f621133ea110c5ce6a1dfd26dd9171b"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "5bd47c9bf1d207737ebcd770e39defcd7f621133ea110c5ce6a1dfd26dd9171b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "5bd47c9bf1d207737ebcd770e39defcd7f621133ea110c5ce6a1dfd26dd9171b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "0cad37627e955d0a6c45e16f2d6cfc92826454644a757275115f1904e3c5e5aa"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "054200d861bbb83c9d3a5dbc280b8c7c77d52fdc9ea18d4417c9d0f8a4968ba7"
   end
 
   depends_on "go" => :build
 
+  deny_network_access!
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
     ldflags = %W[
-      -s -w
       -X github.com/docker/buildx/version.Version=v#{version}
       -X github.com/docker/buildx/version.Revision=#{tap.user}
     ]

@@ -1,18 +1,19 @@
 class Appium < Formula
   desc "Automation for Apps"
   homepage "https://appium.io/"
-  url "https://registry.npmjs.org/appium/-/appium-3.5.0.tgz"
-  sha256 "2aa143b4de6c76ed2071e316331aae7184916aa2fdcdc4d3647ab3f561d97d3d"
+  url "https://registry.npmjs.org/appium/-/appium-3.7.0.tgz"
+  sha256 "a6f99adf70a8815039c8c20d07d359b11e60f062dd04b5171cfc84e429017599"
   license "Apache-2.0"
   head "https://github.com/appium/appium.git", branch: "master"
 
   bottle do
-    sha256               arm64_tahoe:   "60a5158cf32d709a607f356d8aefbbab0a4f8b3230004d3c18f3f8d75e668e47"
-    sha256               arm64_sequoia: "e4cc36e1d8f1d117e75927d7c2454051d3fa9ce91d51f964afb5cae25df05eca"
-    sha256               arm64_sonoma:  "2992e68a0cafbe0b303da4678455ca4a25abebc1556b8d757c8a26c0cfb6ee5a"
-    sha256               sonoma:        "28ebd3f216658ba5f07cca2cf9027e441f1b59a506c567929299e2e3b550adff"
-    sha256 cellar: :any, arm64_linux:   "5b818a1f88382e49c6d0a144582f6328cbcec188210b3d038e6a3f598dd3c148"
-    sha256 cellar: :any, x86_64_linux:  "36ba9161d49dbe83807302f679f01bd96ca75dcde893500a4246b2f7462010f3"
+    sha256 cellar: :any, arm64_golden_gate: "8d554acdda6e379a72a2180f21742b2feb13fbfbd1817f3f1d32c665c891ca13"
+    sha256               arm64_tahoe:       "6b7ce93a65aa46817aa047a3ffaf655e1b3c7b2dad74181943d8fc9d3fcfe075"
+    sha256               arm64_sequoia:     "955a6808b9d1be5dfeeda02cbb11ecf1a97634ed820dceb50bb7e0fe37b1bdeb"
+    sha256               arm64_sonoma:      "cb186ec4f1d332088c5b0b47aa2c499e75041c772348a816154cd68472ff5efb"
+    sha256               sonoma:            "355bbff3a063c3d2c1dac9a08d59c3e7f7fcb8163d110639777ac33e26bf21aa"
+    sha256 cellar: :any, arm64_linux:       "32ca99cb37380a31b536ae0df2bf34da1b4c94f30d3dd7a844e43f8530136d4d"
+    sha256 cellar: :any, x86_64_linux:      "75af3b1ac2c7b69fcc111d62986115189aad8da477c3a9219bd20dc657acef6a"
   end
 
   depends_on "pkgconf" => :build
@@ -27,25 +28,35 @@ class Appium < Formula
   # Resources needed to build sharp from source to avoid bundled vips
   # https://sharp.pixelplumbing.com/install/#building-from-source
   resource "node-addon-api" do
-    url "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.8.0.tgz"
-    sha256 "72528f1a8235a8bc19855e21cc5ae28252c276338afa73887dc7e54515bc76c5"
+    url "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.9.2.tgz"
+    sha256 "4cd65698541b19a33f798f1dc25c02c6ed1c9d7749b8824b1a1ccecdd197c8ea"
   end
 
   resource "node-gyp" do
-    url "https://registry.npmjs.org/node-gyp/-/node-gyp-12.3.0.tgz"
-    sha256 "d209963f2b21fd5f6fad1f6341897a98fc8fd53025da36b319b92ebd497f6379"
+    url "https://registry.npmjs.org/node-gyp/-/node-gyp-13.0.1.tgz"
+    sha256 "455327cde805c299d5a16603419e106853db5b9257dfb85e44eb7f4ec4d99de5"
   end
 
   def install
     ENV["APPIUM_SKIP_CHROMEDRIVER_INSTALL"] = "1"
-    ENV["SHARP_FORCE_GLOBAL_LIBVIPS"] = "1"
 
-    system "npm", "install", *std_npm_args(ignore_scripts: false), *resources.map(&:cached_download)
+    system "npm", "install", *std_npm_args, *resources.map(&:cached_download)
     bin.install_symlink libexec.glob("bin/*")
 
-    # Remove prebuilts which still get installed as optional dependencies
-    rm_r(libexec.glob("lib/node_modules/appium/node_modules/@img/sharp-*"))
-    rm_r(libexec.glob("lib/node_modules/appium/node_modules/bare-{fs,os,url}/prebuilds/*"))
+    node_modules = libexec/"lib/node_modules/appium/node_modules"
+    rm_r(node_modules.glob("bare-{path,fs,os,url}/prebuilds/*"))
+
+    # Build `sharp` from source against brewed `vips`
+    rm_r(node_modules.glob("@img/sharp-*"))
+    cd node_modules/"sharp" do
+      ENV["SHARP_FORCE_GLOBAL_LIBVIPS"] = "1"
+      system "npm", "run", "build"
+      rm_r("src/build/Release/obj.target")
+
+      # `sharp` resolves its native binary from `@img`, so link the source build there.
+      sharp = Pathname.pwd.glob("src/build/Release/sharp-*.node").first
+      (node_modules/"@img"/sharp.basename(".node")).install_symlink sharp => "sharp.node"
+    end
   end
 
   service do
@@ -71,7 +82,7 @@ class Appium < Formula
 
     require "utils/linkage"
     sharp = libexec.glob("lib/node_modules/appium/node_modules/sharp/src/build/Release/sharp-*.node").first
-    libvips = Formula["vips"].opt_lib/shared_library("libvips")
+    libvips = formula_opt_lib("vips")/shared_library("libvips")
     assert sharp && Utils.binary_linked_to_library?(sharp, libvips),
            "No linkage with #{libvips.basename}! Sharp is likely using a prebuilt version."
   end

@@ -1,17 +1,17 @@
 class Sundials < Formula
   desc "Nonlinear and differential/algebraic equations solver"
   homepage "https://computing.llnl.gov/projects/sundials"
-  url "https://github.com/llnl/sundials/releases/download/v7.7.0/sundials-7.7.0.tar.gz"
-  sha256 "115bebf25ad0380428e389b8a1a7896725f33cd7c98bbaec8ce2a9ae13812c46"
+  url "https://github.com/llnl/sundials/releases/download/v7.9.0/sundials-7.9.0.tar.gz"
+  sha256 "13f898a27b48fe3449483f9e438a800ed545abf93bc2e2ceec2d1e00ae8db5ef"
   license "BSD-3-Clause"
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "98e1ddacb1e65111a29e9e4f5ab3e21f8ee232b3f517d779cfa5a33df1582189"
-    sha256 cellar: :any,                 arm64_sequoia: "29b15da812a8da99b803d2b2c40b00a2e89ed20609055d071eac008a7355e3f6"
-    sha256 cellar: :any,                 arm64_sonoma:  "30a2da3fd9660935f6700c250f66cda384a97e5fb44c72fe9d77f383ac0ff122"
-    sha256 cellar: :any,                 sonoma:        "fa77a74a7082d97259498b211ee12426a21dacb8d58598507df710cc57559e5a"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "31184238f55e92112ed494f036a5310b4bae98bc15e30daa3fd6ef04a4fa1597"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ead433c94afc1e547801d3e841404bfe1068d073eeb70c0d485bcdf26844dd04"
+    sha256 cellar: :any, arm64_golden_gate: "0bee7b3a7d89719e797e7dd0b7551ea5aef1725616baeb4c23b74bf58e4602eb"
+    sha256 cellar: :any, arm64_tahoe:       "7e73351e64d9d93d9df664b0b57233ac5fcdc3c180ff2aca85ba158af478ba08"
+    sha256 cellar: :any, arm64_sequoia:     "1851856136d77acc4d206f38a7340429d975046bcc57c92e49c934b3eb2a2955"
+    sha256 cellar: :any, arm64_sonoma:      "4ba3ce27952cedc18da261da008b6750345887675cb48d3a0bef975b8a5bdd47"
+    sha256 cellar: :any, arm64_linux:       "99c4eff4d5690e328568ff6faf650e0b72a71bc024c80e4a69f75601ee045375"
+    sha256 cellar: :any, x86_64_linux:      "41ed04d600eee6b797e58d58bbe8435248c249e313f90d02bc09cac2aea1c0a8"
   end
 
   depends_on "cmake" => :build
@@ -51,7 +51,7 @@ class Sundials < Formula
       -lm
     ]
 
-    args += ["-I#{Formula["open-mpi"].opt_include}", "-L#{Formula["open-mpi"].opt_lib}"] if OS.mac?
+    args += ["-I#{formula_opt_include("open-mpi")}", "-L#{formula_opt_lib("open-mpi")}"] if OS.mac?
 
     system ENV.cc, "test_nvector.c", "test_nvector_serial.c", "-o", "test", *args
 

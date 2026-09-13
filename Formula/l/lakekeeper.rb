@@ -1,30 +1,29 @@
 class Lakekeeper < Formula
   desc "Apache Iceberg REST Catalog"
   homepage "https://docs.lakekeeper.io"
-  url "https://github.com/lakekeeper/lakekeeper/archive/refs/tags/v0.12.4.tar.gz"
-  sha256 "0ad762505286c5fae7e590fe6c21983e5c77fb6afeae615e7545137df9c3c6d4"
+  url "https://github.com/lakekeeper/lakekeeper/archive/refs/tags/v0.13.4.tar.gz"
+  sha256 "cd1e615ee48b4c60d280bd5f1cf7b874333c96d719b7f0533316bb895ebe2289"
   license "Apache-2.0"
   head "https://github.com/lakekeeper/lakekeeper.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_tahoe:   "f593356ca9ef4074fd1d7e8c0b84b07949d1db598bc4bcdf0ab36837316eb0ae"
-    sha256 cellar: :any, arm64_sequoia: "239f34536bd8b1a920638ddc6dec5230c16e8b4037089d61a1a45ccacd9ff0cf"
-    sha256 cellar: :any, arm64_sonoma:  "0e687197bac79d67fec9f7d62254bc8578a321d1e45f6f81f0b522460f58d699"
-    sha256 cellar: :any, sonoma:        "0679b2e2c0a05a5fcf12caedca29771c1f6eb65268c5f2a88cf7edf95df53f7e"
-    sha256 cellar: :any, arm64_linux:   "73a74d47a2273fe258ec33d49cfaf7f8bdfc357c87d7f8c7d668777ad1b4df30"
-    sha256 cellar: :any, x86_64_linux:  "a096a855fc4f15fcc43d0e7ea76691d8ea7627630d1a0b3c73a0e86c6c3398c4"
+    sha256 cellar: :any, arm64_golden_gate: "1a1e5d4d4b360b38bd750a1f3c4e7d88c445988d3475cebd8c98f9eb8ed44bec"
+    sha256 cellar: :any, arm64_tahoe:       "8392e377b5da592e1b0d1a24600cdb7d7297df88c98a186210d9d95a9ddb53b1"
+    sha256 cellar: :any, arm64_sequoia:     "7c684d77ba64fa9464b5f241254924e13dab7a00908a2a88c08c6b9b39838a14"
+    sha256 cellar: :any, arm64_linux:       "59840701c42233676c1c3c52c77c83b79787e3991140ec2fdc3f613669d5b22d"
+    sha256 cellar: :any, x86_64_linux:      "3792aad6cb1731307c196590636bab7087593157cdc1b27dc927109dccb54d1a"
   end
 
   depends_on "cmake" => :build
   depends_on "rust" => :build
   depends_on "postgresql@18" => :test
-  depends_on "openssl@3"
+  depends_on "openssl@4"
 
   uses_from_macos "llvm" => :build # for libclang
 
   def install
     # Ensure that the `openssl` crate picks up the intended library.
-    ENV["OPENSSL_DIR"] = Formula["openssl@3"].opt_prefix
+    ENV["OPENSSL_DIR"] = formula_opt_prefix("openssl@4")
 
     system "cargo", "install", *std_cargo_args(path: "crates/lakekeeper-bin")
   end

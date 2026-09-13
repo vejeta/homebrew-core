@@ -1,24 +1,25 @@
 class Srt < Formula
   desc "Secure Reliable Transport"
   homepage "https://www.srtalliance.org/"
-  url "https://github.com/Haivision/srt/archive/refs/tags/v1.5.5.tar.gz"
-  sha256 "c3518bc43a71b5289032395b2db4c3e09e73d78b54247d56c14553a503b491cf"
+  url "https://github.com/Haivision/srt/archive/refs/tags/v1.5.7.tar.gz"
+  sha256 "017cd1e437ef2073a4dd10ddf7b55e86bc3d6ebac0393d13bd22f6a57055d32b"
   license "MPL-2.0"
   compatibility_version 1
   head "https://github.com/Haivision/srt.git", branch: "master"
 
   livecheck do
     url :stable
-    regex(/^v?(\d+(?:\.\d+)+)$/i)
+    strategy :github_latest
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_tahoe:   "f201e850fa33ee027f7e8360ab55474461c6d20c996ed261bf9d17198a9d0e85"
-    sha256 cellar: :any,                 arm64_sequoia: "fc5bbd1fed835b6bbcb15cb62c7297e137ae526250c5ca1b21dc6b4979ed22e2"
-    sha256 cellar: :any,                 arm64_sonoma:  "b69a133af8ac9cf43a298423cd4b08614395b36c0df3c9b7e1ade63b9587a304"
-    sha256 cellar: :any,                 sonoma:        "be1c49b063c22ff0edf2a822e09585ec85649a7845dcd770681217659655ca2e"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f4daed54a610f9835b41b63d5dd16027e2d1dfd879aea01c1fc85d65d38a61ff"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0d7d47c199ff8c9e1e6de7b409dc3a81c6573f49be3b02bb37aacdb335a6b623"
+    sha256 cellar: :any, arm64_golden_gate: "1497982810a8dd675343c13cb3c2090fc8ed802d3d5d9223ff3019f737a162cf"
+    sha256 cellar: :any, arm64_tahoe:       "a09e2746cd2fe48a6674da75c163705b91cb695ce2a585f5e62129dbe4f562d8"
+    sha256 cellar: :any, arm64_sequoia:     "004246e6dd17bf156b3eae6f2b8cf6dd3575be4f310b7b532556bd6464d1f954"
+    sha256 cellar: :any, arm64_sonoma:      "d860b499a28f363ac7a91fc80046966df861596e94e65d9edc3931f0268ca3a4"
+    sha256 cellar: :any, sonoma:            "696700645531b6c3de17970c5f89e7c5f8925712bcff905dc8521c8bf0a95ab0"
+    sha256 cellar: :any, arm64_linux:       "bcda48e594414b3d10ccd84b3e03f78797d7c5583471738092fb0f3acc8d6004"
+    sha256 cellar: :any, x86_64_linux:      "c49b5154b38cc76ce246618290157675fa7ff263ae909417b6b770b981f0dc3a"
   end
 
   depends_on "cmake" => :build

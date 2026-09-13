@@ -1,8 +1,8 @@
 class Gnupg < Formula
   desc "GNU Privacy Guard (OpenPGP)"
   homepage "https://gnupg.org/"
-  url "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.5.20.tar.bz2"
-  sha256 "6461266e99c308419a379abe6c356d54c214136c4589bd65951091138989ffc6"
+  url "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.5.22.tar.bz2"
+  sha256 "96e27b020ad26510388e06f5f07f3f70a4ed8916ee995f1b72b7a024e6d9d87e"
   license "GPL-3.0-or-later"
   compatibility_version 1
 
@@ -18,12 +18,12 @@ class Gnupg < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "97b693dac83b61c9e6e3ec51c2a2dd8e22c70cd51e50aa334bfc64b693005839"
-    sha256 arm64_sequoia: "3af7e31aa9d7b338fb5d5829452b66fa303f5914fcb1a974106107a8fa1915e4"
-    sha256 arm64_sonoma:  "2fbb4e6a008b159b9733e7e374aaab0d84f94c9d813703a880a04e6f345e24db"
-    sha256 sonoma:        "4bcfb0d2cae7c2135fa9049731e2b838b27ba40e2634bba417f5dedd89f6b448"
-    sha256 arm64_linux:   "171fa43da17a222d11cd0c3d826604335df0fe831c6151047ce669f4b2580366"
-    sha256 x86_64_linux:  "8968cbe8875ec54539111c9b25e1aff019f72d0ac942f151a7ed4419ad2214d5"
+    rebuild 1
+    sha256 arm64_golden_gate: "23c218fe13f49e5410a151b46b3db9864b7b416f8f62218adc8e8ecf9fe07bbf"
+    sha256 arm64_tahoe:       "ce8657136dfd5782c9dd0dcde21edf739db4391a02df0105a499309f40823ab5"
+    sha256 arm64_sequoia:     "100bcea709850d9e2ac71afe515aeb78f62fa2be69289a8f2de59d9aa3023743"
+    sha256 arm64_linux:       "18b3d53cf6758772229953f6dfb5c6e3a8c0abb1b79b59258f43821a43566d1f"
+    sha256 x86_64_linux:      "3d39661c4e7cca8c23b88fcb8b120e00685185a18d6fef5c4e7ee95a22a1a171"
   end
 
   depends_on "pkgconf" => :build
@@ -49,21 +49,19 @@ class Gnupg < Formula
     depends_on "zlib-ng-compat"
   end
 
-  conflicts_with cask: "gpg-suite"
-  conflicts_with cask: "gpg-suite-no-mail"
-  conflicts_with cask: "gpg-suite-pinentry"
-  conflicts_with cask: "gpg-suite@nightly"
-
   def install
     libusb = Formula["libusb"]
     ENV.append "CPPFLAGS", "-I#{libusb.opt_include}/libusb-#{libusb.version.major_minor}"
+
+    # gpgscm otherwise hard-codes /tmp on Unix.
+    inreplace "tests/gpgscm/tests.scm", "(get-temp-path)", '(getenv "TMPDIR")'
 
     mkdir "build" do
       system "../configure", "--disable-silent-rules",
                              "--enable-all-tests",
                              "--sysconfdir=#{etc}",
-                             "--with-pinentry-pgm=#{Formula["pinentry"].opt_bin}/pinentry",
-                             "--with-readline=#{Formula["readline"].opt_prefix}",
+                             "--with-pinentry-pgm=#{formula_opt_bin("pinentry")}/pinentry",
+                             "--with-readline=#{formula_opt_prefix("readline")}",
                              *std_configure_args
       system "make"
       system "make", "check"
@@ -81,9 +79,9 @@ class Gnupg < Formula
     end
   end
 
-  def post_install
-    (var/"run").mkpath
-    quiet_system "killall", "gpg-agent"
+  post_install_steps do
+    mkdir_p "run", base: :var
+    terminate_process "gpg-agent", must_succeed: false
   end
 
   test do

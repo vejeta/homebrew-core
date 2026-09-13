@@ -7,12 +7,13 @@ class Caddy < Formula
   head "https://github.com/caddyserver/caddy.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
-    sha256 cellar: :any_skip_relocation, sonoma:        "27b2aa14d92c02c159a265f1604240cfd55963e6ba5563b7ccac752937624859"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "24e586256f93f81b80de38b8bce008cbaf788f925b81e6aedecf98c7d3612385"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ccfdb7ee4df4bbcbcba207c4a7009fc7d5859435df1277c784421b67d7127639"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "165c0d19019620d068ae6db54d0707b80dfa9966799b47eec133cfb8010c6d85"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "8e9aa3be3d01ea8128bd16cdb0de0b274da276dba4882addedd43b8748ad94d3"
+    sha256 cellar: :any_skip_relocation, sonoma:            "27b2aa14d92c02c159a265f1604240cfd55963e6ba5563b7ccac752937624859"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "24e586256f93f81b80de38b8bce008cbaf788f925b81e6aedecf98c7d3612385"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "ccfdb7ee4df4bbcbcba207c4a7009fc7d5859435df1277c784421b67d7127639"
   end
 
   depends_on "go" => :build
@@ -22,7 +23,27 @@ class Caddy < Formula
     sha256 "53c6a9e29965aaf19210ac6470935537040e782101057a199098feb33c2674f8"
   end
 
+  # `test do` block runs a local server
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    # caddy's own modules, for the `go run cmd/caddy/main.go` completions step
+    # and as the dependencies of the tagged caddy module xcaddy builds
+    system "go", "mod", "download", "all"
+    # the tagged caddy module itself, resolved by xcaddy at build time
+    system "go", "mod", "download", "github.com/caddyserver/caddy/v2@v#{version}" unless build.head?
+    # xcaddy's own modules
+    resource("xcaddy").stage do
+      system "go", "mod", "download"
+    end
+  end
+
   def install
+    # modules were downloaded and sumdb-verified in `fetch`; the temp module
+    # xcaddy creates has no go.sum, so serve it from the local cache only
+    ENV["GOPROXY"] = "off"
+    ENV["GOSUMDB"] = "off"
+
     revision = build.head? ? version.commit : "v#{version}"
 
     resource("xcaddy").stage do

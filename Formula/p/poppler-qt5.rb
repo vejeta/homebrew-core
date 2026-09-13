@@ -1,8 +1,8 @@
 class PopplerQt5 < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-26.06.0.tar.xz"
-  sha256 "4cb4e5a3dc8cb5eec751c8a23c8ba19f61f96dedc0cd07d2aee6b0c8e2cf6ba4"
+  url "https://poppler.freedesktop.org/poppler-26.09.0.tar.xz"
+  sha256 "8059eadb6805340768f138c465b57f8164c92b4a0773c37ef031ea6c0d987b2e"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only"] # see README-XPDF
   compatibility_version 1
   head "https://gitlab.freedesktop.org/poppler/poppler.git", branch: "master"
@@ -12,12 +12,12 @@ class PopplerQt5 < Formula
   end
 
   bottle do
-    sha256 arm64_tahoe:   "94e9e2697e7ace41b641ad97f7bcf983a1cb2b7612a6bd49633ccebf5646222f"
-    sha256 arm64_sequoia: "54c22774b66ec889625c16a1a4129e94167daaf2e22bb2f37d222016f566611f"
-    sha256 arm64_sonoma:  "4b3f39a8c8594ee7c3c9e862f21a292afefe09a27476e2c0d36388453f941a99"
-    sha256 sonoma:        "5e6230874f4255edae8dc7bfdcb40c0b1934a1dd6ccbbe3b05840f64ed38b1c7"
-    sha256 arm64_linux:   "fe20a64a6d05bcaeeb7f5445ba2238e612cb61ff434ffb946389bb6b0ff7a282"
-    sha256 x86_64_linux:  "7b1948273b2e4d8e01406c7f000ed33dae3fceac07660a1aa5ac02b5fd80ae10"
+    sha256 arm64_golden_gate: "08cd01a69d256520d4a7c71575d711b38e6854568bfdd6fcfe23026562698efc"
+    sha256 arm64_tahoe:       "809b1e3aa2de462ec937763fc84ab6246b962ee95a2f50c7d2d31abeaacdf39f"
+    sha256 arm64_sequoia:     "54a7e47e92866c9285366f5d1f1a7d915b37f4302ad2558cc5e8e227e294b212"
+    sha256 arm64_sonoma:      "8fe3dd10b856e6211e791819809d495fb0d9faf455a3b7b52e3e1881f19fbc6c"
+    sha256 arm64_linux:       "1051296b638733ea854c8c50f8b80a59ad4fad7b7694f3eeeac90997aa4b099f"
+    sha256 x86_64_linux:      "82936c0d162cf68767ac99bb3d8fdb519ead0c59670bd583792c946f01eebb6a"
   end
 
   keg_only "it conflicts with poppler"
@@ -35,6 +35,7 @@ class PopplerQt5 < Formula
   depends_on "freetype"
   depends_on "glib"
   depends_on "gpgmepp"
+  depends_on "harfbuzz"
   depends_on "jpeg-turbo"
   depends_on "libpng"
   depends_on "libtiff"

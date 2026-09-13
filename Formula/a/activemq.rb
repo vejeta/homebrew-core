@@ -1,18 +1,18 @@
 class Activemq < Formula
   desc "Apache ActiveMQ: powerful open source messaging server"
   homepage "https://activemq.apache.org/"
-  url "https://www.apache.org/dyn/closer.lua?path=activemq/6.2.6/apache-activemq-6.2.6-bin.tar.gz"
-  mirror "https://archive.apache.org/dist/activemq/6.2.6/apache-activemq-6.2.6-bin.tar.gz"
-  sha256 "91897204f6bad85af5fc0d984704a3b02940f0ff276a33c35af0dc160644a1a3"
+  url "https://www.apache.org/dyn/closer.lua?path=activemq/6.3.2/apache-activemq-6.3.2-bin.tar.gz"
+  mirror "https://archive.apache.org/dist/activemq/6.3.2/apache-activemq-6.3.2-bin.tar.gz"
+  sha256 "543e9ca8a234d118a8c195d802a110994a59b7973d75ae0a7ccd47dc2cc2c5c1"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "991522473cb8eeb56613cb76aa010dae7d47e0314eb2d5ad4dbff90340721c5e"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2223a7b6da65750854653dc5309d8a8c456495b74e7833018fc81a50a818248a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f6c5bfe2bc9b281a7170e598df64e6d705c42e037a8a92c0951055ff7691b2b9"
-    sha256 cellar: :any_skip_relocation, sonoma:        "09ca0869f3b25e2f78895396e51f6628718a529b4891a6cb1aba9c4e846408fb"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "3d96efe61fb9975c0092601e239a6b7c2e3af6cde56bd5da656a90b02832133b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "17d7a3446b09661567fc8f10ba800a1b091c5941343d47eba0a58bdac09803fc"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "fa03e3a0052277cd168912cd2c9ea4c20bf7bd58c8ae77f4f1f9725eaf36bb01"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "e38bee98b6462d4486a658c58d862d8f7456b96f85b2a1bbfd56a79a8bf08aeb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "e95b30811c77de2c1086c394f70633c8689820bd9f12f9234a276ba950b0d6e4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "58c7d2008bdd317da52d64eff14ff500d916d32aab0acf9ad8a819cb0883430e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "dceb9ae13e226572e487d6554bbe18ece88715fa7c1e440d6bf9e22a8278b08e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "a4014a26d71f199a28baecc305951cc092c135d74c48906006cfb97ad13f3586"
   end
 
   depends_on "java-service-wrapper"
@@ -38,7 +38,7 @@ class Activemq < Formula
     libexec.install buildpath.children
     (bin/"activemq").write_env_script libexec/"bin/activemq", Language::Java.overridable_java_home_env
 
-    wrapper = Formula["java-service-wrapper"].opt_libexec
+    wrapper = formula_opt_libexec("java-service-wrapper")
     wrapper_dir = libexec/"bin"/wrapper_dir
     ln_sf wrapper/"bin/wrapper", wrapper_dir/"wrapper"
     libext = OS.mac? ? "jnilib" : "so"

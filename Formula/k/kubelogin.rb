@@ -1,26 +1,33 @@
 class Kubelogin < Formula
   desc "OpenID Connect authentication plugin for kubectl"
   homepage "https://github.com/int128/kubelogin"
-  url "https://github.com/int128/kubelogin/archive/refs/tags/v1.36.2.tar.gz"
-  sha256 "c8188b81c19d60952e988aebca0779a4f5bd34ee41ea8949b2fec15d2e3ee101"
+  url "https://github.com/int128/kubelogin/archive/refs/tags/v1.36.4.tar.gz"
+  sha256 "ddae6975006895791d0bbf8464f228b3911f697b869446fdf1b8233c12c30544"
   license "Apache-2.0"
   head "https://github.com/int128/kubelogin.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "acdb40136da6814bd5173c1dc24a04a8c255cc1d58e7ee14b575ccf6ea1a829f"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "acdb40136da6814bd5173c1dc24a04a8c255cc1d58e7ee14b575ccf6ea1a829f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "acdb40136da6814bd5173c1dc24a04a8c255cc1d58e7ee14b575ccf6ea1a829f"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f9a506973b4e1d6a5655fafda012f4cfe578fafe2732ea5c7d0a26a400fbef2d"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "56b93bddca335925ff86171000a0d79255fc4106e7d503199e046a1ae954131f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "32304d06093b0b2770a05b825121af4e057090d11c07a4c9a586b09800ca2bc0"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "94a45b967a6e111e8ee741a456262fab855e2520b25c2b6dce7fcdb7edff48f1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "94a45b967a6e111e8ee741a456262fab855e2520b25c2b6dce7fcdb7edff48f1"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "94a45b967a6e111e8ee741a456262fab855e2520b25c2b6dce7fcdb7edff48f1"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "94a45b967a6e111e8ee741a456262fab855e2520b25c2b6dce7fcdb7edff48f1"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "51c27a653bd82c93db98d931b05324b3f48cfd10e8d982d633f9eac3d7deb99e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "2cc8ac23815afccdc9291068c23592b3a6a94a61d29a7a08873e763846af83a5"
   end
 
   depends_on "go" => :build
   depends_on "kubernetes-cli" => :test
 
+  # `test do` block performs OIDC discovery against samples.auth0.com
+  deny_network_access! [:build, :postinstall]
+
+  def fetch
+    system "go", "mod", "download"
+  end
+
   def install
     ENV["CGO_ENABLED"] = OS.mac? ? "1" : "0"
-    ldflags = "-s -w -X main.version=#{version}"
+    ldflags = "-X main.version=#{version}"
     system "go", "build", *std_go_args(ldflags:, output: bin/"kubectl-oidc_login")
 
     generate_completions_from_executable(bin/"kubectl-oidc_login", shell_parameter_format: :cobra)
